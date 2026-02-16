@@ -17,7 +17,7 @@ const VideoScrollSection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative h-[200vh]"
+      className="relative h-[150vh]"
       style={{ background: "#020617" }}
     >
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">

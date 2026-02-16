@@ -159,7 +159,7 @@ const FAQBlogSection = () => {
 
             <a
               href="#blog"
-              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-primary hover:text-accent transition-colors"
             >
               Tüm Yazılar
               <ArrowRight className="w-4 h-4" />

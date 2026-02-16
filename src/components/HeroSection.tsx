@@ -1,9 +1,11 @@
-import { useState, useEffect, lazy, Suspense, useCallback } from "react";
-import { ArrowRight, Upload } from "lucide-react";
+import { useState, useEffect, lazy, Suspense, useCallback, useRef } from "react";
+import { ArrowRight, Upload, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import MagneticButton from "./MagneticButton";
 import { TextReveal } from "./ScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const CNCModel = lazy(() => import("./CNCModel"));
 
@@ -12,6 +14,9 @@ const headlines = [
   "Yüksek Hassasiyetli\nÜretim",
   "Stabil Kalite &\nGüvenilir Teslimat",
 ];
+
+const ACCEPTED_EXTENSIONS = [".step", ".stp", ".iges", ".igs", ".dxf", ".sldprt", ".sldasm", ".pdf"];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 const containerVariants = {
   hidden: {},
@@ -47,12 +52,84 @@ const HeroSection = () => {
   const bgY = useTransform(scrollY, [0, 800], [0, 200]);
   const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
 
+  // CAD Upload state
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeadline((prev) => (prev + 1) % headlines.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const validateFile = (file: File): string | null => {
+    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    if (!ACCEPTED_EXTENSIONS.includes(ext)) {
+      return `Desteklenmeyen dosya formatı. Kabul edilen: ${ACCEPTED_EXTENSIONS.join(", ")}`;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return "Dosya boyutu 50MB'ı aşıyor.";
+    }
+    return null;
+  };
+
+  const uploadFile = async (file: File) => {
+    const error = validateFile(file);
+    if (error) {
+      toast.error(error);
+      setUploadState("error");
+      return;
+    }
+
+    setUploadState("uploading");
+    setUploadedFileName(file.name);
+
+    const fileName = `${Date.now()}_${file.name}`;
+    const { error: uploadError } = await supabase.storage
+      .from("cad-uploads")
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast.error("Dosya yüklenirken hata oluştu: " + uploadError.message);
+      setUploadState("error");
+      return;
+    }
+
+    // Create RFQ record
+    const rfqId = `RFQ-${Date.now()}`;
+    const { error: dbError } = await supabase.from("rfqs").insert({
+      id: rfqId,
+      files: [fileName],
+      status: "Yeni",
+      date: new Date().toISOString().split("T")[0],
+      notes: `CAD dosyası yüklendi: ${file.name}`,
+    });
+
+    if (dbError) {
+      console.error("RFQ kaydı oluşturulamadı:", dbError);
+    }
+
+    setUploadState("success");
+    toast.success("Dosya başarıyla yüklendi! En kısa sürede sizinle iletişime geçeceğiz.");
+
+    setTimeout(() => setUploadState("idle"), 4000);
+  };
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+  }, []);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    e.target.value = "";
+  };
 
   return (
     <section
@@ -79,7 +156,7 @@ const HeroSection = () => {
         }}
       />
 
-      {/* Dark Overlay with scroll-linked opacity */}
+      {/* Dark Overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
@@ -92,7 +169,7 @@ const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <motion.div
-            className="relative p-8 rounded-2xl"
+            className="relative p-4 sm:p-8 rounded-2xl"
             style={{
               background: "radial-gradient(circle at center, rgba(15, 23, 42, 0.6) 0%, transparent 100%)",
               backdropFilter: "blur(4px)",
@@ -121,7 +198,7 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* Rotating Headline with clip-path reveal */}
+            {/* Rotating Headline */}
             <motion.div variants={fadeUpVariants} className="relative h-40 md:h-52 overflow-hidden mb-6">
               {headlines.map((headline, index) => (
                 <h1
@@ -147,11 +224,8 @@ const HeroSection = () => {
             {/* Description */}
             <TextReveal delay={0.4}>
               <p
-                className="text-lg leading-relaxed max-w-xl mb-6"
-                style={{
-                  color: "rgba(255, 255, 255, 0.7)",
-                  fontStyle: "italic",
-                }}
+                className="text-base sm:text-lg leading-relaxed max-w-xl mb-6"
+                style={{ color: "rgba(255, 255, 255, 0.7)", fontStyle: "italic" }}
               >
                 CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve
                 proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat
@@ -174,10 +248,10 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* CTA Buttons with magnetic effect */}
+            {/* CTA Buttons */}
             <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4">
               <MagneticButton
-                href="#teklif"
+                href="/iletisim"
                 className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
               >
                 Teklif Al
@@ -192,32 +266,77 @@ const HeroSection = () => {
               </MagneticButton>
             </motion.div>
 
-            {/* CAD File Drop Zone */}
+            {/* Functional CAD File Drop Zone */}
             <motion.div
               variants={fadeUpVariants}
-              className="mt-8 p-6 border-2 border-dashed border-white/20 hover:border-primary/60 transition-all duration-300 cursor-pointer group"
-              onDragOver={(e) => e.preventDefault()}
+              className={`mt-8 p-4 sm:p-6 border-2 border-dashed transition-all duration-300 cursor-pointer group ${
+                isDragging
+                  ? "border-primary bg-primary/10"
+                  : uploadState === "success"
+                  ? "border-green-500/50 bg-green-500/5"
+                  : uploadState === "error"
+                  ? "border-red-500/50 bg-red-500/5"
+                  : "border-white/20 hover:border-primary/60"
+              }`}
+              onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={handleDrop}
             >
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept={ACCEPTED_EXTENSIONS.join(",")}
+                onChange={handleFileSelect}
+              />
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 border border-white/20 group-hover:border-primary/50 flex items-center justify-center transition-colors">
-                  <Upload className="w-5 h-5 text-white/50 group-hover:text-primary transition-colors" />
+                <div className="w-12 h-12 border border-white/20 group-hover:border-primary/50 flex items-center justify-center transition-colors shrink-0">
+                  {uploadState === "uploading" ? (
+                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                  ) : uploadState === "success" ? (
+                    <CheckCircle className="w-5 h-5 text-green-400" />
+                  ) : uploadState === "error" ? (
+                    <AlertCircle className="w-5 h-5 text-red-400" />
+                  ) : (
+                    <Upload className="w-5 h-5 text-white/50 group-hover:text-primary transition-colors" />
+                  )}
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
-                    CAD Dosyanızı Sürükleyin
-                  </p>
-                  <p className="text-xs text-white/40">
-                    STEP, IGES, DXF, SOLIDWORKS — Hızlı teklif için
-                  </p>
+                <div className="min-w-0">
+                  {uploadState === "uploading" ? (
+                    <>
+                      <p className="text-sm font-medium text-white/80 truncate">Yükleniyor: {uploadedFileName}</p>
+                      <p className="text-xs text-white/40">Lütfen bekleyin...</p>
+                    </>
+                  ) : uploadState === "success" ? (
+                    <>
+                      <p className="text-sm font-medium text-green-400">Dosya başarıyla yüklendi!</p>
+                      <p className="text-xs text-white/40 truncate">{uploadedFileName}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+                        CAD Dosyanızı Sürükleyin
+                      </p>
+                      <p className="text-xs text-white/40">
+                        STEP, IGES, DXF, SOLIDWORKS — Hızlı teklif için
+                      </p>
+                    </>
+                  )}
                 </div>
-                <ArrowRight className="w-4 h-4 text-white/30 ml-auto group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                {uploadState === "idle" && (
+                  <ArrowRight className="w-4 h-4 text-white/30 ml-auto group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+                )}
               </div>
             </motion.div>
           </motion.div>
 
-          {/* Right Content - 3D CNC Model */}
+          {/* Right Content - 3D CNC Model (hidden on mobile for perf) */}
           <motion.div
-            className="relative"
+            className="relative hidden md:block"
             initial={{ opacity: 0, x: 60 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -232,7 +351,6 @@ const HeroSection = () => {
                 boxShadow: "0 0 40px rgba(0, 0, 0, 0.5)",
               }}
             >
-              {/* 3D Model */}
               <div className="h-[350px] md:h-[400px]">
                 <Suspense
                   fallback={

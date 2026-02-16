@@ -82,7 +82,7 @@ const HowWeWorkSection = () => {
           }
         });
       },
-      { threshold: 0.5, rootMargin: "-20% 0px -20% 0px" }
+      { threshold: 0.6, rootMargin: "-30% 0px -30% 0px" }
     );
 
     stepRefs.current.forEach((ref) => {
@@ -214,7 +214,7 @@ const StepCard = React.forwardRef<
         if (typeof ref === "function") ref(el);
         else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
       }}
-      className="min-h-[80vh] flex items-center py-10"
+      className="min-h-[60vh] flex items-center py-8"
       style={{ opacity, x }}
     >
       <div

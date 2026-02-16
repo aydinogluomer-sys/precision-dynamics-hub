@@ -35,7 +35,7 @@ const industries = [
 
 const IndustriesSection = () => {
   return (
-    <section id="endustriler" className="section-industrial bg-muted border-y border-border">
+    <section id="endustriler" className="py-16 md:py-20 bg-muted border-y border-border">
       <div className="container-industrial">
         {/* Header */}
         <TextReveal className="text-center mb-16">

@@ -98,7 +98,7 @@ const TestimonialsSection = () => {
                     className="text-sm leading-relaxed mb-6"
                     style={{ color: "rgba(255, 255, 255, 0.8)", fontStyle: "italic" }}
                   >
-                    "{t.quote}"
+                    {t.quote}
                   </p>
                   <div className="pt-4" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
                     <div className="font-semibold text-white">{t.author}</div>
