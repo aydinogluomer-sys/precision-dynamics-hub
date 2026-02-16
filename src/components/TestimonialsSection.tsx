@@ -1,4 +1,4 @@
-import { Quote } from "lucide-react";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -22,54 +22,124 @@ const testimonials = [
 ];
 
 const clients = [
-  "TAI", "Ford Otosan", "Arçelik", "Vestel", "Aselsan", "Roketsan", "MAN Türkiye", "Bosch"
+  "TAI", "Ford Otosan", "Arçelik", "Vestel", "Aselsan", "Roketsan", "MAN Türkiye", "Bosch",
 ];
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+};
 
 const TestimonialsSection = () => {
   return (
-    <section id="referanslar" className="section-industrial bg-background">
-      <div className="container-industrial">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-8 h-px bg-border" />
-            <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-              Referanslar
-            </span>
-            <div className="w-8 h-px bg-border" />
-          </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Bizi Tercih Edenler</h2>
-        </div>
+    <section
+      id="referanslar"
+      className="section-industrial relative overflow-hidden"
+      style={{ backgroundColor: "#0F172A" }}
+    >
+      <div className="container-industrial relative z-10">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
+            Referanslar
+          </span>
+          <h2
+            className="text-3xl md:text-4xl font-bold text-white mb-4"
+            style={{ textShadow: "0 0 20px rgba(10, 230, 255, 0.4)" }}
+          >
+            Bizi Tercih Edenler
+          </h2>
+        </motion.div>
 
-        {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="card-industrial">
-              {/* Quote Icon */}
-              <Quote className="w-10 h-10 text-primary/20 mb-4" />
-              
-              {/* Quote */}
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                "{testimonial.quote}"
-              </p>
-              
-              {/* Author */}
-              <div className="pt-4 border-t border-border">
-                <div className="font-semibold">{testimonial.author}</div>
-                <div className="text-sm text-muted-foreground">{testimonial.title}</div>
-                <div className="text-technical text-sm text-primary mt-1">{testimonial.company}</div>
-              </div>
-            </div>
-          ))}
+        {/* Bracket Quote Container */}
+        <div className="relative max-w-4xl mx-auto mb-16">
+          {/* Opening bracket */}
+          <div
+            className="absolute -top-16 -left-16 text-[10rem] leading-none opacity-15 pointer-events-none select-none"
+            style={{ color: "hsl(var(--primary))", fontWeight: 200 }}
+          >
+            [
+          </div>
+          {/* Closing bracket */}
+          <div
+            className="absolute -bottom-24 -right-16 text-[10rem] leading-none opacity-15 pointer-events-none select-none"
+            style={{ color: "hsl(var(--primary))", fontWeight: 200 }}
+          >
+            ]
+          </div>
+
+          <motion.div
+            className="grid md:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={i}
+                variants={cardVariants}
+                className="p-8 transition-all duration-300"
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                }}
+              >
+                {/* Quote mark */}
+                <div
+                  className="text-5xl leading-none mb-4 opacity-30"
+                  style={{ color: "hsl(var(--primary))", fontFamily: "Georgia, serif" }}
+                >
+                  "
+                </div>
+                <p
+                  className="text-sm leading-relaxed mb-6"
+                  style={{ color: "rgba(255, 255, 255, 0.8)", fontStyle: "italic" }}
+                >
+                  "{t.quote}"
+                </p>
+                <div className="pt-4" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+                  <div className="font-semibold text-white">{t.author}</div>
+                  <div className="text-sm" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                    {t.title}
+                  </div>
+                  <div
+                    className="text-sm mt-1 text-primary"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    {t.company}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
 
         {/* Clients Band */}
-        <div className="border-t border-b border-border py-8">
+        <div
+          className="py-8"
+          style={{
+            borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          }}
+        >
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {clients.map((client) => (
               <div
                 key={client}
-                className="text-xl font-bold text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                className="text-xl font-bold transition-colors"
+                style={{ color: "rgba(255, 255, 255, 0.25)" }}
               >
                 {client}
               </div>

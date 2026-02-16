@@ -1,4 +1,4 @@
-import { ShieldCheck } from "lucide-react";
+import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 const certifications = [
@@ -21,28 +21,32 @@ const itemVariants = {
 
 const CertificationsSection = () => {
   return (
-    <section id="sertifikalar" className="py-16 bg-foreground text-background border-y border-border">
+    <section
+      id="sertifikalar"
+      className="py-16"
+      style={{ background: "#f8fafc", borderTop: "1px solid hsl(var(--border))" }}
+    >
       <div className="container-industrial">
         <motion.div
-          className="flex flex-col items-center mb-4"
+          className="flex flex-col items-center mb-8"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center gap-3 mb-2">
-            <ShieldCheck className="w-5 h-5 text-primary" />
-            <span className="text-technical text-primary uppercase tracking-widest text-xs">
-              Sertifikalar & Kalite Güvencesi
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground mb-8">
+          <span
+            className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block"
+            style={{ color: "hsl(var(--primary))" }}
+          >
+            Sertifikalar
+          </span>
+          <p className="text-sm text-muted-foreground">
             Uluslararası standartlarda sertifikalı üretim
           </p>
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"
+          className="flex flex-wrap justify-center gap-4"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -52,14 +56,25 @@ const CertificationsSection = () => {
             <motion.div
               key={cert.name}
               variants={itemVariants}
-              className="flex flex-col items-center text-center p-8 border border-muted-foreground/20 bg-muted-foreground/5 hover:border-primary hover:bg-primary/20 transition-all duration-300 group"
+              className="inline-flex items-center gap-3 px-6 py-4 bg-white shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+              style={{
+                border: "1px solid hsl(var(--border))",
+                minWidth: "220px",
+              }}
             >
-              <ShieldCheck className="w-10 h-10 text-muted-foreground/40 group-hover:text-primary transition-colors duration-300 mb-4" />
-              <div className="font-semibold text-sm mb-1">{cert.name}</div>
-              <div className="text-xs text-muted-foreground">{cert.description}</div>
+              <Check className="w-[18px] h-[18px] text-primary flex-shrink-0" strokeWidth={3} />
+              <div>
+                <span className="font-semibold text-sm block">{cert.name}</span>
+                <span className="text-xs text-muted-foreground">{cert.description}</span>
+              </div>
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Bottom border line aligned with last badge */}
+        <div className="flex justify-center mt-8">
+          <div className="w-full max-w-4xl h-px" style={{ background: "hsl(var(--border))" }} />
+        </div>
       </div>
     </section>
   );
