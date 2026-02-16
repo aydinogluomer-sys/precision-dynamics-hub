@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -11,14 +14,27 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Nav items: some are anchor links (only on homepage), some are routes
   const navItems = [
-    { label: "Hizmetler", href: "#hizmetler" },
-    { label: "Kabiliyetler", href: "#kabiliyetler" },
-    { label: "Malzemeler", href: "#malzemeler" },
-    { label: "Hakkımızda", href: "#neden-biz" },
-    { label: "SSS", href: "#sss" },
-    { label: "İletişim", href: "#iletisim" },
+    { label: "Hizmetler", href: "#hizmetler", type: "anchor" as const },
+    { label: "Kabiliyetler", href: "#kabiliyetler", type: "anchor" as const },
+    { label: "Malzemeler", href: "#malzemeler", type: "anchor" as const },
+    { label: "Hakkımızda", href: "/hakkimizda", type: "route" as const },
+    { label: "SSS", href: "/sss", type: "route" as const },
+    { label: "İletişim", href: "/iletisim", type: "route" as const },
   ];
+
+  const handleNavClick = (item: typeof navItems[number]) => {
+    if (item.type === "anchor") {
+      if (location.pathname !== "/") {
+        navigate("/" + item.href);
+      } else {
+        const el = document.querySelector(item.href);
+        el?.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    setIsMenuOpen(false);
+  };
 
   const menuVariants = {
     closed: { height: 0, opacity: 0 },
@@ -33,8 +49,6 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-
-      {/* Main Navigation */}
       <motion.div
         className="border-b border-border transition-shadow"
         animate={{
@@ -51,7 +65,7 @@ const Header = () => {
             transition={{ duration: 0.25 }}
           >
             {/* Logo */}
-            <a href="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <motion.div
                 className="bg-primary flex items-center justify-center"
                 animate={{ width: isScrolled ? 40 : 48, height: isScrolled ? 40 : 48 }}
@@ -63,29 +77,43 @@ const Header = () => {
                 <span className="font-bold text-xl tracking-tight">MAS TECHNIC</span>
                 <span className="text-xs text-muted-foreground tracking-widest uppercase">Precision CNC</span>
               </div>
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider"
-                >
-                  {item.label}
-                </a>
-              ))}
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
+              {navItems.map((item) =>
+                item.type === "route" ? (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(item);
+                    }}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
+                  >
+                    {item.label}
+                  </a>
+                )
+              )}
             </nav>
 
             {/* CTA Button */}
             <div className="hidden lg:block">
-              <a href="#teklif" className="btn-industrial-primary">
+              <Link to="/iletisim" className="btn-industrial-primary whitespace-nowrap text-sm">
                 Teklif Al
-              </a>
+              </Link>
             </div>
 
-            {/* Animated Hamburger Button */}
+            {/* Hamburger */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 hover:bg-muted transition-colors relative w-10 h-10 flex items-center justify-center"
@@ -123,30 +151,44 @@ const Header = () => {
               exit="exit"
             >
               <nav className="container-industrial py-4 flex flex-col gap-2">
-                {navItems.map((item, i) => (
-                  <motion.a
-                    key={item.label}
-                    href={item.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors uppercase tracking-wider py-3 px-4"
-                    variants={itemVariants}
-                    custom={i}
-                    initial="closed"
-                    animate="open"
+                {navItems.map((item, i) =>
+                  item.type === "route" ? (
+                    <motion.div key={item.label} variants={itemVariants} custom={i} initial="closed" animate="open">
+                      <Link
+                        to={item.href}
+                        className="block text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors uppercase tracking-wider py-3 px-4"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  ) : (
+                    <motion.a
+                      key={item.label}
+                      href={item.href}
+                      className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors uppercase tracking-wider py-3 px-4"
+                      variants={itemVariants}
+                      custom={i}
+                      initial="closed"
+                      animate="open"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavClick(item);
+                      }}
+                    >
+                      {item.label}
+                    </motion.a>
+                  )
+                )}
+                <motion.div variants={itemVariants} custom={navItems.length} initial="closed" animate="open">
+                  <Link
+                    to="/iletisim"
+                    className="btn-industrial-primary text-center mt-4 block"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {item.label}
-                  </motion.a>
-                ))}
-                <motion.a
-                  href="#teklif"
-                  className="btn-industrial-primary text-center mt-4"
-                  variants={itemVariants}
-                  custom={navItems.length}
-                  initial="closed"
-                  animate="open"
-                >
-                  Teklif Al
-                </motion.a>
+                    Teklif Al
+                  </Link>
+                </motion.div>
               </nav>
             </motion.div>
           )}
