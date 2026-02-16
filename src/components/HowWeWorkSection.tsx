@@ -1,119 +1,206 @@
-import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
-import { motion } from "framer-motion";
+import { Upload, MessageSquare, Settings, Truck, CheckCircle, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 const steps = [
   {
     number: "01",
     icon: Upload,
-    title: "Dosyanızı Yükleyin",
-    description: "CAD dosyanızı yükleyin veya teknik çizimlerinizi gönderin. STEP, IGES, DXF formatları desteklenir.",
+    label: "Analiz",
+    title: "Fizibilite & Kaynak Planlaması",
+    description:
+      "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz. Tek bir tezgâh çalıştırılmadan önce proje uygulanabilirliğini ve maliyet verimliliğini sağlamak için prediktif modelleme kullanıyoruz.",
+    checklist: [
+      { title: "CAD Uyumluluğu", desc: "Evrensel dosya formatı desteği" },
+      { title: "Maliyet Optimizasyonu", desc: "Kaynak tahsis stratejisi" },
+      { title: "Malzeme Analizi", desc: "Dayanıklılık ve mukavemet testleri" },
+      { title: "ISO Hazırlığı", desc: "Standart uyumluluk denetimi" },
+    ],
+    stat: { value: "99.8%", label: "Faz Güvenilirliği" },
   },
   {
     number: "02",
     icon: MessageSquare,
-    title: "Teknik Analiz & Geri Bildirim",
-    description: "Mühendislerimiz tasarımınızı inceler, imalat uygunluğunu değerlendirir ve size detaylı teklif sunar.",
+    label: "Tasarım",
+    title: "Teknik Tasarım & Geri Bildirim",
+    description:
+      "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM (Üretim İçin Tasarım) ilkeleri doğrultusunda imalat uygunluğunu değerlendirir ve size kapsamlı teknik teklif sunar.",
+    checklist: [
+      { title: "DFM Analizi", desc: "Üretim için tasarım optimizasyonu" },
+      { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
+      { title: "Prototip Planı", desc: "Hızlı prototipleme stratejisi" },
+      { title: "Malzeme Seçimi", desc: "Uygulamaya özel malzeme" },
+    ],
+    stat: { value: "48 sa", label: "Ortalama Teklif Süresi" },
   },
   {
     number: "03",
     icon: Settings,
-    title: "Üretim & Kalite Kontrol",
-    description: "Onaylanan tasarımlar hassas CNC tezgahlarımızda üretilir ve CMM ile kalite kontrolden geçer.",
+    label: "Üretim",
+    title: "Hassas Üretim & İzleme",
+    description:
+      "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme ve proses içi kalite kontrol uygulanır.",
+    checklist: [
+      { title: "5 Eksen CNC", desc: "Karmaşık geometri işleme" },
+      { title: "Gerçek Zamanlı İzleme", desc: "IoT destekli proses takibi" },
+      { title: "Yüzey İşleme", desc: "Ra 0.4μm yüzey kalitesi" },
+      { title: "Proses Kontrolü", desc: "SPC ile süreç yönetimi" },
+    ],
+    stat: { value: "±0.005", label: "mm Tolerans" },
   },
   {
     number: "04",
     icon: Truck,
-    title: "Sevkiyat & Teslimat",
-    description: "Güvenli paketleme ile parçalarınız zamanında ve hasarsız şekilde adresinize teslim edilir.",
+    label: "KK & Teslimat",
+    title: "Kalite Kontrol & Sevkiyat",
+    description:
+      "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ile parçalarınız zamanında ve hasarsız şekilde adresinize teslim edilir.",
+    checklist: [
+      { title: "CMM Ölçüm", desc: "3 boyutlu koordinat ölçümü" },
+      { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
+      { title: "Paketleme", desc: "Özel koruyucu ambalaj" },
+      { title: "Lojistik", desc: "Uluslararası sevkiyat desteği" },
+    ],
+    stat: { value: "%100", label: "Kalite Kontrol" },
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
-};
-
 const HowWeWorkSection = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const current = steps[activeStep];
+
   return (
     <section className="section-industrial bg-card border-y border-border">
       <div className="container-industrial">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-20"
+          className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-              Süreç
+              Metodoloji
             </span>
-            <div className="w-8 h-px bg-border" />
           </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Nasıl Çalışıyoruz?</h2>
-          <p className="subheading-industrial text-lg max-w-2xl mx-auto">
-            Tekliften Teslimata Sorunsuz Üretim Süreci
+          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">
+            Hassas Üretim İş Akışımız
+          </h2>
+          <p className="subheading-industrial text-lg max-w-3xl">
+            İlk konseptten son kalite doğrulamasına kadar uçtan uca endüstriyel sürecimiz, sıfır hatalı üretim ve optimize edilmiş kaynak tahsisi sağlar.
           </p>
         </motion.div>
 
-        {/* Steps - Horizontal Timeline */}
-        <div className="relative">
-          {/* Connector line - desktop only */}
-          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-border" />
-
-          {/* Timeline dots - desktop only */}
-          {steps.map((_, i) => (
-            <div
-              key={i}
-              className="hidden lg:block absolute top-[48px] w-3 h-3 bg-primary"
-              style={{ left: `calc(${12.5 + (i * 75) / 3}% - 6px)` }}
-            />
-          ))}
-
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {steps.map((step) => (
-              <motion.div
+        {/* Phase Tabs */}
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          {steps.map((step, i) => {
+            const isActive = i === activeStep;
+            return (
+              <button
                 key={step.number}
-                variants={cardVariants}
-                className="relative flex flex-col items-center text-center group hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
+                onClick={() => setActiveStep(i)}
+                className={`flex items-center gap-3 px-5 py-4 border text-left transition-all duration-200 ${
+                  isActive
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-background hover:border-muted-foreground/30"
+                }`}
               >
-                {/* Watermark number */}
-                <span className="absolute top-0 right-4 text-7xl font-bold text-muted-foreground/5 select-none pointer-events-none text-technical">
-                  {step.number}
-                </span>
-
-                {/* Icon box */}
-                <div className="relative z-10 w-[104px] h-[104px] border-2 border-border bg-background flex items-center justify-center mb-8 group-hover:border-primary group-hover:bg-primary group-hover:shadow-lg transition-all duration-300">
-                  <step.icon className="w-10 h-10 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                <step.icon
+                  className={`w-5 h-5 shrink-0 ${
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  }`}
+                />
+                <div>
+                  <span
+                    className={`text-technical text-xs block ${
+                      isActive ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.number}.
+                  </span>
+                  <span
+                    className={`text-sm font-semibold ${
+                      isActive ? "text-foreground" : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.label}
+                  </span>
                 </div>
+              </button>
+            );
+          })}
+        </motion.div>
 
-                {/* Step number badge */}
-                <span className="text-technical text-xs font-bold text-primary bg-primary/10 px-3 py-1 mb-4">
-                  ADIM {step.number}
+        {/* Active Phase Detail Panel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeStep}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+            className="grid lg:grid-cols-5 gap-8 border border-border bg-background p-8 lg:p-10"
+          >
+            {/* Left: Phase info */}
+            <div className="lg:col-span-3">
+              <div className="mb-6">
+                <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1 inline-block mb-4">
+                  Mevcut Faz: {current.label}
                 </span>
+                <h3 className="heading-industrial text-2xl mb-4">{current.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{current.description}</p>
+              </div>
 
-                {/* Content */}
-                <h3 className="heading-industrial text-lg mb-3">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed max-w-[260px]">
-                  {step.description}
-                </p>
-              </motion.div>
-            ))}
+              {/* Checklist grid */}
+              <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                {current.checklist.map((item) => (
+                  <div key={item.title} className="flex gap-3 items-start">
+                    <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-sm font-semibold text-foreground block">{item.title}</span>
+                      <span className="text-xs text-muted-foreground">{item.desc}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap gap-4">
+                <a href="#teklif" className="btn-industrial-primary">
+                  Metodolojiyi İncele
+                </a>
+                <a
+                  href="#iletisim"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors px-4 py-3"
+                >
+                  Teknik Doküman
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+            {/* Right: Stat */}
+            <div className="lg:col-span-2 flex items-center justify-center">
+              <div className="text-center p-10 border border-border bg-card w-full">
+                <span className="text-technical text-5xl md:text-6xl font-bold text-primary block mb-2">
+                  {current.stat.value}
+                </span>
+                <span className="text-technical text-sm text-muted-foreground uppercase tracking-wider">
+                  {current.stat.label}
+                </span>
+              </div>
+            </div>
           </motion.div>
-        </div>
+        </AnimatePresence>
       </div>
     </section>
   );
