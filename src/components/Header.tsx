@@ -14,7 +14,6 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Nav items: some are anchor links (only on homepage), some are routes
   const navItems = [
     { label: "Hizmetler", href: "#hizmetler", type: "anchor" as const },
     { label: "Kabiliyetler", href: "#kabiliyetler", type: "anchor" as const },
@@ -61,32 +60,32 @@ const Header = () => {
         <div className="container-industrial">
           <motion.div
             className="flex items-center justify-between"
-            animate={{ height: isScrolled ? 64 : 80 }}
+            animate={{ height: isScrolled ? 60 : 72 }}
             transition={{ duration: 0.25 }}
           >
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <motion.div
                 className="bg-primary flex items-center justify-center"
-                animate={{ width: isScrolled ? 40 : 48, height: isScrolled ? 40 : 48 }}
+                animate={{ width: isScrolled ? 36 : 40, height: isScrolled ? 36 : 40 }}
                 transition={{ duration: 0.25 }}
               >
-                <span className="text-primary-foreground font-bold text-xl">MT</span>
+                <span className="text-primary-foreground font-bold text-lg">MT</span>
               </motion.div>
               <div className="flex flex-col">
-                <span className="font-bold text-xl tracking-tight">MAS TECHNIC</span>
-                <span className="text-xs text-muted-foreground tracking-widest uppercase">Precision CNC</span>
+                <span className="font-bold text-lg tracking-tight leading-tight">MAS TECHNIC</span>
+                <span className="text-[10px] text-muted-foreground tracking-widest uppercase leading-tight">Precision CNC</span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-5 xl:gap-7">
+            <nav className="hidden lg:flex items-center gap-3 xl:gap-5">
               {navItems.map((item) =>
                 item.type === "route" ? (
                   <Link
                     key={item.label}
                     to={item.href}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
                   >
                     {item.label}
                   </Link>
@@ -98,7 +97,7 @@ const Header = () => {
                       e.preventDefault();
                       handleNavClick(item);
                     }}
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors uppercase tracking-wider whitespace-nowrap"
                   >
                     {item.label}
                   </a>
@@ -107,8 +106,8 @@ const Header = () => {
             </nav>
 
             {/* CTA Button */}
-            <div className="hidden lg:block">
-              <Link to="/iletisim" className="btn-industrial-primary whitespace-nowrap text-sm">
+            <div className="hidden lg:block shrink-0">
+              <Link to="/iletisim" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5">
                 Teklif Al
               </Link>
             </div>

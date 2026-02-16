@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ArrowRight, Upload, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
@@ -7,8 +7,6 @@ import { TextReveal } from "./ScrollReveal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const CNCModel = lazy(() => import("./CNCModel"));
-
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
   "Yüksek Hassasiyetli\nÜretim",
@@ -16,7 +14,7 @@ const headlines = [
 ];
 
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".iges", ".igs", ".dxf", ".sldprt", ".sldasm", ".pdf"];
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const containerVariants = {
   hidden: {},
@@ -52,7 +50,6 @@ const HeroSection = () => {
   const bgY = useTransform(scrollY, [0, 800], [0, 200]);
   const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
 
-  // CAD Upload state
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success" | "error">("idle");
   const [uploadedFileName, setUploadedFileName] = useState("");
@@ -98,7 +95,6 @@ const HeroSection = () => {
       return;
     }
 
-    // Create RFQ record
     const rfqId = `RFQ-${Date.now()}`;
     const { error: dbError } = await supabase.from("rfqs").insert({
       id: rfqId,
@@ -114,7 +110,6 @@ const HeroSection = () => {
 
     setUploadState("success");
     toast.success("Dosya başarıyla yüklendi! En kısa sürede sizinle iletişime geçeceğiz.");
-
     setTimeout(() => setUploadState("idle"), 4000);
   };
 
@@ -133,25 +128,19 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden"
+      className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
       style={{ backgroundColor: "#020617" }}
     >
-      {/* Parallax Background Image */}
+      {/* Parallax Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
-        <img
-          src={heroBg}
-          alt="CNC precision machining"
-          className="w-full h-full object-cover scale-110"
-          loading="eager"
-        />
+        <img src={heroBg} alt="CNC precision machining" className="w-full h-full object-cover scale-110" loading="eager" />
       </motion.div>
 
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(6, 136, 172, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 172, 0.05) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(to right, rgba(6,136,172,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,136,172,0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
@@ -160,18 +149,18 @@ const HeroSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.7) 50%, rgba(2, 6, 23, 0.85) 100%)",
+          background: "linear-gradient(to right, rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.7) 50%, rgba(2,6,23,0.85) 100%)",
           opacity: overlayOpacity,
         }}
       />
 
       <div className="container-industrial relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Content */}
           <motion.div
             className="relative p-4 sm:p-8 rounded-2xl"
             style={{
-              background: "radial-gradient(circle at center, rgba(15, 23, 42, 0.6) 0%, transparent 100%)",
+              background: "radial-gradient(circle at center, rgba(15,23,42,0.6) 0%, transparent 100%)",
               backdropFilter: "blur(4px)",
             }}
             variants={containerVariants}
@@ -179,41 +168,24 @@ const HeroSection = () => {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {/* Overline */}
             <motion.div variants={fadeUpVariants} className="flex items-center gap-4 mb-6">
-              <motion.div
-                className="h-1 bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: 64 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              />
-              <span
-                className="text-xs uppercase tracking-widest"
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  color: "rgba(255, 255, 255, 0.5)",
-                }}
-              >
+              <motion.div className="h-1 bg-primary" initial={{ width: 0 }} animate={{ width: 64 }} transition={{ duration: 0.8, delay: 0.3 }} />
+              <span className="text-xs uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace", color: "rgba(255,255,255,0.5)" }}>
                 CNC Hassas İşleme
               </span>
             </motion.div>
 
-            {/* Rotating Headline */}
             <motion.div variants={fadeUpVariants} className="relative h-40 md:h-52 overflow-hidden mb-6">
               {headlines.map((headline, index) => (
                 <h1
                   key={index}
-                  className={`absolute inset-0 font-extrabold uppercase leading-[0.9] tracking-tight transition-all duration-700 whitespace-pre-line ${
-                    index === currentHeadline
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8"
-                  }`}
+                  className={`absolute inset-0 font-extrabold uppercase leading-[0.9] tracking-tight transition-all duration-700 whitespace-pre-line ${index === currentHeadline ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                   style={{
                     fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
                     color: "white",
                     letterSpacing: "-0.03em",
                     clipPath: index === currentHeadline ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)",
-                    transition: "clip-path 0.7s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s, transform 0.5s",
+                    transition: "clip-path 0.7s cubic-bezier(0.77,0,0.175,1), opacity 0.5s, transform 0.5s",
                   }}
                 >
                   {headline}
@@ -221,122 +193,31 @@ const HeroSection = () => {
               ))}
             </motion.div>
 
-            {/* Description */}
             <TextReveal delay={0.4}>
-              <p
-                className="text-base sm:text-lg leading-relaxed max-w-xl mb-6"
-                style={{ color: "rgba(255, 255, 255, 0.7)", fontStyle: "italic" }}
-              >
-                CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve
-                proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat
-                odaklı mühendislik çözümleri sunuyoruz.
+              <p className="text-base sm:text-lg leading-relaxed max-w-xl mb-6" style={{ color: "rgba(255,255,255,0.7)", fontStyle: "italic" }}>
+                CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.
               </p>
             </TextReveal>
 
-            {/* Slogan */}
             <motion.div variants={fadeUpVariants} className="mb-8">
-              <span
-                className="inline-block px-5 py-2 text-white font-semibold text-sm"
-                style={{
-                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)",
-                  transform: "skewX(-5deg)",
-                }}
-              >
-                <span style={{ display: "block", transform: "skewX(5deg)" }}>
-                  "Disiplinli Operasyon, Güvenilir Üretim."
-                </span>
+              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)", transform: "skewX(-5deg)" }}>
+                <span style={{ display: "block", transform: "skewX(5deg)" }}>"Disiplinli Operasyon, Güvenilir Üretim."</span>
               </span>
             </motion.div>
 
-            {/* CTA Buttons */}
             <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4">
-              <MagneticButton
-                href="/iletisim"
-                className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-              >
-                Teklif Al
-                <ArrowRight className="w-4 h-4" />
+              <MagneticButton href="/iletisim" className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all">
+                Teklif Al <ArrowRight className="w-4 h-4" />
               </MagneticButton>
-              <MagneticButton
-                href="#kabiliyetler"
-                className="font-semibold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10 border-2 border-white text-white"
-                strength={0.2}
-              >
+              <MagneticButton href="#kabiliyetler" className="font-semibold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10 border-2 border-white text-white" strength={0.2}>
                 Kabiliyetleri Gör
               </MagneticButton>
             </motion.div>
-
-            {/* Functional CAD File Drop Zone */}
-            <motion.div
-              variants={fadeUpVariants}
-              className={`mt-8 p-4 sm:p-6 border-2 border-dashed transition-all duration-300 cursor-pointer group ${
-                isDragging
-                  ? "border-primary bg-primary/10"
-                  : uploadState === "success"
-                  ? "border-green-500/50 bg-green-500/5"
-                  : uploadState === "error"
-                  ? "border-red-500/50 bg-red-500/5"
-                  : "border-white/20 hover:border-primary/60"
-              }`}
-              onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={handleDrop}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                className="hidden"
-                accept={ACCEPTED_EXTENSIONS.join(",")}
-                onChange={handleFileSelect}
-              />
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 border border-white/20 group-hover:border-primary/50 flex items-center justify-center transition-colors shrink-0">
-                  {uploadState === "uploading" ? (
-                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  ) : uploadState === "success" ? (
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                  ) : uploadState === "error" ? (
-                    <AlertCircle className="w-5 h-5 text-red-400" />
-                  ) : (
-                    <Upload className="w-5 h-5 text-white/50 group-hover:text-primary transition-colors" />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  {uploadState === "uploading" ? (
-                    <>
-                      <p className="text-sm font-medium text-white/80 truncate">Yükleniyor: {uploadedFileName}</p>
-                      <p className="text-xs text-white/40">Lütfen bekleyin...</p>
-                    </>
-                  ) : uploadState === "success" ? (
-                    <>
-                      <p className="text-sm font-medium text-green-400">Dosya başarıyla yüklendi!</p>
-                      <p className="text-xs text-white/40 truncate">{uploadedFileName}</p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
-                        CAD Dosyanızı Sürükleyin
-                      </p>
-                      <p className="text-xs text-white/40">
-                        STEP, IGES, DXF, SOLIDWORKS — Hızlı teklif için
-                      </p>
-                    </>
-                  )}
-                </div>
-                {uploadState === "idle" && (
-                  <ArrowRight className="w-4 h-4 text-white/30 ml-auto group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
-                )}
-              </div>
-            </motion.div>
           </motion.div>
 
-          {/* Right Content - 3D CNC Model (hidden on mobile for perf) */}
+          {/* Right Content - CAD Drop Zone + Stats */}
           <motion.div
-            className="relative hidden md:block"
+            className="relative"
             initial={{ opacity: 0, x: 60 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -345,28 +226,86 @@ const HeroSection = () => {
             <div
               className="relative transition-all duration-300 overflow-hidden"
               style={{
-                background: "rgba(15, 23, 42, 0.4)",
+                background: "rgba(15,23,42,0.4)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.05)",
-                boxShadow: "0 0 40px rgba(0, 0, 0, 0.5)",
+                border: "1px solid rgba(255,255,255,0.05)",
+                boxShadow: "0 0 40px rgba(0,0,0,0.5)",
               }}
             >
-              <div className="h-[350px] md:h-[400px]">
-                <Suspense
-                  fallback={
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-16 h-16 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  }
-                >
-                  <CNCModel />
-                </Suspense>
+              {/* CAD Drop Zone - main area */}
+              <div
+                className={`p-8 sm:p-10 border-b transition-all duration-300 cursor-pointer group ${
+                  isDragging ? "bg-primary/10" : uploadState === "success" ? "bg-green-500/5" : uploadState === "error" ? "bg-red-500/5" : "hover:bg-white/[0.03]"
+                }`}
+                style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept={ACCEPTED_EXTENSIONS.join(",")}
+                  onChange={handleFileSelect}
+                />
+
+                <div className="flex flex-col items-center text-center gap-5">
+                  {/* Icon */}
+                  <div className={`w-20 h-20 flex items-center justify-center transition-all duration-300 ${
+                    isDragging ? "border-primary bg-primary/20 scale-110" : "border-white/20 group-hover:border-primary/50"
+                  }`} style={{ border: "2px dashed" }}>
+                    {uploadState === "uploading" ? (
+                      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                    ) : uploadState === "success" ? (
+                      <CheckCircle className="w-8 h-8 text-green-400" />
+                    ) : uploadState === "error" ? (
+                      <AlertCircle className="w-8 h-8 text-red-400" />
+                    ) : (
+                      <Upload className="w-8 h-8 text-white/40 group-hover:text-primary transition-colors" />
+                    )}
+                  </div>
+
+                  {/* Text */}
+                  {uploadState === "uploading" ? (
+                    <>
+                      <p className="text-sm font-medium text-white/80 truncate max-w-full">Yükleniyor: {uploadedFileName}</p>
+                      <p className="text-xs text-white/40">Lütfen bekleyin...</p>
+                    </>
+                  ) : uploadState === "success" ? (
+                    <>
+                      <p className="text-sm font-medium text-green-400">Dosya başarıyla yüklendi!</p>
+                      <p className="text-xs text-white/40 truncate max-w-full">{uploadedFileName}</p>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="text-lg font-semibold text-white/90 group-hover:text-white transition-colors mb-1">
+                          CAD Dosyanızı Sürükleyin
+                        </p>
+                        <p className="text-xs text-white/40">
+                          veya tıklayarak dosya seçin
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {["STEP", "IGES", "DXF", "SOLIDWORKS", "PDF"].map((fmt) => (
+                          <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/30 px-2 py-1" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
+                            {fmt}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-xs text-primary/80" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                        Hızlı teklif için dosyanızı yükleyin
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Quick Stats */}
               <motion.div
-                className="grid grid-cols-3 gap-4 p-8 pt-0"
-                style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}
+                className="grid grid-cols-3 gap-4 p-6"
                 variants={statVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -377,17 +316,11 @@ const HeroSection = () => {
                   { value: "24h", label: "Teklif Süresi" },
                   { value: "50+", label: "Malzeme" },
                 ].map((stat) => (
-                  <motion.div key={stat.label} variants={statItem} className="text-center pt-6">
-                    <div
-                      className="text-2xl font-bold text-primary"
-                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                    >
+                  <motion.div key={stat.label} variants={statItem} className="text-center">
+                    <div className="text-xl sm:text-2xl font-bold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                       {stat.value}
                     </div>
-                    <div
-                      className="text-xs uppercase tracking-wider mt-1"
-                      style={{ color: "rgba(255, 255, 255, 0.5)" }}
-                    >
+                    <div className="text-[10px] uppercase tracking-wider mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
                       {stat.label}
                     </div>
                   </motion.div>
@@ -408,11 +341,7 @@ const HeroSection = () => {
         <span className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "'JetBrains Mono', monospace" }}>
           Keşfet
         </span>
-        <motion.div
-          className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1"
-          animate={{ y: [0, 4, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-        >
+        <motion.div className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1" animate={{ y: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
           <div className="w-1 h-2 bg-primary rounded-full" />
         </motion.div>
       </motion.div>
