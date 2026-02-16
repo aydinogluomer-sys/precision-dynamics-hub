@@ -1,5 +1,6 @@
 import { Target, RefreshCw, Clock, Wrench, Check, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import qualityControl from "@/assets/quality-control.jpg";
 
 const values = [
   {
@@ -42,21 +43,34 @@ const WhyUsSection = () => {
   return (
     <section id="neden-biz" className="section-industrial" style={{ background: "hsl(var(--secondary))" }}>
       <div className="container-industrial">
-        {/* Header */}
+        {/* Hero Banner with Image */}
         <motion.div
-          className="text-center mb-16"
+          className="relative overflow-hidden mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
-            Avantajlar
-          </span>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Neden Mas Technic?</h2>
-          <p className="subheading-industrial text-lg max-w-2xl mx-auto">
-            Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz
-          </p>
+          <div className="relative h-64 md:h-80 overflow-hidden">
+            <img
+              src={qualityControl}
+              alt="Quality control and precision measurement"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to right, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.7) 40%, transparent 100%)" }} />
+            <div className="absolute inset-0 flex items-center">
+              <div className="p-8 md:p-12 max-w-xl">
+                <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
+                  Avantajlar
+                </span>
+                <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Neden Mas Technic?</h2>
+                <p className="subheading-industrial text-lg">
+                  Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz
+                </p>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Cards */}
@@ -74,7 +88,6 @@ const WhyUsSection = () => {
               className="relative bg-white border border-border p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary group"
               style={{ borderRadius: "var(--radius)" }}
             >
-              {/* Top accent line on hover */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center text-primary">

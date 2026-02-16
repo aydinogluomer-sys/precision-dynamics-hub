@@ -1,5 +1,6 @@
-import { Monitor, Ruler, CheckCircle, TrendingUp, ArrowRight } from "lucide-react";
+import { Monitor, Ruler, CheckCircle, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+import cncWorkshop from "@/assets/cnc-workshop.jpg";
 
 const capabilities = [
   {
@@ -72,18 +73,31 @@ const CapabilitiesSection = () => {
       />
 
       <div className="container-industrial relative z-10">
-        {/* Header */}
+        {/* Header with Workshop Image */}
         <motion.div
-          className="text-center mb-16"
+          className="relative overflow-hidden mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
-            Teknik
-          </span>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Kabiliyetlerimiz</h2>
+          <div className="relative h-56 md:h-72 overflow-hidden">
+            <img
+              src={cncWorkshop}
+              alt="CNC machine workshop"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-white/20" />
+            <div className="absolute inset-0 flex items-end justify-center pb-8">
+              <div className="text-center">
+                <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
+                  Teknik
+                </span>
+                <h2 className="heading-industrial text-3xl md:text-4xl">Kabiliyetlerimiz</h2>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Cards */}

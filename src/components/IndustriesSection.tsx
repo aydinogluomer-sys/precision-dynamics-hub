@@ -1,27 +1,31 @@
-import { Plane, Car, Heart, Bot, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import industryAerospace from "@/assets/industry-aerospace.jpg";
+import industryAutomotive from "@/assets/industry-automotive.jpg";
+import industryMedical from "@/assets/industry-medical.jpg";
+import industryRobotics from "@/assets/industry-robotics.jpg";
 
 const industries = [
   {
-    icon: Plane,
+    image: industryAerospace,
     name: "Havacılık & Uzay",
     description: "AS9100D sertifikalı havacılık parçaları",
     highlight: "±0.005mm tolerans",
   },
   {
-    icon: Car,
+    image: industryAutomotive,
     name: "Otomotiv",
     description: "IATF 16949 kalite standartlarında üretim",
     highlight: "Seri üretim kapasitesi",
   },
   {
-    icon: Heart,
+    image: industryMedical,
     name: "Tıbbi",
     description: "ISO 13485 uyumlu medikal bileşenler",
     highlight: "Biyouyumlu malzemeler",
   },
   {
-    icon: Bot,
+    image: industryRobotics,
     name: "Robotik",
     description: "Hassas hareket sistemleri ve aktüatörler",
     highlight: "Yüksek tekrarlanabilirlik",
@@ -76,14 +80,18 @@ const IndustriesSection = () => {
               variants={cardVariants}
               className="group bg-background border border-border overflow-hidden hover:border-primary hover:-translate-y-1 transition-all duration-300 hover:shadow-lg"
             >
-              {/* Top accent line */}
-              <div className="h-1 w-full bg-primary" />
+              {/* Industry Image */}
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={industry.image}
+                  alt={industry.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+              </div>
 
               <div className="p-8">
-                <div className="w-[72px] h-[72px] bg-primary/5 flex items-center justify-center mb-6 group-hover:bg-primary transition-colors duration-300">
-                  <industry.icon className="w-9 h-9 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-                </div>
-
                 <h3 className="font-semibold text-lg mb-2">{industry.name}</h3>
                 <p className="text-sm text-muted-foreground mb-4">{industry.description}</p>
 
