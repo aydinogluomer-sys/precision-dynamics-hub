@@ -101,10 +101,22 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Smooth scroll sections */
+  section {
+    will-change: transform;
+  }
+
+  /* Custom cursor for interactive elements */
+  a, button, [role="button"] {
+    cursor: pointer;
   }
 }
 

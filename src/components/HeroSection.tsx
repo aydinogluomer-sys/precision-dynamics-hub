@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
-import { Upload, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState, useEffect, lazy, Suspense } from "react";
+import { ArrowRight } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
+import MagneticButton from "./MagneticButton";
+import { TextReveal } from "./ScrollReveal";
+
+const CNCModel = lazy(() => import("./CNCModel"));
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
@@ -23,15 +27,6 @@ const fadeUpVariants = {
   },
 };
 
-const slideInRight = {
-  hidden: { opacity: 0, x: 60 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8, ease: "easeOut" as const, delay: 0.3 },
-  },
-};
-
 const statVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } },
@@ -48,6 +43,9 @@ const statItem = {
 
 const HeroSection = () => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 800], [0, 200]);
+  const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,15 +59,15 @@ const HeroSection = () => {
       className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden"
       style={{ backgroundColor: "#020617" }}
     >
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      {/* Parallax Background Image */}
+      <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
         <img
           src={heroBg}
           alt="CNC precision machining"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-110"
           loading="eager"
         />
-      </div>
+      </motion.div>
 
       {/* Grid Pattern */}
       <div
@@ -81,11 +79,12 @@ const HeroSection = () => {
         }}
       />
 
-      {/* Dark Overlay */}
-      <div
+      {/* Dark Overlay with scroll-linked opacity */}
+      <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
           background: "linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.7) 50%, rgba(2, 6, 23, 0.85) 100%)",
+          opacity: overlayOpacity,
         }}
       />
 
@@ -105,7 +104,12 @@ const HeroSection = () => {
           >
             {/* Overline */}
             <motion.div variants={fadeUpVariants} className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-1 bg-primary" />
+              <motion.div
+                className="h-1 bg-primary"
+                initial={{ width: 0 }}
+                animate={{ width: 64 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              />
               <span
                 className="text-xs uppercase tracking-widest"
                 style={{
@@ -117,12 +121,12 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* Rotating Headline */}
+            {/* Rotating Headline with clip-path reveal */}
             <motion.div variants={fadeUpVariants} className="relative h-40 md:h-52 overflow-hidden mb-6">
               {headlines.map((headline, index) => (
                 <h1
                   key={index}
-                  className={`absolute inset-0 font-extrabold uppercase leading-[0.9] tracking-tight transition-all duration-500 whitespace-pre-line ${
+                  className={`absolute inset-0 font-extrabold uppercase leading-[0.9] tracking-tight transition-all duration-700 whitespace-pre-line ${
                     index === currentHeadline
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-8"
@@ -131,6 +135,8 @@ const HeroSection = () => {
                     fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
                     color: "white",
                     letterSpacing: "-0.03em",
+                    clipPath: index === currentHeadline ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)",
+                    transition: "clip-path 0.7s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s, transform 0.5s",
                   }}
                 >
                   {headline}
@@ -139,18 +145,19 @@ const HeroSection = () => {
             </motion.div>
 
             {/* Description */}
-            <motion.p
-              variants={fadeUpVariants}
-              className="text-lg leading-relaxed max-w-xl mb-6"
-              style={{
-                color: "rgba(255, 255, 255, 0.7)",
-                fontStyle: "italic",
-              }}
-            >
-              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve
-              proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat
-              odaklı mühendislik çözümleri sunuyoruz.
-            </motion.p>
+            <TextReveal delay={0.4}>
+              <p
+                className="text-lg leading-relaxed max-w-xl mb-6"
+                style={{
+                  color: "rgba(255, 255, 255, 0.7)",
+                  fontStyle: "italic",
+                }}
+              >
+                CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve
+                proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat
+                odaklı mühendislik çözümleri sunuyoruz.
+              </p>
+            </TextReveal>
 
             {/* Slogan */}
             <motion.div variants={fadeUpVariants} className="mb-8">
@@ -167,77 +174,58 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons with magnetic effect */}
             <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4">
-              <a
+              <MagneticButton
                 href="#teklif"
                 className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-                style={{ boxShadow: "8px 8px 0 0 hsl(var(--primary) / 0.2)" }}
               >
                 Teklif Al
                 <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
+              </MagneticButton>
+              <MagneticButton
                 href="#kabiliyetler"
-                className="font-semibold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10"
-                style={{
-                  border: "2px solid white",
-                  color: "white",
-                }}
+                className="font-semibold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10 border-2 border-white text-white"
+                strength={0.2}
               >
                 Kabiliyetleri Gör
-              </a>
+              </MagneticButton>
             </motion.div>
           </motion.div>
 
-          {/* Right Content - CAD Upload Widget (Glass) */}
+          {/* Right Content - 3D CNC Model */}
           <motion.div
             className="relative"
-            variants={slideInRight}
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0, x: 60 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.3 }}
           >
             <div
-              className="relative p-10 transition-all duration-300 hover:-translate-y-1 group"
+              className="relative transition-all duration-300 overflow-hidden"
               style={{
-                background: "rgba(15, 23, 42, 0.6)",
+                background: "rgba(15, 23, 42, 0.4)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(255, 255, 255, 0.05)",
                 boxShadow: "0 0 40px rgba(0, 0, 0, 0.5)",
               }}
             >
-              {/* Upload Zone */}
-              <div
-                className="border-2 border-dashed p-12 text-center cursor-pointer transition-colors duration-200"
-                style={{ borderColor: "rgba(255, 255, 255, 0.1)" }}
-              >
-                <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-                  <Upload className="w-10 h-10 text-primary" />
-                </div>
-                <h3
-                  className="text-xl font-bold mb-2"
-                  style={{ color: "hsl(var(--primary))" }}
+              {/* 3D Model */}
+              <div className="h-[350px] md:h-[400px]">
+                <Suspense
+                  fallback={
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-16 h-16 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  }
                 >
-                  CAD Dosyası Sürükle & Bırak
-                </h3>
-                <p className="text-sm mb-4" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
-                  STEP, IGES, DXF, DWG formatları desteklenir
-                </p>
-                <span
-                  className="text-xs"
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "hsl(var(--primary))",
-                  }}
-                >
-                  veya dosya seçmek için tıklayın
-                </span>
+                  <CNCModel />
+                </Suspense>
               </div>
 
               {/* Quick Stats */}
               <motion.div
-                className="grid grid-cols-3 gap-4 mt-8 pt-8"
+                className="grid grid-cols-3 gap-4 p-8 pt-0"
                 style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}
                 variants={statVariants}
                 initial="hidden"
@@ -249,7 +237,7 @@ const HeroSection = () => {
                   { value: "24h", label: "Teklif Süresi" },
                   { value: "50+", label: "Malzeme" },
                 ].map((stat) => (
-                  <motion.div key={stat.label} variants={statItem} className="text-center">
+                  <motion.div key={stat.label} variants={statItem} className="text-center pt-6">
                     <div
                       className="text-2xl font-bold text-primary"
                       style={{ fontFamily: "'JetBrains Mono', monospace" }}
@@ -269,6 +257,25 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 0.6 }}
+      >
+        <span className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "'JetBrains Mono', monospace" }}>
+          Keşfet
+        </span>
+        <motion.div
+          className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1"
+          animate={{ y: [0, 4, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        >
+          <div className="w-1 h-2 bg-primary rounded-full" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

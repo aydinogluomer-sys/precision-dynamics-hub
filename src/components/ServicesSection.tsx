@@ -5,6 +5,7 @@ import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
+import { TextReveal, StaggerContainer, StaggerItem, SlideIn } from "./ScrollReveal";
 
 const services = [
   {
@@ -49,38 +50,26 @@ const services = [
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" as const } },
-};
-
 const ServicesSection = () => {
   return (
     <section id="hizmetler" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
-        <motion.div
-          className="flex flex-col md:flex-row md:items-end md:justify-between mb-14"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14">
           <div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-8 h-px bg-border" />
-              <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-                Kabiliyetler
-              </span>
-            </div>
-            <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
-              Mühendislik Hizmetlerimiz
-            </h2>
+            <SlideIn direction="left">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-8 h-px bg-border" />
+                <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
+                  Kabiliyetler
+                </span>
+              </div>
+            </SlideIn>
+            <TextReveal delay={0.1}>
+              <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
+                Mühendislik Hizmetlerimiz
+              </h2>
+            </TextReveal>
           </div>
           <a
             href="#kabiliyetler"
@@ -89,33 +78,25 @@ const ServicesSection = () => {
             Tüm kabiliyetleri görüntüle
             <ArrowUpRight className="w-4 h-4" />
           </a>
-        </motion.div>
+        </div>
 
         {/* Top row: 3 cards */}
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           {services.slice(0, 3).map((s) => (
-            <ServiceCard key={s.title} service={s} />
+            <StaggerItem key={s.title}>
+              <ServiceCard service={s} />
+            </StaggerItem>
           ))}
-        </motion.div>
+        </StaggerContainer>
 
         {/* Bottom row: 2 cards */}
-        <motion.div
-          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <StaggerContainer className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
           {services.slice(3).map((s) => (
-            <ServiceCard key={s.title} service={s} />
+            <StaggerItem key={s.title}>
+              <ServiceCard service={s} />
+            </StaggerItem>
           ))}
-        </motion.div>
+        </StaggerContainer>
 
         {/* Bottom CTA Banner */}
         <motion.div
@@ -137,10 +118,7 @@ const ServicesSection = () => {
             <a href="#teklif" className="btn-industrial-primary whitespace-nowrap">
               Danışmanlık Al
             </a>
-            <a
-              href="#kabiliyetler"
-              className="btn-industrial-secondary whitespace-nowrap"
-            >
+            <a href="#kabiliyetler" className="btn-industrial-secondary whitespace-nowrap">
               Portföyümüz
             </a>
           </div>
@@ -152,16 +130,19 @@ const ServicesSection = () => {
 
 const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
   <motion.div
-    variants={cardVariants}
-    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-xl h-full"
+    whileHover={{ y: -6, scale: 1.01 }}
+    transition={{ type: "spring", stiffness: 300 }}
   >
-    {/* Service Image */}
+    {/* Service Image with parallax zoom */}
     <div className="relative h-48 overflow-hidden">
-      <img
+      <motion.img
         src={service.image}
         alt={service.title}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        className="w-full h-full object-cover"
         loading="lazy"
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.6 }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
       <span className="absolute top-4 left-4 text-technical text-[11px] font-semibold text-primary-foreground bg-primary px-3 py-1 uppercase tracking-widest">
@@ -170,15 +151,9 @@ const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
     </div>
 
     <div className="p-8">
-      {/* Title */}
       <h3 className="heading-industrial text-xl mb-3">{service.title}</h3>
+      <p className="text-muted-foreground text-sm leading-relaxed mb-6">{service.description}</p>
 
-      {/* Description */}
-      <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-        {service.description}
-      </p>
-
-      {/* Capabilities */}
       <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
         {service.capabilities.map((cap) => (
           <span key={cap} className="text-sm text-muted-foreground flex items-center gap-2">
@@ -188,7 +163,6 @@ const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
         ))}
       </div>
 
-      {/* CTA */}
       <div className="pt-5 border-t border-border">
         <a
           href="#teklif"
