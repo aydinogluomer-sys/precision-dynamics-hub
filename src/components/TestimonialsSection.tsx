@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 
 const testimonials = [
   {
@@ -25,32 +27,25 @@ const clients = [
   "TAI", "Ford Otosan", "Arçelik", "Vestel", "Aselsan", "Roketsan", "MAN Türkiye", "Bosch",
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
-};
-
 const TestimonialsSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const bracketLeft = useTransform(scrollYProgress, [0, 0.5], [-60, 0]);
+  const bracketRight = useTransform(scrollYProgress, [0, 0.5], [60, 0]);
+
   return (
     <section
+      ref={sectionRef}
       id="referanslar"
       className="section-industrial relative overflow-hidden"
       style={{ backgroundColor: "#0F172A" }}
     >
       <div className="container-industrial relative z-10">
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <TextReveal className="text-center mb-16">
           <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
             Referanslar
           </span>
@@ -60,92 +55,98 @@ const TestimonialsSection = () => {
           >
             Bizi Tercih Edenler
           </h2>
-        </motion.div>
+        </TextReveal>
 
         {/* Bracket Quote Container */}
         <div className="relative max-w-4xl mx-auto mb-16">
-          {/* Opening bracket */}
-          <div
+          {/* Animated brackets */}
+          <motion.div
             className="absolute -top-16 -left-16 text-[10rem] leading-none opacity-15 pointer-events-none select-none"
-            style={{ color: "hsl(var(--primary))", fontWeight: 200 }}
+            style={{ color: "hsl(var(--primary))", fontWeight: 200, x: bracketLeft }}
           >
             [
-          </div>
-          {/* Closing bracket */}
-          <div
+          </motion.div>
+          <motion.div
             className="absolute -bottom-24 -right-16 text-[10rem] leading-none opacity-15 pointer-events-none select-none"
-            style={{ color: "hsl(var(--primary))", fontWeight: 200 }}
+            style={{ color: "hsl(var(--primary))", fontWeight: 200, x: bracketRight }}
           >
             ]
-          </div>
-
-          <motion.div
-            className="grid md:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={i}
-                variants={cardVariants}
-                className="p-8 transition-all duration-300"
-                style={{
-                  background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                {/* Quote mark */}
-                <div
-                  className="text-5xl leading-none mb-4 opacity-30"
-                  style={{ color: "hsl(var(--primary))", fontFamily: "Georgia, serif" }}
-                >
-                  "
-                </div>
-                <p
-                  className="text-sm leading-relaxed mb-6"
-                  style={{ color: "rgba(255, 255, 255, 0.8)", fontStyle: "italic" }}
-                >
-                  "{t.quote}"
-                </p>
-                <div className="pt-4" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
-                  <div className="font-semibold text-white">{t.author}</div>
-                  <div className="text-sm" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
-                    {t.title}
-                  </div>
-                  <div
-                    className="text-sm mt-1 text-primary"
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                  >
-                    {t.company}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
           </motion.div>
+
+          <StaggerContainer className="grid md:grid-cols-3 gap-6" staggerDelay={0.15}>
+            {testimonials.map((t, i) => (
+              <StaggerItem key={i}>
+                <motion.div
+                  className="p-8 transition-all duration-300 h-full"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.05)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                  }}
+                  whileHover={{
+                    y: -4,
+                    borderColor: "rgba(6, 136, 173, 0.3)",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <div
+                    className="text-5xl leading-none mb-4 opacity-30"
+                    style={{ color: "hsl(var(--primary))", fontFamily: "Georgia, serif" }}
+                  >
+                    "
+                  </div>
+                  <p
+                    className="text-sm leading-relaxed mb-6"
+                    style={{ color: "rgba(255, 255, 255, 0.8)", fontStyle: "italic" }}
+                  >
+                    "{t.quote}"
+                  </p>
+                  <div className="pt-4" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+                    <div className="font-semibold text-white">{t.author}</div>
+                    <div className="text-sm" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                      {t.title}
+                    </div>
+                    <div
+                      className="text-sm mt-1 text-primary"
+                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                      {t.company}
+                    </div>
+                  </div>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
         </div>
 
-        {/* Clients Band */}
-        <div
+        {/* Clients Band - marquee-like scroll */}
+        <motion.div
           className="py-8"
           style={{
             borderTop: "1px solid rgba(255, 255, 255, 0.1)",
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
           }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            {clients.map((client) => (
-              <div
+            {clients.map((client, i) => (
+              <motion.div
                 key={client}
-                className="text-xl font-bold transition-colors"
+                className="text-xl font-bold transition-colors cursor-default"
                 style={{ color: "rgba(255, 255, 255, 0.25)" }}
+                whileHover={{ color: "rgba(6, 136, 173, 0.8)", scale: 1.1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
               >
                 {client}
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

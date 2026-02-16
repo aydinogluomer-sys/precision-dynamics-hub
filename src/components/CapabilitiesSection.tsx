@@ -1,6 +1,8 @@
 import { Monitor, Ruler, CheckCircle, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
+import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 
 const capabilities = [
   {
@@ -45,19 +47,17 @@ const capabilities = [
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
-};
-
 const CapabilitiesSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
   return (
     <section
+      ref={sectionRef}
       id="kabiliyetler"
       className="relative bg-secondary"
       style={{ padding: "120px 0" }}
@@ -73,20 +73,15 @@ const CapabilitiesSection = () => {
       />
 
       <div className="container-industrial relative z-10">
-        {/* Header with Workshop Image */}
-        <motion.div
-          className="relative overflow-hidden mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        {/* Header with Parallax Workshop Image */}
+        <div className="relative overflow-hidden mb-16">
           <div className="relative h-56 md:h-72 overflow-hidden">
-            <img
+            <motion.img
               src={cncWorkshop}
               alt="CNC machine workshop"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover scale-110"
               loading="lazy"
+              style={{ y: imageY }}
             />
             <div
               className="absolute inset-0"
@@ -94,52 +89,56 @@ const CapabilitiesSection = () => {
             />
             <div className="absolute inset-0 flex items-end justify-center pb-8">
               <div className="text-center">
-                <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
-                  Teknik
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold text-white">Kabiliyetlerimiz</h2>
+                <TextReveal>
+                  <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
+                    Teknik
+                  </span>
+                </TextReveal>
+                <TextReveal delay={0.15}>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white">Kabiliyetlerimiz</h2>
+                </TextReveal>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Cards */}
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {capabilities.map((cap) => (
-            <motion.div
-              key={cap.title}
-              variants={cardVariants}
-              className="bg-background border border-border p-8"
-            >
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
-                <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                  <cap.icon className="w-5 h-5 text-primary-foreground" />
+            <StaggerItem key={cap.title}>
+              <motion.div
+                className="bg-background border border-border p-8 h-full transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
+                  <motion.div
+                    className="w-10 h-10 bg-primary flex items-center justify-center"
+                    whileHover={{ rotate: 90 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <cap.icon className="w-5 h-5 text-primary-foreground" />
+                  </motion.div>
+                  <h3 className="font-bold">{cap.title}</h3>
                 </div>
-                <h3 className="font-bold">{cap.title}</h3>
-              </div>
 
-              <div className="space-y-4">
-                {cap.items.map((item) => (
-                  <div key={item.label} className="flex justify-between items-start gap-2">
-                    <span className="text-sm text-muted-foreground">{item.label}</span>
-                    <span
-                      className="text-sm font-medium text-right"
-                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
-                    >
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                <div className="space-y-4">
+                  {cap.items.map((item) => (
+                    <div key={item.label} className="flex justify-between items-start gap-2">
+                      <span className="text-sm text-muted-foreground">{item.label}</span>
+                      <span
+                        className="text-sm font-medium text-right"
+                        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                      >
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </motion.div>
+        </StaggerContainer>
 
         {/* Blueprint CTA */}
         <div className="flex items-center justify-center gap-0 mt-16">
