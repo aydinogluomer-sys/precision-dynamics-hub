@@ -27,7 +27,7 @@ const clients = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="section-industrial bg-background">
+    <section id="referanslar" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
         <div className="text-center mb-16">

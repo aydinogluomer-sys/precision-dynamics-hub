@@ -167,10 +167,15 @@ const Footer = () => {
           <motion.div variants={fadeUp}>
             <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Endüstriyel</h4>
             <ul className="space-y-2.5">
-              {["Yüksek Teknoloji", "Seri Üretim", "Endüstriyel Sistemler", "Üretim Çözümleri"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l}
+              {[
+                { label: "Yüksek Teknoloji", href: "#endustriler" },
+                { label: "Seri Üretim", href: "#endustriler" },
+                { label: "Endüstriyel Sistemler", href: "#endustriler" },
+                { label: "Üretim Çözümleri", href: "#endustriler" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                    {l.label}
                   </a>
                 </li>
               ))}
@@ -181,10 +186,16 @@ const Footer = () => {
           <motion.div variants={fadeUp}>
             <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Kabiliyetler</h4>
             <ul className="space-y-2.5">
-              {["Üretim Altyapısı", "Kalite & Standartlar", "Mühendislik Desteği", "Prototipten Seri Üretime", "Süreç & Operasyon"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l}
+              {[
+                { label: "Üretim Altyapısı", href: "#kabiliyetler" },
+                { label: "Kalite & Standartlar", href: "#sertifikalar" },
+                { label: "Mühendislik Desteği", href: "#kabiliyetler" },
+                { label: "Prototipten Seri Üretime", href: "#nasil-calisiyoruz" },
+                { label: "Süreç & Operasyon", href: "#nasil-calisiyoruz" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                    {l.label}
                   </a>
                 </li>
               ))}
@@ -195,10 +206,16 @@ const Footer = () => {
           <motion.div variants={fadeUp}>
             <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Hizmetler</h4>
             <ul className="space-y-2.5">
-              {["Talaşlı İmalat", "Ön Üretim", "Yüzey İşlemleri", "İşaretleme & Tanımlama", "Montaj & Sonlandırma"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l}
+              {[
+                { label: "Talaşlı İmalat", href: "#hizmetler" },
+                { label: "Ön Üretim", href: "#hizmetler" },
+                { label: "Yüzey İşlemleri", href: "#hizmetler" },
+                { label: "İşaretleme & Tanımlama", href: "#hizmetler" },
+                { label: "Montaj & Sonlandırma", href: "#hizmetler" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                    {l.label}
                   </a>
                 </li>
               ))}
@@ -209,10 +226,19 @@ const Footer = () => {
           <motion.div variants={fadeUp}>
             <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Kurumsal & Destek</h4>
             <ul className="space-y-2.5">
-              {["Ana Sayfa", "Hakkımızda", "Teklif & Üretim Süreci", "Kapasite", "Sevkiyat Standartları", "Kalite Güvencesi", "Ticari Şartlar", "İletişim"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l}
+              {[
+                { label: "Ana Sayfa", href: "#" },
+                { label: "Hakkımızda", href: "#neden-biz" },
+                { label: "Teklif & Üretim Süreci", href: "#nasil-calisiyoruz" },
+                { label: "Kapasite", href: "#kabiliyetler" },
+                { label: "Sevkiyat Standartları", href: "#kabiliyetler" },
+                { label: "Kalite Güvencesi", href: "#sertifikalar" },
+                { label: "Ticari Şartlar", href: "#iletisim" },
+                { label: "İletişim", href: "#iletisim" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                    {l.label}
                   </a>
                 </li>
               ))}

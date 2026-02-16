@@ -44,7 +44,7 @@ const useCountUp = (end: number, duration: number = 2000, isDecimal: boolean = f
 
 const StatsSection = () => {
   return (
-    <section className="py-20 bg-foreground text-background">
+    <section id="rakamlar" className="py-20 bg-foreground text-background">
       <div className="container-industrial">
         {/* Section Header */}
         <div className="text-center mb-16">

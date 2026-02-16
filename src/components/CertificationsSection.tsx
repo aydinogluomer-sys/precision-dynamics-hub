@@ -21,7 +21,7 @@ const itemVariants = {
 
 const CertificationsSection = () => {
   return (
-    <section className="py-16 bg-foreground text-background border-y border-border">
+    <section id="sertifikalar" className="py-16 bg-foreground text-background border-y border-border">
       <div className="container-industrial">
         <motion.div
           className="flex flex-col items-center mb-4"

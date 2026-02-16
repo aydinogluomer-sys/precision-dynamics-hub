@@ -40,7 +40,7 @@ const cardVariants = {
 
 const IndustriesSection = () => {
   return (
-    <section className="section-industrial bg-muted border-y border-border">
+    <section id="endustriler" className="section-industrial bg-muted border-y border-border">
       <div className="container-industrial">
         {/* Header */}
         <motion.div
