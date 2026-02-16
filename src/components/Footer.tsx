@@ -1,4 +1,5 @@
 import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Footer = () => {
@@ -227,19 +228,25 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Kurumsal & Destek</h4>
             <ul className="space-y-2.5">
               {[
-                { label: "Ana Sayfa", href: "#" },
-                { label: "Hakkımızda", href: "#neden-biz" },
-                { label: "Teklif & Üretim Süreci", href: "#nasil-calisiyoruz" },
-                { label: "Kapasite", href: "#kabiliyetler" },
-                { label: "Sevkiyat Standartları", href: "#kabiliyetler" },
-                { label: "Kalite Güvencesi", href: "#sertifikalar" },
-                { label: "Ticari Şartlar", href: "#iletisim" },
-                { label: "İletişim", href: "#iletisim" },
+                { label: "Ana Sayfa", href: "/" },
+                { label: "Hakkımızda", href: "/hakkimizda" },
+                { label: "Teklif & Üretim Süreci", href: "/#nasil-calisiyoruz" },
+                { label: "Kapasite", href: "/#kabiliyetler" },
+                { label: "Sevkiyat Standartları", href: "/#kabiliyetler" },
+                { label: "Kalite Güvencesi", href: "/#sertifikalar" },
+                { label: "SSS", href: "/sss" },
+                { label: "İletişim", href: "/iletisim" },
               ].map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l.label}
-                  </a>
+                  {l.href.startsWith("/") ? (
+                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                      {l.label}
+                    </Link>
+                  ) : (
+                    <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                      {l.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -312,9 +319,9 @@ const Footer = () => {
               © {currentYear} MAS TECHNIC. Tüm hakları saklıdır.
             </div>
             <div className="flex gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
-              <a href="#" className="hover:text-primary transition-colors">Gizlilik Politikası</a>
-              <a href="#" className="hover:text-primary transition-colors">KVKK Aydınlatma Metni</a>
-              <a href="#" className="hover:text-primary transition-colors">Çerez Politikası</a>
+              <Link to="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</Link>
+              <Link to="/kvkk" className="hover:text-primary transition-colors">KVKK Aydınlatma Metni</Link>
+              <Link to="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</Link>
             </div>
           </div>
         </div>
