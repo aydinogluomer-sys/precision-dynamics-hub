@@ -1,3 +1,4 @@
+// StatsSection - each stat uses its own StatCard component for proper hook usage
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
