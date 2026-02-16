@@ -59,7 +59,7 @@ const CapabilitiesSection = () => {
   return (
     <section
       id="kabiliyetler"
-      className="relative bg-white"
+      className="relative bg-secondary"
       style={{ padding: "120px 0" }}
     >
       {/* Blueprint grid background */}
@@ -88,7 +88,7 @@ const CapabilitiesSection = () => {
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-white/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/60 to-secondary/20" />
             <div className="absolute inset-0 flex items-end justify-center pb-8">
               <div className="text-center">
                 <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
@@ -142,7 +142,7 @@ const CapabilitiesSection = () => {
         <div className="flex items-center justify-center gap-0 mt-16">
           <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
             <div
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-white"
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-secondary"
               style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
             />
           </div>
@@ -155,7 +155,7 @@ const CapabilitiesSection = () => {
           </a>
           <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
             <div
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-white"
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-secondary"
               style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
             />
           </div>
