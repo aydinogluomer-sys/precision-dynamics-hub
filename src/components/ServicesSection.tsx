@@ -1,4 +1,5 @@
 import { Cog, CircleDot, Layers, Zap, Box, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const services = [
   {
@@ -33,12 +34,28 @@ const services = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+};
+
 const ServicesSection = () => {
   return (
     <section id="hizmetler" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
@@ -50,36 +67,51 @@ const ServicesSection = () => {
           <p className="subheading-industrial text-lg max-w-2xl mx-auto">
             Kapsamlı CNC Üretim Çözümleri
           </p>
-        </div>
+        </motion.div>
 
         {/* Top row: 3 cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <motion.div
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {services.slice(0, 3).map((service) => (
             <ServiceCard key={service.title} service={service} />
           ))}
-        </div>
+        </motion.div>
 
         {/* Bottom row: 2 cards centered */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <motion.div
+          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {services.slice(3).map((service) => (
             <ServiceCard key={service.title} service={service} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 };
 
 const ServiceCard = ({ service }: { service: typeof services[number] }) => (
-  <div className="group relative border border-border bg-card p-0 overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg">
-    {/* Accent top bar */}
-    <div className="h-1 w-0 bg-primary group-hover:w-full transition-all duration-500" />
+  <motion.div
+    variants={cardVariants}
+    className="group relative border border-border bg-card p-0 overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg"
+  >
+    {/* Permanent accent top bar */}
+    <div className="h-1 w-full bg-primary" />
 
-    <div className="p-8">
+    <div className="p-10">
       {/* Icon + Title row */}
       <div className="flex items-start gap-5 mb-5">
-        <div className="w-14 h-14 shrink-0 bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
-          <service.icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+        <div className="w-16 h-16 shrink-0 bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+          <service.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
         </div>
         <div>
           <h3 className="heading-industrial text-xl mb-1">{service.title}</h3>
@@ -90,19 +122,20 @@ const ServiceCard = ({ service }: { service: typeof services[number] }) => (
       </div>
 
       {/* Capabilities */}
-      <div className="flex flex-wrap gap-2 mb-6 pl-[76px]">
+      <div className="flex flex-wrap gap-2 mb-6 pl-[84px]">
         {service.capabilities.map((cap) => (
           <span
             key={cap}
-            className="text-technical text-xs px-3 py-1.5 bg-muted text-muted-foreground border border-border"
+            className="text-technical text-xs px-3 py-1.5 bg-muted text-muted-foreground border border-border flex items-center gap-1.5"
           >
+            <span className="w-1 h-1 bg-primary inline-block shrink-0" />
             {cap}
           </span>
         ))}
       </div>
 
       {/* Actions */}
-      <div className="flex gap-6 pt-5 border-t border-border pl-[76px]">
+      <div className="flex gap-6 pt-5 border-t border-border pl-[84px]">
         <a
           href={`#${service.title.toLowerCase().replace(/\s/g, "-")}`}
           className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
@@ -118,7 +151,7 @@ const ServiceCard = ({ service }: { service: typeof services[number] }) => (
         </a>
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 export default ServicesSection;
