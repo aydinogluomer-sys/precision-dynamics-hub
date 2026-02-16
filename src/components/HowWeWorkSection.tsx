@@ -1,6 +1,6 @@
-import { Upload, MessageSquare, Settings, Truck, CheckCircle, ArrowRight } from "lucide-react";
+import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const steps = [
   {
@@ -65,20 +65,32 @@ const steps = [
   },
 ];
 
-/**
- * Sticky left panel with scrolling step cards on the right.
- * As user scrolls, the left sticky panel updates to show
- * the currently active step's detail.
- */
 const HowWeWorkSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  const [activeStep, setActiveStep] = useState(0);
 
-  // Determine active step based on scroll progress
-  const activeIndex = useTransform(scrollYProgress, [0, 0.25, 0.5, 0.75, 1], [0, 0, 1, 2, 3]);
+  // Track which step cards are in view
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = stepRefs.current.indexOf(entry.target as HTMLDivElement);
+            if (index !== -1) setActiveStep(index);
+          }
+        });
+      },
+      { threshold: 0.5, rootMargin: "-20% 0px -20% 0px" }
+    );
+
+    stepRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="nasil-calisiyoruz" className="border-y border-border" style={{ background: "#FAFAF9" }}>
@@ -109,24 +121,68 @@ const HowWeWorkSection = () => {
       <div ref={containerRef} className="relative">
         <div className="container-industrial">
           <div className="grid lg:grid-cols-2 gap-10">
-            {/* Left: Sticky panel */}
+            {/* Left: Sticky panel — shows active step detail */}
             <div className="hidden lg:block">
               <div className="sticky top-32 pb-20">
-                {steps.map((step, i) => (
-                  <StepDetail
-                    key={step.number}
-                    step={step}
-                    index={i}
-                    scrollYProgress={scrollYProgress}
-                  />
-                ))}
+                <div className="relative">
+                  {steps.map((step, i) => (
+                    <div
+                      key={step.number}
+                      className="transition-all duration-500"
+                      style={{
+                        opacity: activeStep === i ? 1 : 0,
+                        position: activeStep === i ? "relative" : "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        pointerEvents: activeStep === i ? "auto" : "none",
+                        transform: activeStep === i ? "translateY(0)" : "translateY(12px)",
+                      }}
+                    >
+                      <div className="p-8 border border-border bg-background">
+                        <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1 inline-block mb-6">
+                          Faz {step.number}: {step.label}
+                        </span>
+                        <h3 className="heading-industrial text-2xl mb-4">{step.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed mb-8">{step.description}</p>
+
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                          {step.checklist.map((item) => (
+                            <div key={item.title} className="flex gap-3 items-start">
+                              <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                              <div>
+                                <span className="text-sm font-semibold block">{item.title}</span>
+                                <span className="text-xs text-muted-foreground">{item.desc}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="text-center p-6 border border-border bg-card">
+                          <span className="text-technical text-4xl font-bold text-primary block mb-1">
+                            {step.stat.value}
+                          </span>
+                          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">
+                            {step.stat.label}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Right: Scrolling step cards */}
             <div className="space-y-0">
               {steps.map((step, i) => (
-                <StepCard key={step.number} step={step} index={i} />
+                <StepCard
+                  key={step.number}
+                  step={step}
+                  index={i}
+                  isActive={activeStep === i}
+                  ref={(el) => { stepRefs.current[i] = el; }}
+                />
               ))}
             </div>
           </div>
@@ -136,72 +192,11 @@ const HowWeWorkSection = () => {
   );
 };
 
-// Sticky detail panel — only shows when the step is "active"
-const StepDetail = ({
-  step,
-  index,
-  scrollYProgress,
-}: {
-  step: (typeof steps)[number];
-  index: number;
-  scrollYProgress: ReturnType<typeof useScroll>["scrollYProgress"];
-}) => {
-  const ranges = [
-    [0, 0.25],
-    [0.25, 0.5],
-    [0.5, 0.75],
-    [0.75, 1],
-  ];
-  const [start, end] = ranges[index];
-
-  const opacity = useTransform(scrollYProgress, [start, start + 0.05, end - 0.05, end], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [start, start + 0.05], [20, 0]);
-
-  return (
-    <motion.div
-      className="absolute inset-0"
-      style={{ opacity, y }}
-    >
-      <div className="p-8 border border-border bg-background">
-        <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1 inline-block mb-6">
-          Faz {step.number}: {step.label}
-        </span>
-        <h3 className="heading-industrial text-2xl mb-4">{step.title}</h3>
-        <p className="text-muted-foreground leading-relaxed mb-8">{step.description}</p>
-
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          {step.checklist.map((item) => (
-            <div key={item.title} className="flex gap-3 items-start">
-              <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-              <div>
-                <span className="text-sm font-semibold block">{item.title}</span>
-                <span className="text-xs text-muted-foreground">{item.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center p-6 border border-border bg-card">
-          <span className="text-technical text-4xl font-bold text-primary block mb-1">
-            {step.stat.value}
-          </span>
-          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">
-            {step.stat.label}
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
 // Scrolling step card on the right
-const StepCard = ({
-  step,
-  index,
-}: {
-  step: (typeof steps)[number];
-  index: number;
-}) => {
+const StepCard = React.forwardRef<
+  HTMLDivElement,
+  { step: (typeof steps)[number]; index: number; isActive: boolean }
+>(({ step, index, isActive }, ref) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: cardRef,
@@ -214,11 +209,19 @@ const StepCard = ({
 
   return (
     <motion.div
-      ref={cardRef}
+      ref={(el) => {
+        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        if (typeof ref === "function") ref(el);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+      }}
       className="min-h-[80vh] flex items-center py-10"
       style={{ opacity, x }}
     >
-      <div className="w-full p-8 lg:p-10 border border-border bg-background transition-all duration-300 hover:border-primary hover:shadow-lg">
+      <div
+        className={`w-full p-8 lg:p-10 border bg-background transition-all duration-300 hover:shadow-lg ${
+          isActive ? "border-primary shadow-lg" : "border-border"
+        }`}
+      >
         {/* Step number & icon */}
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 bg-primary flex items-center justify-center">
@@ -257,7 +260,7 @@ const StepCard = ({
           </span>
         </div>
 
-        {/* Mobile: Show detail directly (no sticky on mobile) */}
+        {/* Mobile: Show detail directly */}
         <div className="lg:hidden mt-6">
           <a href="#teklif" className="btn-industrial-primary text-center w-full inline-block">
             Metodolojiyi İncele
@@ -266,6 +269,10 @@ const StepCard = ({
       </div>
     </motion.div>
   );
-};
+});
+
+StepCard.displayName = "StepCard";
+
+import React from "react";
 
 export default HowWeWorkSection;

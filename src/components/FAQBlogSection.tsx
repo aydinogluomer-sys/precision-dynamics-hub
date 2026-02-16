@@ -76,7 +76,7 @@ const FAQBlogSection = () => {
                   SSS
                 </span>
               </div>
-              <h2 className="heading-industrial text-2xl md:text-3xl">Sıkça Sorulan Sorular</h2>
+              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground">Sıkça Sorulan Sorular</h2>
             </div>
 
             <div className="space-y-2">
@@ -120,7 +120,7 @@ const FAQBlogSection = () => {
                   Blog
                 </span>
               </div>
-              <h2 className="heading-industrial text-2xl md:text-3xl">Teknik İçerikler</h2>
+              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground">Teknik İçerikler</h2>
             </div>
 
             <div className="space-y-4">

@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import MagneticButton from "./MagneticButton";
 
 const FinalCTASection = () => {
@@ -11,24 +11,30 @@ const FinalCTASection = () => {
   });
   const scale = useTransform(scrollYProgress, [0, 0.5], [0.95, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <section
       ref={sectionRef}
       id="iletisim"
       className="section-industrial text-center relative overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)",
         color: "white",
       }}
     >
-      {/* Animated grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* Sweep animation overlay */}
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        initial={false}
+        animate={{
+          x: isHovered ? "0%" : "-100%",
+        }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          background: "linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)",
         }}
       />
 

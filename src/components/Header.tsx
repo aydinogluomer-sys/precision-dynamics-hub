@@ -1,4 +1,4 @@
-import { Phone, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -34,32 +34,6 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Top Bar - hides on scroll */}
-      <motion.div
-        className="bg-foreground text-background overflow-hidden"
-        animate={{ height: isScrolled ? 0 : "auto", opacity: isScrolled ? 0 : 1 }}
-        transition={{ duration: 0.25 }}
-      >
-        <div className="container-industrial">
-          <div className="flex items-center justify-between py-2 text-sm">
-            <div className="flex items-center gap-6">
-              <a href="tel:+902121234567" className="flex items-center gap-2 hover:text-primary transition-colors">
-                <Phone className="w-3 h-3" />
-                <span className="text-technical">+90 212 123 45 67</span>
-              </a>
-              <a href="mailto:info@mastechnic.com" className="flex items-center gap-2 hover:text-primary transition-colors">
-                <Mail className="w-3 h-3" />
-                <span className="text-technical">info@mastechnic.com</span>
-              </a>
-            </div>
-            <div className="hidden md:flex items-center gap-4 text-technical text-xs">
-              <span>ISO 9001:2015</span>
-              <span className="text-muted-foreground">|</span>
-              <span>AS9100D</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
 
       {/* Main Navigation */}
       <motion.div
