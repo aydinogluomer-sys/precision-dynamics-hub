@@ -1,4 +1,4 @@
-import { Upload, MessageSquare, Settings, Truck, ArrowRight } from "lucide-react";
+import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
 
 const steps = [
   {
@@ -32,7 +32,7 @@ const HowWeWorkSection = () => {
     <section className="section-industrial bg-card border-y border-border">
       <div className="container-industrial">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
@@ -46,36 +46,32 @@ const HowWeWorkSection = () => {
           </p>
         </div>
 
-        {/* Steps Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {steps.map((step, index) => (
-            <div key={step.number} className="relative group">
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-12 left-full w-full h-px bg-border z-0">
-                  <ArrowRight className="absolute right-0 -top-2 w-4 h-4 text-muted-foreground" />
+        {/* Steps - Horizontal Timeline */}
+        <div className="relative">
+          {/* Connector line - desktop only */}
+          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-border" />
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6">
+            {steps.map((step) => (
+              <div key={step.number} className="relative flex flex-col items-center text-center group">
+                {/* Icon circle on the timeline */}
+                <div className="relative z-10 w-[104px] h-[104px] border-2 border-border bg-background flex items-center justify-center mb-8 group-hover:border-primary group-hover:shadow-lg transition-all duration-300">
+                  <step.icon className="w-10 h-10 text-primary" />
                 </div>
-              )}
-              
-              <div className="card-industrial h-full relative z-10 bg-background">
-                {/* Step Number */}
-                <div className="text-technical text-5xl font-bold text-muted/50 mb-4">
-                  {step.number}
-                </div>
-                
-                {/* Icon */}
-                <div className="w-14 h-14 bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary transition-colors">
-                  <step.icon className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                
+
+                {/* Step number badge */}
+                <span className="text-technical text-xs font-bold text-primary bg-primary/10 px-3 py-1 mb-4">
+                  ADIM {step.number}
+                </span>
+
                 {/* Content */}
                 <h3 className="heading-industrial text-lg mb-3">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed max-w-[260px]">
                   {step.description}
                 </p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
