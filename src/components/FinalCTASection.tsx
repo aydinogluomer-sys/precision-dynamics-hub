@@ -1,65 +1,53 @@
-import { ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const FinalCTASection = () => {
   return (
-    <section id="iletisim" className="section-industrial bg-background">
+    <section
+      id="iletisim"
+      className="section-industrial text-center"
+      style={{
+        background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)",
+        color: "white",
+      }}
+    >
       <div className="container-industrial">
-        <div className="max-w-4xl mx-auto">
-          {/* Main CTA */}
-          <div className="text-center mb-16">
-            <h2 className="heading-industrial text-3xl md:text-4xl lg:text-5xl mb-6">
-              Projenizi Hayata Geçirmeye Hazır mısınız?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-              CAD dosyanızı gönderin, 24 saat içinde detaylı teknik analiz ve fiyat teklifi alın.
-            </p>
+        <div className="max-w-3xl mx-auto">
+          <h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-3"
+            style={{ letterSpacing: "-0.01em", lineHeight: 1.1 }}
+          >
+            Projenizi Hayata Geçirmeye Hazır mısınız?
+          </h2>
+          <p
+            className="text-lg mb-10"
+            style={{ color: "rgba(255, 255, 255, 0.85)", lineHeight: 1.6 }}
+          >
+            CAD dosyanızı gönderin, 24 saat içinde detaylı teknik analiz ve fiyat teklifi alın.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="#teklif"
-              className="btn-industrial-primary inline-flex items-center gap-2 text-lg px-12 py-5"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all"
+              style={{
+                background: "transparent",
+                border: "2px solid white",
+                color: "white",
+              }}
             >
               Teklif Al
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </a>
-          </div>
-
-          {/* Contact Info */}
-          <div className="grid md:grid-cols-3 gap-6 pt-8 border-t border-border">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary flex items-center justify-center flex-shrink-0">
-                <Phone className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Telefon</h3>
-                <a href="tel:+902121234567" className="text-muted-foreground hover:text-primary transition-colors">
-                  +90 212 123 45 67
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary flex items-center justify-center flex-shrink-0">
-                <Mail className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">E-posta</h3>
-                <a href="mailto:info@mastechnic.com" className="text-muted-foreground hover:text-primary transition-colors">
-                  info@mastechnic.com
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-primary flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Adres</h3>
-                <p className="text-muted-foreground">
-                  Organize Sanayi Bölgesi<br />
-                  İstanbul, Türkiye
-                </p>
-              </div>
-            </div>
+            <a
+              href="#kabiliyetler"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all hover:bg-black hover:text-white"
+              style={{
+                background: "white",
+                color: "#000",
+                border: "2px solid transparent",
+              }}
+            >
+              Portföyümüz
+            </a>
           </div>
         </div>
       </div>

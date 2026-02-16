@@ -1,4 +1,5 @@
-import { Monitor, Ruler, CheckCircle, TrendingUp } from "lucide-react";
+import { Monitor, Ruler, CheckCircle, TrendingUp, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const capabilities = [
   {
@@ -43,45 +44,107 @@ const capabilities = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+};
+
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="section-industrial bg-card border-y border-border">
-      <div className="container-industrial">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-8 h-px bg-border" />
-            <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-              Teknik
-            </span>
-            <div className="w-8 h-px bg-border" />
-          </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Kabiliyetlerimiz</h2>
-        </div>
+    <section
+      id="kabiliyetler"
+      className="relative bg-white"
+      style={{ padding: "120px 0" }}
+    >
+      {/* Blueprint grid background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(6, 136, 173, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 136, 173, 0.025) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
 
-        {/* Capabilities Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {capabilities.map((capability) => (
-            <div key={capability.title} className="bg-background border border-border p-6">
-              {/* Header */}
+      <div className="container-industrial relative z-10">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
+            Teknik
+          </span>
+          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Kabiliyetlerimiz</h2>
+        </motion.div>
+
+        {/* Cards */}
+        <motion.div
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {capabilities.map((cap) => (
+            <motion.div
+              key={cap.title}
+              variants={cardVariants}
+              className="bg-background border border-border p-8"
+            >
               <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
                 <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                  <capability.icon className="w-5 h-5 text-primary-foreground" />
+                  <cap.icon className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h3 className="font-semibold">{capability.title}</h3>
+                <h3 className="font-bold">{cap.title}</h3>
               </div>
-              
-              {/* Items */}
+
               <div className="space-y-4">
-                {capability.items.map((item) => (
+                {cap.items.map((item) => (
                   <div key={item.label} className="flex justify-between items-start gap-2">
                     <span className="text-sm text-muted-foreground">{item.label}</span>
-                    <span className="text-technical text-sm font-medium text-right">{item.value}</span>
+                    <span
+                      className="text-sm font-medium text-right"
+                      style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                      {item.value}
+                    </span>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
+        </motion.div>
+
+        {/* Blueprint CTA */}
+        <div className="flex items-center justify-center gap-0 mt-16">
+          <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
+            <div
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-white"
+              style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
+            />
+          </div>
+          <a
+            href="#teklif"
+            className="px-10 py-3.5 text-xs font-bold uppercase tracking-[0.08em] text-primary transition-all duration-300 hover:bg-primary hover:text-white whitespace-nowrap"
+            style={{ border: "1px solid rgba(6, 136, 173, 0.35)" }}
+          >
+            Teknik Kapasiteyi İncele
+          </a>
+          <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
+            <div
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-white"
+              style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
+            />
+          </div>
         </div>
       </div>
     </section>
