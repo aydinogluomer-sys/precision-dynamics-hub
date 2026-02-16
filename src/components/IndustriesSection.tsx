@@ -78,7 +78,7 @@ const IndustriesSection = () => {
             <motion.div
               key={industry.name}
               variants={cardVariants}
-              className="group bg-background border border-border overflow-hidden hover:border-primary hover:-translate-y-1 transition-all duration-300 hover:shadow-lg"
+              className="group bg-background border border-border overflow-hidden hover:border-primary hover:-translate-y-1 transition-all duration-300 hover:shadow-lg flex flex-col"
             >
               {/* Industry Image */}
               <div className="relative h-48 overflow-hidden">
@@ -91,9 +91,9 @@ const IndustriesSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
               </div>
 
-              <div className="p-8">
+              <div className="p-8 flex-1 flex flex-col">
                 <h3 className="font-semibold text-lg mb-2">{industry.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{industry.description}</p>
+                <p className="text-sm text-muted-foreground mb-4 flex-1">{industry.description}</p>
 
                 <div className="pt-4 border-t border-border">
                   <a
@@ -106,8 +106,8 @@ const IndustriesSection = () => {
                 </div>
               </div>
 
-              {/* Bottom highlight band */}
-              <div className="bg-primary/5 px-8 py-3 border-t border-border">
+              {/* Bottom highlight band - consistent height */}
+              <div className="px-8 py-3 border-t border-border" style={{ backgroundColor: "hsl(var(--primary) / 0.06)" }}>
                 <span className="text-technical text-xs text-primary font-semibold">
                   {industry.highlight}
                 </span>

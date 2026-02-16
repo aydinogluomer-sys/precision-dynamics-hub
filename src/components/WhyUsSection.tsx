@@ -41,7 +41,7 @@ const cardVariants = {
 
 const WhyUsSection = () => {
   return (
-    <section id="neden-biz" className="section-industrial" style={{ background: "hsl(var(--secondary))" }}>
+    <section id="neden-biz" className="section-industrial bg-secondary">
       <div className="container-industrial">
         {/* Hero Banner with Image */}
         <motion.div
@@ -58,14 +58,17 @@ const WhyUsSection = () => {
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(to right, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.7) 40%, transparent 100%)" }} />
+            <div
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(to right, hsl(220 15% 12%) 0%, hsl(220 15% 12% / 0.85) 40%, hsl(220 15% 12% / 0.4) 100%)" }}
+            />
             <div className="absolute inset-0 flex items-center">
               <div className="p-8 md:p-12 max-w-xl">
                 <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
                   Avantajlar
                 </span>
-                <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Neden Mas Technic?</h2>
-                <p className="subheading-industrial text-lg">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Neden Mas Technic?</h2>
+                <p className="text-lg" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
                   Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz
                 </p>
               </div>
@@ -85,8 +88,7 @@ const WhyUsSection = () => {
             <motion.div
               key={value.title}
               variants={cardVariants}
-              className="relative bg-white border border-border p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary group"
-              style={{ borderRadius: "var(--radius)" }}
+              className="relative bg-background border border-border p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary group"
             >
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 

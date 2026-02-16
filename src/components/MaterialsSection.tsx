@@ -1,11 +1,16 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import materialAluminium from "@/assets/material-aluminium.jpg";
+import materialSteel from "@/assets/material-steel.jpg";
+import materialStainless from "@/assets/material-stainless.jpg";
+import materialBrass from "@/assets/material-brass.jpg";
 
 const materials = [
   {
     name: "Alüminyum",
     typeCode: "6061-T6 / 7075-T6 / 2024",
     color: "hsl(var(--primary))",
+    image: materialAluminium,
     specs: [
       { label: "SERTLIK", value: "95 HB" },
       { label: "YOĞUNLUK", value: "2.7 g/cm³" },
@@ -16,6 +21,7 @@ const materials = [
     name: "Çelik",
     typeCode: "1045 / 4140 / A36",
     color: "#EA580C",
+    image: materialSteel,
     specs: [
       { label: "SERTLIK", value: "201 HB" },
       { label: "YOĞUNLUK", value: "7.85 g/cm³" },
@@ -26,6 +32,7 @@ const materials = [
     name: "Paslanmaz",
     typeCode: "304 / 316L / 17-4 PH",
     color: "#64748B",
+    image: materialStainless,
     specs: [
       { label: "SERTLIK", value: "201 HB" },
       { label: "YOĞUNLUK", value: "8.0 g/cm³" },
@@ -36,6 +43,7 @@ const materials = [
     name: "Pirinç",
     typeCode: "C360 / C260 / C280",
     color: "#D97706",
+    image: materialBrass,
     specs: [
       { label: "SERTLIK", value: "78 HB" },
       { label: "YOĞUNLUK", value: "8.5 g/cm³" },
@@ -120,9 +128,23 @@ const MaterialsSection = () => {
                 border: "1px solid rgba(255, 255, 255, 0.05)",
               }}
             >
+              {/* Hover Image */}
+              <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                <img
+                  src={mat.image}
+                  alt={mat.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0.4) 50%, rgba(2, 6, 23, 0.2) 100%)" }}
+                />
+              </div>
+
               {/* Index */}
               <div
-                className="absolute top-0 right-0 p-6 text-[10px]"
+                className="absolute top-0 right-0 p-6 text-[10px] z-20"
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
                   color: "#1e293b",
@@ -153,7 +175,7 @@ const MaterialsSection = () => {
                 {/* Specs on hover */}
                 <div
                   className="pt-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500"
-                  style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)" }}
+                  style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}
                 >
                   {mat.specs.map((spec) => (
                     <div
@@ -164,8 +186,8 @@ const MaterialsSection = () => {
                         fontSize: "10px",
                       }}
                     >
-                      <span style={{ color: "#64748b" }}>{spec.label}</span>
-                      <span className="text-white">{spec.value}</span>
+                      <span style={{ color: "#94a3b8" }}>{spec.label}</span>
+                      <span className="text-white font-medium">{spec.value}</span>
                     </div>
                   ))}
                 </div>

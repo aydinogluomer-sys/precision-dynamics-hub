@@ -1,5 +1,6 @@
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
 import blogDfm from "@/assets/blog-dfm.jpg";
@@ -24,6 +25,14 @@ const faqs = [
   {
     question: "Yüzey işleme hizmetiniz var mı?",
     answer: "Anodizasyon, kaplama, boyama, kumlama, parlatma ve ısıl işlem gibi yüzey işleme hizmetlerini de sunuyoruz veya koordine ediyoruz.",
+  },
+  {
+    question: "Hangi sektörlere hizmet veriyorsunuz?",
+    answer: "Havacılık & uzay, otomotiv, medikal, robotik, savunma sanayi, enerji ve genel endüstriyel üretim sektörlerine hizmet veriyoruz. Her sektöre özel kalite standartlarına uygun üretim yapabiliyoruz.",
+  },
+  {
+    question: "Teklifinizi ne kadar sürede alırım?",
+    answer: "Teknik çizimlerinizi gönderdikten sonra genellikle 24-48 saat içinde detaylı fiyat teklifimizi iletiyoruz. Acil talepler için aynı gün teklif seçeneğimiz de mevcuttur.",
   },
 ];
 
@@ -92,6 +101,14 @@ const FAQBlogSection = () => {
                 </div>
               ))}
             </div>
+
+            <Link
+              to="/sss"
+              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-primary hover:text-accent transition-colors"
+            >
+              Tüm Sorular
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {/* Blog Column */}
@@ -113,7 +130,6 @@ const FAQBlogSection = () => {
                   href="#"
                   className="flex gap-4 border border-border bg-background p-3 hover:border-primary transition-colors group overflow-hidden"
                 >
-                  {/* Blog Thumbnail */}
                   <div className="w-28 h-24 flex-shrink-0 overflow-hidden">
                     <img
                       src={post.image}
