@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import cncVideo from "@/assets/cnc-machining-video.mp4";
+import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { Settings, Target, Layers, Zap } from "lucide-react";
 
 const features = [
