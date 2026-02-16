@@ -1,11 +1,53 @@
 import { useState, useEffect } from "react";
 import { Upload, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const headlines = [
   "Yüksek Hassasiyetli Üretim",
   "Profesyonel CNC Operasyonları",
   "Stabil Kalite & Güvenilir Teslimat",
 ];
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" as const },
+  },
+};
+
+const slideInRight = {
+  hidden: { opacity: 0, x: 60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: "easeOut" as const, delay: 0.3 },
+  },
+};
+
+const statVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.5 },
+  },
+};
+
+const statItem = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" as const },
+  },
+};
 
 const HeroSection = () => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
@@ -28,17 +70,23 @@ const HeroSection = () => {
       <div className="container-industrial relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
-          <div className="space-y-8">
+          <motion.div
+            className="space-y-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {/* Overline */}
-            <div className="flex items-center gap-4">
+            <motion.div variants={fadeUpVariants} className="flex items-center gap-4">
               <div className="accent-line" />
               <span className="text-technical text-muted-foreground uppercase tracking-widest">
                 CNC Hassas İşleme
               </span>
-            </div>
+            </motion.div>
 
             {/* Rotating Headline */}
-            <div className="relative h-32 md:h-40 overflow-hidden">
+            <motion.div variants={fadeUpVariants} className="relative h-32 md:h-40 overflow-hidden">
               {headlines.map((headline, index) => (
                 <h1
                   key={index}
@@ -51,22 +99,22 @@ const HeroSection = () => {
                   {headline}
                 </h1>
               ))}
-            </div>
+            </motion.div>
 
             {/* Description */}
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
+            <motion.p variants={fadeUpVariants} className="text-lg text-muted-foreground leading-relaxed max-w-xl">
               CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve 
               proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat 
               odaklı mühendislik çözümleri sunuyoruz.
-            </p>
+            </motion.p>
 
             {/* Slogan */}
-            <p className="text-technical text-primary font-semibold tracking-wide">
+            <motion.p variants={fadeUpVariants} className="text-technical text-primary font-semibold tracking-wide">
               "Disiplinli Operasyon, Güvenilir Üretim."
-            </p>
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 pt-4">
               <a href="#teklif" className="btn-industrial-primary flex items-center justify-center gap-2">
                 Teklif Al
                 <ArrowRight className="w-4 h-4" />
@@ -74,11 +122,17 @@ const HeroSection = () => {
               <a href="#kabiliyetler" className="btn-industrial-secondary flex items-center justify-center gap-2">
                 Kabiliyetleri Gör
               </a>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Content - CAD Upload Teaser */}
-          <div className="relative">
+          <motion.div
+            className="relative"
+            variants={slideInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {/* Technical Frame */}
             <div className="absolute -top-4 -left-4 w-20 h-20 border-l-2 border-t-2 border-primary" />
             <div className="absolute -bottom-4 -right-4 w-20 h-20 border-r-2 border-b-2 border-primary" />
@@ -99,22 +153,28 @@ const HeroSection = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-border">
-                <div className="text-center">
+              <motion.div
+                className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-border"
+                variants={statVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                <motion.div variants={statItem} className="text-center">
                   <div className="text-technical text-2xl font-bold text-primary">±0.01</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">mm Tolerans</div>
-                </div>
-                <div className="text-center">
+                </motion.div>
+                <motion.div variants={statItem} className="text-center">
                   <div className="text-technical text-2xl font-bold text-primary">24h</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Teklif Süresi</div>
-                </div>
-                <div className="text-center">
+                </motion.div>
+                <motion.div variants={statItem} className="text-center">
                   <div className="text-technical text-2xl font-bold text-primary">50+</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Malzeme</div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

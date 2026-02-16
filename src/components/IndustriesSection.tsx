@@ -1,4 +1,5 @@
 import { Plane, Car, Heart, Bot, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const industries = [
   {
@@ -27,12 +28,28 @@ const industries = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+};
+
 const IndustriesSection = () => {
   return (
     <section className="section-industrial bg-muted border-y border-border">
       <div className="container-industrial">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
@@ -44,41 +61,52 @@ const IndustriesSection = () => {
           <p className="subheading-industrial text-lg max-w-2xl mx-auto">
             Kritik sektörlerde güvenilir üretim ortağınız
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {industries.map((industry) => (
-            <div
+            <motion.div
               key={industry.name}
-              className="group bg-background border border-border p-8 hover:border-primary transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+              variants={cardVariants}
+              className="group bg-background border border-border overflow-hidden hover:border-primary hover:-translate-y-1 transition-all duration-300 hover:shadow-lg"
             >
-              {/* Accent line */}
-              <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
+              {/* Top accent line */}
+              <div className="h-1 w-full bg-primary" />
 
-              <div className="w-16 h-16 bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary transition-colors duration-300">
-                <industry.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+              <div className="p-8">
+                <div className="w-[72px] h-[72px] bg-primary/5 flex items-center justify-center mb-6 group-hover:bg-primary transition-colors duration-300">
+                  <industry.icon className="w-9 h-9 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                </div>
+
+                <h3 className="font-semibold text-lg mb-2">{industry.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{industry.description}</p>
+
+                <div className="pt-4 border-t border-border">
+                  <a
+                    href="#teklif"
+                    className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
+                  >
+                    Detaylı Bilgi
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </div>
 
-              <h3 className="font-semibold text-lg mb-2">{industry.name}</h3>
-              <p className="text-sm text-muted-foreground mb-4">{industry.description}</p>
-
-              {/* Highlight badge */}
-              <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1.5 inline-block mb-5">
-                {industry.highlight}
-              </span>
-
-              <div className="pt-4 border-t border-border">
-                <a
-                  href="#teklif"
-                  className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
-                >
-                  Detaylı Bilgi
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
+              {/* Bottom highlight band */}
+              <div className="bg-primary/5 px-8 py-3 border-t border-border">
+                <span className="text-technical text-xs text-primary font-semibold">
+                  {industry.highlight}
+                </span>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
