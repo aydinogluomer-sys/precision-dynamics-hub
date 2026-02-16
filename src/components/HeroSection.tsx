@@ -1,5 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { ArrowRight } from "lucide-react";
+import { useState, useEffect, lazy, Suspense, useCallback } from "react";
+import { ArrowRight, Upload } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import MagneticButton from "./MagneticButton";
@@ -190,6 +190,28 @@ const HeroSection = () => {
               >
                 Kabiliyetleri Gör
               </MagneticButton>
+            </motion.div>
+
+            {/* CAD File Drop Zone */}
+            <motion.div
+              variants={fadeUpVariants}
+              className="mt-8 p-6 border-2 border-dashed border-white/20 hover:border-primary/60 transition-all duration-300 cursor-pointer group"
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 border border-white/20 group-hover:border-primary/50 flex items-center justify-center transition-colors">
+                  <Upload className="w-5 h-5 text-white/50 group-hover:text-primary transition-colors" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+                    CAD Dosyanızı Sürükleyin
+                  </p>
+                  <p className="text-xs text-white/40">
+                    STEP, IGES, DXF, SOLIDWORKS — Hızlı teklif için
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white/30 ml-auto group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </div>
             </motion.div>
           </motion.div>
 

@@ -1,6 +1,6 @@
+import React, { useRef, useState, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
 
 const steps = [
   {
@@ -273,6 +273,6 @@ const StepCard = React.forwardRef<
 
 StepCard.displayName = "StepCard";
 
-import React from "react";
+
 
 export default HowWeWorkSection;
