@@ -66,23 +66,27 @@ const steps = [
 ];
 
 const HowWeWorkSection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
-
-  // Track which step cards are in view
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
+        // Find the most visible entry
+        let bestEntry: IntersectionObserverEntry | null = null;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = stepRefs.current.indexOf(entry.target as HTMLDivElement);
-            if (index !== -1) setActiveStep(index);
+            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+              bestEntry = entry;
+            }
           }
         });
+        if (bestEntry) {
+          const index = stepRefs.current.indexOf((bestEntry as IntersectionObserverEntry).target as HTMLDivElement);
+          if (index !== -1) setActiveStep(index);
+        }
       },
-      { threshold: 0.6, rootMargin: "-30% 0px -30% 0px" }
+      { threshold: [0.3, 0.5, 0.7], rootMargin: "-20% 0px -20% 0px" }
     );
 
     stepRefs.current.forEach((ref) => {
@@ -95,7 +99,7 @@ const HowWeWorkSection = () => {
   return (
     <section id="nasil-calisiyoruz" className="border-y border-border" style={{ background: "#FAFAF9" }}>
       {/* Section Header */}
-      <div className="container-industrial py-20 pb-10">
+      <div className="container-industrial py-16 pb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -118,12 +122,12 @@ const HowWeWorkSection = () => {
       </div>
 
       {/* Sticky scroll area */}
-      <div ref={containerRef} className="relative">
+      <div className="relative">
         <div className="container-industrial">
           <div className="grid lg:grid-cols-2 gap-10">
-            {/* Left: Sticky panel — shows active step detail */}
+            {/* Left: Sticky panel */}
             <div className="hidden lg:block">
-              <div className="sticky top-32 pb-20">
+              <div className="sticky top-28 pb-16">
                 <div className="relative">
                   {steps.map((step, i) => (
                     <div
@@ -169,6 +173,19 @@ const HowWeWorkSection = () => {
                       </div>
                     </div>
                   ))}
+
+                  {/* Step progress indicator */}
+                  <div className="flex gap-2 mt-6">
+                    {steps.map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-1 flex-1 transition-all duration-300"
+                        style={{
+                          backgroundColor: i <= activeStep ? "hsl(var(--primary))" : "hsl(var(--border))",
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -192,7 +209,6 @@ const HowWeWorkSection = () => {
   );
 };
 
-// Scrolling step card on the right
 const StepCard = React.forwardRef<
   HTMLDivElement,
   { step: (typeof steps)[number]; index: number; isActive: boolean }
@@ -214,7 +230,7 @@ const StepCard = React.forwardRef<
         if (typeof ref === "function") ref(el);
         else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
       }}
-      className="min-h-[60vh] flex items-center py-8"
+      className="min-h-[50vh] flex items-center py-6"
       style={{ opacity, x }}
     >
       <div
@@ -222,7 +238,6 @@ const StepCard = React.forwardRef<
           isActive ? "border-primary shadow-lg" : "border-border"
         }`}
       >
-        {/* Step number & icon */}
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 bg-primary flex items-center justify-center">
             <step.icon className="w-6 h-6 text-primary-foreground" />
@@ -237,7 +252,6 @@ const StepCard = React.forwardRef<
         <h3 className="heading-industrial text-xl mb-3">{step.title}</h3>
         <p className="text-muted-foreground leading-relaxed mb-6">{step.description}</p>
 
-        {/* Checklist */}
         <div className="grid sm:grid-cols-2 gap-3 mb-6">
           {step.checklist.map((item) => (
             <div key={item.title} className="flex gap-2 items-start">
@@ -250,17 +264,11 @@ const StepCard = React.forwardRef<
           ))}
         </div>
 
-        {/* Stat */}
         <div className="flex items-center gap-4 pt-6 border-t border-border">
-          <span className="text-technical text-3xl font-bold text-primary">
-            {step.stat.value}
-          </span>
-          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">
-            {step.stat.label}
-          </span>
+          <span className="text-technical text-3xl font-bold text-primary">{step.stat.value}</span>
+          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">{step.stat.label}</span>
         </div>
 
-        {/* Mobile: Show detail directly */}
         <div className="lg:hidden mt-6">
           <a href="#teklif" className="btn-industrial-primary text-center w-full inline-block">
             Metodolojiyi İncele
@@ -272,7 +280,5 @@ const StepCard = React.forwardRef<
 });
 
 StepCard.displayName = "StepCard";
-
-
 
 export default HowWeWorkSection;
