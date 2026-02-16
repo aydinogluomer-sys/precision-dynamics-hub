@@ -1,47 +1,57 @@
-import { Cog, CircleDot, Layers, Zap, Box, ArrowRight } from "lucide-react";
+import { Cog, CircleDot, Layers, Zap, Box, ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const services = [
   {
     icon: Cog,
+    badge: "Stratejik",
     title: "CNC Freze",
-    description: "3, 4 ve 5 eksenli CNC freze işleme ile karmaşık geometrilerde yüksek hassasiyetli üretim.",
-    capabilities: ["5 Eksen İşleme", "Yüzey Kalitesi Ra 0.8", "Max 2000x1000mm"],
+    description:
+      "3, 4 ve 5 eksenli CNC freze işleme ile karmaşık geometrilerde yüksek hassasiyetli üretim. Havacılık, enerji ve altyapı projelerinde eksiksiz tolerans.",
+    capabilities: ["5 Eksen İşleme", "Yüzey Kalitesi Ra 0.8"],
   },
   {
     icon: CircleDot,
+    badge: "Hassasiyet",
     title: "CNC Torna",
-    description: "Hassas torna işleme ile silindirik parçalarda mikron seviyesinde tolerans kontrolü.",
-    capabilities: ["CNC Otomat", "Çift Kafa İşleme", "Ø500mm Kapasite"],
+    description:
+      "Yüksek hızlı CNC torna operasyonları ile mikron seviyesinde doğruluk sağlayan karmaşık bileşen üretimi.",
+    capabilities: ["Çift Kafa İşleme", "Otomatik KK Entegrasyonu"],
   },
   {
     icon: Layers,
+    badge: "Anahtar Teslim",
     title: "Talaşlı İmalat",
-    description: "Geleneksel ve CNC destekli talaşlı imalat operasyonları ile çeşitli metal işleme çözümleri.",
-    capabilities: ["Taşlama", "Honlama", "Broşlama"],
+    description:
+      "Geleneksel ve CNC destekli talaşlı imalat ile pnömatik ve hidrolik entegrasyonlar dahil tam hizmet montaj hatları.",
+    capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
   },
   {
     icon: Zap,
+    badge: "İleri Teknoloji",
     title: "Lazer Kesim",
-    description: "Fiber lazer teknolojisi ile hızlı ve hassas sac metal kesim operasyonları.",
-    capabilities: ["6kW Fiber Lazer", "25mm Çelik", "Otomatik Yükleme"],
+    description:
+      "6kW fiber lazer teknolojisi ile 25mm çelik kapasitesinde hızlı ve hassas sac metal kesim operasyonları.",
+    capabilities: ["Fiber Lazer 6kW", "Otomatik Yükleme"],
   },
   {
     icon: Box,
+    badge: "Üretim",
     title: "Kalıp & Döküm",
-    description: "Enjeksiyon kalıpları, basınçlı döküm kalıpları ve prototip kalıp imalatı.",
-    capabilities: ["Enjeksiyon Kalıp", "Alüminyum Döküm", "Prototip"],
+    description:
+      "Enjeksiyon kalıpları, basınçlı döküm kalıpları ve prototip kalıp imalatı ile endüstriyel çözümler.",
+    capabilities: ["Enjeksiyon Kalıp", "Alüminyum Döküm"],
   },
 ];
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.1 } },
 };
 
 const cardVariants = {
   hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" as const } },
 };
 
 const ServicesSection = () => {
@@ -50,23 +60,30 @@ const ServicesSection = () => {
       <div className="container-industrial">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="flex flex-col md:flex-row md:items-end md:justify-between mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-8 h-px bg-border" />
-            <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-              Çözümler
-            </span>
-            <div className="w-8 h-px bg-border" />
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-px bg-border" />
+              <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
+                Kabiliyetler
+              </span>
+            </div>
+            <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
+              Mühendislik Hizmetlerimiz
+            </h2>
           </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Hizmetlerimiz</h2>
-          <p className="subheading-industrial text-lg max-w-2xl mx-auto">
-            Kapsamlı CNC Üretim Çözümleri
-          </p>
+          <a
+            href="#kabiliyetler"
+            className="mt-4 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
+          >
+            Tüm kabiliyetleri görüntüle
+            <ArrowUpRight className="w-4 h-4" />
+          </a>
         </motion.div>
 
         {/* Top row: 3 cards */}
@@ -77,77 +94,97 @@ const ServicesSection = () => {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {services.slice(0, 3).map((service) => (
-            <ServiceCard key={service.title} service={service} />
+          {services.slice(0, 3).map((s) => (
+            <ServiceCard key={s.title} service={s} />
           ))}
         </motion.div>
 
-        {/* Bottom row: 2 cards centered */}
+        {/* Bottom row: 2 cards */}
         <motion.div
-          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {services.slice(3).map((service) => (
-            <ServiceCard key={service.title} service={service} />
+          {services.slice(3).map((s) => (
+            <ServiceCard key={s.title} service={s} />
           ))}
+        </motion.div>
+
+        {/* Bottom CTA Banner */}
+        <motion.div
+          className="border border-border bg-card p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div>
+            <h3 className="heading-industrial text-xl mb-1">
+              Üretim hattınızı optimize etmeye hazır mısınız?
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              Kapsamlı teknik danışmanlık için baş mühendislerimizle görüşün.
+            </p>
+          </div>
+          <div className="flex gap-4 shrink-0">
+            <a href="#teklif" className="btn-industrial-primary whitespace-nowrap">
+              Danışmanlık Al
+            </a>
+            <a
+              href="#kabiliyetler"
+              className="btn-industrial-secondary whitespace-nowrap"
+            >
+              Portföyümüz
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
   );
 };
 
-const ServiceCard = ({ service }: { service: typeof services[number] }) => (
+const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
   <motion.div
     variants={cardVariants}
-    className="group relative border border-border bg-card p-0 overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg"
+    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
   >
-    {/* Permanent accent top bar */}
+    {/* Accent bar */}
     <div className="h-1 w-full bg-primary" />
 
-    <div className="p-10">
-      {/* Icon + Title row */}
-      <div className="flex items-start gap-5 mb-5">
-        <div className="w-16 h-16 shrink-0 bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
-          <service.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-        </div>
-        <div>
-          <h3 className="heading-industrial text-xl mb-1">{service.title}</h3>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {service.description}
-          </p>
-        </div>
-      </div>
+    <div className="p-8">
+      {/* Badge */}
+      <span className="text-technical text-[11px] font-semibold text-primary uppercase tracking-widest mb-5 block">
+        {service.badge}
+      </span>
+
+      {/* Title */}
+      <h3 className="heading-industrial text-xl mb-3">{service.title}</h3>
+
+      {/* Description */}
+      <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+        {service.description}
+      </p>
 
       {/* Capabilities */}
-      <div className="flex flex-wrap gap-2 mb-6 pl-[84px]">
+      <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
         {service.capabilities.map((cap) => (
-          <span
-            key={cap}
-            className="text-technical text-xs px-3 py-1.5 bg-muted text-muted-foreground border border-border flex items-center gap-1.5"
-          >
-            <span className="w-1 h-1 bg-primary inline-block shrink-0" />
+          <span key={cap} className="text-sm text-muted-foreground flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-primary inline-block shrink-0" />
             {cap}
           </span>
         ))}
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-6 pt-5 border-t border-border pl-[84px]">
-        <a
-          href={`#${service.title.toLowerCase().replace(/\s/g, "-")}`}
-          className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
-        >
-          İncele
-          <ArrowRight className="w-3.5 h-3.5" />
-        </a>
+      {/* CTA */}
+      <div className="pt-5 border-t border-border">
         <a
           href="#teklif"
-          className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+          className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1.5 transition-colors"
         >
-          Teklif Al
+          Teknik Özellikler
+          <ArrowRight className="w-3.5 h-3.5" />
         </a>
       </div>
     </div>
