@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 const steps = [
   {
@@ -72,7 +72,6 @@ const HowWeWorkSection = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the most visible entry
         let bestEntry: IntersectionObserverEntry | null = null;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -82,7 +81,7 @@ const HowWeWorkSection = () => {
           }
         });
         if (bestEntry) {
-          const index = stepRefs.current.indexOf((bestEntry as IntersectionObserverEntry).target as HTMLDivElement);
+          const index = stepRefs.current.indexOf(bestEntry.target as HTMLDivElement);
           if (index !== -1) setActiveStep(index);
         }
       },
@@ -130,17 +129,20 @@ const HowWeWorkSection = () => {
               <div className="sticky top-28 pb-16">
                 <div className="relative">
                   {steps.map((step, i) => (
-                    <div
+                    <motion.div
                       key={step.number}
-                      className="transition-all duration-500"
-                      style={{
+                      initial={false}
+                      animate={{
                         opacity: activeStep === i ? 1 : 0,
+                        y: activeStep === i ? 0 : 12,
+                      }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      style={{
                         position: activeStep === i ? "relative" : "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
                         pointerEvents: activeStep === i ? "auto" : "none",
-                        transform: activeStep === i ? "translateY(0)" : "translateY(12px)",
                       }}
                     >
                       <div className="p-8 border border-border bg-background">
@@ -171,7 +173,7 @@ const HowWeWorkSection = () => {
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
 
                   {/* Step progress indicator */}
@@ -190,7 +192,7 @@ const HowWeWorkSection = () => {
               </div>
             </div>
 
-            {/* Right: Scrolling step cards */}
+            {/* Right: Scrolling step cards — NO blur, full opacity, no scroll-driven opacity */}
             <div className="space-y-0">
               {steps.map((step, i) => (
                 <StepCard
@@ -213,25 +215,10 @@ const StepCard = React.forwardRef<
   HTMLDivElement,
   { step: (typeof steps)[number]; index: number; isActive: boolean }
 >(({ step, index, isActive }, ref) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "center center"],
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-  const x = useTransform(scrollYProgress, [0, 0.5], [40, 0]);
-  const lineWidth = useTransform(scrollYProgress, [0, 0.6], [0, 48]);
-
   return (
-    <motion.div
-      ref={(el) => {
-        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-        if (typeof ref === "function") ref(el);
-        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
-      }}
+    <div
+      ref={ref}
       className="min-h-[50vh] flex items-center py-6"
-      style={{ opacity, x }}
     >
       <div
         className={`w-full p-8 lg:p-10 border bg-background transition-all duration-300 hover:shadow-lg ${
@@ -246,7 +233,10 @@ const StepCard = React.forwardRef<
             <span className="text-technical text-xs text-primary block">{step.number}.</span>
             <span className="font-bold text-xl">{step.label}</span>
           </div>
-          <motion.div className="h-[2px] bg-primary ml-auto" style={{ width: lineWidth }} />
+          <div
+            className="h-[2px] bg-primary ml-auto transition-all duration-500"
+            style={{ width: isActive ? 48 : 0 }}
+          />
         </div>
 
         <h3 className="heading-industrial text-xl mb-3">{step.title}</h3>
@@ -275,7 +265,7 @@ const StepCard = React.forwardRef<
           </a>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 
