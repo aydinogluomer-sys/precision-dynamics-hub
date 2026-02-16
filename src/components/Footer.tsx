@@ -1,4 +1,4 @@
-import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle } from "lucide-react";
+import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Footer = () => {
@@ -15,13 +15,13 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden" style={{ backgroundColor: "hsl(220 15% 4%)" }}>
+    <footer className="relative overflow-hidden" style={{ backgroundColor: "#020617" }}>
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, hsl(var(--primary) / 0.05) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(14, 165, 233, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(14, 165, 233, 0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
@@ -30,7 +30,7 @@ const Footer = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, hsl(var(--primary) / 0.12) 0%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(6, 136, 173, 0.15) 0%, transparent 70%)",
         }}
       />
 
@@ -89,8 +89,8 @@ const Footer = () => {
                     }}
                   />
                 </div>
-                <button className="px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg">
-                  Abone Ol
+                <button className="px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap">
+                  ABONE OL
                 </button>
               </form>
               <p className="text-[11px] mt-2" style={{ color: "hsl(210 8% 35%)" }}>
@@ -292,6 +292,16 @@ const Footer = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Floating Back Button */}
+      <div className="fixed bottom-24 right-6 z-50">
+        <button
+          onClick={() => window.history.back()}
+          className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Floating Chat Button */}
