@@ -1,6 +1,6 @@
 import { Upload, MessageSquare, Settings, Truck, CheckCircle, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const steps = [
   {
@@ -9,7 +9,7 @@ const steps = [
     label: "Analiz",
     title: "Fizibilite & Kaynak Planlaması",
     description:
-      "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz. Tek bir tezgâh çalıştırılmadan önce proje uygulanabilirliğini ve maliyet verimliliğini sağlamak için prediktif modelleme kullanıyoruz.",
+      "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz.",
     checklist: [
       { title: "CAD Uyumluluğu", desc: "Evrensel dosya formatı desteği" },
       { title: "Maliyet Optimizasyonu", desc: "Kaynak tahsis stratejisi" },
@@ -24,7 +24,7 @@ const steps = [
     label: "Tasarım",
     title: "Teknik Tasarım & Geri Bildirim",
     description:
-      "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM (Üretim İçin Tasarım) ilkeleri doğrultusunda imalat uygunluğunu değerlendirir ve size kapsamlı teknik teklif sunar.",
+      "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM ilkeleri doğrultusunda imalat uygunluğunu değerlendirir.",
     checklist: [
       { title: "DFM Analizi", desc: "Üretim için tasarım optimizasyonu" },
       { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
@@ -39,7 +39,7 @@ const steps = [
     label: "Üretim",
     title: "Hassas Üretim & İzleme",
     description:
-      "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme ve proses içi kalite kontrol uygulanır.",
+      "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme yapılır.",
     checklist: [
       { title: "5 Eksen CNC", desc: "Karmaşık geometri işleme" },
       { title: "Gerçek Zamanlı İzleme", desc: "IoT destekli proses takibi" },
@@ -54,7 +54,7 @@ const steps = [
     label: "KK & Teslimat",
     title: "Kalite Kontrol & Sevkiyat",
     description:
-      "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ile parçalarınız zamanında ve hasarsız şekilde adresinize teslim edilir.",
+      "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ve zamanında teslimat.",
     checklist: [
       { title: "CMM Ölçüm", desc: "3 boyutlu koordinat ölçümü" },
       { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
@@ -65,16 +65,26 @@ const steps = [
   },
 ];
 
+/**
+ * Sticky left panel with scrolling step cards on the right.
+ * As user scrolls, the left sticky panel updates to show
+ * the currently active step's detail.
+ */
 const HowWeWorkSection = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const current = steps[activeStep];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Determine active step based on scroll progress
+  const activeIndex = useTransform(scrollYProgress, [0, 0.25, 0.5, 0.75, 1], [0, 0, 1, 2, 3]);
 
   return (
-    <section id="nasil-calisiyoruz" className="section-industrial border-y border-border" style={{ background: "#FAFAF9" }}>
-      <div className="container-industrial">
-        {/* Section Header */}
+    <section id="nasil-calisiyoruz" className="border-y border-border" style={{ background: "#FAFAF9" }}>
+      {/* Section Header */}
+      <div className="container-industrial py-20 pb-10">
         <motion.div
-          className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -90,119 +100,171 @@ const HowWeWorkSection = () => {
             Hassas Üretim İş Akışımız
           </h2>
           <p className="subheading-industrial text-lg max-w-3xl">
-            İlk konseptten son kalite doğrulamasına kadar uçtan uca endüstriyel sürecimiz, sıfır hatalı üretim ve optimize edilmiş kaynak tahsisi sağlar.
+            İlk konseptten son kalite doğrulamasına kadar uçtan uca endüstriyel sürecimiz
           </p>
         </motion.div>
+      </div>
 
-        {/* Phase Tabs */}
-        <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          {steps.map((step, i) => {
-            const isActive = i === activeStep;
-            return (
-              <button
-                key={step.number}
-                onClick={() => setActiveStep(i)}
-                className={`flex items-center gap-3 px-5 py-4 border text-left transition-all duration-200 ${
-                  isActive
-                    ? "border-primary bg-primary/5"
-                    : "border-border bg-background hover:border-muted-foreground/30"
-                }`}
-              >
-                <step.icon
-                  className={`w-5 h-5 shrink-0 ${
-                    isActive ? "text-primary" : "text-muted-foreground"
-                  }`}
-                />
-                <div>
-                  <span
-                    className={`text-technical text-xs block ${
-                      isActive ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    {step.number}.
-                  </span>
-                  <span
-                    className={`text-sm font-semibold ${
-                      isActive ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {step.label}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </motion.div>
-
-        {/* Active Phase Detail Panel */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStep}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35 }}
-            className="grid lg:grid-cols-5 gap-8 border border-border bg-background p-8 lg:p-10"
-          >
-            {/* Left: Phase info */}
-            <div className="lg:col-span-3">
-              <div className="mb-6">
-                <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1 inline-block mb-4">
-                  Mevcut Faz: {current.label}
-                </span>
-                <h3 className="heading-industrial text-2xl mb-4">{current.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{current.description}</p>
-              </div>
-
-              {/* Checklist grid */}
-              <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                {current.checklist.map((item) => (
-                  <div key={item.title} className="flex gap-3 items-start">
-                    <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-sm font-semibold text-foreground block">{item.title}</span>
-                      <span className="text-xs text-muted-foreground">{item.desc}</span>
-                    </div>
-                  </div>
+      {/* Sticky scroll area */}
+      <div ref={containerRef} className="relative">
+        <div className="container-industrial">
+          <div className="grid lg:grid-cols-2 gap-10">
+            {/* Left: Sticky panel */}
+            <div className="hidden lg:block">
+              <div className="sticky top-32 pb-20">
+                {steps.map((step, i) => (
+                  <StepDetail
+                    key={step.number}
+                    step={step}
+                    index={i}
+                    scrollYProgress={scrollYProgress}
+                  />
                 ))}
               </div>
-
-              {/* Actions */}
-              <div className="flex flex-wrap gap-4">
-                <a href="#teklif" className="btn-industrial-primary">
-                  Metodolojiyi İncele
-                </a>
-                <a
-                  href="#iletisim"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors px-4 py-3"
-                >
-                  Teknik Doküman
-                  <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
             </div>
 
-            {/* Right: Stat */}
-            <div className="lg:col-span-2 flex items-center justify-center">
-              <div className="text-center p-10 border border-border bg-card w-full">
-                <span className="text-technical text-5xl md:text-6xl font-bold text-primary block mb-2">
-                  {current.stat.value}
-                </span>
-                <span className="text-technical text-sm text-muted-foreground uppercase tracking-wider">
-                  {current.stat.label}
-                </span>
-              </div>
+            {/* Right: Scrolling step cards */}
+            <div className="space-y-0">
+              {steps.map((step, i) => (
+                <StepCard key={step.number} step={step} index={i} />
+              ))}
             </div>
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        </div>
       </div>
     </section>
+  );
+};
+
+// Sticky detail panel — only shows when the step is "active"
+const StepDetail = ({
+  step,
+  index,
+  scrollYProgress,
+}: {
+  step: (typeof steps)[number];
+  index: number;
+  scrollYProgress: ReturnType<typeof useScroll>["scrollYProgress"];
+}) => {
+  const ranges = [
+    [0, 0.25],
+    [0.25, 0.5],
+    [0.5, 0.75],
+    [0.75, 1],
+  ];
+  const [start, end] = ranges[index];
+
+  const opacity = useTransform(scrollYProgress, [start, start + 0.05, end - 0.05, end], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [start, start + 0.05], [20, 0]);
+
+  return (
+    <motion.div
+      className="absolute inset-0"
+      style={{ opacity, y }}
+    >
+      <div className="p-8 border border-border bg-background">
+        <span className="text-technical text-xs text-primary bg-primary/10 px-3 py-1 inline-block mb-6">
+          Faz {step.number}: {step.label}
+        </span>
+        <h3 className="heading-industrial text-2xl mb-4">{step.title}</h3>
+        <p className="text-muted-foreground leading-relaxed mb-8">{step.description}</p>
+
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          {step.checklist.map((item) => (
+            <div key={item.title} className="flex gap-3 items-start">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+              <div>
+                <span className="text-sm font-semibold block">{item.title}</span>
+                <span className="text-xs text-muted-foreground">{item.desc}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center p-6 border border-border bg-card">
+          <span className="text-technical text-4xl font-bold text-primary block mb-1">
+            {step.stat.value}
+          </span>
+          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">
+            {step.stat.label}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Scrolling step card on the right
+const StepCard = ({
+  step,
+  index,
+}: {
+  step: (typeof steps)[number];
+  index: number;
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "center center"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const x = useTransform(scrollYProgress, [0, 0.5], [40, 0]);
+  const lineWidth = useTransform(scrollYProgress, [0, 0.6], [0, 48]);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className="min-h-[80vh] flex items-center py-10"
+      style={{ opacity, x }}
+    >
+      <div className="w-full p-8 lg:p-10 border border-border bg-background transition-all duration-300 hover:border-primary hover:shadow-lg">
+        {/* Step number & icon */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-14 h-14 bg-primary flex items-center justify-center">
+            <step.icon className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <div>
+            <span className="text-technical text-xs text-primary block">{step.number}.</span>
+            <span className="font-bold text-xl">{step.label}</span>
+          </div>
+          <motion.div className="h-[2px] bg-primary ml-auto" style={{ width: lineWidth }} />
+        </div>
+
+        <h3 className="heading-industrial text-xl mb-3">{step.title}</h3>
+        <p className="text-muted-foreground leading-relaxed mb-6">{step.description}</p>
+
+        {/* Checklist */}
+        <div className="grid sm:grid-cols-2 gap-3 mb-6">
+          {step.checklist.map((item) => (
+            <div key={item.title} className="flex gap-2 items-start">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+              <div>
+                <span className="text-sm font-semibold block">{item.title}</span>
+                <span className="text-xs text-muted-foreground">{item.desc}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Stat */}
+        <div className="flex items-center gap-4 pt-6 border-t border-border">
+          <span className="text-technical text-3xl font-bold text-primary">
+            {step.stat.value}
+          </span>
+          <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">
+            {step.stat.label}
+          </span>
+        </div>
+
+        {/* Mobile: Show detail directly (no sticky on mobile) */}
+        <div className="lg:hidden mt-6">
+          <a href="#teklif" className="btn-industrial-primary text-center w-full inline-block">
+            Metodolojiyi İncele
+          </a>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
