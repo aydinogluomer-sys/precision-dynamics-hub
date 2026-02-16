@@ -70,7 +70,7 @@ const HowWeWorkSection = () => {
   const current = steps[activeStep];
 
   return (
-    <section className="section-industrial bg-card border-y border-border">
+    <section id="nasil-calisiyoruz" className="section-industrial bg-card border-y border-border">
       <div className="container-industrial">
         {/* Section Header */}
         <motion.div
