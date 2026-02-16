@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Upload, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import heroBg from "@/assets/hero-cnc.jpg";
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
@@ -60,9 +61,19 @@ const HeroSection = () => {
       className="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden"
       style={{ backgroundColor: "#020617" }}
     >
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={heroBg}
+          alt="CNC precision machining"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+
       {/* Grid Pattern */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none z-[1]"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(6, 136, 172, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 172, 0.05) 1px, transparent 1px)",
@@ -70,11 +81,11 @@ const HeroSection = () => {
         }}
       />
 
-      {/* Radial Overlay */}
+      {/* Dark Overlay */}
       <div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "radial-gradient(circle at center, rgba(2, 6, 23, 0.5) 0%, #020617 100%)",
+          background: "linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.7) 50%, rgba(2, 6, 23, 0.85) 100%)",
         }}
       />
 

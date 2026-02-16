@@ -1,9 +1,14 @@
-import { Cog, CircleDot, Layers, Zap, Box, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
+import serviceFrze from "@/assets/service-cnc-freze.jpg";
+import serviceTorna from "@/assets/service-cnc-torna.jpg";
+import serviceImalat from "@/assets/service-imalat.jpg";
+import serviceLazer from "@/assets/service-lazer.jpg";
+import serviceKalip from "@/assets/service-kalip.jpg";
 
 const services = [
   {
-    icon: Cog,
+    image: serviceFrze,
     badge: "Stratejik",
     title: "CNC Freze",
     description:
@@ -11,7 +16,7 @@ const services = [
     capabilities: ["5 Eksen İşleme", "Yüzey Kalitesi Ra 0.8"],
   },
   {
-    icon: CircleDot,
+    image: serviceTorna,
     badge: "Hassasiyet",
     title: "CNC Torna",
     description:
@@ -19,7 +24,7 @@ const services = [
     capabilities: ["Çift Kafa İşleme", "Otomatik KK Entegrasyonu"],
   },
   {
-    icon: Layers,
+    image: serviceImalat,
     badge: "Anahtar Teslim",
     title: "Talaşlı İmalat",
     description:
@@ -27,7 +32,7 @@ const services = [
     capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
   },
   {
-    icon: Zap,
+    image: serviceLazer,
     badge: "İleri Teknoloji",
     title: "Lazer Kesim",
     description:
@@ -35,7 +40,7 @@ const services = [
     capabilities: ["Fiber Lazer 6kW", "Otomatik Yükleme"],
   },
   {
-    icon: Box,
+    image: serviceKalip,
     badge: "Üretim",
     title: "Kalıp & Döküm",
     description:
@@ -150,15 +155,21 @@ const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
     variants={cardVariants}
     className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
   >
-    {/* Accent bar */}
-    <div className="h-1 w-full bg-primary" />
-
-    <div className="p-8">
-      {/* Badge */}
-      <span className="text-technical text-[11px] font-semibold text-primary uppercase tracking-widest mb-5 block">
+    {/* Service Image */}
+    <div className="relative h-48 overflow-hidden">
+      <img
+        src={service.image}
+        alt={service.title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+      <span className="absolute top-4 left-4 text-technical text-[11px] font-semibold text-primary-foreground bg-primary px-3 py-1 uppercase tracking-widest">
         {service.badge}
       </span>
+    </div>
 
+    <div className="p-8">
       {/* Title */}
       <h3 className="heading-industrial text-xl mb-3">{service.title}</h3>
 

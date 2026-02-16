@@ -1,5 +1,8 @@
 import { ChevronDown, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import blog5eksen from "@/assets/blog-5eksen.jpg";
+import blogMalzeme from "@/assets/blog-malzeme.jpg";
+import blogDfm from "@/assets/blog-dfm.jpg";
 
 const faqs = [
   {
@@ -30,18 +33,21 @@ const blogPosts = [
     excerpt: "Karmaşık geometrilerde tek seferde işleme imkanı ve yüzey kalitesi artışı...",
     date: "15 Ocak 2024",
     category: "Teknik",
+    image: blog5eksen,
   },
   {
     title: "Havacılık Parçalarında Malzeme Seçimi",
     excerpt: "Alüminyum 7075 vs Titanyum: Mukavemet, ağırlık ve maliyet karşılaştırması...",
     date: "8 Ocak 2024",
     category: "Malzeme",
+    image: blogMalzeme,
   },
   {
     title: "DFM: Tasarımdan Üretime Geçiş",
     excerpt: "Design for Manufacturing prensipleri ile maliyetleri düşürün ve kaliteyi artırın...",
     date: "2 Ocak 2024",
     category: "Mühendislik",
+    image: blogDfm,
   },
 ];
 
@@ -105,20 +111,31 @@ const FAQBlogSection = () => {
                 <a
                   key={index}
                   href="#"
-                  className="block border border-border bg-background p-4 hover:border-primary transition-colors group"
+                  className="flex gap-4 border border-border bg-background p-3 hover:border-primary transition-colors group overflow-hidden"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-technical text-xs text-primary">{post.category}</span>
-                    <span className="text-muted-foreground">•</span>
-                    <span className="text-xs text-muted-foreground">{post.date}</span>
+                  {/* Blog Thumbnail */}
+                  <div className="w-28 h-24 flex-shrink-0 overflow-hidden">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
                   </div>
-                  <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{post.excerpt}</p>
-                  <div className="flex items-center gap-1 mt-3 text-sm text-primary">
-                    Devamını Oku
-                    <ArrowRight className="w-3 h-3" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-technical text-xs text-primary">{post.category}</span>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">{post.date}</span>
+                    </div>
+                    <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-1">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>
+                    <div className="flex items-center gap-1 mt-2 text-xs text-primary">
+                      Devamını Oku
+                      <ArrowRight className="w-3 h-3" />
+                    </div>
                   </div>
                 </a>
               ))}
