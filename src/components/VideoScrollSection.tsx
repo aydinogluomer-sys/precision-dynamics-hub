@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
+import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
 
 const features = [
@@ -82,12 +83,14 @@ const VideoScrollSection = () => {
           <video
             ref={videoRef}
             src={cncVideo}
+            poster={cncWorkshop}
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
             className="w-full h-full object-cover"
+            style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }}
           />
         </motion.div>
 
