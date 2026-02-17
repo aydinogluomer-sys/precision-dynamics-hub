@@ -2,10 +2,17 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getPageBySlug, getPagesByCategory } from "@/data/servicePages";
-import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight, Cpu, FlaskConical } from "lucide-react";
 import { motion } from "framer-motion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.4 },
+});
 
 const ServiceDetail = () => {
   const { slug } = useParams<{ category: string; slug: string }>();
@@ -28,14 +35,7 @@ const ServiceDetail = () => {
   }
 
   const relatedPages = getPagesByCategory(page.category).filter((p) => p.slug !== page.slug);
-
-  const categoryLabels: Record<string, string> = {
-    hizmetler: "Hizmetler",
-    kabiliyetler: "Kabiliyetler",
-    endustriyel: "Endüstriyel",
-  };
-
-  // Pick a contextual hero image
+  const categoryLabels: Record<string, string> = { hizmetler: "Hizmetler", kabiliyetler: "Kabiliyetler", endustriyel: "Endüstriyel" };
   const heroImage = page.category === "kabiliyetler" ? qualityControl : cncWorkshop;
 
   return (
@@ -45,14 +45,16 @@ const ServiceDetail = () => {
         {/* Hero Section */}
         <section className="relative pt-24 pb-0">
           <div className="relative h-[320px] md:h-[400px] overflow-hidden">
-            <img
+            <motion.img
               src={heroImage}
               alt={page.title}
               className="w-full h-full object-cover"
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8 }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 container-industrial pb-8">
-              {/* Breadcrumb */}
               <nav className="flex items-center gap-2 text-xs text-primary-foreground/70 mb-4">
                 <Link to="/" className="hover:text-primary-foreground transition-colors">Ana Sayfa</Link>
                 <ChevronRight size={12} />
@@ -60,11 +62,7 @@ const ServiceDetail = () => {
                 <ChevronRight size={12} />
                 <span className="text-primary-foreground font-medium">{page.title}</span>
               </nav>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <motion.div {...fadeUp()}>
                 <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">
                   {page.categoryLabel}
                 </span>
@@ -76,42 +74,25 @@ const ServiceDetail = () => {
 
         <div className="container-industrial py-12 md:py-16">
           {/* Description */}
-          <motion.p
-            className="text-lg md:text-xl text-muted-foreground max-w-3xl mb-12 leading-relaxed"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-          >
+          <motion.p {...fadeUp(0.2)} className="text-lg md:text-xl text-muted-foreground max-w-3xl mb-12 leading-relaxed">
             {page.description}
           </motion.p>
 
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
-            {/* Main Content - Left 2 cols */}
+            {/* Main Content */}
             <div className="lg:col-span-2 space-y-10">
-              {/* Content paragraphs */}
+              {/* Content */}
               <div className="space-y-5 text-muted-foreground leading-relaxed">
-                {page.content.map((paragraph, i) => (
-                  <motion.p
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
-                  >
-                    {paragraph}
-                  </motion.p>
+                {page.content.map((p, i) => (
+                  <motion.p key={i} {...fadeUp(0.3 + i * 0.1)}>{p}</motion.p>
                 ))}
               </div>
 
               {/* Process Steps */}
               {page.processSteps && page.processSteps.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.4 }}
-                >
+                <motion.div {...fadeUp(0.5)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" />
-                    Süreç Adımları
+                    <div className="accent-line !w-8" /> Süreç Adımları
                   </h2>
                   <div className="flex flex-wrap gap-0">
                     {page.processSteps.map((step, i) => (
@@ -120,9 +101,7 @@ const ServiceDetail = () => {
                           <span className="text-technical text-xs text-primary font-bold">{String(i + 1).padStart(2, "0")}</span>
                           <span className="text-sm font-medium">{step}</span>
                         </div>
-                        {i < page.processSteps!.length - 1 && (
-                          <ArrowRight size={16} className="text-primary mx-1 shrink-0" />
-                        )}
+                        {i < page.processSteps!.length - 1 && <ArrowRight size={16} className="text-primary mx-1 shrink-0" />}
                       </div>
                     ))}
                   </div>
@@ -131,21 +110,20 @@ const ServiceDetail = () => {
 
               {/* Advantages */}
               {page.advantages && page.advantages.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.4 }}
-                >
+                <motion.div {...fadeUp(0.6)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" />
-                    Avantajlarımız
+                    <div className="accent-line !w-8" /> Avantajlarımız
                   </h2>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {page.advantages.map((adv, i) => (
-                      <div key={i} className="flex items-start gap-3 bg-card border border-border p-4">
+                      <motion.div
+                        key={i}
+                        className="flex items-start gap-3 bg-card border border-border p-4 hover:border-primary transition-colors"
+                        whileHover={{ x: 4 }}
+                      >
                         <CheckCircle2 size={18} className="text-primary shrink-0 mt-0.5" />
                         <span className="text-sm">{adv}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </motion.div>
@@ -153,40 +131,108 @@ const ServiceDetail = () => {
 
               {/* Features */}
               {page.features && page.features.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7, duration: 0.4 }}
-                >
+                <motion.div {...fadeUp(0.7)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" />
-                    Öne Çıkan Özellikler
+                    <div className="accent-line !w-8" /> Öne Çıkan Özellikler
                   </h2>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {page.features.map((feature) => (
-                      <div
+                      <motion.div
                         key={feature}
                         className="border border-border bg-card p-4 flex items-center gap-3 hover:border-primary transition-colors"
+                        whileHover={{ y: -2 }}
                       >
                         <div className="w-2 h-2 bg-primary shrink-0" />
                         <span className="text-sm font-medium">{feature}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </motion.div>
               )}
+
+              {/* Machines Section */}
+              {page.machines && page.machines.length > 0 && (
+                <motion.div {...fadeUp(0.75)}>
+                  <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
+                    <div className="accent-line !w-8" />
+                    <Cpu size={20} className="text-primary" />
+                    Makine Parkuru
+                  </h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {page.machines.map((machine, i) => (
+                      <motion.div
+                        key={i}
+                        className="border border-border bg-card p-5 hover:border-primary transition-all group"
+                        whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--primary) / 0.1)" }}
+                      >
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-8 h-8 bg-primary/10 flex items-center justify-center">
+                            <Cpu size={16} className="text-primary" />
+                          </div>
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">{machine.brand}</span>
+                        </div>
+                        <h4 className="font-bold text-sm mb-2 group-hover:text-primary transition-colors">{machine.name}</h4>
+                        <p className="text-technical text-xs text-muted-foreground">{machine.specs}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Materials Section */}
+              {page.materials && page.materials.length > 0 && (
+                <motion.div {...fadeUp(0.8)}>
+                  <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
+                    <div className="accent-line !w-8" />
+                    <FlaskConical size={20} className="text-primary" />
+                    İşlenebilir Malzemeler
+                  </h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {page.materials.map((mat, i) => (
+                      <motion.div
+                        key={i}
+                        className="border border-border bg-card overflow-hidden hover:border-primary transition-all group"
+                        whileHover={{ y: -4 }}
+                      >
+                        <div className="bg-primary/5 px-5 py-3 border-b border-border">
+                          <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{mat.name}</h4>
+                          <span className="text-technical text-xs text-primary">{mat.grade}</span>
+                        </div>
+                        <div className="px-5 py-3">
+                          <p className="text-xs text-muted-foreground">{mat.properties}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* FAQ Section */}
+              {page.faq && page.faq.length > 0 && (
+                <motion.div {...fadeUp(0.85)}>
+                  <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
+                    <div className="accent-line !w-8" /> Sıkça Sorulan Sorular
+                  </h2>
+                  <Accordion type="single" collapsible className="space-y-2">
+                    {page.faq.map((item, i) => (
+                      <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card px-5">
+                        <AccordionTrigger className="text-sm font-semibold text-left hover:text-primary transition-colors py-4">
+                          {item.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm text-muted-foreground pb-4">
+                          {item.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </motion.div>
+              )}
             </div>
 
-            {/* Sidebar - Right 1 col */}
+            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Technical Specs Card */}
               {page.technicalSpecs && page.technicalSpecs.length > 0 && (
-                <motion.div
-                  className="border border-border bg-card sticky top-24"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4, duration: 0.4 }}
-                >
+                <motion.div className="border border-border bg-card sticky top-24" {...fadeUp(0.4)}>
                   <div className="bg-primary p-4 flex items-center gap-3">
                     <Gauge size={20} className="text-primary-foreground" />
                     <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">Teknik Özellikler</h3>
@@ -202,13 +248,7 @@ const ServiceDetail = () => {
                 </motion.div>
               )}
 
-              {/* CTA Card */}
-              <motion.div
-                className="border border-primary bg-card p-6"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.4 }}
-              >
+              <motion.div className="border border-primary bg-card p-6" {...fadeUp(0.5)}>
                 <h3 className="font-bold text-lg mb-2">Projeniz için teklif alın</h3>
                 <p className="text-sm text-muted-foreground mb-5">
                   {page.title} hizmeti hakkında detaylı bilgi ve fiyat teklifi için bizimle iletişime geçin.
@@ -222,15 +262,9 @@ const ServiceDetail = () => {
 
           {/* Related pages */}
           {relatedPages.length > 0 && (
-            <motion.div
-              className="mt-20 pt-12 border-t border-border"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.4 }}
-            >
+            <motion.div className="mt-20 pt-12 border-t border-border" {...fadeUp(0.8)}>
               <h2 className="heading-industrial text-xl mb-8 flex items-center gap-3">
-                <div className="accent-line !w-8" />
-                İlgili Sayfalar
+                <div className="accent-line !w-8" /> İlgili Sayfalar
               </h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {relatedPages.slice(0, 8).map((rp) => (
@@ -240,21 +274,15 @@ const ServiceDetail = () => {
                     className="border border-border bg-card p-5 hover:border-primary transition-colors group"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {rp.categoryLabel}
-                      </span>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{rp.categoryLabel}</span>
                       <ArrowUpRight size={14} className="text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
-                    <h3 className="font-bold text-sm group-hover:text-primary transition-colors">
-                      {rp.title}
-                    </h3>
+                    <h3 className="font-bold text-sm group-hover:text-primary transition-colors">{rp.title}</h3>
                     <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{rp.description}</p>
                     {rp.technicalSpecs && rp.technicalSpecs.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
                         {rp.technicalSpecs.slice(0, 2).map((spec, i) => (
-                          <span key={i} className="text-technical text-[10px] text-primary bg-primary/10 px-2 py-0.5">
-                            {spec.value}
-                          </span>
+                          <span key={i} className="text-technical text-[10px] text-primary bg-primary/10 px-2 py-0.5">{spec.value}</span>
                         ))}
                       </div>
                     )}

@@ -10,6 +10,9 @@ export interface ServicePageData {
   heroImage?: string;
   processSteps?: string[];
   advantages?: string[];
+  machines?: { name: string; brand: string; specs: string }[];
+  materials?: { name: string; grade: string; properties: string }[];
+  faq?: { question: string; answer: string }[];
 }
 
 export const servicePages: ServicePageData[] = [
@@ -55,6 +58,24 @@ export const servicePages: ServicePageData[] = [
       "Prototipten seri üretime esnek çözümler (min. 1 adet)",
       "3-5 iş günü prototip, 7-15 iş günü seri üretim teslimatı",
     ],
+    machines: [
+      { name: "DMG MORI DMU 65 monoBLOCK", brand: "DMG MORI", specs: "5 eksen, 650×500×450mm, 18.000 RPM" },
+      { name: "Mazak Variaxis i-700", brand: "Mazak", specs: "5 eksen, 730×460×460mm, 12.000 RPM" },
+      { name: "Haas VF-4SS", brand: "Haas", specs: "3+2 eksen, 1270×508×635mm, 12.000 RPM" },
+    ],
+    materials: [
+      { name: "Alüminyum", grade: "6061-T6 / 7075-T6", properties: "Hafif, korozyona dayanıklı, iyi işlenebilirlik" },
+      { name: "Paslanmaz Çelik", grade: "304 / 316L", properties: "Yüksek korozyon direnci, hijyenik" },
+      { name: "Karbon Çelik", grade: "1045 / 4140", properties: "Yüksek mukavemet, ısıl işleme uygun" },
+      { name: "Titanyum", grade: "Ti6Al4V (Grade 5)", properties: "Hafif, biyouyumlu, yüksek mukavemet" },
+      { name: "POM (Delrin)", grade: "Delrin 150 / 500", properties: "Düşük sürtünme, boyutsal kararlılık" },
+    ],
+    faq: [
+      { question: "CNC frezeleme tolerans değerleriniz nedir?", answer: "Standart ±0.01mm, hassas işlemede ±0.005mm ve mikro işlemede ±0.001mm tolerans değerlerine ulaşabiliyoruz." },
+      { question: "Hangi dosya formatlarını kabul ediyorsunuz?", answer: "STEP, IGES, SolidWorks (.sldprt), CATIA (.catpart), NX (.prt), Parasolid (.x_t) ve PDF/DWG teknik çizim formatlarını destekliyoruz." },
+      { question: "Minimum sipariş adedi var mı?", answer: "Minimum 1 adet prototipten başlayarak seri üretime kadar her hacimde sipariş kabul ediyoruz." },
+      { question: "Teslimat süreniz ne kadar?", answer: "Prototip için 3-5 iş günü, küçük seri için 7-10 iş günü, seri üretim için 15-20 iş günü teslimat süresi sunuyoruz." },
+    ],
   },
   {
     slug: "cnc-tornalama",
@@ -94,6 +115,23 @@ export const servicePages: ServicePageData[] = [
       "Çift milli üretimle %50 setup tasarrufu",
       "Swiss tip mikro tornalama kabiliyeti (0.5-38mm)",
       "Bar feeder ile otomasyon",
+    ],
+    machines: [
+      { name: "DMG MORI NLX 2500", brand: "DMG MORI", specs: "C/Y eksen, 380mm çap, 4.000 RPM" },
+      { name: "Mazak Quick Turn Smart 350", brand: "Mazak", specs: "C eksen, 350mm çap, 3.500 RPM" },
+      { name: "Doosan Puma TT 1800SY", brand: "Doosan", specs: "Çift mil, Y eksen, 1800mm boy" },
+      { name: "Star SR-38 Swiss Tip", brand: "Star", specs: "0.5-38mm çap, 10.000 RPM" },
+    ],
+    materials: [
+      { name: "Alüminyum", grade: "2011 / 6061 / 7075", properties: "Otomat kalite, serbest kesim" },
+      { name: "Pirinç", grade: "CuZn39Pb3 (CW614N)", properties: "Mükemmel işlenebilirlik, dekoratif" },
+      { name: "Paslanmaz Çelik", grade: "303 / 304 / 316", properties: "Korozyon direnci, hijyenik" },
+      { name: "Çelik", grade: "1215 / 1045 / 4140", properties: "Yüksek mukavemet, ısıl işleme uygun" },
+    ],
+    faq: [
+      { question: "CNC tornalama ile frezeleme arasındaki fark nedir?", answer: "CNC tornalama döner parçalar (mil, somun, gövde) için idealdir; iş parçası döner, takım sabit kalır. Frezeleme ise düz ve karmaşık geometriler için uygundur; takım döner, iş parçası sabit kalır." },
+      { question: "Hangi çap aralığında tornalama yapabiliyorsunuz?", answer: "Swiss tip torna ile 0.5mm'den başlayarak konvansiyonel torna ile 380mm çapa kadar geniş bir aralıkta tornalama yapabiliyoruz." },
+      { question: "Çift milli torna avantajı nedir?", answer: "Çift milli torna ile ön ve arka yüzey işlemeleri tek kurulumda tamamlanır, setup süresinden %50 tasarruf sağlanır ve merkezleme hataları ortadan kalkar." },
     ],
   },
   {
@@ -415,6 +453,12 @@ export const servicePages: ServicePageData[] = [
       "MIL-A-8625 tam uyum",
       "11+ renk seçeneği",
       "50 kg/parça kapasiteye kadar",
+    ],
+    faq: [
+      { question: "Anodizasyon hangi metallere uygulanabilir?", answer: "Anodizasyon temel olarak alüminyum ve alaşımlarına uygulanır. Titanyum ve magnezyum da anodize edilebilir ancak en yaygın uygulama alüminyumdur." },
+      { question: "Sert anodizasyon ile normal anodizasyon farkı nedir?", answer: "Sert anodizasyon (Tip III) 25-100µm kalınlıkta olup 60-70 HRC sertlik sağlar, aşınma direnci gerektiğinde tercih edilir. Normal anodizasyon (Tip II) 10-25µm olup genel korozyon koruması sağlar." },
+      { question: "Hangi renklerde anodizasyon yapabiliyorsunuz?", answer: "Siyah, sarı, kırmızı, mavi, yeşil, turuncu, mor, altın, bronz, füme ve naturel (renksiz) dahil 11+ renk seçeneği sunuyoruz." },
+      { question: "Anodizasyon kaplama ne kadar dayanıklıdır?", answer: "MIL-A-8625 standardına uygun kaplamalarımız ASTM B117 tuz testi ile 500+ saat korozyon direnci sağlar. Sert anodizasyon ile aşınma direnci önemli ölçüde artar." },
     ],
   },
   {
