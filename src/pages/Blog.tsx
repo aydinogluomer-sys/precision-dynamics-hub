@@ -1,89 +1,49 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, Tag } from "lucide-react";
+import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
-import blog5eksen from "@/assets/blog-5eksen.jpg";
-import blogMalzeme from "@/assets/blog-malzeme.jpg";
-import blogDfm from "@/assets/blog-dfm.jpg";
-import cncWorkshop from "@/assets/cnc-workshop.jpg";
-import qualityControl from "@/assets/quality-control.jpg";
-import serviceCncFreze from "@/assets/service-cnc-freze.jpg";
+import { useState, useMemo } from "react";
+import { blogPosts, blogCategories } from "@/data/blogData";
 
-const blogPosts = [
-  {
-    slug: "5-eksen-cnc-isleme-avantajlari",
-    title: "5 Eksen CNC İşleme Avantajları",
-    excerpt:
-      "Karmaşık geometrilerde tek seferde işleme imkanı sunan 5 eksenli CNC teknolojisi, yüzey kalitesini artırırken setup süresini kısaltıyor. Bu yazıda 5 eksen işlemenin avantajlarını detaylıca inceliyoruz.",
-    date: "15 Ocak 2024",
-    readTime: "8 dk okuma",
-    category: "Teknik",
-    image: blog5eksen,
-    featured: true,
-  },
-  {
-    slug: "havacilik-parcalarinda-malzeme-secimi",
-    title: "Havacılık Parçalarında Malzeme Seçimi",
-    excerpt:
-      "Alüminyum 7075 vs Titanyum: Mukavemet, ağırlık ve maliyet karşılaştırması. Havacılık uygulamalarında doğru malzeme seçimi nasıl yapılır?",
-    date: "8 Ocak 2024",
-    readTime: "6 dk okuma",
-    category: "Malzeme",
-    image: blogMalzeme,
-    featured: true,
-  },
-  {
-    slug: "dfm-tasarimdan-uretime-gecis",
-    title: "DFM: Tasarımdan Üretime Geçiş",
-    excerpt:
-      "Design for Manufacturing prensipleri ile maliyetleri düşürün ve kaliteyi artırın. DFM sürecinin aşamalarını adım adım anlatıyoruz.",
-    date: "2 Ocak 2024",
-    readTime: "10 dk okuma",
-    category: "Mühendislik",
-    image: blogDfm,
-    featured: false,
-  },
-  {
-    slug: "cnc-torna-frezeleme-farki",
-    title: "CNC Torna vs Frezeleme: Hangisini Seçmeli?",
-    excerpt:
-      "Parça geometrisine göre doğru işleme yöntemini seçmek maliyet ve kalite açısından kritik önem taşır. İki yöntemin avantaj ve dezavantajlarını karşılaştırıyoruz.",
-    date: "25 Aralık 2023",
-    readTime: "7 dk okuma",
-    category: "Teknik",
-    image: serviceCncFreze,
-    featured: false,
-  },
-  {
-    slug: "kalite-kontrol-cmm-olcum",
-    title: "Kalite Kontrol: CMM Ölçüm Süreçleri",
-    excerpt:
-      "Koordinat ölçüm makineleri (CMM) ile hassas boyutsal doğrulama süreçleri. FAIR raporu, PPAP ve SPC uygulamalarını inceliyoruz.",
-    date: "18 Aralık 2023",
-    readTime: "9 dk okuma",
-    category: "Kalite",
-    image: qualityControl,
-    featured: false,
-  },
-  {
-    slug: "endustriyel-yuzey-islemleri-rehberi",
-    title: "Endüstriyel Yüzey İşlemleri Rehberi",
-    excerpt:
-      "Anodizasyon, pasivasyon, kaplama ve boyama: Hangi yüzey işlemi ne zaman tercih edilmeli? Kapsamlı yüzey işlemleri rehberimiz.",
-    date: "10 Aralık 2023",
-    readTime: "12 dk okuma",
-    category: "Rehber",
-    image: cncWorkshop,
-    featured: false,
-  },
-];
-
-const categories = ["Tümü", "Teknik", "Malzeme", "Mühendislik", "Kalite", "Rehber"];
+type SortOption = "newest" | "oldest" | "popular";
 
 const Blog = () => {
-  const featured = blogPosts.filter((p) => p.featured);
-  const regular = blogPosts.filter((p) => !p.featured);
+  const [activeCategory, setActiveCategory] = useState("Tümü");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
+
+  const filtered = useMemo(() => {
+    let posts = [...blogPosts];
+
+    // Category filter
+    if (activeCategory !== "Tümü") {
+      posts = posts.filter((p) => p.category === activeCategory);
+    }
+
+    // Search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      posts = posts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.excerpt.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+      );
+    }
+
+    // Sort
+    if (sortBy === "popular") {
+      posts.sort((a, b) => b.views - a.views);
+    } else if (sortBy === "oldest") {
+      posts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
+    // "newest" is default order
+
+    return posts;
+  }, [activeCategory, searchQuery, sortBy]);
+
+  const popularPosts = useMemo(() => [...blogPosts].sort((a, b) => b.views - a.views).slice(0, 3), []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,125 +61,166 @@ const Blog = () => {
           </p>
         </section>
 
-        {/* Categories */}
-        <section className="container-industrial pb-8">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                className={`text-xs font-semibold uppercase tracking-wider px-4 py-2 border transition-colors ${
-                  cat === "Tümü"
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Featured Posts */}
-        <section className="container-industrial pb-12">
-          <div className="grid md:grid-cols-2 gap-6">
-            {featured.map((post, i) => (
-              <motion.article
-                key={post.slug}
-                className="group border border-border bg-card overflow-hidden hover:border-primary transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.4 }}
-              >
-                <div className="aspect-[16/9] overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
+        <div className="container-industrial">
+          <div className="grid lg:grid-cols-4 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              {/* Filters & Search Bar */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                {/* Search */}
+                <div className="relative flex-1">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Blog yazılarında ara..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-card border border-border pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-technical text-xs text-primary flex items-center gap-1">
-                      <Tag size={12} />
-                      {post.category}
-                    </span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock size={12} />
-                      {post.readTime}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{post.date}</span>
-                  </div>
-                  <h2 className="heading-industrial text-xl mb-2 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h2>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    Devamını Oku <ArrowRight size={14} />
-                  </span>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </section>
 
-        {/* Regular Posts */}
-        <section className="container-industrial pb-16">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {regular.map((post, i) => (
-              <motion.article
-                key={post.slug}
-                className="group border border-border bg-card overflow-hidden hover:border-primary transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
-              >
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                {/* Sort */}
+                <div className="relative flex items-center gap-2">
+                  <SlidersHorizontal size={14} className="text-muted-foreground" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                    className="bg-card border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors appearance-none pr-8 cursor-pointer"
+                  >
+                    <option value="newest">En Yeni</option>
+                    <option value="oldest">En Eski</option>
+                    <option value="popular">En Popüler</option>
+                  </select>
                 </div>
-                <div className="p-5">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-technical text-xs text-primary">{post.category}</span>
-                    <span className="text-xs text-muted-foreground">{post.readTime}</span>
-                  </div>
-                  <h3 className="font-bold text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{post.date}</span>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                      Oku <ArrowRight size={12} />
-                    </span>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </section>
+              </div>
 
-        {/* Newsletter CTA */}
-        <section className="bg-card border-y border-border">
-          <div className="container-industrial py-16 text-center">
-            <h2 className="heading-industrial text-2xl mb-3">Teknik bültenimize abone olun</h2>
-            <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
-              CNC işleme, malzeme bilimi ve üretim mühendisliği hakkında aylık teknik içerikler alın.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="E-posta adresiniz"
-                className="flex-1 bg-background border border-border px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
-              />
-              <button className="btn-industrial-primary !py-3 !px-6">Abone Ol</button>
+              {/* Categories */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {blogCategories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`text-xs font-semibold uppercase tracking-wider px-4 py-2 border transition-colors ${
+                      cat === activeCategory
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Post Count */}
+              <p className="text-xs text-muted-foreground mb-6">
+                {filtered.length} blog yazısı gösteriliyor
+              </p>
+
+              {/* Posts Grid */}
+              {filtered.length === 0 ? (
+                <div className="text-center py-16 text-muted-foreground">
+                  <p className="text-lg mb-2">Sonuç bulunamadı</p>
+                  <p className="text-sm">Farklı bir arama terimi veya kategori deneyin.</p>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {filtered.map((post, i) => (
+                    <motion.article
+                      key={post.slug}
+                      className="group border border-border bg-card overflow-hidden hover:border-primary transition-colors"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.4 }}
+                    >
+                      <Link to={`/blog/${post.slug}`}>
+                        <div className="aspect-[16/10] overflow-hidden relative">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                          {post.featured && (
+                            <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-1">
+                              Öne Çıkan
+                            </span>
+                          )}
+                        </div>
+                        <div className="p-5">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="text-technical text-xs text-primary flex items-center gap-1">
+                              <Tag size={12} /> {post.category}
+                            </span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock size={12} /> {post.readTime}
+                            </span>
+                          </div>
+                          <h2 className="font-bold text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                            {post.title}
+                          </h2>
+                          <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{post.excerpt}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                              Devamını Oku <ArrowRight size={12} />
+                            </span>
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Eye size={12} /> {post.views.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.article>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Popular Posts */}
+              <div className="border border-border bg-card">
+                <div className="bg-primary p-4 flex items-center gap-2">
+                  <TrendingUp size={18} className="text-primary-foreground" />
+                  <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">En Popüler Yazılar</h3>
+                </div>
+                <div className="divide-y divide-border">
+                  {popularPosts.map((post, i) => (
+                    <Link
+                      key={post.slug}
+                      to={`/blog/${post.slug}`}
+                      className="flex gap-3 p-4 hover:bg-muted/50 transition-colors group"
+                    >
+                      <span className="text-technical text-2xl font-bold text-primary/30">{String(i + 1).padStart(2, "0")}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs font-bold line-clamp-2 group-hover:text-primary transition-colors">{post.title}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Eye size={10} /> {post.views.toLocaleString()}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">{post.readTime}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Newsletter CTA */}
+              <div className="border border-primary bg-card p-6">
+                <h3 className="font-bold text-lg mb-2">Teknik bülten</h3>
+                <p className="text-xs text-muted-foreground mb-4">
+                  CNC işleme ve üretim mühendisliği hakkında aylık teknik içerikler alın.
+                </p>
+                <input
+                  type="email"
+                  placeholder="E-posta adresiniz"
+                  className="w-full bg-background border border-border px-4 py-2.5 text-sm mb-3 focus:outline-none focus:border-primary transition-colors"
+                />
+                <button className="btn-industrial-primary w-full !py-2.5 text-xs">Abone Ol</button>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
       </main>
       <Footer />
     </div>

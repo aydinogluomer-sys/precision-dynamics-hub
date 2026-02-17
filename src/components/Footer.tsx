@@ -327,17 +327,18 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Floating Back Button */}
-      <div className="fixed bottom-24 right-6 z-50">
+      {/* Floating Scroll-to-Top Button - Left */}
+      <div className="fixed bottom-6 left-6 z-50">
         <button
-          onClick={() => window.history.back()}
-          className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl hover:border-primary"
+          aria-label="Yukarı çık"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 rotate-90" />
         </button>
       </div>
 
-      {/* Floating Chat Button */}
+      {/* Floating Chat Button - Right */}
       <div className="fixed bottom-6 right-6 z-50">
         <a
           href="#"
