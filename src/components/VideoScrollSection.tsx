@@ -41,13 +41,13 @@ const VideoScrollSection = () => {
   // Opacity: fully visible from start, fade out at end
   const opacity = useTransform(scrollYProgress, [0, 0.7, 0.9], [1, 1, 0]);
 
-  // Content reveal — earlier triggers
-  const labelOpacity = useTransform(scrollYProgress, [0.02, 0.08], [0, 1]);
-  const titleOpacity = useTransform(scrollYProgress, [0.04, 0.12], [0, 1]);
-  const titleY = useTransform(scrollYProgress, [0.04, 0.12], [40, 0]);
-  const descOpacity = useTransform(scrollYProgress, [0.08, 0.16], [0, 1]);
-  const cardsOpacity = useTransform(scrollYProgress, [0.12, 0.22], [0, 1]);
-  const cardsY = useTransform(scrollYProgress, [0.12, 0.22], [30, 0]);
+  // Content always visible from start
+  const labelOpacity = 1;
+  const titleOpacity = 1;
+  const titleY = 0;
+  const descOpacity = 1;
+  const cardsOpacity = 1;
+  const cardsY = 0;
 
   // Exit transition overlay
   const exitOpacity = useTransform(scrollYProgress, [0.75, 0.9], [0, 1]);
