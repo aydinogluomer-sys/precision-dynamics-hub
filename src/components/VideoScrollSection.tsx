@@ -82,6 +82,7 @@ const VideoScrollSection = () => {
           <video
             ref={videoRef}
             src={cncVideo}
+            autoPlay
             loop
             muted
             playsInline
