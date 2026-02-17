@@ -12,6 +12,7 @@ import KVKK from "./pages/KVKK";
 import CerezPolitikasi from "./pages/CerezPolitikasi";
 import Hakkimizda from "./pages/Hakkimizda";
 import Iletisim from "./pages/Iletisim";
+import ServiceDetail from "./pages/ServiceDetail";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,9 @@ const AnimatedRoutes = () => {
           <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
           <Route path="/hakkimizda" element={<Hakkimizda />} />
           <Route path="/iletisim" element={<Iletisim />} />
+          <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
+          <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
+          <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
