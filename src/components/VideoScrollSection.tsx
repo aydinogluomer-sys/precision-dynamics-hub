@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { Settings, Target, Layers, Zap } from "lucide-react";
@@ -28,46 +28,64 @@ const features = [
 
 const VideoScrollSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end start"],
   });
 
-  // Zoom: starts at scale 1 (far), zooms in to 2.5 as user scrolls
-  const scale = useTransform(scrollYProgress, [0.1, 0.7], [1, 2.5]);
-  // Opacity: fade in at start, stay visible, fade out at end for transition
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.75, 0.95], [0, 1, 1, 0]);
+  // Zoom: starts at scale 1, zooms to 2.5 as user scrolls
+  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 2.5]);
+  // Opacity: visible immediately, fade out at end
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.7, 0.9], [0, 1, 1, 0]);
 
-  // Content reveal (on.energy style - staggered appearance)
-  const labelOpacity = useTransform(scrollYProgress, [0.12, 0.22], [0, 1]);
-  const titleOpacity = useTransform(scrollYProgress, [0.15, 0.28], [0, 1]);
-  const titleY = useTransform(scrollYProgress, [0.15, 0.28], [40, 0]);
-  const descOpacity = useTransform(scrollYProgress, [0.22, 0.35], [0, 1]);
-  const cardsOpacity = useTransform(scrollYProgress, [0.3, 0.45], [0, 1]);
-  const cardsY = useTransform(scrollYProgress, [0.3, 0.45], [30, 0]);
+  // Content reveal — earlier triggers
+  const labelOpacity = useTransform(scrollYProgress, [0.02, 0.08], [0, 1]);
+  const titleOpacity = useTransform(scrollYProgress, [0.04, 0.12], [0, 1]);
+  const titleY = useTransform(scrollYProgress, [0.04, 0.12], [40, 0]);
+  const descOpacity = useTransform(scrollYProgress, [0.08, 0.16], [0, 1]);
+  const cardsOpacity = useTransform(scrollYProgress, [0.12, 0.22], [0, 1]);
+  const cardsY = useTransform(scrollYProgress, [0.12, 0.22], [30, 0]);
 
   // Exit transition overlay
-  const exitOpacity = useTransform(scrollYProgress, [0.78, 0.95], [0, 1]);
-  const exitY = useTransform(scrollYProgress, [0.8, 1], [0, -60]);
+  const exitOpacity = useTransform(scrollYProgress, [0.75, 0.9], [0, 1]);
+  const exitY = useTransform(scrollYProgress, [0.78, 1], [0, -60]);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+    videoRef.current?.play().catch(() => {});
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, []);
 
   return (
     <div
       ref={containerRef}
       className="relative h-[200vh]"
       style={{ background: "#020617" }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
-        {/* Static video with scroll-driven zoom */}
+        {/* Video: paused by default, plays on hover, zooms on scroll */}
         <motion.div
           className="absolute inset-0 will-change-transform"
           style={{ scale, opacity }}
         >
           <video
+            ref={videoRef}
             src={cncVideo}
-            autoPlay
             loop
             muted
             playsInline
+            preload="auto"
             className="w-full h-full object-cover"
           />
         </motion.div>
