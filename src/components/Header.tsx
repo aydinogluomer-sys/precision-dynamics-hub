@@ -220,7 +220,7 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "İletişim", path: "/iletisim", hasDropdown: false },
-  { label: "Blog", path: "#", hasDropdown: false, isFire: true },
+  { label: "Blog", path: "/blog", hasDropdown: false, isFire: true },
 ];
 
 // ── Component ───────────────────────────────────────────────────
