@@ -14,6 +14,9 @@ import Hakkimizda from "./pages/Hakkimizda";
 import Iletisim from "./pages/Iletisim";
 import ServiceDetail from "./pages/ServiceDetail";
 import Blog from "./pages/Blog";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +44,8 @@ const AnimatedRoutes = () => {
           <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
           <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
           <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
