@@ -52,57 +52,57 @@ const navItems: NavItem[] = [
     children: [
       {
         label: "Talaşlı İmalat",
-        path: "#",
+        path: "/hizmetler/cnc-frezeleme",
         icon: <Wrench size={18} />,
         links: [
-          { label: "CNC Frezeleme", path: "#" },
-          { label: "CNC Tornalama", path: "#" },
-          { label: "Hassas Mikro İşleme", path: "#" },
-          { label: "Derin Delik & Raybalama", path: "#" },
+          { label: "CNC Frezeleme", path: "/hizmetler/cnc-frezeleme" },
+          { label: "CNC Tornalama", path: "/hizmetler/cnc-tornalama" },
+          { label: "Hassas Mikro İşleme", path: "/hizmetler/hassas-mikro-isleme" },
+          { label: "Derin Delik & Raybalama", path: "/hizmetler/derin-delik-raybalama" },
         ],
       },
       {
         label: "Ön Üretim",
-        path: "#",
+        path: "/hizmetler/enjeksiyon-kalibi",
         icon: <Layers size={18} />,
         links: [
-          { label: "Enjeksiyon Kalıbı", path: "#" },
-          { label: "Basınçlı Döküm", path: "#" },
-          { label: "Silikon Kalıplama", path: "#" },
-          { label: "Fikstür & Aparat Tasarımı", path: "#" },
+          { label: "Enjeksiyon Kalıbı", path: "/hizmetler/enjeksiyon-kalibi" },
+          { label: "Basınçlı Döküm", path: "/hizmetler/basinçli-dokum" },
+          { label: "Silikon Kalıplama", path: "/hizmetler/silikon-kaliplama" },
+          { label: "Fikstür & Aparat Tasarımı", path: "/hizmetler/fikstur-aparat-tasarimi" },
         ],
       },
       {
         label: "Yüzey İşlemleri",
-        path: "#",
+        path: "/hizmetler/mekanik-yuzey-islemleri",
         icon: <Sparkles size={18} />,
         links: [
-          { label: "Mekanik Yüzey İşlemleri", path: "#" },
-          { label: "Anodizasyon", path: "#" },
-          { label: "Kimyasal İşlemler", path: "#" },
-          { label: "Boya & Koruyucu Kaplamalar", path: "#" },
+          { label: "Mekanik Yüzey İşlemleri", path: "/hizmetler/mekanik-yuzey-islemleri" },
+          { label: "Anodizasyon", path: "/hizmetler/anodizasyon" },
+          { label: "Kimyasal İşlemler", path: "/hizmetler/kimyasal-islemler" },
+          { label: "Boya & Koruyucu Kaplamalar", path: "/hizmetler/boya-koruyucu-kaplamalar" },
         ],
       },
       {
         label: "İşaretleme & Tanımlama",
-        path: "#",
+        path: "/hizmetler/lazer-kazima",
         icon: <Tag size={18} />,
         links: [
-          { label: "Lazer Kazıma", path: "#" },
-          { label: "Tavlama", path: "#" },
-          { label: "QR & DataMatrix Kodları", path: "#" },
-          { label: "Logo & Markalama", path: "#" },
+          { label: "Lazer Kazıma", path: "/hizmetler/lazer-kazima" },
+          { label: "Tavlama", path: "/hizmetler/tavlama" },
+          { label: "QR & DataMatrix Kodları", path: "/hizmetler/qr-datamatrix-kodlari" },
+          { label: "Logo & Markalama", path: "/hizmetler/logo-markalama" },
         ],
       },
       {
         label: "Montaj & Birleştirme",
-        path: "#",
+        path: "/hizmetler/insert-uygulama",
         icon: <Package size={18} />,
         links: [
-          { label: "Insert Uygulama", path: "#" },
-          { label: "Mekanik Montaj", path: "#" },
-          { label: "Kitting & Paketleme", path: "#" },
-          { label: "Kaynaklı İmalat", path: "#" },
+          { label: "Insert Uygulama", path: "/hizmetler/insert-uygulama" },
+          { label: "Mekanik Montaj", path: "/hizmetler/mekanik-montaj" },
+          { label: "Kitting & Paketleme", path: "/hizmetler/kitting-paketleme" },
+          { label: "Kaynaklı İmalat", path: "/hizmetler/kaynakli-imalat" },
         ],
       },
     ],
@@ -114,107 +114,107 @@ const navItems: NavItem[] = [
     children: [
       {
         label: "Üretim Altyapısı",
-        path: "#",
+        path: "/kabiliyetler/makine-parkuru",
         icon: <Factory size={18} />,
         links: [
-          { label: "Makine Parkuru", path: "#" },
-          { label: "Malzeme Kütüphanesi", path: "#" },
+          { label: "Makine Parkuru", path: "/kabiliyetler/makine-parkuru" },
+          { label: "Malzeme Kütüphanesi", path: "/kabiliyetler/malzeme-kutuphanesi" },
         ],
       },
       {
         label: "Kalite & Standartlar",
-        path: "#",
+        path: "/kabiliyetler/kalite-kontrol",
         icon: <Shield size={18} />,
         links: [
-          { label: "Kalite Kontrol", path: "#" },
-          { label: "Tolerans & Hassasiyet", path: "#" },
+          { label: "Kalite Kontrol", path: "/kabiliyetler/kalite-kontrol" },
+          { label: "Tolerans & Hassasiyet", path: "/kabiliyetler/tolerans-hassasiyet" },
         ],
       },
       {
         label: "Mühendislik Desteği",
-        path: "#",
+        path: "/kabiliyetler/tasarim-rehberi-dfm",
         icon: <Settings size={18} />,
         links: [
-          { label: "Tasarım Rehberi (DFM)", path: "#" },
-          { label: "Yüzey İşlemleri", path: "#" },
+          { label: "Tasarım Rehberi (DFM)", path: "/kabiliyetler/tasarim-rehberi-dfm" },
+          { label: "Yüzey İşlemleri", path: "/kabiliyetler/yuzey-islemleri-muhendislik" },
         ],
       },
       {
         label: "Prototipten Seri Üretime",
-        path: "#",
+        path: "/kabiliyetler/dusuk-hacimli-uretim",
         icon: <Target size={18} />,
         links: [
-          { label: "Düşük Hacimli Üretim", path: "#" },
-          { label: "Seri İmalat", path: "#" },
+          { label: "Düşük Hacimli Üretim", path: "/kabiliyetler/dusuk-hacimli-uretim" },
+          { label: "Seri İmalat", path: "/kabiliyetler/seri-imalat" },
         ],
       },
       {
         label: "Süreç & Operasyon",
-        path: "#",
+        path: "/kabiliyetler/proje-yonetimi",
         icon: <Cog size={18} />,
         links: [
-          { label: "Proje Yönetimi", path: "#" },
-          { label: "Tedarik Zinciri", path: "#" },
-          { label: "Operasyonel Verimlilik", path: "#" },
+          { label: "Proje Yönetimi", path: "/kabiliyetler/proje-yonetimi" },
+          { label: "Tedarik Zinciri", path: "/kabiliyetler/tedarik-zinciri" },
+          { label: "Operasyonel Verimlilik", path: "/kabiliyetler/operasyonel-verimlilik" },
         ],
       },
     ],
   },
   {
     label: "Endüstriyel",
-    path: "#",
+    path: "/endustriyel/havacilik-uzay",
     hasDropdown: true,
     children: [
       {
         label: "Yüksek Teknoloji",
-        path: "#",
+        path: "/endustriyel/havacilik-uzay",
         icon: <Rocket size={18} />,
         links: [
-          { label: "Havacılık & Uzay", path: "#" },
-          { label: "Savunma Sanayi", path: "#" },
-          { label: "Robotik", path: "#" },
+          { label: "Havacılık & Uzay", path: "/endustriyel/havacilik-uzay" },
+          { label: "Savunma Sanayi", path: "/endustriyel/savunma-sanayi" },
+          { label: "Robotik", path: "/endustriyel/robotik" },
         ],
       },
       {
         label: "Seri Üretim",
-        path: "#",
+        path: "/endustriyel/otomotiv",
         icon: <Car size={18} />,
         links: [
-          { label: "Otomotiv", path: "#" },
-          { label: "Medikal", path: "#" },
-          { label: "Yelken & Yat Sistemleri", path: "#" },
+          { label: "Otomotiv", path: "/endustriyel/otomotiv" },
+          { label: "Medikal", path: "/endustriyel/medikal" },
+          { label: "Yelken & Yat Sistemleri", path: "/endustriyel/yelken-yat-sistemleri" },
         ],
       },
       {
         label: "Endüstriyel Sistemler",
-        path: "#",
+        path: "/endustriyel/hidrolik-pnomatik",
         icon: <Cpu size={18} />,
         links: [
-          { label: "Hidrolik & Pnömatik", path: "#" },
-          { label: "Boru & Bağlantı Parçaları", path: "#" },
-          { label: "İklim Teknolojileri", path: "#" },
+          { label: "Hidrolik & Pnömatik", path: "/endustriyel/hidrolik-pnomatik" },
+          { label: "Boru & Bağlantı Parçaları", path: "/endustriyel/boru-baglanti-parcalari" },
+          { label: "İklim Teknolojileri", path: "/endustriyel/iklim-teknolojileri" },
         ],
       },
       {
         label: "Üretim Çözümleri",
-        path: "#",
+        path: "/endustriyel/prototip-uretim",
         icon: <Cog size={18} />,
         links: [
-          { label: "Prototip Üretim", path: "#" },
-          { label: "Küçük Seri", path: "#" },
-          { label: "Seri Üretim", path: "#" },
-          { label: "Özel Projeler", path: "#" },
+          { label: "Prototip Üretim", path: "/endustriyel/prototip-uretim" },
+          { label: "Küçük Seri", path: "/endustriyel/kucuk-seri" },
+          { label: "Seri Üretim", path: "/endustriyel/seri-uretim" },
+          { label: "Özel Projeler", path: "/endustriyel/ozel-projeler" },
         ],
       },
       {
         label: "Enerji & Altyapı",
-        path: "#",
+        path: "/endustriyel/yenilenebilir-enerji",
         icon: <Zap size={18} />,
         links: [
-          { label: "Yenilenebilir Enerji", path: "#" },
-          { label: "Petrol & Gaz", path: "#" },
-          { label: "Güç Dağıtım Sistemleri", path: "#" },
-          { label: "Madencilik Ekipmanları", path: "#" },
+          { label: "Yenilenebilir Enerji", path: "/endustriyel/yenilenebilir-enerji" },
+          { label: "Petrol & Gaz", path: "/endustriyel/petrol-gaz" },
+          { label: "Güç Dağıtım Sistemleri", path: "/endustriyel/guc-dagitim-sistemleri" },
+          { label: "Madencilik Ekipmanları", path: "/endustriyel/madencilik-ekipmanlari" },
         ],
       },
     ],
@@ -383,23 +383,23 @@ const Header = () => {
                             {item.children.map((col) => (
                               <div key={col.label} className="flex flex-col gap-2">
                                 {/* Column title */}
-                                <a
-                                  href={col.path}
+                                <Link
+                                  to={col.path}
                                   className="flex items-start gap-2 text-primary font-bold text-sm pb-2 border-b-2 border-muted mb-1 min-h-[2.5rem] hover:text-accent transition-colors"
                                 >
                                   <span className="mt-0.5 shrink-0">{col.icon}</span>
                                   {col.label}
-                                </a>
+                                </Link>
                                 {/* Column links */}
                                 <div className="flex flex-col gap-1">
                                   {col.links.map((link) => (
-                                    <a
+                                    <Link
                                       key={link.label}
-                                      href={link.path}
+                                      to={link.path}
                                       className="text-[0.85rem] text-muted-foreground hover:text-primary hover:translate-x-1 transition-all duration-150 py-1 px-2"
                                     >
                                       {link.label}
-                                    </a>
+                                    </Link>
                                   ))}
                                 </div>
                               </div>
@@ -533,14 +533,14 @@ const Header = () => {
                                 </div>
                                 <div className="flex flex-col gap-1 pl-6">
                                   {col.links.map((link) => (
-                                    <a
+                                    <Link
                                       key={link.label}
-                                      href={link.path}
+                                      to={link.path}
                                       className="text-sm text-muted-foreground hover:text-primary py-1 transition-colors"
                                       onClick={() => setIsMenuOpen(false)}
                                     >
                                       {link.label}
-                                    </a>
+                                    </Link>
                                   ))}
                                 </div>
                               </div>
