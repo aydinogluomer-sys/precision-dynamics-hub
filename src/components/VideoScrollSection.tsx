@@ -38,8 +38,8 @@ const VideoScrollSection = () => {
 
   // Zoom: starts at scale 1, zooms to 2.5 as user scrolls
   const scale = useTransform(scrollYProgress, [0, 0.6], [1, 2.5]);
-  // Opacity: visible immediately, fade out at end
-  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.7, 0.9], [0, 1, 1, 0]);
+  // Opacity: fully visible from start, fade out at end
+  const opacity = useTransform(scrollYProgress, [0, 0.7, 0.9], [1, 1, 0]);
 
   // Content reveal — earlier triggers
   const labelOpacity = useTransform(scrollYProgress, [0.02, 0.08], [0, 1]);
