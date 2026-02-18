@@ -7,6 +7,25 @@ import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
+import heroCncFrezeleme from "@/assets/hero-cnc-frezeleme.jpg";
+import heroCncTornalama from "@/assets/hero-cnc-tornalama.jpg";
+import heroMikroIsleme from "@/assets/hero-mikro-isleme.jpg";
+import heroDerinDelik from "@/assets/hero-derin-delik.jpg";
+import heroEnjeksiyonKalibi from "@/assets/hero-enjeksiyon-kalibi.jpg";
+import heroAnodizasyon from "@/assets/hero-anodizasyon.jpg";
+import heroLazerKazima from "@/assets/hero-lazer-kazima.jpg";
+import heroHavacilik from "@/assets/hero-havacilik.jpg";
+
+const heroImageMap: Record<string, string> = {
+  "hero-cnc-frezeleme": heroCncFrezeleme,
+  "hero-cnc-tornalama": heroCncTornalama,
+  "hero-mikro-isleme": heroMikroIsleme,
+  "hero-derin-delik": heroDerinDelik,
+  "hero-enjeksiyon-kalibi": heroEnjeksiyonKalibi,
+  "hero-anodizasyon": heroAnodizasyon,
+  "hero-lazer-kazima": heroLazerKazima,
+  "hero-havacilik": heroHavacilik,
+};
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -36,7 +55,9 @@ const ServiceDetail = () => {
 
   const relatedPages = getPagesByCategory(page.category).filter((p) => p.slug !== page.slug);
   const categoryLabels: Record<string, string> = { hizmetler: "Hizmetler", kabiliyetler: "Kabiliyetler", endustriyel: "Endüstriyel" };
-  const heroImage = page.category === "kabiliyetler" ? qualityControl : cncWorkshop;
+  const heroImage = page.heroImage && heroImageMap[page.heroImage]
+    ? heroImageMap[page.heroImage]
+    : page.category === "kabiliyetler" ? qualityControl : cncWorkshop;
 
   return (
     <div className="min-h-screen bg-background">
