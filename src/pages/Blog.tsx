@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal, BookOpen, Hash } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
 import { blogPosts, blogCategories } from "@/data/blogData";
@@ -15,13 +15,9 @@ const Blog = () => {
 
   const filtered = useMemo(() => {
     let posts = [...blogPosts];
-
-    // Category filter
     if (activeCategory !== "Tümü") {
       posts = posts.filter((p) => p.category === activeCategory);
     }
-
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       posts = posts.filter(
@@ -31,19 +27,25 @@ const Blog = () => {
           p.category.toLowerCase().includes(q)
       );
     }
-
-    // Sort
     if (sortBy === "popular") {
       posts.sort((a, b) => b.views - a.views);
     } else if (sortBy === "oldest") {
       posts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
-    // "newest" is default order
-
     return posts;
   }, [activeCategory, searchQuery, sortBy]);
 
   const popularPosts = useMemo(() => [...blogPosts].sort((a, b) => b.views - a.views).slice(0, 3), []);
+  const totalViews = useMemo(() => blogPosts.reduce((sum, p) => sum + p.views, 0), []);
+
+  // Tag cloud from categories (excluding Tümü)
+  const categoryStats = useMemo(() => {
+    const stats: Record<string, number> = {};
+    blogPosts.forEach((p) => {
+      stats[p.category] = (stats[p.category] || 0) + 1;
+    });
+    return stats;
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,7 +69,6 @@ const Blog = () => {
             <div className="lg:col-span-3">
               {/* Filters & Search Bar */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                {/* Search */}
                 <div className="relative flex-1">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
@@ -78,8 +79,6 @@ const Blog = () => {
                     className="w-full bg-card border border-border pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
-
-                {/* Sort */}
                 <div className="relative flex items-center gap-2">
                   <SlidersHorizontal size={14} className="text-muted-foreground" />
                   <select
@@ -111,7 +110,6 @@ const Blog = () => {
                 ))}
               </div>
 
-              {/* Post Count */}
               <p className="text-xs text-muted-foreground mb-6">
                 {filtered.length} blog yazısı gösteriliyor
               </p>
@@ -205,6 +203,54 @@ const Blog = () => {
                 </div>
               </div>
 
+              {/* Blog Stats */}
+              <div className="border border-border bg-card p-5">
+                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <BookOpen size={16} className="text-primary" /> Blog İstatistikleri
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="text-center p-3 bg-muted/50">
+                    <span className="text-technical text-2xl font-bold text-primary">{blogPosts.length}</span>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Toplam Yazı</p>
+                  </div>
+                  <div className="text-center p-3 bg-muted/50">
+                    <span className="text-technical text-2xl font-bold text-primary">{(totalViews / 1000).toFixed(1)}K</span>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Toplam Okuma</p>
+                  </div>
+                  <div className="text-center p-3 bg-muted/50">
+                    <span className="text-technical text-2xl font-bold text-primary">{blogCategories.length - 1}</span>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Kategori</p>
+                  </div>
+                  <div className="text-center p-3 bg-muted/50">
+                    <span className="text-technical text-2xl font-bold text-primary">{blogPosts.filter(p => p.featured).length}</span>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">Öne Çıkan</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category Tags */}
+              <div className="border border-border bg-card p-5">
+                <h3 className="font-bold text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Hash size={16} className="text-primary" /> Kategoriler
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(categoryStats).map(([cat, count]) => (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`text-xs px-3 py-1.5 border transition-colors flex items-center gap-1.5 ${
+                        activeCategory === cat
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
+                      }`}
+                    >
+                      {cat}
+                      <span className="text-[10px] opacity-60">({count})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Newsletter CTA */}
               <div className="border border-primary bg-card p-6">
                 <h3 className="font-bold text-lg mb-2">Teknik bülten</h3>
@@ -217,6 +263,20 @@ const Blog = () => {
                   className="w-full bg-background border border-border px-4 py-2.5 text-sm mb-3 focus:outline-none focus:border-primary transition-colors"
                 />
                 <button className="btn-industrial-primary w-full !py-2.5 text-xs">Abone Ol</button>
+              </div>
+
+              {/* CTA - Meeting */}
+              <div className="border border-border bg-card p-5">
+                <div className="w-10 h-10 bg-primary/10 flex items-center justify-center mb-3">
+                  <ArrowRight size={18} className="text-primary" />
+                </div>
+                <h3 className="font-bold text-sm mb-2">Projenizi Konuşalım</h3>
+                <p className="text-xs text-muted-foreground mb-4">
+                  CNC işleme ihtiyaçlarınız için uzman ekibimizle toplantı planlayın.
+                </p>
+                <Link to="/iletisim" className="btn-industrial-primary w-full !py-2.5 text-xs text-center block">
+                  Toplantı Talep Et
+                </Link>
               </div>
             </div>
           </div>

@@ -18,6 +18,7 @@ import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const AnimatedRoutes = () => {
           <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
           <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
           <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
+          <Route path="/giris" element={<Login />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />

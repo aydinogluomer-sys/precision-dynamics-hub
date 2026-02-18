@@ -413,8 +413,11 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* CTA Button */}
-            <div className="hidden lg:block shrink-0">
+            {/* CTA Buttons */}
+            <div className="hidden lg:flex items-center gap-3 shrink-0">
+              <Link to="/giris" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap">
+                Giriş Yap
+              </Link>
               <Link to="/iletisim" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5">
                 Teklif Al
               </Link>
