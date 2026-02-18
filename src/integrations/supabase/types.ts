@@ -92,6 +92,48 @@ export type Database = {
         }
         Relationships: []
       }
+      meetings: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          meeting_date: string
+          meeting_time: string
+          name: string
+          notes: string | null
+          phone: string | null
+          status: string
+          topic: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          meeting_date: string
+          meeting_time: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          topic: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          meeting_date?: string
+          meeting_time?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          topic?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string
