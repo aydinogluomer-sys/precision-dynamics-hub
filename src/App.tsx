@@ -20,6 +20,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import Login from "./pages/Login";
 import Malzemeler from "./pages/Malzemeler";
+import MalzemeKategori from "./pages/MalzemeKategori";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
