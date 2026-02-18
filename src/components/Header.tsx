@@ -118,7 +118,7 @@ const navItems: NavItem[] = [
         icon: <Factory size={18} />,
         links: [
           { label: "Makine Parkuru", path: "/kabiliyetler/makine-parkuru" },
-          { label: "Malzeme Kütüphanesi", path: "/kabiliyetler/malzeme-kutuphanesi" },
+          { label: "Malzeme Kütüphanesi", path: "/malzemeler" },
         ],
       },
       {
