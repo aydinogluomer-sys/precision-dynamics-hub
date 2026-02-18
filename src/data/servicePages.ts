@@ -3,6 +3,8 @@ export interface ServicePageData {
   category: "hizmetler" | "kabiliyetler" | "endustriyel";
   categoryLabel: string;
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   description: string;
   content: string[];
   features?: string[];
@@ -22,39 +24,47 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Talaşlı İmalat",
     title: "CNC Frezeleme",
+    metaTitle: "CNC Frezeleme Hizmetleri | 5 Eksen Hassas İşleme | Mas Technic",
+    metaDescription:
+      "3, 4 ve 5 eksenli CNC frezeleme ile ±0.005mm hassasiyette üretim. DMG MORI, Mazak tezgahlarla alüminyum, titanyum ve çelik işleme. Ücretsiz DFM analizi.",
     description:
       "5 eksenli CNC frezeleme merkezlerimiz ile karmaşık geometrileri yüksek hassasiyetle işliyoruz. Alüminyumdan titanyuma, plastikten kompozitlere kadar geniş malzeme yelpazesi.",
+    heroImage: "hero-cnc-frezeleme",
     content: [
       "Mas Technic olarak, DMG MORI DMU 65 monoBLOCK ve Mazak Variaxis i-700 gibi 5 eksenli CNC freze tezgahlarımızla karmaşık geometrilere sahip parçaları tek kurulumda tamamlıyoruz. 60 adet CAT 40 takım kapasiteli otomatik takım değiştirme sistemi sayesinde kesintisiz ve yüksek verimli üretim gerçekleştiriyoruz.",
-      "Havacılık, otomotiv, medikal ve savunma sanayi gibi kritik sektörlere yönelik ±0.005mm konumlandırma hassasiyeti ve ±0.003mm tekrarlanabilirlik ile endüstrinin en yüksek standartlarını karşılıyoruz. 18.000 RPM mil hızı ve 36 m/dak ilerleme kapasitemiz ile yüzey kalitesini artırırken üretim sürelerini minimuma indiriyoruz.",
-      "Alüminyum (6061, 7075), paslanmaz çelik (304, 316), karbon çelik, titanyum ve POM/Delrin gibi mühendislik malzemelerinde uzmanlaşmış ekibimizle hizmetinizdeyiz. Her projede DFM analizi uygulayarak maliyetleri optimize ediyor, STEP, IGES, SolidWorks, CATIA ve NX formatlarını doğrudan işleyebiliyoruz.",
+      "3 eksen frezeleme ile düz yüzeyler, cep işleme ve standart geometrilerde ekonomik çözümler üretiyoruz. 4 eksen frezeleme ile döner tabla sayesinde silindirik parçalarda kanal açma, delik delme ve profil işleme yapıyoruz. 5 eksen simultane frezeleme ile tek bağlamada en karmaşık parça geometrilerini işleyerek havacılık, medikal ve otomotiv sektörünün taleplerini karşılıyoruz.",
+      "Yüksek Hızlı İşleme (HSM) kabiliyetimiz ile 40.000 RPM'e kadar iş mili hızında ince cidarlı parçalar ve üstün yüzey kalitesi elde ediyoruz. Havacılık, otomotiv, medikal ve savunma sanayi gibi kritik sektörlere yönelik ±0.005mm konumlandırma hassasiyeti ve ±0.003mm tekrarlanabilirlik ile endüstrinin en yüksek standartlarını karşılıyoruz.",
+      "Alüminyum (6061, 7075), paslanmaz çelik (304, 316), karbon çelik, titanyum, PEEK ve POM/Delrin gibi mühendislik malzemelerinde uzmanlaşmış ekibimizle hizmetinizdeyiz. Her projede DFM analizi uygulayarak maliyetleri optimize ediyor, STEP, IGES, SolidWorks, CATIA ve NX formatlarını doğrudan işleyebiliyoruz.",
     ],
     features: [
-      "5 Eksenli İşleme — Karmaşık geometriler tek kurulumda",
+      "3 Eksen Frezeleme — Düz yüzeyler ve standart geometrilerde ekonomik çözüm",
+      "4 Eksen Frezeleme — Döner tabla ile çevresel ve profil işleme",
+      "5 Eksen Simultane — Tek bağlamada karmaşık geometriler",
+      "Yüksek Hızlı İşleme (HSM) — 40.000 RPM, ince cidar ve üstün yüzey",
       "±0.005mm Tolerans — Mikron seviyesinde tekrarlanabilirlik",
       "24 Saat Kesintisiz Üretim — Otomatik palet değiştirme sistemi",
-      "CAD/CAM Entegrasyonu — Doğrudan dosya aktarımı ve simülasyon",
     ],
     technicalSpecs: [
-      { label: "Çalışma Alanı (X/Y/Z)", value: "650×500×450mm" },
-      { label: "Maks. Mil Hızı", value: "18.000 RPM" },
-      { label: "Takım Kapasitesi", value: "60 adet (CAT 40)" },
+      { label: "Maks. Parça Boyutu (3 Eksen)", value: "1500×800×600mm" },
+      { label: "Maks. Parça Boyutu (5 Eksen)", value: "800×500×500mm" },
+      { label: "Maks. Mil Hızı", value: "12.000-40.000 RPM" },
+      { label: "Takım Kapasitesi", value: "30-120 adet (otomatik)" },
       { label: "Konumlandırma Hassasiyeti", value: "±0.005mm" },
-      { label: "Tekrarlanabilirlik", value: "±0.003mm" },
-      { label: "En Hızlı İlerleme", value: "36 m/dak" },
+      { label: "Yüzey Kalitesi", value: "Ra 0.4µm'ye kadar" },
     ],
     processSteps: [
-      "CAD/CAM Programlama",
+      "DFM Analizi",
+      "CAM Programlama",
       "Fikstür Hazırlığı",
       "CNC İşleme",
       "CMM Ölçüm",
       "Kalite Raporu",
     ],
     advantages: [
-      "Karmaşık geometrilerde tek seferde işleme",
-      "HSM ile %40 daha hızlı üretim",
-      "Otomatik takım değiştirme sistemi",
-      "Gerçek zamanlı süreç izleme",
+      "3, 4 ve 5 eksen konfigürasyonlarıyla her geometri",
+      "HSM ile %40 daha hızlı üretim ve üstün yüzey kalitesi",
+      "Otomatik takım değiştirme (30-120 takım magazini)",
+      "Gerçek zamanlı süreç izleme ve dijital ikiz simülasyonu",
       "Prototipten seri üretime esnek çözümler (min. 1 adet)",
       "3-5 iş günü prototip, 7-15 iş günü seri üretim teslimatı",
     ],
@@ -69,12 +79,14 @@ export const servicePages: ServicePageData[] = [
       { name: "Karbon Çelik", grade: "1045 / 4140", properties: "Yüksek mukavemet, ısıl işleme uygun" },
       { name: "Titanyum", grade: "Ti6Al4V (Grade 5)", properties: "Hafif, biyouyumlu, yüksek mukavemet" },
       { name: "POM (Delrin)", grade: "Delrin 150 / 500", properties: "Düşük sürtünme, boyutsal kararlılık" },
+      { name: "PEEK", grade: "PEEK 450G", properties: "Yüksek sıcaklık dayanımı, kimyasal direnci" },
     ],
     faq: [
+      { question: "3 eksen mi 5 eksen mi kullanmalıyım?", answer: "Düz yüzeyler ve basit cep işlemleri için 3 eksen yeterlidir ve daha ekonomiktir. Alttan kesim, eğik yüzeyler veya tek bağlamada çok yüzey işleme gerekiyorsa 5 eksen tercih edilir." },
       { question: "CNC frezeleme tolerans değerleriniz nedir?", answer: "Standart ±0.01mm, hassas işlemede ±0.005mm ve mikro işlemede ±0.001mm tolerans değerlerine ulaşabiliyoruz." },
-      { question: "Hangi dosya formatlarını kabul ediyorsunuz?", answer: "STEP, IGES, SolidWorks (.sldprt), CATIA (.catpart), NX (.prt), Parasolid (.x_t) ve PDF/DWG teknik çizim formatlarını destekliyoruz." },
-      { question: "Minimum sipariş adedi var mı?", answer: "Minimum 1 adet prototipten başlayarak seri üretime kadar her hacimde sipariş kabul ediyoruz." },
-      { question: "Teslimat süreniz ne kadar?", answer: "Prototip için 3-5 iş günü, küçük seri için 7-10 iş günü, seri üretim için 15-20 iş günü teslimat süresi sunuyoruz." },
+      { question: "Hangi dosya formatlarını kabul ediyorsunuz?", answer: "STEP, IGES, Parasolid, SolidWorks (.sldprt), CATIA (.catpart), NX (.prt) ve PDF/DWG teknik çizim formatlarını destekliyoruz." },
+      { question: "Minimum sipariş adedi var mı?", answer: "Hayır, tek parçadan seri üretime kadar her adette üretim yapıyoruz. Prototip siparişleri de kabul ediyoruz." },
+      { question: "Teslimat süreniz ne kadar?", answer: "Standart parçalarda 5-10 iş günü, ekspres üretimde 2 iş gününe kadar inebiliyoruz. Prototip için 3-5 iş günü." },
     ],
   },
   {
@@ -82,26 +94,32 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Talaşlı İmalat",
     title: "CNC Tornalama",
+    metaTitle: "CNC Tornalama Hizmetleri | Çift Milli & Swiss Torna | Mas Technic",
+    metaDescription: "CNC torna ile Ø0.5-500mm çap aralığında hassas tornalama. Canlı takımlı, Y eksenli ve Swiss tip torna. ±0.005mm hassasiyet, 24 saat üretim.",
     description:
       "Çok eksenli torna merkezlerimiz ile mil, somun, gövde ve karmaşık döner parçaları tek kurulumda tamamlayabilme kapasitesi.",
+    heroImage: "hero-cnc-tornalama",
     content: [
-      "C eksenli ve Y eksenli CNC torna tezgahlarımız sayesinde frezeleme operasyonlarını entegre ediyor, off-center delik ve kanal açma işlemlerini tek bağlamada gerçekleştiriyoruz. DMG MORI NLX 2500, Mazak Quick Turn Smart 350 ve Doosan Puma TT 1800SY çift milli torna tezgahlarımız ile ön ve arka yüzey işleme operasyonlarını tek kurulumda tamamlıyoruz.",
-      "Star SR-38 Swiss tip torna tezgahımız ile 0.5-38mm çap aralığında hassas mikro tornalama gerçekleştiriyoruz. 3m çapa kadar otomatik bar feeder sistemi ile sürekli üretim kapasitemiz mevcuttur. Canlı takım ölçer sayesinde takım kırılması kontrolü ve otomatik değişim sağlıyoruz.",
-      "380mm maksimum torna çapı, 1000mm torna boyu ve 65mm mil deliği kapasitemiz ile geniş bir parça yelpazesine hizmet veriyoruz. C ekseni 0.001 derece hassasiyet ve 12 adet takım istasyonu ile yüksek hassasiyetli üretim gerçekleştiriyoruz.",
+      "CNC tornalama, silindirik ve dönme simetrisine sahip parçalar için en verimli üretim yöntemidir. C eksenli ve Y eksenli CNC torna tezgahlarımız sayesinde frezeleme operasyonlarını entegre ediyor, off-center delik ve kanal açma işlemlerini tek bağlamada gerçekleştiriyoruz.",
+      "2 eksen tornalama ile miller, burçlar ve basit silindirik parçalar üretirken, canlı takımlı tornalama ile Y ekseni üzerinden torna tezgahında frezeleme, delme ve diş açma işlemleri yapıyoruz. Turn-Mill (torna-freze) kabiliyetimiz ile tek bağlamada hem tornalama hem frezeleme yaparak karmaşık parçalarda yüksek hassasiyet ve verimlilik elde ediyoruz.",
+      "Swiss tornalama teknolojimiz ile Ø0.3mm'den başlayan çaplarda kayar punta ile medikal vida, saat pimi ve konektör pinleri gibi küçük çaplı, uzun parçalar üretiyoruz. DMG MORI NLX 2500, Mazak Quick Turn Smart 350 ve Doosan Puma TT 1800SY çift milli torna tezgahlarımız ile ön ve arka yüzey işleme operasyonlarını tek kurulumda tamamlıyoruz.",
+      "380mm maksimum torna çapı, 1000mm torna boyu ve 65mm mil deliği kapasitemiz ile geniş bir parça yelpazesine hizmet veriyoruz. Otomatik bar feeder sistemi ile 3m çapa kadar sürekli üretim kapasitemiz mevcuttur.",
     ],
     features: [
-      "C Eksenli Torna — Frezeleme operasyonları entegrasyonu",
-      "Y Eksenli Torna — Off-center delik ve kanal açma",
+      "2 Eksen Tornalama — Miller, burçlar ve silindirik parçalar",
+      "Canlı Takımlı Torna — Y ekseni ile frezeleme, delme, diş açma",
+      "Turn-Mill (Torna-Freze) — Tek bağlamada komple işleme",
+      "Swiss Tornalama — Ø0.3mm'den başlayan çaplarda kayar punta",
       "Otomatik Bar Feeder — Sürekli üretim için 3m çapa kadar",
-      "Canlı Takım Ölçer — Takım kırılması kontrolü ve otomatik değişim",
+      "Çift Milli Torna — Ön ve arka yüzey tek kurulumda",
     ],
     technicalSpecs: [
-      { label: "Maks. Torna Çapı", value: "380mm" },
-      { label: "Maks. Torna Boyu", value: "1000mm" },
-      { label: "Mil Deliği", value: "65mm" },
-      { label: "Mil Hızı", value: "4.000 RPM" },
-      { label: "C Ekseni Hassasiyeti", value: "0.001°" },
-      { label: "Takım İstasyonu", value: "12 adet" },
+      { label: "Maks. Torna Çapı", value: "Ø500mm (standart), Ø32mm (Swiss)" },
+      { label: "Maks. Torna Boyu", value: "1000mm (standart), 300mm (Swiss)" },
+      { label: "Tolerans", value: "±0.005mm" },
+      { label: "Yüzey Kalitesi", value: "Ra 0.4µm'ye kadar" },
+      { label: "Canlı Takım", value: "12 istasyonlu, Y ekseni ±50mm" },
+      { label: "Bar Besleyici", value: "Ø65mm'ye kadar otomatik" },
     ],
     processSteps: [
       "Teknik Çizim İnceleme",
@@ -113,8 +131,10 @@ export const servicePages: ServicePageData[] = [
     advantages: [
       "Tek bağlamada komple işleme",
       "Çift milli üretimle %50 setup tasarrufu",
-      "Swiss tip mikro tornalama kabiliyeti (0.5-38mm)",
-      "Bar feeder ile otomasyon",
+      "Swiss tip mikro tornalama kabiliyeti (0.3-32mm)",
+      "Bar feeder ile gece-gündüz kesintisiz seri üretim",
+      "Turn-mill ile frezeleme ihtiyacını tek operasyonda çözme",
+      "C ekseni 0.001° hassasiyet ile hassas pozisyonlama",
     ],
     machines: [
       { name: "DMG MORI NLX 2500", brand: "DMG MORI", specs: "C/Y eksen, 380mm çap, 4.000 RPM" },
@@ -123,15 +143,19 @@ export const servicePages: ServicePageData[] = [
       { name: "Star SR-38 Swiss Tip", brand: "Star", specs: "0.5-38mm çap, 10.000 RPM" },
     ],
     materials: [
-      { name: "Alüminyum", grade: "2011 / 6061 / 7075", properties: "Otomat kalite, serbest kesim" },
+      { name: "Alüminyum", grade: "6061 / 2024 / 7075", properties: "Otomat kalite, serbest kesim, hafif" },
       { name: "Pirinç", grade: "CuZn39Pb3 (CW614N)", properties: "Mükemmel işlenebilirlik, dekoratif" },
       { name: "Paslanmaz Çelik", grade: "303 / 304 / 316", properties: "Korozyon direnci, hijyenik" },
-      { name: "Çelik", grade: "1215 / 1045 / 4140", properties: "Yüksek mukavemet, ısıl işleme uygun" },
+      { name: "Otomat Çeliği", grade: "1215 / 11SMnPb30", properties: "Yüksek hız tornalama için optimize" },
+      { name: "Titanyum", grade: "Grade 2 / Grade 5", properties: "Biyouyumlu, yüksek mukavemet/ağırlık" },
+      { name: "Delrin (POM)", grade: "Delrin 150 / PTFE", properties: "Düşük sürtünme, aşınma direnci" },
     ],
     faq: [
-      { question: "CNC tornalama ile frezeleme arasındaki fark nedir?", answer: "CNC tornalama döner parçalar (mil, somun, gövde) için idealdir; iş parçası döner, takım sabit kalır. Frezeleme ise düz ve karmaşık geometriler için uygundur; takım döner, iş parçası sabit kalır." },
-      { question: "Hangi çap aralığında tornalama yapabiliyorsunuz?", answer: "Swiss tip torna ile 0.5mm'den başlayarak konvansiyonel torna ile 380mm çapa kadar geniş bir aralıkta tornalama yapabiliyoruz." },
-      { question: "Çift milli torna avantajı nedir?", answer: "Çift milli torna ile ön ve arka yüzey işlemeleri tek kurulumda tamamlanır, setup süresinden %50 tasarruf sağlanır ve merkezleme hataları ortadan kalkar." },
+      { question: "Tornalama mı frezeleme mi seçmeliyim?", answer: "Parçanız silindirik veya dönme simetrisine sahipse tornalama daha ekonomiktir. Prizmatik parçalar için frezeleme tercih edilir." },
+      { question: "Karmaşık parçalar tek tezgahta mı yapılır?", answer: "Turn-mill tezgahlarımızda hem tornalama hem frezeleme işlemleri tek bağlamada yapılabilir. Bu hassasiyeti artırır ve maliyeti düşürür." },
+      { question: "Swiss tornalama ne zaman gerekir?", answer: "Ø32mm altı çaplarda ve boy/çap oranı yüksek parçalarda (örn: medikal vidalar, pimler) Swiss torna daha hassas sonuç verir." },
+      { question: "Seri üretim için uygun mu?", answer: "Evet, bar besleyicili tezgahlarımızda gece-gündüz kesintisiz seri üretim yapabiliyoruz." },
+      { question: "Hangi çap aralığında tornalama yapabiliyorsunuz?", answer: "Swiss tip torna ile 0.3mm'den başlayarak konvansiyonel torna ile 500mm çapa kadar geniş bir aralıkta tornalama yapabiliyoruz." },
     ],
   },
   {
@@ -139,25 +163,32 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Talaşlı İmalat",
     title: "Hassas Mikro İşleme",
+    metaTitle: "Hassas Mikro İşleme | ±0.002mm Tolerans | Medikal & Elektronik | Mas Technic",
+    metaDescription: "Ø0.1mm takımlarla mikro frezeleme ve tornalama. ±0.002mm tolerans, Ra 0.1µm yüzey kalitesi. Medikal implant, elektronik konektör ve optik parça üretimi.",
     description:
-      "0.01mm çapa kadar mikro parça üretimi. Medikal, elektronik ve optik sektörlerine özel ultra-hassas işleme çözümleri.",
+      "Milimetrenin altında toleranslarla, mikron seviyesinde hassasiyet gerektiren parçalar için özel çözümler. Medikal, elektronik ve optik sektörlerine özel ultra-hassas işleme.",
+    heroImage: "hero-mikro-isleme",
     content: [
-      "Mikro işleme kabiliyetimiz ile 0.01mm çapa kadar mikro mil, pim ve bağlantı elemanları üretiyoruz. ±0.001mm tolerans değerlerine ulaşabilen özel tezgahlarımız ile en zorlu uygulamaları karşılıyoruz. 60.000 RPM mil hızı kapasitemiz ile ultra-hassas yüzey kalitesi elde ediyoruz.",
-      "Medikal sektöründe kateter, implant ve cerrahi aletler; elektronik sektöründe konnektör pimleri ve spacer'lar; optik sektöründe lens tutucular ve hizalama parçaları; saat sektöründe kadran, ibre ve mekanizma parçaları üretiyoruz.",
-      "0.05mm çapa kadar mikro delme ve Ra 0.1 mikron altı yüzey pürüzlülüğü elde edebilen özel tezgahlarımız ile kontaminasyonsuz üretim ortamında hassas mikro parçalar üretiyoruz.",
+      "Mikro işleme kabiliyetimiz ile Ø0.1mm'ye kadar takımlarla 5 eksen mikro frezeleme gerçekleştiriyoruz. Optik, elektronik ve medikal implant parçalarında standart CNC'nin ulaşamadığı hassasiyet seviyelerine erişiyoruz. 60.000 RPM'e kadar yüksek hızlı iş mili kapasitemiz ile ultra-hassas yüzey kalitesi elde ediyoruz.",
+      "Mikro frezeleme ile Ø0.1mm'ye kadar takımlarla optik, elektronik ve medikal implant parçaları üretiyoruz. Mikro tornalama ile Ø0.3mm'den başlayan çaplarda Swiss tornalama ile saat pimi, medikal vida ve konektör pinleri imal ediyoruz. Mikro delme kabiliyetimiz ile Ø0.05mm'ye kadar hassas delik delme yaparak enjektör uçları, nozullar ve akış kontrol parçaları üretiyoruz.",
+      "Optik ölçüm cihazları ve CMM ile mikron seviyesinde kalite kontrol uyguluyoruz. 0.1µm çözünürlüklü optik ölçüm sistemlerimiz ile her mikro parçanın kalitesini garanti altına alıyoruz. AS9100/ISO 13485 uyumlu ölçüm raporları ve sertifikalar sağlıyoruz.",
+      "Medikal sektöründe implantlar, cerrahi aletler, kemik vidaları ve stentler; havacılık sektöründe yakıt enjektörleri, sensör muhafazaları ve mikro valfler; elektronik sektöründe konektör pinleri, fiber optik bileşenler ve yarı iletken test aparatları; saat & optik sektöründe saat mekanizma parçaları, lens tutucular ve kamera bileşenleri üretiyoruz.",
     ],
     features: [
-      "0.01mm Min Çap — Mikro mil, pim ve bağlantı elemanları",
-      "±0.001mm Tolerans — Ultra-hassas toleranslar",
-      "Mikro Delme — 0.05mm çapa kadar delik delme",
-      "Yüzey Pürüzlülüğü — Ra 0.1 mikron ve altı",
+      "Mikro Frezeleme — Ø0.1mm takımlarla 5 eksen işleme",
+      "Mikro Tornalama — Ø0.3mm'den başlayan Swiss tornalama",
+      "Mikro Delme — Ø0.05mm'ye kadar hassas delik delme",
+      "Mikro Ölçüm — Optik CMM ile 0.1µm çözünürlükte kontrol",
+      "±0.002mm Tolerans — Ultra-hassas toleranslar",
+      "Yüzey Pürüzlülüğü — Ra 0.1µm (ayna parlaklığı)",
     ],
     technicalSpecs: [
-      { label: "Min. Parça Çapı", value: "0.01mm" },
-      { label: "Maks. Parça Boyu", value: "150mm" },
-      { label: "Tolerans", value: "±0.001mm" },
-      { label: "Yüzey Pürüzlülüğü", value: "Ra 0.1µm" },
-      { label: "Mil Hızı", value: "60.000 RPM" },
+      { label: "Min. Takım Çapı", value: "Ø0.1mm (Freze), Ø0.05mm (Delme)" },
+      { label: "Tolerans", value: "±0.002mm (2 mikron)" },
+      { label: "Yüzey Kalitesi", value: "Ra 0.1µm (ayna parlaklığı)" },
+      { label: "İş Mili Hızı", value: "60.000 RPM" },
+      { label: "Parça Boyutu", value: "1mm³ - 100mm³" },
+      { label: "Ölçüm Hassasiyeti", value: "0.1µm optik ölçüm" },
     ],
     processSteps: [
       "Mikro CAM Programlama",
@@ -167,10 +198,31 @@ export const servicePages: ServicePageData[] = [
       "Temizleme & Paketleme",
     ],
     advantages: [
-      "Mikron altı hassasiyet",
-      "Özel mikro takım stoku",
+      "Mikron altı hassasiyet (±0.002mm)",
+      "Özel mikro takım stoku ve 60.000 RPM iş mili",
       "Kontaminasyonsuz üretim ortamı",
       "200x optik büyütme kontrolü",
+      "Medikal, havacılık ve elektronik sektör deneyimi",
+      "Otomatik besleyicili Swiss torna ile mikro seri üretim",
+    ],
+    machines: [
+      { name: "Kern Micro Pro", brand: "Kern", specs: "5 eksen mikro freze, ±1µm hassasiyet, 60.000 RPM" },
+      { name: "Star SR-20J Swiss Torna", brand: "Star", specs: "Ø0.3-20mm, canlı takımlı, 10.000 RPM" },
+      { name: "Zeiss O-Inspect Optik CMM", brand: "Zeiss", specs: "Optik + dokunmatik ölçüm, 0.1µm çözünürlük" },
+    ],
+    materials: [
+      { name: "Titanyum", grade: "Grade 5 (Ti6Al4V)", properties: "Biyouyumlu, hafif, yüksek mukavemet" },
+      { name: "Paslanmaz (Medikal)", grade: "316L", properties: "Biyouyumlu, korozyona dayanıklı" },
+      { name: "Alüminyum", grade: "7075-T6", properties: "Hafif, yüksek dayanım, iyi işlenebilirlik" },
+      { name: "Bakır", grade: "C101 (OFE)", properties: "Yüksek iletkenlik, hassas işleme" },
+      { name: "PEEK", grade: "PEEK 450G", properties: "Yüksek sıcaklık, kimyasal direnci" },
+      { name: "Tungsten Karbür", grade: "WC-Co", properties: "Aşırı sertlik, aşınma direnci" },
+    ],
+    faq: [
+      { question: "Mikro işleme ne zaman tercih edilmeli?", answer: "Parça özellikleri 1mm altında veya toleranslar ±0.01mm altında ise mikro işleme gereklidir. Standart CNC bu hassasiyetlere ulaşamaz." },
+      { question: "Maliyet standart CNC'den yüksek mi?", answer: "Evet, özel takımlar, yavaş ilerleme hızları ve hassas ölçüm gereksinimleri nedeniyle maliyet daha yüksektir. Ancak bu, standart yöntemlerle elde edilemeyecek sonuçlar içindir." },
+      { question: "Seri üretim yapabiliyor musunuz?", answer: "Evet, otomatik besleyicili Swiss torna ve palletli 5 eksen sistemleri ile mikro parçalarda bile seri üretim yapabiliyoruz." },
+      { question: "Ölçüm raporu veriyor musunuz?", answer: "Her mikro parça optik veya CMM ile ölçülür. AS9100/ISO 13485 uyumlu ölçüm raporları ve sertifikalar sağlıyoruz." },
     ],
   },
   {
@@ -178,38 +230,66 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Talaşlı İmalat",
     title: "Derin Delik & Raybalama",
+    metaTitle: "Derin Delik Delme & Raybalama | L/D 100:1 | Gun Drill & BTA | Mas Technic",
+    metaDescription: "Ø2-200mm çap aralığında 2000mm derinliğe kadar derin delik delme. Gun drilling, BTA ve honlama ile Ra 0.2µm yüzey kalitesi. Hidrolik, kalıp ve savunma sektörü.",
     description:
-      "L/D oranı 100:1'e kadar derin delik delme ve honlama. Silindir gövdesi, hidrolik manifolt ve krank milleri için uzman çözümler.",
+      "Boy/çap oranı yüksek deliklerde hassas ve doğrusal işleme. Hidrolik silindir, kalıp soğutma kanalları ve makina parçaları için uzman çözümler.",
+    heroImage: "hero-derin-delik",
     content: [
-      "Özel derin delik delme tezgahlarımız ile 3-50mm çap aralığında ve 2000mm derinliğe kadar hassas delik delme imkânı sunuyoruz. L/D oranı 100:1'e kadar (10mm çapta 1000mm derinlik) ulaşabilen kapasitemiz ile sektörün en zorlu gereksinimlerini karşılıyoruz.",
-      "Gun drilling teknolojimiz ile tek kanallı derin delik delme, BTA delme ile yüksek hacimli üretim ve honing/raybalama ile yüzey kalitesi ve tolerans iyileştirme işlemleri gerçekleştiriyoruz. IT8-IT9 tolerans sınıfında ve Ra 1.6-3.2 yüzey pürüzlülüğünde sonuçlar elde ediyoruz.",
-      "Hidrolik/pnömatik sektöründe silindir gövdesi ve piston kolu, enerji sektöründe türbin milleri ve krank gövdesi, savunma sektöründe namlu ve barut deposu, petrol & gaz sektöründe dırlon gövdesi ve valf gövdesi üretiminde uzmanlaşmış çözümler sunuyoruz.",
+      "Derin delik delme, boy/çap oranı (L/D) 10:1'den büyük delikler için gerekli olan özel bir işleme sürecidir. Standart matkaplarla bu oranlarda hassas delme mümkün değildir. Özel derin delik delme tezgahlarımız ile Ø2-200mm çap aralığında ve 2000mm derinliğe kadar hassas delik delme imkânı sunuyoruz.",
+      "Gun drilling teknolojimiz ile tek dudaklı matkap kullanarak Ø2-20mm çap aralığında L/D oranı 100:1'e kadar derin delikler işliyoruz. Yağ kanalları ve soğutma delikleri için idealdir. BTA (Boring and Trepanning Association) delme sistemi ile Ø20-200mm aralığında büyük çaplı derin deliklerde yüksek talaş kaldırma hızı elde ediyoruz.",
+      "Hassas raybalama ile H6/H7 toleranslarında iç çap hassasiyeti sağlıyoruz. Hidrolik silindir ve rulman yatakları için ideal olan bu işlem, ±0.01mm çap toleransı garanti eder. Honlama işlemi ile iç yüzeylerde Ra 0.2µm'ye kadar yüzey kalitesi elde ederek silindir gömlekleri ve valfler için mükemmel sonuçlar üretiyoruz.",
+      "Hidrolik sistemlerde silindir gövdeleri, valf blokları ve manifold delikleri; kalıp & takım sektöründe enjeksiyon kalıplarında soğutma kanalları ve ejektör delikleri; enerji & makina sektöründe türbin şaftları ve kompresör pistonları; savunma sektöründe silah namluları ve optik tüpleri üretiminde uzmanlaşmış deneyimimiz bulunmaktadır.",
     ],
     features: [
-      "100:1 L/D Oranı — 10mm çapta 1000mm derinlik",
-      "Gun Drilling — Tek kanallı derin delik delme",
-      "BTA Delme — Yüksek hacimli üretim için",
-      "Honing/Raybalama — Yüzey kalitesi ve tolerans iyileştirme",
+      "Gun Drilling — Ø2-20mm, L/D 100:1, yağ kanalları",
+      "BTA Delme — Ø20-200mm, yüksek talaş kaldırma",
+      "Hassas Raybalama — H6/H7 tolerans, ±0.01mm çap",
+      "Honlama — İç yüzeylerde Ra 0.2µm kalite",
+      "2000mm Derinlik — Uzun parçalarda doğrusal delme",
+      "500kg Parça Kapasitesi — Ağır iş parçaları",
     ],
     technicalSpecs: [
-      { label: "Delik Çap Aralığı", value: "3-50mm" },
+      { label: "Delik Çapı (Gun Drill)", value: "Ø2-100mm" },
+      { label: "Delik Çapı (BTA)", value: "Ø20-200mm" },
       { label: "Maks. Delik Derinliği", value: "2000mm" },
-      { label: "L/D Oranı", value: "100:1" },
-      { label: "Tolerans", value: "IT8-IT9" },
-      { label: "Yüzey Pürüzlülüğü", value: "Ra 1.6-3.2" },
+      { label: "Doğrusallık", value: "0.05mm/100mm sapma" },
+      { label: "Çap Toleransı", value: "H6/H7 (±0.01mm)" },
+      { label: "Yüzey Kalitesi", value: "Ra 0.4µm (delme), Ra 0.2µm (honlama)" },
     ],
     processSteps: [
       "Teknik Analiz",
       "Delme Yöntemi Seçimi",
       "Derin Delik İşleme",
-      "Honing/Raybalama",
+      "Raybalama / Honlama",
       "Ölçüm & Rapor",
     ],
     advantages: [
       "100:1 L/D oranı kapasitesi",
       "Gun drill ve BTA teknolojileri",
-      "Honlama ile yüzey iyileştirme",
-      "Hidrolik, enerji ve savunma sektörü deneyimi",
+      "Honlama ile Ra 0.2µm yüzey iyileştirme",
+      "Özel kılavuzlama burs sistemleri ile sapma minimizasyonu",
+      "Yüksek basınçlı soğutma sıvısı ile optimize edilmiş kesme",
+      "Hidrolik, enerji, kalıp ve savunma sektörü deneyimi",
+    ],
+    machines: [
+      { name: "TBT ML-200 Gun Drill", brand: "TBT", specs: "Ø2-100mm, 2000mm derinlik, tek kanal" },
+      { name: "IMSA MF-1000 BTA", brand: "IMSA", specs: "Ø20-200mm, 1500mm derinlik, yüksek hacim" },
+      { name: "Sunnen SV-2015 Honlama", brand: "Sunnen", specs: "Ø10-200mm, Ra 0.1µm, otomatik" },
+    ],
+    materials: [
+      { name: "Çelik", grade: "1045 / 4140 / 42CrMo4", properties: "Yüksek mukavemet, ısıl işleme uygun" },
+      { name: "Paslanmaz Çelik", grade: "304 / 316L", properties: "Korozyon direnci, hidrolik uygulamalar" },
+      { name: "Alüminyum", grade: "6061 / 7075", properties: "Hafif, soğutma kanalları için ideal" },
+      { name: "Dökme Demir", grade: "GGG-40 / GGG-50", properties: "Titreşim sönümleme, ağır yük" },
+      { name: "İnkonel", grade: "625 / 718", properties: "Yüksek sıcaklık dayanımı, havacılık" },
+      { name: "Bronz", grade: "CuSn8 / CuAl10", properties: "Aşınma direnci, sürtünme azaltma" },
+    ],
+    faq: [
+      { question: "Derin delik nedir?", answer: "Boy/çap oranı (L/D) 10:1'den büyük delikler 'derin delik' olarak tanımlanır. Standart matkaplarla bu oranlarda hassas delme mümkün değildir." },
+      { question: "Gun drill ile BTA arasındaki fark nedir?", answer: "Gun drill küçük çaplarda (Ø2-20mm) ve yüksek L/D oranlarında kullanılır. BTA daha büyük çaplarda (Ø20mm üstü) ve yüksek talaş kaldırma hızlarında tercih edilir." },
+      { question: "Doğrusallık nasıl sağlanır?", answer: "Özel kılavuzlama burs sistemleri, yüksek basınçlı soğutma sıvısı ve optimize edilmiş kesme parametreleri ile sapma minimuma indirilir." },
+      { question: "İç yüzey kalitesi iyileştirilebilir mi?", answer: "Evet, raybalama ve honlama işlemleriyle Ra 0.2µm'ye kadar yüzey kalitesi elde edilebilir. H6 toleransında çap hassasiyeti sağlanır." },
     ],
   },
 
@@ -219,8 +299,11 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Enjeksiyon Kalıbı",
+    metaTitle: "Enjeksiyon Kalıp İmalatı | Moldflow Simülasyon | Mas Technic",
+    metaDescription: "Alüminyum ve çelik enjeksiyon kalıp üretimi. Moldflow simülasyonu, 1.000.000+ çevrim ömrü. Hızlı prototip kalıplar 2-3 haftada teslimat.",
     description:
       "Alüminyum ve çelik kalıp imalatı. Hızlı prototip kalıplarından yüksek hacimli seri üretim kalıplarına kadar tüm ihtiyaçlarınıza çözüm.",
+    heroImage: "hero-enjeksiyon-kalibi",
     content: [
       "Yüksek hassasiyetli plastik enjeksiyon kalıplarının tasarımını ve üretimini gerçekleştiriyoruz. Moldflow simülasyonu ile dolum optimizasyonu yaparak üretim kalitesini garanti altına alıyoruz. Çekme payı optimizasyonu ve gate/vent konumlandırma dahil kapsamlı DFM analizi sunuyoruz.",
       "Al 7075 ile 150 HB sertlikte prototip kalıplar (10.000+ parça ömrü), P20 ile 280-320 HB orta hacim kalıplar, H13 ile 45-52 HRC yüksek hacim kalıplar ve S136 ile 48-52 HRC korozyon dirençli kalıplar üretiyoruz. Sıcak yolluk sistemi desteği ile malzeme tasarrufu ve döngü süresi iyileştirmesi sağlıyoruz.",
@@ -252,12 +335,30 @@ export const servicePages: ServicePageData[] = [
       "Hot runner sistemi desteği",
       "4 farklı kalıp malzemesi seçeneği (Al 7075, P20, H13, S136)",
     ],
+    machines: [
+      { name: "Makino S33 Grafik İşleme", brand: "Makino", specs: "HSM, 33.000 RPM, ±0.003mm" },
+      { name: "Sodick AG60L Wire EDM", brand: "Sodick", specs: "0.05mm tel, ±0.002mm hassasiyet" },
+      { name: "Mitsubishi EA12V Sinker EDM", brand: "Mitsubishi", specs: "Mirror finish, 0.1µm Ra" },
+    ],
+    materials: [
+      { name: "Al 7075", grade: "150 HB", properties: "Prototip kalıp, 10.000+ çevrim" },
+      { name: "P20 (1.2311)", grade: "280-320 HB", properties: "Orta hacim, genel amaçlı" },
+      { name: "H13 (1.2344)", grade: "45-52 HRC", properties: "Yüksek hacim, sıcak iş çeliği" },
+      { name: "S136 (1.2083)", grade: "48-52 HRC", properties: "Korozyon direnci, optik kalıplar" },
+    ],
+    faq: [
+      { question: "Kalıp teslimat süresi ne kadar?", answer: "Hızlı alüminyum kalıplar 2-3 hafta, çelik kalıplar 4-8 hafta içinde teslim edilir. Proje karmaşıklığına göre değişebilir." },
+      { question: "Moldflow simülasyonu zorunlu mu?", answer: "Zorunlu değildir ancak özellikle karmaşık parçalarda dolum problemlerini, çökme izlerini ve eğilmeyi önlemek için şiddetle tavsiye ederiz." },
+      { question: "Alüminyum mı çelik kalıp mı seçmeliyim?", answer: "10.000 adete kadar üretim için alüminyum kalıp ekonomiktir. Daha yüksek hacimler için çelik kalıp uzun vadede maliyet avantajı sağlar." },
+    ],
   },
   {
     slug: "basinçli-dokum",
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Basınçlı Döküm",
+    metaTitle: "Basınçlı Döküm Kalıp İmalatı | Alüminyum & Zamak | Mas Technic",
+    metaDescription: "120-1200 ton kapasitede alüminyum ve çinko basınçlı döküm kalıbı. 0.5mm min duvar kalınlığı, ±0.05mm tolerans. Akış simülasyonu dahil.",
     description:
       "Alüminyum ve çinko alaşımları ile karmaşık geometrileri tek parça olarak döküm. Yüksek üretim hızı ve düşük birim maliyet avantajı.",
     content: [
@@ -299,6 +400,8 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Silikon Kalıplama",
+    metaTitle: "Silikon Kalıplama | Vakumlu Döküm | 1-100 Adet | Mas Technic",
+    metaDescription: "Vakumlu silikon kalıplama ile 1-100 adet kısa seri üretim. PU, silikon, epoksi. Master modelden 24 saatte ilk parça teslimatı.",
     description:
       "Vakumlu silikon kalıplama ile 1-100 adet arası kısa seri üretim. Master modelden 24 saatte ilk parçalar.",
     content: [
@@ -339,6 +442,8 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Fikstür & Aparat Tasarımı",
+    metaTitle: "Fikstür & Aparat Tasarımı | Özel CNC Fikstür | Mas Technic",
+    metaDescription: "CNC işleme, montaj, kaynak ve kontrol için özel fikstür tasarımı. ±0.01mm tekrarlanabilirlik. CATIA/SolidWorks ile 3D modelleme ve simülasyon.",
     description:
       "CNC işleme, montaj, kaynak ve kontrol operasyonları için özel tasarım fikstür ve aparat çözümleri. Tekrarlanabilirlik ve operatör bağımsızlığı.",
     content: [
@@ -381,6 +486,8 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Mekanik Yüzey İşlemleri",
+    metaTitle: "Mekanik Yüzey İşlemleri | Kumlama & Parlatma | Mas Technic",
+    metaDescription: "Kumlama, vibrasyonlu yüzme, parlatma ve pasivasyon. Ra 0.05µm yüzey kalitesi. Ayna parlaklığından satine yüzeye kadar geniş seçenek.",
     description:
       "Kumlama, vibrasyonlu yüzme, parlatma ve pasivasyon ile yüzey kalitesini iyileştirme ve montaja hazır hale getirme.",
     content: [
@@ -420,8 +527,11 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Anodizasyon",
+    metaTitle: "Anodizasyon Hizmeti | Tip I-II-III | 11+ Renk | Mas Technic",
+    metaDescription: "MIL-A-8625 uyumlu anodizasyon. Tip I, II, III sert anodizasyon. 5-100µm kaplama, 60-70 HRC sertlik. 11+ renk seçeneği ile dekoratif kaplama.",
     description:
       "Tip I, II ve III anodizasyon ile korozyon direnci, aşınma dayanımı ve elektriksel yalıtım. 20+ renk seçeneği ile dekoratif kaplama.",
+    heroImage: "hero-anodizasyon",
     content: [
       "Alüminyum parçalarınız için Tip I (5-15µm, korozyon koruması), Tip II (10-25µm, korozyon + boya uyumu), Tip III (25-100µm, aşınma direnci) ve sert anodizasyon (25-75µm, elektriksel yalıtım) olmak üzere 4 farklı anodizasyon türü sunuyoruz.",
       "Siyah, sarı, kırmızı, mavi, yeşil, turuncu, mor, altın, bronz, füme ve naturel (renksiz) dahil 11+ renk seçeneği ile hem fonksiyonel hem dekoratif kaplama çözümleri sağlıyoruz. MIL-A-8625 standardına tam uyum garanti ediyoruz.",
@@ -466,6 +576,8 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Kimyasal İşlemler",
+    metaTitle: "Kimyasal Yüzey İşlemleri | Pasivasyon & Fosfatlama | Mas Technic",
+    metaDescription: "Endüstriyel yağ giderme, pasivasyon, fosfatlama ve elektropolish. ASTM B117 ve A967 standartlarında 500+ saat korozyon direnci.",
     description:
       "Yağ giderme, pasivasyon, fosfatlama ve elektropolish ile yüzey temizliği ve sonraki işlemlere hazırlık.",
     content: [
@@ -504,6 +616,8 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Boya & Koruyucu Kaplamalar",
+    metaTitle: "Toz Boya & Koruyucu Kaplamalar | RAL Renkler | Mas Technic",
+    metaDescription: "Toz boya, ıslak boya, seramik ve PTFE kaplama. 1000+ saat tuz testi, 260°C sıcaklık dayanımı. RAL standart ve özel renkler.",
     description:
       "Toz boya, ıslak boya, seramik kaplama ve özel koruyucu kaplamalar. Endüstriyel uygulamalardan dekoratif yüzeylere kadar.",
     content: [
@@ -543,8 +657,11 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "İşaretleme & Tanımlama",
     title: "Lazer Kazıma",
+    metaTitle: "Lazer Kazıma & İşaretleme | Fiber Lazer | QR Kod | Mas Technic",
+    metaDescription: "20W-100W fiber lazer ile metal, plastik ve ahşapta kalıcı işaretleme. Barkod, QR kod, seri numarası. 100.000 saat lazer ömrü, 10.000 mm/s hız.",
     description:
       "Fiber lazer teknolojisi ile metal, plastik ve kompozit malzemelere yüksek kontrastlı, aşınmaz işaretleme. Barkod, QR kod ve seri numarası.",
+    heroImage: "hero-lazer-kazima",
     content: [
       "20W-100W güç aralığında fiber lazer sistemlerimiz ile 100×100mm işaretleme alanında, 0.1mm minimum karakter boyutunda ve 10.000 mm/s hızda yüksek performanslı işaretleme yapıyoruz. 0.01-0.5mm kazıma derinliği kontrolü ile hassas sonuçlar elde ediyoruz.",
       "100.000 saat fiber lazer ömrü ile uzun vadeli güvenilirlik sağlıyoruz. Çelik, alüminyum, plastik ve ahşap dahil çok malzemeli işaretleme kapasitemiz ve dinamik işaretleme özelliğimiz ile yuvarlak parçalarda da mükemmel sonuçlar elde ediyoruz.",
@@ -722,7 +839,7 @@ export const servicePages: ServicePageData[] = [
     ],
     advantages: [
       "4 farklı insert uygulama yöntemi",
-      "3 farklı insert malzemesi seçeneği",
+      "3 farklı insert malzeme seçeneği",
       "2000N+ çekme kuvveti garantisi",
       "<3 saniye çevrim süresi",
     ],
@@ -845,6 +962,8 @@ export const servicePages: ServicePageData[] = [
     category: "kabiliyetler",
     categoryLabel: "Üretim Altyapısı",
     title: "Makine Parkuru",
+    metaTitle: "Makine Parkuru | DMG MORI, Mazak, Okuma | Mas Technic",
+    metaDescription: "40+ CNC tezgah ile donatılmış modern üretim tesisi. 5 eksen işleme merkezleri, çift milli tornalar, Wire EDM ve CMM ölçüm cihazları.",
     description: "Son teknoloji CNC tezgahları ve üretim ekipmanlarımız.",
     content: [
       "40'dan fazla CNC tezgah ile donatılmış modern üretim tesisimizde kesintisiz üretim yapıyoruz. DMG Mori, Mazak ve Okuma gibi dünya liderlerinin tezgahlarını kullanarak endüstrinin en yüksek standartlarını karşılıyoruz.",
@@ -930,8 +1049,8 @@ export const servicePages: ServicePageData[] = [
     title: "Tasarım Rehberi (DFM)",
     description: "Üretilebilirlik için tasarım desteği ve optimizasyon.",
     content: [
-      "Design for Manufacturing (DFM) analizi ile tasarımlarınızı üretilebilirlik açısından optimize ediyoruz.",
-      "Maliyet düşürme, tolerans optimizasyonu ve malzeme seçimi konusunda mühendislik desteği sağlıyoruz.",
+      "Design for Manufacturing (DFM) analizi ile tasarımlarınızı üretilebilirlik açısından optimize ediyoruz. 3D modelinizi yüklediğiniz anda mühendislik ekibimiz parçanızı üretilebilirlik açısından değerlendirir.",
+      "Maliyet düşürme, tolerans optimizasyonu ve malzeme seçimi konusunda mühendislik desteği sağlıyoruz. En verimli ve güvenli kesme stratejileri belirlenerek dijital ikiz üzerinden simülasyonlar gerçekleştiriyoruz.",
     ],
     features: ["DFM Analizi", "Maliyet Optimizasyonu", "Tolerans Önerisi", "Malzeme Seçimi"],
     technicalSpecs: [
@@ -1036,10 +1155,13 @@ export const servicePages: ServicePageData[] = [
     category: "endustriyel",
     categoryLabel: "Yüksek Teknoloji",
     title: "Havacılık & Uzay",
+    metaTitle: "Havacılık & Uzay Parça Üretimi | AS9100D | Mas Technic",
+    metaDescription: "AS9100D sertifikalı havacılık parça üretimi. Titanyum, Inconel işleme. %100 izlenebilirlik, NADCAP akreditasyonlu prosesler.",
     description: "AS9100D sertifikalı havacılık ve uzay sanayi parça üretimi.",
+    heroImage: "hero-havacilik",
     content: [
-      "AS9100D sertifikalı üretim tesisimizde havacılık ve uzay sanayi için kritik parçalar üretiyoruz. Titanyum, Inconel ve havacılık alüminyum alaşımlarında uzmanlaşmış ekibimizle hizmetinizdeyiz.",
-      "NADCAP akreditasyonlu özel proses kabiliyetlerimiz ile havacılık endüstrisinin en katı gereksinimlerini karşılıyoruz. %100 izlenebilirlik ve tam dokümantasyon sağlıyoruz.",
+      "AS9100D sertifikalı üretim tesisimizde havacılık ve uzay sanayi için kritik parçalar üretiyoruz. Motor bileşenleri, aviyonik muhafazalar ve yapısal hafifletilmiş parçalar konusunda uzmanlaşmış ekibimizle titanyum, Inconel ve havacılık alüminyum alaşımlarında yüksek hassasiyetle üretim yapıyoruz.",
+      "NADCAP akreditasyonlu özel proses kabiliyetlerimiz ile havacılık endüstrisinin en katı gereksinimlerini karşılıyoruz. %100 izlenebilirlik ve tam dokümantasyon sağlıyoruz. Her parça boyutsal ve görsel testlerden geçerek uygunluk garantisi ile paketlenir.",
     ],
     features: ["AS9100D Sertifikalı", "Titanyum İşleme", "Inconel İşleme", "NADCAP Uyumu"],
     technicalSpecs: [
@@ -1080,8 +1202,8 @@ export const servicePages: ServicePageData[] = [
     title: "Robotik",
     description: "Robot bileşenleri ve otomasyon parçaları üretimi.",
     content: [
-      "Endüstriyel robotlar, cobot'lar ve otomasyon sistemleri için hassas mekanik bileşenler üretiyoruz.",
-      "Aktüatör gövdeleri, eklem parçaları ve gripper bileşenlerinde uzmanlaşmış çözümler sunuyoruz.",
+      "Endüstriyel robotlar, cobot'lar ve otomasyon sistemleri için hassas mekanik bileşenler üretiyoruz. Mekanik kollar, eklem parçaları ve özel hassas sürücü komponentleri konusunda uzmanlaşmış çözümler sunuyoruz.",
+      "Aktüatör gövdeleri, eklem parçaları ve gripper bileşenlerinde ±0.005mm tolerans ile yüksek hassasiyetli üretim gerçekleştiriyoruz.",
     ],
     features: ["Robot Bileşenleri", "Aktüatör Gövdesi", "Eklem Parçaları", "Gripper Bileşenleri"],
     technicalSpecs: [
@@ -1098,6 +1220,8 @@ export const servicePages: ServicePageData[] = [
     category: "endustriyel",
     categoryLabel: "Seri Üretim",
     title: "Otomotiv",
+    metaTitle: "Otomotiv Parça Üretimi | IATF 16949 | Mas Technic",
+    metaDescription: "IATF 16949 sertifikalı otomotiv parça üretimi. Motor, şanzıman ve fren sistemi komponentleri. Cpk ≥1.67, 50K+ adet/ay kapasite.",
     description: "IATF 16949 sertifikalı otomotiv parça üretimi.",
     content: [
       "IATF 16949 sertifikalı üretim süreçlerimiz ile otomotiv sektörüne yüksek hacimli parça üretimi yapıyoruz.",
@@ -1116,10 +1240,12 @@ export const servicePages: ServicePageData[] = [
     category: "endustriyel",
     categoryLabel: "Seri Üretim",
     title: "Medikal",
+    metaTitle: "Medikal Parça Üretimi | ISO 13485 | FDA Uyumlu | Mas Technic",
+    metaDescription: "ISO 13485 ve FDA uyumlu medikal cihaz ve implant üretimi. Titanyum Grade 5, SS 316L. Class 7 temiz oda, cerrahi alet imalatı.",
     description: "ISO 13485 uyumlu medikal cihaz ve implant parça üretimi.",
     content: [
-      "Medikal cihaz bileşenleri, cerrahi aletler ve implant parçaları üretiminde uzmanlaşmış çözümler sunuyoruz.",
-      "ISO 13485 ve FDA gereksinimlerine uygun üretim süreçleri uyguluyoruz.",
+      "Medikal cihaz bileşenleri, cerrahi aletler ve implant parçaları üretiminde uzmanlaşmış çözümler sunuyoruz. İmplantlar, cerrahi el aletleri, titanyum vidalar ve laboratuvar ekipmanları üretiyoruz.",
+      "ISO 13485 ve FDA gereksinimlerine uygun üretim süreçleri uyguluyoruz. Biyouyumlu malzemelerle (Ti Grade 5, SS 316L) hassas üretim yapıyoruz.",
     ],
     features: ["ISO 13485", "Cerrahi Aletler", "İmplant Parçaları", "FDA Uyumu"],
     technicalSpecs: [
