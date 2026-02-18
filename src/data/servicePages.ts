@@ -357,6 +357,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Basınçlı Döküm",
+    heroImage: "hero-basincli-dokum",
     metaTitle: "Basınçlı Döküm Kalıp İmalatı | Alüminyum & Zamak | Mas Technic",
     metaDescription: "120-1200 ton kapasitede alüminyum ve çinko basınçlı döküm kalıbı. 0.5mm min duvar kalınlığı, ±0.05mm tolerans. Akış simülasyonu dahil.",
     description:
@@ -400,6 +401,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Silikon Kalıplama",
+    heroImage: "hero-silikon-kaliplama",
     metaTitle: "Silikon Kalıplama | Vakumlu Döküm | 1-100 Adet | Mas Technic",
     metaDescription: "Vakumlu silikon kalıplama ile 1-100 adet kısa seri üretim. PU, silikon, epoksi. Master modelden 24 saatte ilk parça teslimatı.",
     description:
@@ -442,6 +444,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Ön Üretim",
     title: "Fikstür & Aparat Tasarımı",
+    heroImage: "hero-fikstur-aparat",
     metaTitle: "Fikstür & Aparat Tasarımı | Özel CNC Fikstür | Mas Technic",
     metaDescription: "CNC işleme, montaj, kaynak ve kontrol için özel fikstür tasarımı. ±0.01mm tekrarlanabilirlik. CATIA/SolidWorks ile 3D modelleme ve simülasyon.",
     description:
@@ -486,6 +489,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Mekanik Yüzey İşlemleri",
+    heroImage: "hero-mekanik-yuzey",
     metaTitle: "Mekanik Yüzey İşlemleri | Kumlama & Parlatma | Mas Technic",
     metaDescription: "Kumlama, vibrasyonlu yüzme, parlatma ve pasivasyon. Ra 0.05µm yüzey kalitesi. Ayna parlaklığından satine yüzeye kadar geniş seçenek.",
     description:
@@ -576,6 +580,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Kimyasal İşlemler",
+    heroImage: "hero-kimyasal-islemler",
     metaTitle: "Kimyasal Yüzey İşlemleri | Pasivasyon & Fosfatlama | Mas Technic",
     metaDescription: "Endüstriyel yağ giderme, pasivasyon, fosfatlama ve elektropolish. ASTM B117 ve A967 standartlarında 500+ saat korozyon direnci.",
     description:
@@ -616,6 +621,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Yüzey İşlemleri",
     title: "Boya & Koruyucu Kaplamalar",
+    heroImage: "hero-boya-kaplama",
     metaTitle: "Toz Boya & Koruyucu Kaplamalar | RAL Renkler | Mas Technic",
     metaDescription: "Toz boya, ıslak boya, seramik ve PTFE kaplama. 1000+ saat tuz testi, 260°C sıcaklık dayanımı. RAL standart ve özel renkler.",
     description:
@@ -699,6 +705,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "İşaretleme & Tanımlama",
     title: "Tavlama",
+    heroImage: "hero-tavlama",
     description:
       "Stress giderme, yumuşatma, sertleştirme ve normalizasyon tavlama işlemleri ile malzeme mekanik özelliklerinin optimize edilmesi.",
     content: [
@@ -736,6 +743,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "İşaretleme & Tanımlama",
     title: "QR & DataMatrix Kodları",
+    heroImage: "hero-qr-datamatrix",
     description:
       "ISO/IEC 16022 ve ISO/IEC 18004 standartlarına uygun DataMatrix ve QR kod işaretleme. Küçük alanda yüksek veri kapasitesi.",
     content: [
@@ -773,6 +781,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "İşaretleme & Tanımlama",
     title: "Logo & Markalama",
+    heroImage: "hero-logo-markalama",
     description:
       "Lazer, pad printing ve serigrafi ile ürünlerinize marka kimliği kazandırın. Kalıcı ve profesyonel görünüm.",
     content: [
@@ -812,6 +821,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Montaj & Birleştirme",
     title: "Insert Uygulama",
+    heroImage: "hero-insert-uygulama",
     description:
       "Metal insertlerin plastik ve metal parçalara ultrasonik, ısıl veya presle montajı. Somun, perçin ve pim uygulama.",
     content: [
@@ -849,6 +859,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Montaj & Birleştirme",
     title: "Mekanik Montaj",
+    heroImage: "hero-mekanik-montaj",
     description:
       "Vida, somun, perçin ve klips montajı. Tork kontrollü sıkma ve otomatik besleme sistemleri ile yüksek verimlilik.",
     content: [
@@ -886,6 +897,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Montaj & Birleştirme",
     title: "Kitting & Paketleme",
+    heroImage: "hero-kitting-paketleme",
     description:
       "Müşteriye özel kit oluşturma, etiketleme ve koruyucu ambalajlama. Tedarik zinciri verimliliğini artırın.",
     content: [
@@ -923,6 +935,7 @@ export const servicePages: ServicePageData[] = [
     category: "hizmetler",
     categoryLabel: "Montaj & Birleştirme",
     title: "Kaynaklı İmalat",
+    heroImage: "hero-kaynakli-imalat",
     description:
       "TIG, MIG/MAG ve direnç kaynağı ile metal parçaların birleştirilmesi. Sertifikalı kaynakçılar ve kalite kontrol.",
     content: [

@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, Clock, Calendar, Video, ArrowRight, Send, CheckCir
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -26,10 +27,30 @@ const Iletisim = () => {
 
   const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
 
-  const handleMeetingSubmit = (e: React.FormEvent) => {
+  const [meetingLoading, setMeetingLoading] = useState(false);
+
+  const handleMeetingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Toplantı talebiniz alındı! En kısa sürede Google Meet davet linki gönderilecektir.");
-    setMeetingForm({ name: "", email: "", company: "", phone: "", date: "", time: "", topic: "", notes: "" });
+    setMeetingLoading(true);
+    try {
+      const { error } = await supabase.from("meetings").insert({
+        name: meetingForm.name,
+        email: meetingForm.email,
+        company: meetingForm.company || null,
+        phone: meetingForm.phone || null,
+        meeting_date: meetingForm.date,
+        meeting_time: meetingForm.time,
+        topic: meetingForm.topic,
+        notes: meetingForm.notes || null,
+      });
+      if (error) throw error;
+      toast.success("Toplantı talebiniz alındı! En kısa sürede Google Meet davet linki gönderilecektir.");
+      setMeetingForm({ name: "", email: "", company: "", phone: "", date: "", time: "", topic: "", notes: "" });
+    } catch {
+      toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setMeetingLoading(false);
+    }
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
@@ -210,8 +231,8 @@ const Iletisim = () => {
                     />
                   </div>
 
-                  <button type="submit" className="btn-industrial-primary w-full flex items-center justify-center gap-2">
-                    <Calendar size={16} /> Toplantı Talep Et
+                  <button type="submit" disabled={meetingLoading} className="btn-industrial-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
+                    <Calendar size={16} /> {meetingLoading ? "Gönderiliyor..." : "Toplantı Talep Et"}
                   </button>
 
                   <div className="flex items-start gap-2 text-xs text-muted-foreground">

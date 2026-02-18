@@ -15,6 +15,19 @@ import heroEnjeksiyonKalibi from "@/assets/hero-enjeksiyon-kalibi.jpg";
 import heroAnodizasyon from "@/assets/hero-anodizasyon.jpg";
 import heroLazerKazima from "@/assets/hero-lazer-kazima.jpg";
 import heroHavacilik from "@/assets/hero-havacilik.jpg";
+import heroBasincliDokum from "@/assets/hero-basinçli-dokum.jpg";
+import heroFiksturAparat from "@/assets/hero-fikstur-aparat.jpg";
+import heroSilikonKaliplama from "@/assets/hero-silikon-kaliplama.jpg";
+import heroMekanikYuzey from "@/assets/hero-mekanik-yuzey.jpg";
+import heroKimyasalIslemler from "@/assets/hero-kimyasal-islemler.jpg";
+import heroBoyaKaplama from "@/assets/hero-boya-kaplama.jpg";
+import heroTavlama from "@/assets/hero-tavlama.jpg";
+import heroQrDatamatrix from "@/assets/hero-qr-datamatrix.jpg";
+import heroLogoMarkalama from "@/assets/hero-logo-markalama.jpg";
+import heroInsertUygulama from "@/assets/hero-insert-uygulama.jpg";
+import heroMekanikMontaj from "@/assets/hero-mekanik-montaj.jpg";
+import heroKittingPaketleme from "@/assets/hero-kitting-paketleme.jpg";
+import heroKaynakliImalat from "@/assets/hero-kaynakli-imalat.jpg";
 
 const heroImageMap: Record<string, string> = {
   "hero-cnc-frezeleme": heroCncFrezeleme,
@@ -25,6 +38,19 @@ const heroImageMap: Record<string, string> = {
   "hero-anodizasyon": heroAnodizasyon,
   "hero-lazer-kazima": heroLazerKazima,
   "hero-havacilik": heroHavacilik,
+  "hero-basincli-dokum": heroBasincliDokum,
+  "hero-fikstur-aparat": heroFiksturAparat,
+  "hero-silikon-kaliplama": heroSilikonKaliplama,
+  "hero-mekanik-yuzey": heroMekanikYuzey,
+  "hero-kimyasal-islemler": heroKimyasalIslemler,
+  "hero-boya-kaplama": heroBoyaKaplama,
+  "hero-tavlama": heroTavlama,
+  "hero-qr-datamatrix": heroQrDatamatrix,
+  "hero-logo-markalama": heroLogoMarkalama,
+  "hero-insert-uygulama": heroInsertUygulama,
+  "hero-mekanik-montaj": heroMekanikMontaj,
+  "hero-kitting-paketleme": heroKittingPaketleme,
+  "hero-kaynakli-imalat": heroKaynakliImalat,
 };
 
 const fadeUp = (delay = 0) => ({
@@ -137,14 +163,11 @@ const ServiceDetail = () => {
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
                     <div className="accent-line !w-8" /> Süreç Adımları
                   </h2>
-                  <div className="flex flex-wrap gap-0">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {page.processSteps.map((step, i) => (
-                      <div key={i} className="flex items-center">
-                        <div className="flex items-center gap-2 bg-card border border-border px-4 py-3">
-                          <span className="text-technical text-xs text-primary font-bold">{String(i + 1).padStart(2, "0")}</span>
-                          <span className="text-sm font-medium">{step}</span>
-                        </div>
-                        {i < page.processSteps!.length - 1 && <ArrowRight size={16} className="text-primary mx-1 shrink-0" />}
+                      <div key={i} className="flex items-center gap-3 bg-card border border-border px-4 py-4">
+                        <span className="text-technical text-xs text-primary font-bold shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                        <span className="text-sm font-medium">{step}</span>
                       </div>
                     ))}
                   </div>
