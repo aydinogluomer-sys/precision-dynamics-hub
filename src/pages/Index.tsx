@@ -14,11 +14,13 @@ import StatsSection from "@/components/StatsSection";
 import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="organization" />
       <main>
         <HeroSection />
         <StickyIntroReveal />

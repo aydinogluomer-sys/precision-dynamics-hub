@@ -29,6 +29,17 @@ import heroInsertUygulama from "@/assets/hero-insert-uygulama.jpg";
 import heroMekanikMontaj from "@/assets/hero-mekanik-montaj.jpg";
 import heroKittingPaketleme from "@/assets/hero-kitting-paketleme.jpg";
 import heroKaynakliImalat from "@/assets/hero-kaynakli-imalat.jpg";
+import heroMakineParkuru from "@/assets/hero-makine-parkuru.jpg";
+import heroKaliteKontrol from "@/assets/hero-kalite-kontrol.jpg";
+import heroDfmTasarim from "@/assets/hero-dfm-tasarim.jpg";
+import heroYuzeyIslemleri from "@/assets/hero-yuzey-islemleri.jpg";
+import heroToleransHassasiyet from "@/assets/hero-tolerans-hassasiyet.jpg";
+import heroMalzemeKutuphanesi from "@/assets/hero-malzeme-kutuphanesi.jpg";
+import heroProjeYonetimi from "@/assets/hero-proje-yonetimi.jpg";
+import heroTedarikZinciri from "@/assets/hero-tedarik-zinciri.jpg";
+import heroOperasyonelVerimlilik from "@/assets/hero-operasyonel-verimlilik.jpg";
+import heroSeriUretim from "@/assets/hero-seri-uretim.jpg";
+import JsonLdSchema from "@/components/JsonLdSchema";
 
 const heroImageMap: Record<string, string> = {
   "hero-cnc-frezeleme": heroCncFrezeleme,
@@ -52,6 +63,16 @@ const heroImageMap: Record<string, string> = {
   "hero-mekanik-montaj": heroMekanikMontaj,
   "hero-kitting-paketleme": heroKittingPaketleme,
   "hero-kaynakli-imalat": heroKaynakliImalat,
+  "hero-makine-parkuru": heroMakineParkuru,
+  "hero-kalite-kontrol": heroKaliteKontrol,
+  "hero-dfm-tasarim": heroDfmTasarim,
+  "hero-yuzey-islemleri": heroYuzeyIslemleri,
+  "hero-tolerans-hassasiyet": heroToleransHassasiyet,
+  "hero-malzeme-kutuphanesi": heroMalzemeKutuphanesi,
+  "hero-proje-yonetimi": heroProjeYonetimi,
+  "hero-tedarik-zinciri": heroTedarikZinciri,
+  "hero-operasyonel-verimlilik": heroOperasyonelVerimlilik,
+  "hero-seri-uretim": heroSeriUretim,
 };
 
 const fadeUp = (delay = 0) => ({
@@ -90,8 +111,14 @@ const ServiceDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main>
-        {/* Hero Section - Dark overlay instead of white */}
+      <JsonLdSchema
+        type="service"
+        name={page.title}
+        description={page.description}
+        category={page.categoryLabel}
+        faq={page.faq}
+      />
+        <main>
         <section className="relative pt-24 pb-0">
           <div className="relative h-[320px] md:h-[420px] overflow-hidden">
             <motion.img

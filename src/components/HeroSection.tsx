@@ -105,7 +105,9 @@ const HeroSection = () => {
     });
 
     if (dbError) {
-      console.error("RFQ kaydı oluşturulamadı:", dbError);
+      if (import.meta.env.DEV) {
+        console.error("RFQ kaydı oluşturulamadı:", dbError);
+      }
     }
 
     setUploadState("success");
