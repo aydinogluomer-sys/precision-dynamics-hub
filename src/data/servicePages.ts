@@ -1,3 +1,11 @@
+export interface ComparisonTable {
+  title: string;
+  description?: string;
+  headers: string[];
+  rows: string[][];
+  highlight?: number; // row index to highlight
+}
+
 export interface ServicePageData {
   slug: string;
   category: "hizmetler" | "kabiliyetler" | "endustriyel";
@@ -15,6 +23,7 @@ export interface ServicePageData {
   machines?: { name: string; brand: string; specs: string }[];
   materials?: { name: string; grade: string; properties: string }[];
   faq?: { question: string; answer: string }[];
+  comparisonTables?: ComparisonTable[];
 }
 
 export const servicePages: ServicePageData[] = [
@@ -1045,6 +1054,31 @@ export const servicePages: ServicePageData[] = [
       { question: "24 saat üretim yapabiliyor musunuz?", answer: "Evet, otomatik palet değiştirme sistemleri ve bar besleyiciler ile 7/24 kesintisiz üretim kapasitemiz bulunmaktadır." },
       { question: "Yeni makine yatırımlarınız var mı?", answer: "2024-2026 yatırım planımızda DMG MORI DMU 85, Mazak Integrex i-200S, Tornos SwissNano, Zimmer ZK840, GF CUT P 550 ve Trumpf TruLaser 5030 gibi tezgahlar yer almaktadır." },
     ],
+    comparisonTables: [
+      {
+        title: "Teknoloji Grubu Kapasiteleri",
+        description: "Üretim teknolojilerine göre makine kapasiteleri ve öne çıkan özellikleri",
+        headers: ["Teknoloji Grubu", "Makine Tipi", "İşleme Hacmi (X, Y, Z)", "Maks. Devir / Çözünürlük", "Öne Çıkan Özellik"],
+        rows: [
+          ["CNC Freze", "5-Eksenli Hassas İşleme", "800 × 700 × 600 mm", "18.000 RPM", "Havacılık seviyesi hassasiyet, karmaşık parça işleme"],
+          ["CNC Torna", "Canlı Takımlı Y-Eksen", "Ø350 mm × 1000 mm", "6.000 RPM", "Tek operasyonda torna ve frezeleme"],
+          ["3D Yazıcı (SLS)", "Endüstriyel Naylon Baskı", "340 × 340 × 600 mm", "100 µm Katman", "Destek yapısı gerektirmeyen fonksiyonel üretim"],
+          ["Sac Metal", "Fiber Lazer Kesim", "3000 × 1500 mm", "±0.1 mm Pozisyonlama", "Yüksek hızda hassas sac metal kesimi"],
+          ["Tel Erozyon", "GF CUT P 550", "550 × 350 × 250 mm", "±0.002mm", "Sert malzemelerde hassas kesim"],
+          ["Derin Delik", "Zimmer ZK840", "Ø3-50mm × 2000mm", "L/D 100:1", "Hidrolik silindir, kalıp soğutma kanalları"],
+        ],
+      },
+      {
+        title: "Kalibrasyon ve Bakım Protokolü",
+        headers: ["Periyot", "İşlem", "Yöntem", "Sorumlu"],
+        rows: [
+          ["Günlük", "Operatör kontrolü", "Görsel + sıcaklık", "CNC Operatörü"],
+          ["Haftalık", "Hassasiyet kontrolü", "Test parçası ölçümü", "Kalite Departmanı"],
+          ["Aylık", "Ballbar testi", "Renishaw QC20-W", "Bakım Mühendisi"],
+          ["Yıllık", "Laser interferometre", "Renishaw XL-80", "Dış kalibrasyon"],
+        ],
+      },
+    ],
   },
   {
     slug: "malzeme-kutuphanesi",
@@ -1111,9 +1145,36 @@ export const servicePages: ServicePageData[] = [
       { question: "Özel alaşım tedarik edebiliyor musunuz?", answer: "Evet, Inconel 718, Hastelloy, Kovar, Tungsten gibi özel alaşımları 4-8 hafta içinde tedarik edebiliyoruz." },
       { question: "Malzeme kalite kontrolü nasıl yapılıyor?", answer: "Her malzeme girişinde spektrometre ile kimyasal analiz, boyut kontrolü ve sertifika doğrulaması yapılmaktadır. Klimatik kontrollü depoda lot numarası ile izlenebilirlik sağlanır." },
     ],
+    comparisonTables: [
+      {
+        title: "Malzeme Karşılaştırma Matrisi",
+        description: "Ana malzeme gruplarının mekanik özellikleri ve maliyet karşılaştırması",
+        headers: ["Malzeme", "Sertlik (HB)", "Çekme Dayanımı", "İşlenebilirlik", "Maliyet", "Stok Durumu"],
+        rows: [
+          ["Al 6061-T6", "95", "310 MPa", "★★★★★", "$", "Stokta (5.000 kg)"],
+          ["Al 7075-T6", "150", "572 MPa", "★★★★☆", "$$", "Stokta (2.000 kg)"],
+          ["SS 304", "187", "515 MPa", "★★★☆☆", "$$", "Stokta (3.000 kg)"],
+          ["SS 316L", "217", "485 MPa", "★★★☆☆", "$$$", "Stokta (1.500 kg)"],
+          ["Ti6Al4V (Gr5)", "334", "950 MPa", "★★☆☆☆", "$$$$", "Sipariş (200 kg)"],
+          ["Inconel 718", "363", "1034 MPa", "★☆☆☆☆", "$$$$$", "4-8 hafta"],
+          ["PEEK 450G", "100 (Shore D)", "100 MPa", "★★★★☆", "$$$$", "2-4 hafta"],
+          ["POM (Delrin)", "85 (Shore D)", "70 MPa", "★★★★★", "$", "Stokta"],
+        ],
+      },
+      {
+        title: "Tedarik Süresi ve Sertifika Matrisi",
+        headers: ["Malzeme Grubu", "Standart Tedarik", "Acil Tedarik", "Sertifika", "Min. Sipariş"],
+        rows: [
+          ["Alüminyum (6061, 7075)", "Stokta", "Aynı gün", "EN 10204 3.1", "1 kg"],
+          ["Paslanmaz Çelik (304, 316)", "Stokta", "Aynı gün", "EN 10204 3.1", "5 kg"],
+          ["Karbon Çelik (1045, 4140)", "1-2 hafta", "3 iş günü", "EN 10204 3.1", "10 kg"],
+          ["Titanyum (Gr2, Gr5)", "4-6 hafta", "2 hafta", "EN 10204 3.2", "5 kg"],
+          ["Inconel / Hastelloy", "6-8 hafta", "4 hafta", "EN 10204 3.2", "10 kg"],
+          ["PEEK / Yüksek Perf. Plastik", "2-4 hafta", "1 hafta", "CoC", "1 kg"],
+        ],
+      },
+    ],
   },
-
-  // ── Kabiliyetler > Kalite & Standartlar ──
   {
     slug: "kalite-kontrol",
     category: "kabiliyetler",
@@ -1179,6 +1240,32 @@ export const servicePages: ServicePageData[] = [
       { question: "SPC uygulaması yapıyor musunuz?", answer: "Evet, X-bar/R grafikleri, Cp/Cpk hesaplamaları, Pareto analizi ve 8D problem çözme ile istatistiksel proses kontrolü uyguluyoruz." },
       { question: "3D tarama hizmeti sunuyor musunuz?", answer: "Evet, GOM ATOS Q 3D tarayıcımız ile 0.01mm hassasiyette tam yüzey taraması ve CAD model karşılaştırması yapıyoruz." },
     ],
+    comparisonTables: [
+      {
+        title: "Kalite Kontrol Aşamaları ve Raporlama",
+        description: "5 aşamalı kalite kontrol sürecimizde her aşama izlenebilirlik ile desteklenmektedir",
+        headers: ["Aşama", "Kontrol Noktası", "Yöntem / Cihaz", "Çıktı Doküman", "Sıklık"],
+        rows: [
+          ["1. Giriş", "Malzeme kimyasal analiz", "Spektrometre + CMM", "Malzeme Sertifikası (3.1)", "Her lot"],
+          ["2. Ön Kontrol", "Takım ve fikstür doğrulama", "Görsel + ölçü", "Setup Onay Formu", "Her setup"],
+          ["3. Süreç İçi", "İlk/son parça + SPC", "CMM + X-bar/R", "SPC Raporu, Cpk", "Her parti"],
+          ["4. Final", "Tam boyutsal doğrulama", "Zeiss CMM + GOM 3D", "CMM Ölçüm Raporu", "Her parça (kritik)"],
+          ["5. Sevkiyat", "Ambalaj + etiket checklist", "Görsel + barkod", "Uygunluk Beyanı (CoC)", "Her sevkiyat"],
+        ],
+      },
+      {
+        title: "Metroloji Ekipmanları ve Kapasiteleri",
+        headers: ["Cihaz", "Marka / Model", "Ölçüm Aralığı", "Hassasiyet", "Uygulama Alanı"],
+        rows: [
+          ["CMM (Dokunmatik)", "Zeiss Contura", "1200×900×600mm", "1.9µm", "Boyutsal doğrulama, GD&T"],
+          ["CMM (Dokunmatik)", "Mitutoyo Crysta", "800×600×500mm", "2.0µm", "Seri ölçüm, FAI"],
+          ["3D Tarayıcı", "GOM ATOS Q", "Tam yüzey", "0.01mm", "CAD karşılaştırma, ısı haritası"],
+          ["Profilometre", "Taylor Hobson", "N/A", "Ra 0.01µm", "Yüzey pürüzlülüğü"],
+          ["X-Ray", "Nikon XT H", "Ø300mm", "5µm detay", "Döküm porozite tespiti"],
+          ["Sertlik Ölçer", "Wilson", "N/A", "±1%", "Rockwell, Vickers, Brinell"],
+        ],
+      },
+    ],
   },
   {
     slug: "tolerans-hassasiyet",
@@ -1227,9 +1314,44 @@ export const servicePages: ServicePageData[] = [
       { question: "Tolerans analizi hizmeti sunuyor musunuz?", answer: "Evet, worst case, RSS, Monte Carlo simülasyonu ve 3DCS yazılımı ile CATIA entegre tolerans stack-up analizi yapıyoruz." },
       { question: "Ölçüm belirsizliğiniz nedir?", answer: "0-100mm aralığında CMM ile ±0.0019mm, 100-500mm aralığında ±0.0035mm ölçüm belirsizliği sağlıyoruz." },
     ],
+    comparisonTables: [
+      {
+        title: "ISO 2768 Tolerans Sınıfları",
+        description: "Boyut aralığına göre standart tolerans değerleri (mm)",
+        headers: ["Tolerans Sınıfı (ISO 2768)", "0.5 – 3 mm", "3 – 6 mm", "6 – 30 mm", "30 – 120 mm", "120 – 400 mm"],
+        rows: [
+          ["f (İnce)", "±0.05", "±0.05", "±0.1", "±0.15", "±0.2"],
+          ["m (Orta)", "±0.1", "±0.1", "±0.2", "±0.3", "±0.5"],
+          ["c (Kaba)", "±0.2", "±0.3", "±0.5", "±0.8", "±1.2"],
+          ["v (Çok Kaba)", "—", "±0.5", "±1.0", "±1.5", "±2.5"],
+        ],
+        highlight: 0,
+      },
+      {
+        title: "GD&T Geometrik Tolerans Kapasiteleri",
+        description: "ASME Y14.5 standardına uygun geometrik tolerans değerlerimiz",
+        headers: ["Tolerans Tipi", "Sembol", "Min. Değer", "Uygulama", "Ölçüm Yöntemi"],
+        rows: [
+          ["Konum", "⌖", "±0.005mm", "Delik/pin pozisyonlama", "CMM 3D prob"],
+          ["Diklik", "⊥", "0.01mm/100mm", "Yüzey-mil dik referans", "CMM + gösterge"],
+          ["Eşmerkezlilik", "◎", "0.005mm", "Rulman yatağı, mil", "CMM döner tabla"],
+          ["Düzlük", "▱", "0.005mm/100mm", "Sızdırmazlık yüzey", "CMM tarama"],
+          ["Dairesellik", "○", "0.003mm", "Piston, silindir", "Roundness tester"],
+          ["Dönme Toleransı", "↻", "0.01mm", "Şaft, mil", "V-blok + gösterge"],
+        ],
+      },
+      {
+        title: "Ölçüm Belirsizliği Matrisi",
+        headers: ["Boyut Aralığı", "CMM Hassasiyeti", "Ölçüm Belirsizliği", "Güven Aralığı"],
+        rows: [
+          ["0 – 100 mm", "Zeiss Contura", "±0.0019mm", "%95 (k=2)"],
+          ["100 – 500 mm", "Zeiss Contura", "±0.0035mm", "%95 (k=2)"],
+          ["Yüzey Ra", "Taylor Hobson", "±%5", "%95"],
+          ["Sertlik", "Wilson", "±%1", "%95"],
+        ],
+      },
+    ],
   },
-
-  // ── Kabiliyetler > Mühendislik Desteği ──
   {
     slug: "tasarim-rehberi-dfm",
     category: "kabiliyetler",
@@ -1285,6 +1407,32 @@ export const servicePages: ServicePageData[] = [
       { question: "Hangi CAD formatlarını kabul ediyorsunuz?", answer: "STEP, IGES, Parasolid, SolidWorks (.sldprt), CATIA (.catpart), Siemens NX (.prt) ve PDF/DWG teknik çizim formatlarını destekliyoruz." },
       { question: "DFM analizi ne kadar tasarruf sağlar?", answer: "Projelerimizde ortalama %30-50 maliyet tasarrufu sağlanmaktadır. En iyi örnekte %70'e kadar tasarruf elde edilmiştir." },
     ],
+    comparisonTables: [
+      {
+        title: "CNC İşleme DFM Kontrol Listesi",
+        description: "Tasarımınızı üretim öncesi bu kriterlere göre değerlendirin",
+        headers: ["Kriter", "Önerilen Değer", "Min. / Maks.", "Kural", "Etki"],
+        rows: [
+          ["İç Köşe Yarıçapı", "R ≥ 1mm", "R > 0.5mm", "Sivri köşelerden kaçının", "Takım kırılma riski azalır"],
+          ["Duvar Kalınlığı", "≥ 1.5mm (metal)", "≥ 0.8mm", "İnce duvarlardan kaçının", "Titreşim ve deformasyon önlenir"],
+          ["Derinlik/Çap Oranı", "< 3:1", "< 4:1", "Derin deliklerden kaçının", "Takım sapması minimize edilir"],
+          ["Diş Derinliği", "≤ 3×çap", "≤ 5×çap", "Çok derin diş açmaktan kaçının", "Kırılma riski azalır"],
+          ["Tolerans", "ISO 2768-m", "±0.005mm (özel)", "Gereksiz dar toleranstan kaçının", "Maliyet %30-50 düşer"],
+          ["Yüzey Kalitesi", "Ra 1.6µm", "Ra 0.1µm (özel)", "Fonksiyona uygun Ra seçin", "İşleme süresi kısalır"],
+        ],
+      },
+      {
+        title: "DFM Başarı Vaka Çalışmaları",
+        headers: ["Proje", "Sektör", "Problem", "DFM Çözümü", "Tasarruf"],
+        rows: [
+          ["Motor Braketi", "Havacılık", "12 parçalı montaj", "Tek parça 5 eksen işleme", "%70 maliyet ↓"],
+          ["Şanzıman Gövdesi", "Otomotiv", "8 montaj adımı", "DFA ile 3 adıma indirildi", "%45 süre ↓"],
+          ["Kateter Konnektörü", "Medikal", "Pahalı titanyum", "SS 316L malzeme değişimi", "%40 maliyet ↓"],
+          ["Sensör Muhafazası", "Elektronik", "Kalın duvar tasarımı", "Duvar optimizasyonu", "%35 ağırlık ↓"],
+        ],
+        highlight: 0,
+      },
+    ],
   },
   {
     slug: "yuzey-islemleri-muhendislik",
@@ -1324,9 +1472,46 @@ export const servicePages: ServicePageData[] = [
       { question: "Yüzey işlemi boyut değişikliğine neden olur mu?", answer: "Evet, anodizasyon kalınlık×2 kadar boyut artışı, kumlama 5-20µm boyut azalması yapar. Bu değerler işleme toleranslarında dikkate alınır." },
       { question: "Ra 0.1µm yüzey kalitesine ulaşabilir misiniz?", answer: "Evet, özel takım ve işleme parametreleri ile Ra 0.1µm ayna parlaklığında yüzey kalitesine ulaşabiliyoruz. Optik ve yatak uygulamaları için idealdir." },
     ],
+    comparisonTables: [
+      {
+        title: "Yüzey İşlemi Seçim Matrisi",
+        description: "Uygulamanıza göre en uygun yüzey işlem yöntemini belirleyin",
+        headers: ["Yüzey İşlemi", "Uyumlu Malzemeler", "Temel Fonksiyon", "Tipik Ra (µm)", "Kaplama Kalınlığı", "Maliyet"],
+        rows: [
+          ["Eloksal (Anodize) Tip II", "Alüminyum, Titanyum", "Korozyon direnci, renk", "0.8 – 1.6", "10–25µm (±3µm)", "$$"],
+          ["Sert Eloksal (Tip III)", "Alüminyum", "Sertlik, aşınma direnci", "0.8 – 1.6", "25–75µm (±5µm)", "$$$"],
+          ["Kumlama (Bead Blast)", "Metaller, Plastikler", "Mat yüzey, pürüz giderme", "1.6 – 3.2", "N/A", "$"],
+          ["Nikel Kaplama", "Çelik, Bakır", "Aşınma direnci, iletkenlik", "0.4 – 0.8", "5–20µm (±2µm)", "$$$"],
+          ["Toz Boya", "Tüm Metaller", "Dekoratif, dış ortam", "N/A", "60–120µm (±15µm)", "$$"],
+          ["Elektropolish", "Paslanmaz Çelik", "Parlak yüzey, hijyen", "0.1 – 0.4", "-10 ile -50µm", "$$$"],
+          ["Nitrürleme", "Çelik", "Yüzey sertliği", "Değişmez", "0.1–0.5mm difüzyon", "$$$$"],
+        ],
+      },
+      {
+        title: "Yüzey Pürüzlülüğü (Ra) Rehberi",
+        description: "Uygulamaya göre hedef Ra değerleri ve elde etme yöntemleri",
+        headers: ["Ra Aralığı (µm)", "Yüzey Görünümü", "Uygulama Alanı", "İşleme Yöntemi", "Ek Maliyet"],
+        rows: [
+          ["0.1 – 0.2", "Ayna parlaklığı", "Optik, yatak yüzeyleri", "Lepleme, polisaj", "+%80-100"],
+          ["0.4 – 0.8", "Parlak yüzey", "Mil, piston, sızdırmazlık", "İnce frezeleme, taşlama", "+%40-60"],
+          ["1.6 – 3.2", "Mat yüzey", "Genel mekanik parçalar", "Standart CNC işleme", "Standart"],
+          ["6.3 – 12.5", "Pürüzlü yüzey", "Yapısal, kaynak öncesi", "Kaba işleme, kumlama", "-%10-20"],
+        ],
+      },
+      {
+        title: "İşlem Sonrası Boyut Değişimi",
+        description: "Yüzey işlemi sonrası tolerans etkileri — işleme planlamasında dikkate alınmalıdır",
+        headers: ["Yüzey İşlemi", "Boyut Değişimi", "Tolerans Etkisi", "Planlama Notu"],
+        rows: [
+          ["Anodizasyon Tip II", "+kalınlık × 2", "±5µm", "Kalınlığın yarısı malzemeye nüfuz eder"],
+          ["Anodizasyon Tip III", "+kalınlık × 2", "±10µm", "İşleme boyutunda kaplama payı bırakın"],
+          ["Toz Boya", "+kalınlık × 2", "±20µm", "Kritik yüzeyleri maskeleyin"],
+          ["Kumlama", "-5 ile -20µm", "±10µm", "Hassas yüzeyleri maskeleyin"],
+          ["Elektropolish", "-10 ile -50µm", "±5µm", "Malzeme kaldırılır, boyut küçülür"],
+        ],
+      },
+    ],
   },
-
-  // ── Kabiliyetler > Prototipten Seri Üretime ──
   {
     slug: "dusuk-hacimli-uretim",
     category: "kabiliyetler",
@@ -1388,6 +1573,22 @@ export const servicePages: ServicePageData[] = [
       { question: "Silikon kalıptan kaç parça çıkar?", answer: "Bir silikon kalıptan ortalama 20-50 parça üretilebilir. Malzeme ve geometriye göre bu sayı değişebilir." },
       { question: "Düşük hacimden seri üretime geçiş nasıl olur?", answer: "Prototip ve pilot üretimden sonra onaylanan tasarım için çelik kalıp yatırımı veya otomasyonlu CNC seri üretim planlaması yapılır. Geçiş süreci proje yöneticimiz tarafından koordine edilir." },
     ],
+    comparisonTables: [
+      {
+        title: "Üretim Yöntemi Karşılaştırması (Maliyet vs. Adet)",
+        description: "Adet sayısına göre en uygun üretim yöntemini seçin — köprü üretim stratejisi için kritik",
+        headers: ["Yöntem", "Adet Aralığı", "Birim Maliyet", "Teslimat", "Tolerans", "Kalıp Yatırımı"],
+        rows: [
+          ["3D Baskı (FDM/SLA)", "1 – 10", "$$$", "1-3 gün", "±0.2mm", "Yok"],
+          ["3D Baskı (SLS/DMLS)", "1 – 50", "$$$$", "2-5 gün", "±0.1mm", "Yok"],
+          ["CNC İşleme", "1 – 100", "$$$", "3-10 gün", "±0.01mm", "Yok"],
+          ["Silikon Kalıplama", "10 – 100", "$$", "5-10 gün", "±0.1mm", "Düşük ($)"],
+          ["Hızlı Al Kalıp", "100 – 1.000", "$", "2-3 hafta", "±0.05mm", "Orta ($$)"],
+          ["Çelik Kalıp (Enjeksiyon)", "1.000+", "$", "4-8 hafta", "±0.03mm", "Yüksek ($$$$$)"],
+        ],
+        highlight: 4,
+      },
+    ],
   },
   {
     slug: "seri-imalat",
@@ -1444,6 +1645,18 @@ export const servicePages: ServicePageData[] = [
       { question: "JIT teslimat yapabiliyor musunuz?", answer: "Evet, SAP ERP ve Kanban sistemi entegrasyonu ile JIT (Just-in-Time) teslimat programları uyguluyoruz." },
       { question: "Seri üretimde kalite nasıl garanti edilir?", answer: "SPC (İstatistiksel Proses Kontrol), Cpk ≥1.67 süreç yetkinliği, in-process Keyence ölçüm ve lot bazlı CMM kontrol ile kalite garanti altına alınır." },
       { question: "Otomasyon seviyeniz nedir?", answer: "KUKA/FANUC robot kollar, Fastems palet sistemi, otomatik bar besleyiciler ve SAP MES ile üretimimizin büyük bölümü otomasyonludur. OEE hedefimiz %85+ seviyesindedir." },
+    ],
+    comparisonTables: [
+      {
+        title: "Seri Üretim Kapasite ve Süreç Yetkinliği",
+        description: "Üretim yöntemlerine göre yıllık kapasite, tolerans ve kalite metrikleri",
+        headers: ["Üretim Yöntemi", "Yıllık Kapasite", "Tolerans", "Cpk Hedef", "Otomasyon", "Kalite Kontrolü"],
+        rows: [
+          ["CNC Seri İşleme", "50.000 adet", "±0.01mm", "≥1.67", "Robot + Palet", "In-process + CMM"],
+          ["Basınçlı Döküm", "500.000 adet", "CT4-CT6", "≥1.33", "Otomatik hat", "X-Ray + CMM"],
+          ["Enjeksiyon Kalıp", "1.000.000 adet", "CT5-CT7", "≥1.33", "Tam otomatik", "Görsel + CMM"],
+        ],
+      },
     ],
   },
 
