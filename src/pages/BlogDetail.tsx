@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { ArrowLeft, Clock, Tag, Eye, Share2, Facebook, Twitter, Linkedin, Link2, MessageSquare, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -53,6 +54,7 @@ const BlogDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="article" name={post.title} description={post.excerpt} datePublished={post.date} category={post.category} />
       <main className="pt-24 pb-16">
         <article className="container-industrial max-w-4xl">
           {/* Back */}

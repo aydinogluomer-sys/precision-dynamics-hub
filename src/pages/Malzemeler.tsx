@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { materialsData, materialCategories, type Material } from "@/data/materialsData";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -90,6 +91,7 @@ const Malzemeler = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="productCatalog" name="Malzeme Kütüphanesi" description="CNC işleme için alüminyum, çelik, titanyum, pirinç, bakır ve mühendislik plastikleri. Teknik özellikler ve karşılaştırma." />
 
       {/* Hero */}
       <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
