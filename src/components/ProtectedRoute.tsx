@@ -4,17 +4,36 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState<"loading" | "authenticated" | "unauthenticated">("loading");
+  const [state, setState] = useState<"loading" | "authenticated" | "unauthenticated" | "unauthorized">("loading");
 
   useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setState("unauthenticated");
+        return;
+      }
+      const { data: role } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (!role) {
+        setState("unauthorized");
+        return;
+      }
+      setState("authenticated");
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState(session ? "authenticated" : "unauthenticated");
+      if (!session) {
+        setState("unauthenticated");
+      } else {
+        checkAuth();
+      }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setState(session ? "authenticated" : "unauthenticated");
-    });
-
+    checkAuth();
     return () => subscription.unsubscribe();
   }, []);
 
@@ -26,7 +45,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (state === "unauthenticated") {
+  if (state === "unauthenticated" || state === "unauthorized") {
     return <Navigate to="/admin/login" replace />;
   }
 

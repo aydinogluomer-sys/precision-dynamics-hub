@@ -1052,7 +1052,7 @@ export const servicePages: ServicePageData[] = [
       "15.000 m² üretim alanında 50+ CNC tezgah ile 24/7 üretim kapasitesi. 5 eksenli işleme merkezleri, Swiss torna, Wire EDM ve 3D baskı. DMG MORI, Mazak, Hermle.",
     description:
       "15.000 m² üretim tesisimizde 50'den fazla CNC tezgah ile sınırsız üretim kapasitesi sunuyoruz. 5 eksenli işleme merkezlerinden yüksek hızlı tornalara, derin delik işlemeden lazer kesime kadar tam donanımlı altyapımız.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-makine-parkuru",
     content: [
       "Mas Technic üretim tesisi, DMG MORI, Mazak, Hermle, Haas ve Doosan gibi dünya liderlerinin tezgahlarıyla donatılmış 15.000 m²'lik modern bir üretim alanına sahiptir. 50'den fazla CNC tezgahımız ile havacılık, otomotiv, medikal ve savunma sanayinin en zorlu parçalarını üretiyoruz.",
       "5 eksenli CNC freze parkurumuzda DMG DMU 65 monoBLOCK (650×500×450mm, 18.000 RPM, 60 takım), DMG DMU 85 monoBLOCK (850×650×500mm, 18.000 RPM, 80 takım), Hermle C 42 (800×600×450mm, 25.000 RPM) ve Mazak Variaxis (730×510×460mm, 18.000 RPM, 50 takım) tezgahlarımız ile karmaşık geometrileri tek bağlamada işliyoruz. 3 eksenli parkurumuzda Haas VF-4 ve Doosan DNM tezgahları ekonomik çözümler üretmektedir.",
@@ -1153,7 +1153,7 @@ export const servicePages: ServicePageData[] = [
       "Alüminyumdan titanyuma, PEEK'ten Inconel'e 500+ malzeme çeşidi. EN 10204 3.1 sertifikalı tedarik, klimatik kontrollü depolama ve lot bazlı izlenebilirlik.",
     description:
       "Alüminyumdan titanyuma, plastikten kompozitlere kadar 500'den fazla malzeme çeşidi ile projenize en uygun çözümü sunuyoruz. Tüm malzemeler EN 10204 3.1 sertifikası ile tedarik edilmektedir.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-malzeme-kutuphanesi",
     content: [
       "Mas Technic malzeme kütüphanesi, metal, plastik, kompozit ve özel alaşımlar dahil 500'den fazla farklı malzeme çeşidini kapsamaktadır. Havacılık sınıfı alüminyumdan medikal sınıfı titanyuma, yüksek performans plastiklerden süper alaşımlara kadar geniş bir yelpazede hizmet veriyoruz.",
       "Metal malzemelerimiz arasında Alüminyum (6061, 7075, 5083 — 95-150 HB), Paslanmaz Çelik (304, 316, 17-4PH — 150-350 HB), Karbon Çelik (1045, 4140, 4340 — 200-350 HB), Titanyum (Gr2, Gr5 Ti6Al4V — 250-350 HB) ve Pirinç/Bronz (C360, C932 — 60-150 HB) bulunmaktadır.",
@@ -1248,7 +1248,7 @@ export const servicePages: ServicePageData[] = [
       "Zeiss CMM, GOM 3D tarayıcı, Taylor Hobson profilometre ve X-Ray muayene ile %99.7 kalite oranı. ISO 9001, AS9100D, IATF 16949, ISO 13485 sertifikalı.",
     description:
       "Sıfır hata felsefemiz ile 3D CMM ölçüm sistemlerinden görüntü işleme kontrolüne, yüzey profilometreden X-ray muayeneye kadar kapsamlı kalite altyapımız her aşamada kaliteyi garanti altına alır.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-kalite-kontrol",
     content: [
       "Mas Technic kalite kontrol altyapısı, %99.7 kalite oranı ve 6 Sigma hedefi ile endüstrinin en yüksek standartlarını karşılamaktadır. Kritik boyutların %100'ü CMM ile kontrol edilmektedir. Zeiss Contura (1200×900×600mm, 1.9µm hassasiyet) ve Mitutoyo Crysta (800×600×500mm, 2.0µm) CMM cihazlarımız ile boyutsal doğrulama yapıyoruz.",
       "GOM ATOS Q 3D tarayıcımız ile 0.01mm hassasiyette tam yüzey taraması, Taylor Hobson profilometremiz ile Ra 0.01 mikron çözünürlükte yüzey pürüzlülüğü ölçümü, Nikon XT H X-Ray cihazımız ile döküm parçalarda porozite tespiti ve Wilson sertlik ölçerimiz ile Rockwell, Vickers ve Brinell sertlik testleri gerçekleştiriyoruz.",
@@ -1340,7 +1340,7 @@ export const servicePages: ServicePageData[] = [
       "Ultra hassas ±0.001mm tolerans, Ra 0.1µm yüzey kalitesi. ISO 2768, ASME Y14.5 uyumu. Geometrik toleranslar (GD&T), Monte Carlo simülasyonu ve tolerans analizi.",
     description:
       "Mikron seviyesinde hassasiyet ile ISO 2768, ASME Y14.5 ve özel tolerans gereksinimlerinizi karşılıyoruz. Ultra hassas üretimden geometrik tolerans analizine kadar eksiksiz yetkinlik.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-tolerans-hassasiyet",
     content: [
       "Mas Technic olarak beş farklı tolerans sınıfında üretim yapabilme kapasitesine sahibiz: Ultra hassas ±0.001mm (mikro mekanizmalar), çok hassas ±0.005mm (rulman yatağı), hassas ±0.01mm (motor parçası), normal ±0.05mm (yapısal parça) ve gevşek ±0.1mm (kapak, koruma). ISO 2768-f/mK standardına tam uyum sağlıyoruz.",
       "Geometrik toleranslar (GD&T) kapsamında ASME Y14.5 standardına uygun olarak konum toleransı (±0.005mm), diklik (0.01mm/100mm), ortak merkez (0.005mm), dönme toleransı (0.01mm) ve düzlük (0.005mm/100mm) değerlerine ulaşabiliyoruz.",
@@ -1425,7 +1425,7 @@ export const servicePages: ServicePageData[] = [
       "Design for Manufacturing (DFM/DFA) analizi ile tasarımlarınızı optimize edin. CNC ve enjeksiyon DFM kuralları, CATIA/SolidWorks/NX entegrasyonu, %70'e kadar maliyet tasarrufu.",
     description:
       "DFM/DFA analizi ile tasarımlarınızı üretilebilirlik açısından optimize ediyoruz. Üretim maliyetlerini düşüren, kaliteyi artıran ve süreyi kısaltan mühendislik desteği.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-dfm-tasarim",
     content: [
       "Design for Manufacturing (DFM) analiz sürecimiz 4 aşamadan oluşur: 1. gün — ilk inceleme ve DFM raporu taslağı, 2-3. gün — detaylı analiz ve optimizasyon önerileri, 4. gün — müşteri görüşmesi ve revize CAD modeli, 5. gün — final DFM raporu ve onay. Toplam süreç 5 iş gününde tamamlanır.",
       "CNC işleme DFM kurallarımız: İç köşe yarıçapı R > 0.5mm (sivri köşelerden kaçının), duvar kalınlığı > 0.8mm (çok ince duvarlardan kaçının), derinlik/çap oranı < 4:1 (çok derin deliklerden kaçının) ve standart boyut kullanımı (özel ölçülerden kaçının). Enjeksiyon kalıp DFM kurallarımız: Duvar kalınlığı 1.5-3mm, çekme payı 0.5-2°, köşe yarıçapı R > 0.5mm ve gate konumu kalın kesimden.",
@@ -1507,7 +1507,7 @@ export const servicePages: ServicePageData[] = [
       "Korozyon korumasından estetik kaplamaya yüzey işlem seçim rehberi. Anodizasyon (10-75µm), toz boya (60-120µm), nikelaj, elektropolish. Ra 0.1-12.5µm yüzey kalitesi.",
     description:
       "Korozyon korumasından elektriksel yalıtıma, dekoratif görünümden tribolojik özelliklere kadar uygulamanıza en uygun yüzey işlem yöntemini belirlemenize yardımcı oluyoruz.",
-    heroImage: "hero-anodizasyon",
+    heroImage: "hero-yuzey-islemleri",
     content: [
       "Yüzey işlemi seçim matrisimiz: Korozyon koruması için anodizasyon (alüminyum — koruyucu tabaka), sertlik artırma için nitrürleme (çelik — yüzey sertliği), estetik kaplama için toz boya (metal — renkli kaplama) ve elektriksel yalıtım için e-kap (alüminyum — yalıtım). Her ihtiyaca özel çözüm sunuyoruz.",
       "Yüzey pürüzlülüğü (Ra) rehberimiz: Ra 0.1-0.2µm ayna parlaklığı (optik, yatak uygulamaları), Ra 0.4-0.8µm parlak yüzey (mil, piston), Ra 1.6-3.2µm mat yüzey (genel mekanik) ve Ra 6.3-12.5µm pürüzlü yüzey (yapısal parçalar). İşleme yöntemi ve takım seçimi ile hedef Ra değerine ulaşıyoruz.",
@@ -1585,7 +1585,7 @@ export const servicePages: ServicePageData[] = [
       "3D baskı ile 1-3 günde prototip, silikon kalıplama ile 10-100 adet, hızlı alüminyum kalıp ile 1000 adete kadar üretim. FDM, SLA, SLS, DMLS teknolojileri.",
     description:
       "3D baskı, silikon kalıplama, hızlı alüminyum kalıp ve CNC işleme ile 1-1000 adet arası düşük hacimli üretim ihtiyaçlarınıza esnek ve hızlı çözümler sunuyoruz.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-seri-uretim",
     content: [
       "Düşük hacimli üretim yöntemlerimizin karşılaştırması: 3D baskı 1-10 adet (1-3 gün, düşük maliyet, ±0.2mm), silikon kalıplama 10-100 adet (5-10 gün, orta maliyet, ±0.1mm), alüminyum kalıp 100-1000 adet (2-3 hafta, orta maliyet, ±0.05mm) ve CNC işleme 1-100 adet (3-10 gün, yüksek maliyet, ±0.01mm). Projenizin adet, süre ve hassasiyet gereksinimlerine göre en uygun yöntemi belirliyoruz.",
       "3D baskı kapasitemiz: FDM (ABS, PLA, Nylon — 914mm yapı hacmi, ±0.2mm — Stratasys F900), SLA (reçine — 145mm, ±0.05mm — Formlabs), SLS (PA12, TPU — 340mm, ±0.1mm) ve DMLS (Al, SS, Ti — 250mm, ±0.05mm — EOS M290). Metal ve plastik 3D baskı ile hızlı prototipleme ve fonksiyonel parçalar üretiyoruz.",
@@ -1663,7 +1663,7 @@ export const servicePages: ServicePageData[] = [
       "CNC seri 50.000/yıl, basınçlı döküm 500.000/yıl, enjeksiyon 1.000.000/yıl kapasite. KUKA/FANUC robot, Fastems palet, SAP MES entegre Endüstri 4.0 üretim.",
     description:
       "Çelik kalıp, basınçlı döküm, otomasyonlu CNC ve montaj hatları ile yüksek hacimli seri üretimde tutarlılık, verimlilik ve rekabetçi fiyat garantisi sunuyoruz.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-seri-uretim",
     content: [
       "Seri üretim kapasitelerimiz: CNC seri işleme 1.000-50.000 adet/yıl (±0.01mm tolerans), basınçlı döküm 5.000-500.000 adet/yıl (CT4-CT6), enjeksiyon kalıp 10.000-1.000.000 adet/yıl (CT5-CT7). Her yöntemde seri üretim eşdeğeri kalite ve tutarlılık garanti edilmektedir.",
       "Otomasyon ve Endüstri 4.0 altyapımız: KUKA ve FANUC robot kollar ile otomatik takım değiştirme, Fastems palet sistemi ile 24 saat kesintisiz otomatik üretim, Keyence in-process ölçüm sistemi ile üretim içi kontrol ve SAP MES yazılımı ile gerçek zamanlı üretim takibi. OEE hedefimiz %85+ seviyesindedir.",
@@ -1734,7 +1734,7 @@ export const servicePages: ServicePageData[] = [
       "Özel proje yöneticiniz ile tekliften teslimata 5 aşamalı kontrollü süreç. Agile/Scrum, Phase-Gate metodolojileri. Haftalık raporlama, PPAP dokümantasyonu, ECO yönetimi.",
     description:
       "Özel proje yöneticiniz, gerçek zamanlı raporlama ve proaktif iletişim ile projelerinizin her aşamasında yanınızdayız. Tekliften teslimata kontrollü ve şeffaf süreç yönetimi.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-proje-yonetimi",
     content: [
       "Proje yönetimi metodolojilerimiz: Agile/Scrum (yazılım entegre projeler — Jira, Confluence), Waterfall (geleneksel mekanik projeler — MS Project), Phase-Gate (seri üretim projeleri — özel template). Projenizin yapısına göre en uygun metodoloji seçilerek uygulanır.",
       "5 aşamalı proje sürecimiz: 1) Değerlendirme (1-3 gün) — teklif ve müşteri onayı, 2) DFM analizi (3-5 gün) — DFM raporu ve revizyon, 3) Prototip (1-3 hafta) — örnek parça üretimi ve test, 4) PPAP (2-4 hafta) — dokümantasyon ve onay, 5) Seri üretim (devam eden) — parti bazı rapor ve SPC kontrolü.",
@@ -1814,7 +1814,7 @@ export const servicePages: ServicePageData[] = [
       "Yerel ve global tedarikçi ağı ile kesintisiz malzeme tedariki. JIT teslimat, Kanban, VMI stratejileri. Alcoa, Erdemir, Outokumpu gibi sertifikalı tedarikçiler.",
     description:
       "Yerel ve global tedarikçi ağımız, stok yönetimimiz ve risk azaltma stratejilerimiz ile kesintisiz tedarik garantisi sunuyoruz.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-tedarik-zinciri",
     content: [
       "Tedarikçi ağımız: Alüminyum (Alcoa, Assan — TR/DE, %40 pay), çelik (Erdemir, Outokumpu — TR/FI, %35), özel alaşım (VSMPO, ATI — RU/US, %15) ve plastik (BASF, Sabic — DE/SA, %10). Her kritik malzeme için minimum 2 onaylı tedarikçi ile tedarik güvencesi sağlıyoruz.",
       "Malzeme tedarik süreleri: Al 6061/7075 stokta (sipariş 1-2 hafta), SS 304/316 stokta (sipariş 2-3 hafta), titanyum 4-6 hafta (özel sipariş), Inconel/Hastelloy 6-8 hafta (özel sipariş). Kritik malzemelerde güvenlik stoğu tutarak acil ihtiyaçlara hızlı yanıt veriyoruz.",
@@ -1884,7 +1884,7 @@ export const servicePages: ServicePageData[] = [
       "Yalın üretim, Kaizen, 5S, TPM, Kanban ile operasyonel verimlilik. %77.5 OEE, %1.2 scrap oranı, %97 zamanında teslimat. Lean Six Sigma sertifikalı ekip.",
     description:
       "Yalın üretim prensipleri ve sürekli iyileştirme (Kaizen) yaklaşımı ile operasyonel verimliliği maksimize ediyoruz. OEE takibi, setup optimizasyonu ve atık azaltma programları.",
-    heroImage: "hero-cnc-frezeleme",
+    heroImage: "hero-operasyonel-verimlilik",
     content: [
       "OEE (Overall Equipment Effectiveness) performansımız: DMG DMU 65 — %85 kullanım, %92 performans, %99 kalite = %77 OEE, Mazak QT 350 — %88 kullanım, %90 performans, %98 kalite = %78 OEE. Genel ortalamamız %86 kullanım, %91 performans, %98.5 kalite ile %77.5 OEE seviyesindedir. Hedefimiz %80+ OEE'dir.",
       "Lean üretim uygulamalarımız: 5S (tüm üretim alanında — düzen ve verimlilik), Kaizen (aylık atölyeler — sürekli iyileştirme), Kanban (malzeme yönetimi — stok optimizasyonu) ve TPM — Total Productive Maintenance (makine bakım — arıza azaltma). Bu araçlarla operasyonel mükemmellik hedefliyoruz.",
