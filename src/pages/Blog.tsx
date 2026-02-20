@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal, BookOpen, Hash } from "lucide-react";
 import { motion } from "framer-motion";
@@ -50,6 +51,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="blog" name="Mas Technic Blog" description="CNC işleme, talaşlı imalat, malzeme bilimi ve endüstriyel üretim hakkında teknik makaleler." />
       <main className="pt-24 pb-16">
         {/* Hero */}
         <section className="container-industrial py-12 md:py-16">

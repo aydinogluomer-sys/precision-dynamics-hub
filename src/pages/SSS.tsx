@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -22,6 +23,7 @@ const SSS = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="faqPage" faq={allFaqs} />
       <main className="pt-24 pb-16">
         <div className="container-industrial">
           <div className="max-w-3xl mx-auto">

@@ -1,10 +1,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { Target, Users, Award, Globe } from "lucide-react";
 
 const Hakkimizda = () => (
   <div className="min-h-screen bg-background">
     <Header />
+    <JsonLdSchema type="about" />
     <main className="pt-24 pb-16">
       <div className="container-industrial">
         <div className="max-w-4xl mx-auto">

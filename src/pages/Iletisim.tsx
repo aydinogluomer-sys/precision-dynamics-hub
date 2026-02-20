@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLdSchema from "@/components/JsonLdSchema";
 import { Phone, Mail, MapPin, Clock, Calendar, Video, ArrowRight, Send, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -77,6 +78,7 @@ const Iletisim = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <JsonLdSchema type="contact" />
       <main className="pt-24 pb-16">
         {/* Hero */}
         <section className="container-industrial py-12 md:py-16">
