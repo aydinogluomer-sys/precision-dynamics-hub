@@ -5,6 +5,7 @@ import { getPageBySlug, getPagesByCategory } from "@/data/servicePages";
 import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight, Cpu, FlaskConical, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import ComparisonTable from "@/components/ComparisonTable";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import heroCncFrezeleme from "@/assets/hero-cnc-frezeleme.jpg";
@@ -281,6 +282,18 @@ const ServiceDetail = () => {
                       </motion.div>
                     ))}
                   </div>
+                </motion.div>
+              )}
+
+              {/* Comparison Tables */}
+              {page.comparisonTables && page.comparisonTables.length > 0 && (
+                <motion.div {...fadeUp(0.42)} className="space-y-8">
+                  <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
+                    <div className="accent-line !w-8" /> Teknik Karşılaştırma Tabloları
+                  </h2>
+                  {page.comparisonTables.map((table, i) => (
+                    <ComparisonTable key={i} table={table} index={i} />
+                  ))}
                 </motion.div>
               )}
 
