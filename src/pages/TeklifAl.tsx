@@ -1,4 +1,5 @@
 import { useState, Suspense, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Center, Environment } from "@react-three/drei";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,7 @@ import {
   Cog, ChevronLeft, ChevronRight, Rocket, CheckCircle2, Zap, Clock,
   Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight,
   Upload, Eye, Send, Shield, Gauge, FileCheck, Edit3, FileUp,
-  ClipboardList, AlertCircle,
+  ClipboardList, AlertCircle, MessageCircle, HelpCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
@@ -156,12 +157,12 @@ const TeklifAl = () => {
 
   // ── Adım 1: Dosya Yükleme ──
   const renderStep1 = () => (
-    <div className="space-y-6">
-      <div className="card-industrial p-6">
-        <h2 className="text-base font-bold mb-5 flex items-center gap-2">
+    <div className="space-y-6 h-full flex flex-col">
+      <div className="card-industrial p-6 flex-1 flex flex-col">
+        <h2 className="text-base font-bold mb-3 flex items-center gap-2">
           <Upload size={16} className="text-primary" /> CAD Dosyası Yükleme
         </h2>
-        <p className="text-sm text-muted-foreground mb-6">
+        <p className="text-sm text-muted-foreground mb-5">
           Üretilecek parçanın 3D modelini yükleyin. STEP, STP, IGES, STL, OBJ ve 3MF formatları desteklenir.
         </p>
 
@@ -174,7 +175,7 @@ const TeklifAl = () => {
         />
 
         {uploadedFile ? (
-          <>
+          <div className="flex-1 flex flex-col">
             {/* Yüklenen Dosya Kartı */}
             <div className="p-4 flex items-center justify-between border border-primary/30 bg-primary/5">
               <div className="flex items-center gap-3">
@@ -195,12 +196,12 @@ const TeklifAl = () => {
             </div>
 
             {/* 3D CAD Viewer */}
-            <div className="card-industrial overflow-hidden mt-6">
+            <div className="card-industrial overflow-hidden mt-4 flex-1">
               <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-muted-foreground">CAD ÖNİZLEME</span>
                 <span className="text-[10px] px-2 py-0.5 font-semibold bg-primary/10 text-primary">HAZIR</span>
               </div>
-              <div className="h-[320px] relative bg-muted">
+              <div className="h-[380px] relative bg-muted">
                 <Canvas camera={{ position: [4, 3, 4], fov: 40 }} gl={{ antialias: true }}>
                   <Suspense fallback={null}>
                     <ambientLight intensity={0.6} />
@@ -215,19 +216,26 @@ const TeklifAl = () => {
                 </Canvas>
               </div>
             </div>
-          </>
+          </div>
         ) : (
-          /* Dosya yükleme alanı */
+          /* Dosya yükleme alanı - büyük */
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full border-2 border-dashed border-border hover:border-primary/50 p-12 flex flex-col items-center gap-4 transition-colors group"
+            className="w-full flex-1 min-h-[420px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
           >
-            <div className="w-16 h-16 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-              <FileUp size={28} />
+            <div className="w-20 h-20 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+              <FileUp size={36} />
             </div>
             <div className="text-center">
-              <p className="text-sm font-bold">CAD dosyanızı buraya sürükleyin veya tıklayın</p>
-              <p className="text-xs text-muted-foreground mt-1">STEP, STP, IGES, STL, OBJ, 3MF • Maks. 100 MB</p>
+              <p className="text-base font-bold">CAD dosyanızı buraya sürükleyin veya tıklayın</p>
+              <p className="text-xs text-muted-foreground mt-2">STEP, STP, IGES, STL, OBJ, 3MF • Maks. 100 MB</p>
+            </div>
+            <div className="flex items-center gap-4 mt-2">
+              {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
+                <span key={fmt} className="text-[10px] font-bold tracking-widest text-muted-foreground bg-muted px-2.5 py-1">
+                  {fmt}
+                </span>
+              ))}
             </div>
           </button>
         )}
@@ -563,6 +571,36 @@ const TeklifAl = () => {
                   {isSubmitting ? "GÖNDERİLİYOR..." : "ÜRETİME GÖNDER"}
                 </button>
               )}
+            </div>
+
+            {/* Yönlendirme Linkleri */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+              <Link
+                to="/iletisim"
+                className="card-industrial p-4 flex items-center gap-3 hover:border-primary/40 transition-colors group"
+              >
+                <div className="w-9 h-9 flex items-center justify-center bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <MessageCircle size={16} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold group-hover:text-primary transition-colors">İletişime Geçin</p>
+                  <p className="text-[10px] text-muted-foreground">Sorularınız için bize ulaşın</p>
+                </div>
+                <ArrowRight size={14} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+              </Link>
+              <Link
+                to="/sss"
+                className="card-industrial p-4 flex items-center gap-3 hover:border-primary/40 transition-colors group"
+              >
+                <div className="w-9 h-9 flex items-center justify-center bg-primary/10 text-primary shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <HelpCircle size={16} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold group-hover:text-primary transition-colors">Sık Sorulan Sorular</p>
+                  <p className="text-[10px] text-muted-foreground">Üretim süreciyle ilgili SSS</p>
+                </div>
+                <ArrowRight size={14} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+              </Link>
             </div>
           </div>
 
