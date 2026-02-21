@@ -6,10 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Upload, FileText, Settings, User, Send, ChevronLeft, ChevronRight,
   Check, X, Loader2, CloudUpload, Layers, Droplets, Paintbrush, Package,
-  Clock, Zap, Phone, Building2, Mail, MessageSquare, AlertCircle,
+  Clock, Zap, Phone, Building2, Mail, MessageSquare, AlertCircle, Box,
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ModelViewer from "@/components/ModelViewer";
 
 // ── Data ────────────────────────────────────────────────────
 const steps = [
@@ -84,6 +85,8 @@ const TeklifAl = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [modelDimensions, setModelDimensions] = useState<{ x: number; y: number; z: number } | null>(null);
   const navigate = useNavigate();
 
   const updateField = (name: keyof FormData, value: unknown) => {
@@ -98,7 +101,14 @@ const TeklifAl = () => {
       files: [...prev.files, ...incoming],
     }));
     if (errors.files) setErrors((p) => ({ ...p, files: "" }));
-  }, [errors.files]);
+
+    // Auto-select first STL/OBJ for 3D preview
+    const viewable = incoming.find((f) => {
+      const ext = f.name.split(".").pop()?.toLowerCase();
+      return ext === "stl" || ext === "obj";
+    });
+    if (viewable && !previewFile) setPreviewFile(viewable);
+  }, [errors.files, previewFile]);
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -216,61 +226,111 @@ const TeklifAl = () => {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div>
-        <h2 className="heading-industrial text-xl mb-1">Dosya Yükleme</h2>
-        <p className="text-sm text-muted-foreground">CAD dosyalarınızı sürükleyip bırakın veya seçin.</p>
+        <h2 className="heading-industrial text-xl mb-1">Dosya Yükleme & 3D Önizleme</h2>
+        <p className="text-sm text-muted-foreground">CAD dosyalarınızı yükleyin, STL/OBJ dosyalarını 3D olarak inceleyin.</p>
       </div>
 
-      {/* Dropzone */}
-      <div
-        className={`border-2 border-dashed p-10 text-center transition-all duration-200 cursor-pointer ${
-          isDragging ? "border-primary bg-primary/5" : errors.files ? "border-destructive" : "border-border hover:border-primary/50"
-        }`}
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={onDrop}
-        onClick={() => document.getElementById("file-input")?.click()}
-      >
-        <CloudUpload size={40} className="mx-auto text-muted-foreground mb-4" />
-        <p className="font-semibold text-sm mb-1">CAD Dosyası Sürükle & Bırak</p>
-        <p className="text-xs text-muted-foreground mb-4">veya tıklayarak dosya seçin</p>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {acceptedFormats.map((fmt) => (
-            <span key={fmt} className="text-[10px] font-mono bg-muted text-muted-foreground px-2 py-1">{fmt}</span>
-          ))}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Left: 3D Viewer */}
+        <div className="h-[420px] lg:h-[480px] border border-border overflow-hidden bg-card">
+          <ModelViewer file={previewFile} onDimensions={setModelDimensions} />
         </div>
-        <input
-          id="file-input"
-          type="file"
-          multiple
-          accept=".step,.stp,.iges,.igs,.dwg,.stl,.pdf"
-          onChange={onFileInput}
-          className="hidden"
-        />
-      </div>
-      {errors.files && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle size={12} />{errors.files}</p>}
 
-      {/* File list */}
-      {formData.files.length > 0 && (
-        <div className="border border-border divide-y divide-border">
-          <div className="px-4 py-2 bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Yüklenen Dosyalar ({formData.files.length})
-          </div>
-          {formData.files.map((file, i) => (
-            <div key={i} className="flex items-center justify-between px-4 py-3">
-              <div className="flex items-center gap-3">
-                <FileText size={18} className="text-primary" />
-                <div>
-                  <p className="text-sm font-medium">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                </div>
-              </div>
-              <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive transition-colors p-1">
-                <X size={16} />
-              </button>
+        {/* Right: Upload & Info Card (Glassmorphism) */}
+        <div className="space-y-4">
+          {/* Dropzone */}
+          <div
+            className={`border-2 border-dashed p-8 text-center transition-all duration-200 cursor-pointer ${
+              isDragging ? "border-primary bg-primary/5" : errors.files ? "border-destructive" : "border-border hover:border-primary/50"
+            }`}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={onDrop}
+            onClick={() => document.getElementById("file-input")?.click()}
+          >
+            <CloudUpload size={36} className="mx-auto text-muted-foreground mb-3" />
+            <p className="font-semibold text-sm mb-1">CAD Dosyası Sürükle & Bırak</p>
+            <p className="text-xs text-muted-foreground mb-3">veya tıklayarak dosya seçin</p>
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {acceptedFormats.map((fmt) => (
+                <span key={fmt} className="text-[10px] font-mono bg-muted text-muted-foreground px-2 py-0.5">{fmt}</span>
+              ))}
             </div>
-          ))}
+            <input
+              id="file-input"
+              type="file"
+              multiple
+              accept=".step,.stp,.iges,.igs,.dwg,.stl,.obj,.pdf"
+              onChange={onFileInput}
+              className="hidden"
+            />
+          </div>
+          {errors.files && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle size={12} />{errors.files}</p>}
+
+          {/* File list */}
+          {formData.files.length > 0 && (
+            <div className="border border-border divide-y divide-border">
+              <div className="px-4 py-2 bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Yüklenen Dosyalar ({formData.files.length})
+              </div>
+              {formData.files.map((file, i) => {
+                const ext = file.name.split(".").pop()?.toLowerCase();
+                const is3D = ext === "stl" || ext === "obj";
+                const isActive = previewFile === file;
+                return (
+                  <div key={i} className={`flex items-center justify-between px-4 py-3 ${isActive ? "bg-primary/5" : ""}`}>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      {is3D ? <Box size={18} className="text-primary shrink-0" /> : <FileText size={18} className="text-primary shrink-0" />}
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{file.name}</p>
+                        <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {is3D && !isActive && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setPreviewFile(file); }}
+                          className="text-[10px] font-semibold text-primary border border-primary px-2 py-1 hover:bg-primary/10 transition-colors"
+                        >
+                          3D Göster
+                        </button>
+                      )}
+                      {isActive && (
+                        <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2 py-1">Aktif</span>
+                      )}
+                      <button onClick={() => { removeFile(i); if (previewFile === file) setPreviewFile(null); }} className="text-muted-foreground hover:text-destructive transition-colors p-1">
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Glassmorphism Dimensions Card */}
+          {modelDimensions && (
+            <div className="relative overflow-hidden border border-primary/20 p-5" style={{
+              background: "linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--card)))",
+              backdropFilter: "blur(10px)",
+            }}>
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-3 flex items-center gap-1.5">
+                <Box size={14} /> Parça Boyutları
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                {(["x", "y", "z"] as const).map((axis) => (
+                  <div key={axis} className="text-center p-3 bg-muted/40 border border-border">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary">{axis}</p>
+                    <p className="text-lg font-bold font-mono text-foreground">{modelDimensions[axis]}</p>
+                    <p className="text-[10px] text-muted-foreground">mm</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 
