@@ -1,11 +1,12 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
-import { ChevronDown, Search, MessageCircleQuestion, Hash, BarChart3, ArrowRight, HelpCircle, Layers, Filter } from "lucide-react";
-import { useState, useMemo } from "react";
+import { ChevronDown, Search, MessageCircleQuestion, Hash, BarChart3, ArrowRight, HelpCircle, Layers, Filter, TrendingUp, Flame } from "lucide-react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { servicePages } from "@/data/servicePages";
+import { supabase } from "@/integrations/supabase/client";
 
 /* ── Collect all FAQs from service pages and categorize ── */
 interface CategorizedFaq {
@@ -30,7 +31,6 @@ const generalFaqs: CategorizedFaq[] = [
   { question: "Sevkiyat nasıl yapılıyor?", answer: "Yurt içi ve yurt dışı sevkiyat seçeneklerimiz mevcuttur. Ürünleriniz özenle paketlenir ve anlaşmalı kargo firmalarıyla güvenli şekilde teslim edilir.", category: "Genel", source: "Genel", sourceSlug: "", sourceCategory: "" },
 ];
 
-// Map categoryLabel to FAQ category
 const labelToCategoryMap: Record<string, string> = {
   "Talaşlı İmalat": "Talaşlı İmalat",
   "Ön Üretim": "Kalıp & Ön Üretim",
@@ -49,7 +49,6 @@ const labelToCategoryMap: Record<string, string> = {
   "Enerji & Altyapı": "Endüstriyel Sektörler",
 };
 
-// Build service FAQs
 const serviceFaqs: CategorizedFaq[] = servicePages.flatMap((page) =>
   (page.faq || []).map((f) => ({
     question: f.question,
@@ -61,7 +60,6 @@ const serviceFaqs: CategorizedFaq[] = servicePages.flatMap((page) =>
   }))
 );
 
-// Combine and deduplicate by question text
 const allFaqsRaw = [...generalFaqs, ...serviceFaqs];
 const seen = new Set<string>();
 const allFaqs = allFaqsRaw.filter((f) => {
@@ -71,7 +69,6 @@ const allFaqs = allFaqsRaw.filter((f) => {
   return true;
 });
 
-// Get unique categories preserving order
 const faqCategories = ["Tümü", ...Array.from(new Set(allFaqs.map((f) => f.category)))];
 
 /* ── Animation helpers ── */
@@ -87,10 +84,109 @@ const staggerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
 
+/* ── Analytics helper ── */
+const trackFaqEvent = async (eventType: "search" | "click", data: { query?: string; question?: string; category?: string }) => {
+  try {
+    await supabase.from("faq_analytics").insert({
+      event_type: eventType,
+      query: data.query || null,
+      question: data.question || null,
+      category: data.category || null,
+    });
+  } catch {
+    // Silent fail — analytics should never break UX
+  }
+};
+
+interface TrendingItem {
+  question: string;
+  count: number;
+}
+
+interface TrendingSearch {
+  query: string;
+  count: number;
+}
+
 const SSS = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
+  const [trendingQuestions, setTrendingQuestions] = useState<TrendingItem[]>([]);
+  const [trendingSearches, setTrendingSearches] = useState<TrendingSearch[]>([]);
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Fetch trending data on mount
+  useEffect(() => {
+    const fetchTrending = async () => {
+      // Top clicked questions
+      const { data: clickData } = await supabase
+        .from("faq_analytics")
+        .select("question")
+        .eq("event_type", "click")
+        .not("question", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (clickData && clickData.length > 0) {
+        const counts: Record<string, number> = {};
+        clickData.forEach((row) => {
+          if (row.question) counts[row.question] = (counts[row.question] || 0) + 1;
+        });
+        const sorted = Object.entries(counts)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+          .map(([question, count]) => ({ question, count }));
+        setTrendingQuestions(sorted);
+      }
+
+      // Top search queries
+      const { data: searchData } = await supabase
+        .from("faq_analytics")
+        .select("query")
+        .eq("event_type", "search")
+        .not("query", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (searchData && searchData.length > 0) {
+        const counts: Record<string, number> = {};
+        searchData.forEach((row) => {
+          if (row.query) counts[row.query.toLowerCase()] = (counts[row.query.toLowerCase()] || 0) + 1;
+        });
+        const sorted = Object.entries(counts)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 8)
+          .map(([query, count]) => ({ query, count }));
+        setTrendingSearches(sorted);
+      }
+    };
+
+    fetchTrending();
+  }, []);
+
+  // Track search with debounce
+  const trackSearch = useCallback((query: string) => {
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    if (query.trim().length < 2) return;
+    searchTimerRef.current = setTimeout(() => {
+      trackFaqEvent("search", { query: query.trim() });
+    }, 1500);
+  }, []);
+
+  const handleSearchChange = (val: string) => {
+    setSearchQuery(val);
+    setOpenIndex(null);
+    trackSearch(val);
+  };
+
+  const handleQuestionClick = (faq: CategorizedFaq, index: number) => {
+    const isOpen = openIndex === index;
+    setOpenIndex(isOpen ? null : index);
+    if (!isOpen) {
+      trackFaqEvent("click", { question: faq.question, category: faq.category });
+    }
+  };
 
   const filtered = useMemo(() => {
     let faqs = [...allFaqs];
@@ -143,6 +239,36 @@ const SSS = () => {
           </motion.div>
         </section>
 
+        {/* ═══ TRENDING SEARCHES (horizontal bar) ═══ */}
+        {trendingSearches.length > 0 && (
+          <section className="container-industrial mb-8">
+            <motion.div
+              className="border border-border bg-card p-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.4 }}
+            >
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 shrink-0">
+                  <Flame size={16} className="text-primary" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Popüler Aramalar:</span>
+                </div>
+                {trendingSearches.map((s) => (
+                  <button
+                    key={s.query}
+                    onClick={() => { setSearchQuery(s.query); setActiveCategory("Tümü"); setOpenIndex(null); }}
+                    className="text-xs px-3 py-1.5 border border-border bg-muted/50 hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
+                  >
+                    <Search size={10} />
+                    {s.query}
+                    <span className="text-[10px] text-muted-foreground opacity-60">({s.count})</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </section>
+        )}
+
         <div className="container-industrial">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* ═══ MAIN CONTENT ═══ */}
@@ -160,7 +286,7 @@ const SSS = () => {
                     type="text"
                     placeholder="Sorularda ara..."
                     value={searchQuery}
-                    onChange={(e) => { setSearchQuery(e.target.value); setOpenIndex(null); }}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="w-full bg-card border border-border pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
@@ -221,7 +347,7 @@ const SSS = () => {
                         }`}
                       >
                         <button
-                          onClick={() => setOpenIndex(isOpen ? null : index)}
+                          onClick={() => handleQuestionClick(faq, index)}
                           className="w-full flex items-start justify-between p-5 text-left group"
                         >
                           <div className="flex items-start gap-3 flex-1">
@@ -281,6 +407,50 @@ const SSS = () => {
             {/* ═══ SIDEBAR ═══ */}
             <div className="space-y-6">
               <div className="lg:sticky lg:top-24 space-y-6">
+
+                {/* En Çok Aranan Sorular — from real analytics */}
+                {trendingQuestions.length > 0 && (
+                  <motion.div
+                    className="border border-border bg-card"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15, duration: 0.5 }}
+                  >
+                    <div className="bg-primary p-4 flex items-center gap-2">
+                      <TrendingUp size={18} className="text-primary-foreground" />
+                      <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">En Çok Aranan</h3>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {trendingQuestions.map((item, i) => {
+                        const matchingFaq = allFaqs.find((f) => f.question === item.question);
+                        const faqIndex = matchingFaq ? allFaqs.indexOf(matchingFaq) : -1;
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setActiveCategory("Tümü");
+                              setSearchQuery("");
+                              setTimeout(() => setOpenIndex(faqIndex >= 0 ? faqIndex : 0), 100);
+                              window.scrollTo({ top: 400, behavior: "smooth" });
+                            }}
+                            className="w-full flex gap-3 p-4 hover:bg-muted/50 transition-colors text-left group"
+                          >
+                            <span className="text-technical text-2xl font-bold text-primary/30">{String(i + 1).padStart(2, "0")}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold line-clamp-2 group-hover:text-primary transition-colors">{item.question}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                  <TrendingUp size={10} /> {item.count} tıklama
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Stats */}
                 <motion.div
                   className="border border-border bg-card p-5"
@@ -341,45 +511,47 @@ const SSS = () => {
                   </div>
                 </motion.div>
 
-                {/* Popular Questions */}
-                <motion.div
-                  className="border border-border bg-card"
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
-                  <div className="bg-primary p-4 flex items-center gap-2">
-                    <Layers size={18} className="text-primary-foreground" />
-                    <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">Popüler Sorular</h3>
-                  </div>
-                  <div className="divide-y divide-border">
-                    {allFaqs.slice(0, 5).map((faq, i) => (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          setActiveCategory("Tümü");
-                          setSearchQuery("");
-                          setOpenIndex(i);
-                          window.scrollTo({ top: 400, behavior: "smooth" });
-                        }}
-                        className="w-full flex gap-3 p-4 hover:bg-muted/50 transition-colors text-left group"
-                      >
-                        <span className="text-technical text-2xl font-bold text-primary/30">{String(i + 1).padStart(2, "0")}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold line-clamp-2 group-hover:text-primary transition-colors">{faq.question}</p>
-                          <span className="text-[10px] text-muted-foreground mt-1 block">{faq.category}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
+                {/* Popüler Sorular (static fallback when no analytics) */}
+                {trendingQuestions.length === 0 && (
+                  <motion.div
+                    className="border border-border bg-card"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.35, duration: 0.5 }}
+                  >
+                    <div className="bg-primary p-4 flex items-center gap-2">
+                      <Layers size={18} className="text-primary-foreground" />
+                      <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">Popüler Sorular</h3>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {allFaqs.slice(0, 5).map((faq, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setActiveCategory("Tümü");
+                            setSearchQuery("");
+                            setOpenIndex(i);
+                            window.scrollTo({ top: 400, behavior: "smooth" });
+                          }}
+                          className="w-full flex gap-3 p-4 hover:bg-muted/50 transition-colors text-left group"
+                        >
+                          <span className="text-technical text-2xl font-bold text-primary/30">{String(i + 1).padStart(2, "0")}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold line-clamp-2 group-hover:text-primary transition-colors">{faq.question}</p>
+                            <span className="text-[10px] text-muted-foreground mt-1 block">{faq.category}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* CTA */}
                 <motion.div
                   className="border-2 border-primary bg-card p-6 relative overflow-hidden group"
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
                 >
                   <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-primary/10 rounded-full group-hover:scale-150 transition-transform duration-700" />
                   <div className="relative z-10">

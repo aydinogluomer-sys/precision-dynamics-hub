@@ -50,6 +50,33 @@ export type Database = {
         }
         Relationships: []
       }
+      faq_analytics: {
+        Row: {
+          category: string | null
+          created_at: string
+          event_type: string
+          id: string
+          query: string | null
+          question: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          query?: string | null
+          question?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          query?: string | null
+          question?: string | null
+        }
+        Relationships: []
+      }
       issues: {
         Row: {
           category: string | null
