@@ -22,6 +22,7 @@ import Login from "./pages/Login";
 import Malzemeler from "./pages/Malzemeler";
 import MalzemeKategori from "./pages/MalzemeKategori";
 import TeklifAl from "./pages/TeklifAl";
+import CADDashboard from "./pages/CADDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const AnimatedRoutes = () => {
           <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
           <Route path="/giris" element={<Login />} />
           <Route path="/teklif-al" element={<TeklifAl />} />
+          <Route path="/cad-dashboard" element={<CADDashboard />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
