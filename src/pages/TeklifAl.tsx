@@ -157,8 +157,8 @@ const TeklifAl = () => {
 
   // ── Adım 1: Dosya Yükleme ──
   const renderStep1 = () => (
-    <div className="space-y-6 h-full flex flex-col">
-      <div className="card-industrial p-6 flex-1 flex flex-col">
+    <div className="space-y-6">
+      <div className="card-industrial p-6">
         <h2 className="text-base font-bold mb-3 flex items-center gap-2">
           <Upload size={16} className="text-primary" /> CAD Dosyası Yükleme
         </h2>
@@ -175,7 +175,7 @@ const TeklifAl = () => {
         />
 
         {uploadedFile ? (
-          <div className="flex-1 flex flex-col">
+          <div>
             {/* Yüklenen Dosya Kartı */}
             <div className="p-4 flex items-center justify-between border border-primary/30 bg-primary/5">
               <div className="flex items-center gap-3">
@@ -196,7 +196,7 @@ const TeklifAl = () => {
             </div>
 
             {/* 3D CAD Viewer */}
-            <div className="card-industrial overflow-hidden mt-4 flex-1">
+            <div className="card-industrial overflow-hidden mt-4">
               <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-muted-foreground">CAD ÖNİZLEME</span>
                 <span className="text-[10px] px-2 py-0.5 font-semibold bg-primary/10 text-primary">HAZIR</span>
@@ -221,7 +221,7 @@ const TeklifAl = () => {
           /* Dosya yükleme alanı - büyük */
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full flex-1 min-h-[420px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
+            className="w-full min-h-[340px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
           >
             <div className="w-20 h-20 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
               <FileUp size={36} />
@@ -574,7 +574,7 @@ const TeklifAl = () => {
             </div>
 
             {/* Yönlendirme Linkleri */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
                 to="/iletisim"
                 className="card-industrial p-4 flex items-center gap-3 hover:border-primary/40 transition-colors group"
