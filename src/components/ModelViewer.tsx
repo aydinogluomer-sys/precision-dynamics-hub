@@ -1,11 +1,11 @@
 import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
-import { OrbitControls, Grid, Center } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { OrbitControls, Grid, Center, GizmoHelper, GizmoViewport } from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import {
-  RotateCcw, Grid3x3, Scissors, Loader2, Box,
+  RotateCcw, Grid3x3, Scissors, Loader2, Box, Palette, TriangleRight, Ruler,
 } from "lucide-react";
 
 // ── Types ──
@@ -20,16 +20,106 @@ interface Dimensions {
   z: number;
 }
 
+// Color presets
+const COLOR_PRESETS = [
+  { label: "Çelik", color: "#94a3b8" },
+  { label: "Altın", color: "#d4a574" },
+  { label: "Mavi", color: "#3b82f6" },
+  { label: "Yeşil", color: "#22c55e" },
+  { label: "Kırmızı", color: "#ef4444" },
+  { label: "Siyah", color: "#1e293b" },
+];
+
+// ── Measurement Points Visual ──
+const MeasurementPoints = ({
+  points,
+  distance,
+}: {
+  points: THREE.Vector3[];
+  distance: number | null;
+}) => {
+  if (points.length === 0) return null;
+
+  return (
+    <group>
+      {points.map((p, i) => (
+        <mesh key={i} position={p}>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshBasicMaterial color="#ef4444" />
+        </mesh>
+      ))}
+      {points.length === 2 && (
+        <>
+          <line>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                args={[new Float32Array([
+                  points[0].x, points[0].y, points[0].z,
+                  points[1].x, points[1].y, points[1].z,
+                ]), 3]}
+                count={2}
+                itemSize={3}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial color="#ef4444" linewidth={2} />
+          </line>
+        </>
+      )}
+    </group>
+  );
+};
+
+// ── Click Handler for Measurement ──
+const MeasureClickHandler = ({
+  measuring,
+  onPoint,
+}: {
+  measuring: boolean;
+  onPoint: (point: THREE.Vector3) => void;
+}) => {
+  const { raycaster, scene, camera, gl } = useThree();
+
+  useEffect(() => {
+    if (!measuring) return;
+    const canvas = gl.domElement;
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      raycaster.setFromCamera(mouse, camera);
+      const meshes: THREE.Object3D[] = [];
+      scene.traverse((obj) => {
+        if ((obj as THREE.Mesh).isMesh) meshes.push(obj);
+      });
+      const hits = raycaster.intersectObjects(meshes, true);
+      if (hits.length > 0) {
+        onPoint(hits[0].point.clone());
+      }
+    };
+    canvas.addEventListener("click", handleClick);
+    return () => canvas.removeEventListener("click", handleClick);
+  }, [measuring, raycaster, scene, camera, gl, onPoint]);
+
+  return null;
+};
+
 // ── STL Model ──
 const STLModel = ({
   url,
   clipping,
   clipValue,
+  wireframe,
+  modelColor,
   onDimensions,
 }: {
   url: string;
   clipping: boolean;
   clipValue: number;
+  wireframe: boolean;
+  modelColor: string;
   onDimensions: (d: Dimensions) => void;
 }) => {
   const geometry = useLoader(STLLoader, url);
@@ -47,7 +137,6 @@ const STLModel = ({
     box.getSize(size);
     onDimensions({ x: +size.x.toFixed(2), y: +size.y.toFixed(2), z: +size.z.toFixed(2) });
 
-    // Auto-fit camera
     const maxDim = Math.max(size.x, size.y, size.z);
     const dist = maxDim * 2;
     camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
@@ -68,10 +157,11 @@ const STLModel = ({
   return (
     <mesh ref={meshRef} geometry={geometry}>
       <meshStandardMaterial
-        color="#94a3b8"
+        color={modelColor}
         metalness={0.6}
         roughness={0.35}
         side={THREE.DoubleSide}
+        wireframe={wireframe}
         clippingPlanes={clipping ? [clippingPlane] : []}
         clipShadows
       />
@@ -84,11 +174,15 @@ const OBJModel = ({
   url,
   clipping,
   clipValue,
+  wireframe,
+  modelColor,
   onDimensions,
 }: {
   url: string;
   clipping: boolean;
   clipValue: number;
+  wireframe: boolean;
+  modelColor: string;
   onDimensions: (d: Dimensions) => void;
 }) => {
   const obj = useLoader(OBJLoader, url);
@@ -111,20 +205,23 @@ const OBJModel = ({
     const dist = maxDim * 2;
     camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
     camera.lookAt(0, 0, 0);
+  }, [obj, camera, onDimensions]);
 
+  useEffect(() => {
     obj.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.material = new THREE.MeshStandardMaterial({
-          color: "#94a3b8",
+          color: modelColor,
           metalness: 0.6,
           roughness: 0.35,
           side: THREE.DoubleSide,
+          wireframe,
           clippingPlanes: clipping ? [clippingPlane] : [],
         });
       }
     });
-  }, [obj, camera, clipping, clippingPlane, onDimensions]);
+  }, [obj, clipping, clippingPlane, wireframe, modelColor]);
 
   useFrame(() => {
     if (clipping) {
@@ -159,6 +256,12 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
   const [clipValue, setClipValue] = useState(0.5);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [wireframe, setWireframe] = useState(false);
+  const [modelColor, setModelColor] = useState("#94a3b8");
+  const [showColors, setShowColors] = useState(false);
+  const [measuring, setMeasuring] = useState(false);
+  const [measurePoints, setMeasurePoints] = useState<THREE.Vector3[]>([]);
+  const [measureDistance, setMeasureDistance] = useState<number | null>(null);
 
   useEffect(() => {
     if (!file) {
@@ -187,6 +290,35 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
     setDimensions(d);
     setLoading(false);
     onDimensions?.(d);
+  };
+
+  const handleMeasurePoint = useCallback((point: THREE.Vector3) => {
+    setMeasurePoints((prev) => {
+      if (prev.length >= 2) {
+        // Reset and start new measurement
+        const newPoints = [point];
+        setMeasureDistance(null);
+        return newPoints;
+      }
+      const newPoints = [...prev, point];
+      if (newPoints.length === 2) {
+        const dist = newPoints[0].distanceTo(newPoints[1]);
+        setMeasureDistance(+dist.toFixed(2));
+      }
+      return newPoints;
+    });
+  }, []);
+
+  const toggleMeasure = () => {
+    if (measuring) {
+      setMeasuring(false);
+      setMeasurePoints([]);
+      setMeasureDistance(null);
+    } else {
+      setMeasuring(true);
+      setMeasurePoints([]);
+      setMeasureDistance(null);
+    }
   };
 
   if (!file) {
@@ -256,15 +388,88 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
           />
         )}
 
+        <div className="w-px h-5 bg-border" />
+
+        {/* Wireframe */}
+        <button
+          onClick={() => setWireframe((w) => !w)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+            wireframe ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
+          title="Wireframe Modu"
+        >
+          <TriangleRight size={14} /> Wire
+        </button>
+
+        <div className="w-px h-5 bg-border" />
+
+        {/* Color */}
+        <div className="relative">
+          <button
+            onClick={() => setShowColors((c) => !c)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+              showColors ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
+            title="Renk Değiştir"
+          >
+            <Palette size={14} />
+            <span
+              className="w-3 h-3 border border-border"
+              style={{ backgroundColor: modelColor }}
+            />
+          </button>
+          {showColors && (
+            <div className="absolute top-full left-0 mt-1 z-20 bg-card border border-border p-2 flex gap-1.5 shadow-lg">
+              {COLOR_PRESETS.map((c) => (
+                <button
+                  key={c.color}
+                  onClick={() => { setModelColor(c.color); setShowColors(false); }}
+                  className={`w-6 h-6 border-2 transition-all ${
+                    modelColor === c.color ? "border-primary scale-110" : "border-border hover:border-primary/50"
+                  }`}
+                  style={{ backgroundColor: c.color }}
+                  title={c.label}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="w-px h-5 bg-border" />
+
+        {/* Measurement */}
+        <button
+          onClick={toggleMeasure}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+            measuring ? "text-destructive bg-destructive/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
+          title="Ölçüm Aracı"
+        >
+          <Ruler size={14} /> Ölçüm
+        </button>
+
+        {measureDistance !== null && (
+          <span className="text-xs font-mono text-destructive font-bold ml-1">
+            {measureDistance} mm
+          </span>
+        )}
+
         {/* Dimensions badge */}
         {dimensions && (
           <div className="ml-auto flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-            <span className="text-primary font-semibold">X</span>{dimensions.x}mm
-            <span className="text-primary font-semibold">Y</span>{dimensions.y}mm
+            <span className="text-primary font-semibold">X</span>{dimensions.x}
+            <span className="text-primary font-semibold">Y</span>{dimensions.y}
             <span className="text-primary font-semibold">Z</span>{dimensions.z}mm
           </div>
         )}
       </div>
+
+      {/* Measuring hint */}
+      {measuring && (
+        <div className="px-3 py-1.5 bg-destructive/10 border-b border-destructive/20 text-xs text-destructive font-medium text-center">
+          Ölçüm modu aktif — Model üzerinde 2 noktaya tıklayarak mesafe ölçün
+        </div>
+      )}
 
       {/* Canvas */}
       <div className="flex-1 relative bg-muted/20">
@@ -290,6 +495,8 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
                   url={fileUrl}
                   clipping={clipping}
                   clipValue={clipValue}
+                  wireframe={wireframe}
+                  modelColor={modelColor}
                   onDimensions={handleDimensions}
                 />
               )}
@@ -298,10 +505,15 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
                   url={fileUrl}
                   clipping={clipping}
                   clipValue={clipValue}
+                  wireframe={wireframe}
+                  modelColor={modelColor}
                   onDimensions={handleDimensions}
                 />
               )}
             </Center>
+
+            <MeasurementPoints points={measurePoints} distance={measureDistance} />
+            <MeasureClickHandler measuring={measuring} onPoint={handleMeasurePoint} />
 
             {showGrid && (
               <Grid
@@ -326,6 +538,15 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
               minDistance={0.5}
               maxDistance={500}
             />
+
+            {/* GizmoHelper - ViewCube */}
+            <GizmoHelper alignment="bottom-right" margin={[60, 60]}>
+              <GizmoViewport
+                axisColors={["#ef4444", "#22c55e", "#3b82f6"]}
+                labelColor="white"
+              />
+            </GizmoHelper>
+
             <CameraReset trigger={resetTrigger} />
           </Suspense>
         </Canvas>
