@@ -419,7 +419,7 @@ const Header = () => {
               <Link to="/giris" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap">
                 Giriş Yap
               </Link>
-              <Link to="/iletisim" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5">
+              <Link to="/teklif-al" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5">
                 Teklif Al
               </Link>
             </div>
@@ -559,7 +559,7 @@ const Header = () => {
                 {/* Mobile CTA */}
                 <motion.div variants={mobileItemVariants} custom={navItems.length} initial="closed" animate="open">
                   <Link
-                    to="/iletisim"
+                    to="/teklif-al"
                     className="btn-industrial-primary text-center mt-4 block"
                     onClick={() => setIsMenuOpen(false)}
                   >
