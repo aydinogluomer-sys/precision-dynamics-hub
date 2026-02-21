@@ -1,16 +1,17 @@
-import { useState, Suspense } from "react";
+import { useState, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Center, Environment } from "@react-three/drei";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Cog, ChevronLeft, Rocket, CheckCircle2, Zap, Clock,
+  Cog, ChevronLeft, ChevronRight, Rocket, CheckCircle2, Zap, Clock,
   Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight,
-  Upload, ClipboardCheck, Eye, Send,
+  Upload, Eye, Send, Shield, Gauge, FileCheck, Edit3,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { materialsData, materialCategories } from "@/data/materialsData";
 
 // ── 3D Parça ──
 const ComplexPart = () => (
@@ -52,22 +53,19 @@ const ComplexPart = () => (
 
 // ── Yüzey İşlemi Seçenekleri ──
 const surfaceFinishes = [
-  { id: "machined", label: "İşlenmiş Yüzey", icon: Layers, desc: "Ra 3.2μm", priceAdd: 0 },
-  { id: "bead", label: "Kumlama", icon: Droplets, desc: "Mat yüzey", priceAdd: 3 },
-  { id: "anodized", label: "Anodizasyon", icon: Paintbrush, desc: "Tip II/III", priceAdd: 8 },
-  { id: "powder", label: "Toz Boya", icon: Package, desc: "Dayanıklı", priceAdd: 6 },
+  { id: "machined", label: "İşlenmiş Yüzey", icon: Layers, desc: "Ra 3.2μm" },
+  { id: "bead", label: "Kumlama", icon: Droplets, desc: "Mat yüzey" },
+  { id: "anodized", label: "Anodizasyon", icon: Paintbrush, desc: "Tip II/III" },
+  { id: "powder", label: "Toz Boya", icon: Package, desc: "Dayanıklı" },
 ];
 
-// ── Malzeme Seçenekleri ve Birim Fiyatları ──
-const materials = [
-  { id: "al6061", label: "Alüminyum 6061-T6", unitPrice: 42 },
-  { id: "al7075", label: "Alüminyum 7075-T6", unitPrice: 56 },
-  { id: "ss304", label: "Paslanmaz Çelik 304", unitPrice: 68 },
-  { id: "ss316", label: "Paslanmaz Çelik 316L", unitPrice: 78 },
-  { id: "steel", label: "Çelik 1045", unitPrice: 38 },
-  { id: "brass", label: "Pirinç C360", unitPrice: 52 },
-  { id: "titanium", label: "Titanyum Grade 5", unitPrice: 120 },
-];
+// ── Malzeme kütüphanesinden gruplu seçenekler ──
+const materialOptions = materialCategories.map((cat) => ({
+  category: cat.name,
+  items: materialsData
+    .filter((m) => m.subcategory === cat.subcategoryKey)
+    .map((m) => ({ id: m.id, label: m.name })),
+}));
 
 // ── Hizmet Seçenekleri ──
 const services = [
@@ -84,11 +82,29 @@ const TeklifAl = () => {
   const [delivery, setDelivery] = useState<"standard" | "express">("standard");
   const [quantity, setQuantity] = useState(25);
   const [selectedService, setSelectedService] = useState("cnc-mill");
-  const [selectedMaterial, setSelectedMaterial] = useState("al6061");
+  const [selectedMaterial, setSelectedMaterial] = useState("al-6061-t6");
+  const [customMaterial, setCustomMaterial] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<{ name: string; size: string } | null>({
+    name: "Aerospace_Bracket_v2.step",
+    size: "14.5 MB",
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentService = services.find((s) => s.id === selectedService)!;
-  const currentMaterial = materials.find((m) => m.id === selectedMaterial)!;
+  const materialLabel =
+    selectedMaterial === "other"
+      ? customMaterial || "Belirtilmedi"
+      : materialsData.find((m) => m.id === selectedMaterial)?.name ?? selectedMaterial;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      setUploadedFile({ name: file.name, size: `${sizeMB} MB` });
+      toast.success(`"${file.name}" dosyası yüklendi.`);
+    }
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -103,9 +119,9 @@ const TeklifAl = () => {
         date: new Date().toISOString().split("T")[0],
         status: "Yeni",
         service: currentService.label,
-        material: currentMaterial.label,
+        material: materialLabel,
         notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
-        files: ["Aerospace_Bracket_v2.step"],
+        files: uploadedFile ? [uploadedFile.name] : [],
       });
       if (error) throw error;
       toast.success("Teklif talebiniz başarıyla gönderildi! 24 saat içinde dönüş yapacağız.");
@@ -114,6 +130,14 @@ const TeklifAl = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleNext = () => {
+    if (currentStep < 4) setCurrentStep(currentStep + 1);
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const steps = [
@@ -127,7 +151,6 @@ const TeklifAl = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
 
-      {/* Ana içerik - header yüksekliği kadar padding-top */}
       <div className="container-industrial pt-24 pb-16">
         {/* Başlık + Adım rozeti */}
         <div className="flex items-start justify-between mb-6">
@@ -191,16 +214,28 @@ const TeklifAl = () => {
             {/* Dosya Kartı */}
             <div className="card-industrial p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600">
+                <div className="w-10 h-10 flex items-center justify-center bg-primary/10 text-primary">
                   <CheckCircle2 size={18} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">Aerospace_Bracket_v2.step</p>
-                  <p className="text-xs text-muted-foreground">14.5 MB • STEP Format</p>
+                  <p className="text-sm font-bold">{uploadedFile?.name ?? "Dosya seçilmedi"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {uploadedFile ? `${uploadedFile.size} • STEP Format` : "Lütfen dosya yükleyin"}
+                  </p>
                 </div>
               </div>
-              <button className="px-4 py-2 text-xs font-semibold bg-muted text-muted-foreground hover:bg-border transition-colors">
-                Dosya Değiştir
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".step,.stp,.iges,.igs,.stl,.obj,.3mf,.x_t,.x_b"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 text-xs font-semibold bg-muted text-muted-foreground hover:bg-border transition-colors"
+              >
+                Dosyayı Değiştir
               </button>
             </div>
 
@@ -208,7 +243,7 @@ const TeklifAl = () => {
             <div className="card-industrial overflow-hidden">
               <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-muted-foreground">CAD ÖNİZLEME</span>
-                <span className="text-[10px] px-2 py-0.5 font-semibold bg-green-100 text-green-600">HAZIR</span>
+                <span className="text-[10px] px-2 py-0.5 font-semibold bg-primary/10 text-primary">HAZIR</span>
               </div>
               <div className="h-[320px] relative bg-muted">
                 <Canvas camera={{ position: [4, 3, 4], fov: 40 }} gl={{ antialias: true }}>
@@ -223,7 +258,6 @@ const TeklifAl = () => {
                     <Environment preset="studio" />
                   </Suspense>
                 </Canvas>
-                <div className="absolute inset-0 pointer-events-none opacity-[0.04] grid-lines" />
               </div>
             </div>
 
@@ -254,10 +288,29 @@ const TeklifAl = () => {
                     onChange={(e) => setSelectedMaterial(e.target.value)}
                     className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    {materials.map((m) => (
-                      <option key={m.id} value={m.id}>{m.label} — ₺{m.unitPrice}/adet</option>
+                    {materialOptions.map((group) => (
+                      <optgroup key={group.category} label={group.category}>
+                        {group.items.map((m) => (
+                          <option key={m.id} value={m.id}>{m.label}</option>
+                        ))}
+                      </optgroup>
                     ))}
+                    <optgroup label="─────────">
+                      <option value="other">Diğer (Manuel Giriş)</option>
+                    </optgroup>
                   </select>
+                  {selectedMaterial === "other" && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <Edit3 size={14} className="text-muted-foreground shrink-0" />
+                      <input
+                        type="text"
+                        placeholder="Malzeme adını yazınız..."
+                        value={customMaterial}
+                        onChange={(e) => setCustomMaterial(e.target.value)}
+                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -281,11 +334,6 @@ const TeklifAl = () => {
                         <Icon size={20} className={`mx-auto mb-1.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
                         <p className={`text-xs font-bold ${isActive ? "text-primary" : "text-foreground"}`}>{f.label}</p>
                         <p className="text-[10px] text-muted-foreground">{f.desc}</p>
-                        {f.priceAdd > 0 && (
-                          <p className={`text-[9px] mt-1 font-semibold ${isActive ? "text-primary" : "text-muted-foreground"}`}>
-                            +₺{f.priceAdd}/adet
-                          </p>
-                        )}
                       </button>
                     );
                   })}
@@ -326,13 +374,13 @@ const TeklifAl = () => {
                       onClick={() => setDelivery("express")}
                       className={`border-2 p-2.5 text-center transition-all ${
                         delivery === "express"
-                          ? "border-destructive bg-red-50"
+                          ? "border-destructive bg-destructive/10"
                           : "border-border bg-background"
                       }`}
                     >
                       <Zap size={14} className={`mx-auto mb-1 ${delivery === "express" ? "text-destructive" : "text-muted-foreground"}`} />
                       <p className={`text-[10px] font-bold ${delivery === "express" ? "text-destructive" : "text-foreground"}`}>Ekspres</p>
-                      <p className="text-[9px] text-muted-foreground">3-5 Gün (+%30)</p>
+                      <p className="text-[9px] text-muted-foreground">3-5 Gün</p>
                     </button>
                   </div>
                 </div>
@@ -341,19 +389,29 @@ const TeklifAl = () => {
               {/* Alt Navigasyon */}
               <div className="flex items-center justify-between pt-4 border-t border-border">
                 <button
-                  onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors"
+                  onClick={handleBack}
+                  disabled={currentStep <= 1}
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors disabled:opacity-40"
                 >
                   <ChevronLeft size={14} /> GERİ
                 </button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="btn-industrial-primary flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Rocket size={16} />
-                  {isSubmitting ? "GÖNDERİLİYOR..." : "ÜRETİME GÖNDER"}
-                </button>
+                {currentStep < 4 ? (
+                  <button
+                    onClick={handleNext}
+                    className="btn-industrial-primary flex items-center gap-2"
+                  >
+                    İLERİ <ChevronRight size={16} />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="btn-industrial-primary flex items-center gap-2 disabled:opacity-50"
+                  >
+                    <Rocket size={16} />
+                    {isSubmitting ? "GÖNDERİLİYOR..." : "ÜRETİME GÖNDER"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -370,9 +428,10 @@ const TeklifAl = () => {
                 {[
                   ["Proje Adı", "AeroBracket V2"],
                   ["Hizmet", currentService.label],
-                  ["Malzeme", currentMaterial.label],
+                  ["Malzeme", materialLabel],
                   ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
                   ["Sipariş Adedi", `${quantity} Adet`],
+                  ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
                 ].map(([key, value]) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">{key}</span>
@@ -384,8 +443,8 @@ const TeklifAl = () => {
               <div className="border-t-2 border-dashed border-border my-4" />
 
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={12} className="text-green-600" />
-                <span className="text-[10px] font-medium text-green-600">
+                <CheckCircle2 size={12} className="text-primary" />
+                <span className="text-[10px] font-medium text-primary">
                   {delivery === "express"
                     ? "Yüksek hızlı ekspres işleme dahil"
                     : "Standart üretim süreci dahil"}
@@ -398,7 +457,6 @@ const TeklifAl = () => {
               <div className="absolute -right-4 -bottom-4 opacity-10">
                 <HardHat size={100} className="text-white" />
               </div>
-
               <h3 className="text-sm font-bold text-white mb-2">Teknik Destek</h3>
               <p className="text-xs leading-relaxed mb-4 text-industrial-steel">
                 Hassas mühendislerimiz, tasarımınızı üretilebilirlik açısından incelemeye
@@ -408,6 +466,57 @@ const TeklifAl = () => {
                 <HardHat size={14} /> MÜHENDİSE DANIŞIN
                 <ArrowRight size={12} />
               </button>
+            </div>
+
+            {/* Kalite Güvence Kartı */}
+            <div className="card-industrial p-5">
+              <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">
+                KALİTE GÜVENCESİ
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { icon: Shield, title: "ISO 9001:2015", desc: "Sertifikalı kalite yönetim sistemi" },
+                  { icon: Gauge, title: "CMM Ölçüm", desc: "±0.005 mm hassasiyetinde 3D koordinat ölçümü" },
+                  { icon: FileCheck, title: "Malzeme Sertifikası", desc: "Her sipariş için malzeme test raporu" },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3">
+                    <div className="w-8 h-8 flex items-center justify-center bg-primary/10 shrink-0">
+                      <item.icon size={14} className="text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold">{item.title}</p>
+                      <p className="text-[10px] text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Teslimat Bilgisi Kartı */}
+            <div className="card-industrial p-5">
+              <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">
+                TESLİMAT BİLGİSİ
+              </h3>
+              <div className="space-y-2.5 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Prototip (1-10 adet)</span>
+                  <span className="font-bold">5-7 İş Günü</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Küçük Seri (10-100 adet)</span>
+                  <span className="font-bold">10-14 İş Günü</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Seri Üretim (100+ adet)</span>
+                  <span className="font-bold">14-21 İş Günü</span>
+                </div>
+                <div className="border-t border-border pt-2.5 mt-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <Zap size={12} className="text-destructive" />
+                    <span className="text-[10px] font-semibold text-destructive">Ekspres üretim ile süreleri %50'ye kadar kısaltın</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
