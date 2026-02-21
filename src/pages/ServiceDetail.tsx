@@ -2,8 +2,9 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getPageBySlug, getPagesByCategory } from "@/data/servicePages";
-import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight, Cpu, FlaskConical, Calendar } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight, Cpu, FlaskConical, Calendar, Sparkles, Layers, Zap } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import ComparisonTable from "@/components/ComparisonTable";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
@@ -75,16 +76,58 @@ const heroImageMap: Record<string, string> = {
   "hero-seri-uretim": heroSeriUretim,
 };
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { delay, duration: 0.4 },
+/* ── Animation variants ── */
+const smoothEase: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
+const revealEase: [number, number, number, number] = [0.77, 0, 0.175, 1];
+
+const slideUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 30 } as const,
+  whileInView: { opacity: 1, y: 0 } as const,
+  viewport: { once: true, margin: "-60px" as const },
+  transition: { delay, duration: 0.5, ease: smoothEase },
 });
+
+const slideLeft = (delay = 0) => ({
+  initial: { opacity: 0, x: 40 } as const,
+  whileInView: { opacity: 1, x: 0 } as const,
+  viewport: { once: true, margin: "-60px" as const },
+  transition: { delay, duration: 0.5, ease: smoothEase },
+});
+
+const scaleIn = (delay = 0) => ({
+  initial: { opacity: 0, scale: 0.92 } as const,
+  whileInView: { opacity: 1, scale: 1 } as const,
+  viewport: { once: true, margin: "-60px" as const },
+  transition: { delay, duration: 0.5, ease: smoothEase },
+});
+
+const clipReveal = (delay = 0) => ({
+  initial: { clipPath: "inset(0 0 100% 0)", opacity: 0 } as const,
+  whileInView: { clipPath: "inset(0 0 0% 0)", opacity: 1 } as const,
+  viewport: { once: true, margin: "-60px" as const },
+  transition: { delay, duration: 0.7, ease: revealEase },
+});
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
 
 const ServiceDetail = () => {
   const { slug } = useParams<{ category: string; slug: string }>();
   const page = slug ? getPageBySlug(slug) : undefined;
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: heroScrollProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroY = useTransform(heroScrollProgress, [0, 1], [0, 120]);
+  const heroOpacity = useTransform(heroScrollProgress, [0, 0.6], [1, 0]);
 
   if (!page) {
     return (
@@ -118,19 +161,25 @@ const ServiceDetail = () => {
         category={page.categoryLabel}
         faq={page.faq}
       />
-        <main>
-        <section className="relative pt-24 pb-0">
-          <div className="relative h-[320px] md:h-[420px] overflow-hidden">
+      <main>
+        {/* ═══ HERO with parallax ═══ */}
+        <section ref={heroRef} className="relative pt-24 pb-0">
+          <div className="relative h-[320px] md:h-[440px] overflow-hidden">
             <motion.img
               src={heroImage}
               alt={page.title}
               className="w-full h-full object-cover"
-              initial={{ scale: 1.1 }}
+              style={{ y: heroY }}
+              initial={{ scale: 1.15 }}
               animate={{ scale: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,15%,8%)] via-[hsl(220,15%,8%,0.75)] to-[hsl(220,15%,8%,0.3)]" />
-            <div className="absolute bottom-0 left-0 right-0 container-industrial pb-10">
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,15%,8%)] via-[hsl(220,15%,8%,0.75)] to-[hsl(220,15%,8%,0.2)]" />
+
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 container-industrial pb-10"
+              style={{ opacity: heroOpacity }}
+            >
               <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
                 <Link to="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
                 <ChevronRight size={12} />
@@ -138,141 +187,185 @@ const ServiceDetail = () => {
                 <ChevronRight size={12} />
                 <span className="text-white font-medium">{page.title}</span>
               </nav>
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+
+              <motion.div {...clipReveal(0.2)}>
                 <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">
                   {page.categoryLabel}
                 </span>
                 <h1 className="heading-industrial text-3xl md:text-5xl text-white">{page.title}</h1>
-                {/* Quick stats under title */}
-                {page.technicalSpecs && page.technicalSpecs.length > 0 && (
-                  <div className="flex flex-wrap gap-3 mt-4">
-                    {page.technicalSpecs.slice(0, 4).map((spec, i) => (
-                      <motion.div
-                        key={i}
-                        className="bg-white/10 backdrop-blur-sm border border-white/10 px-4 py-2"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 + i * 0.1 }}
-                      >
-                        <span className="text-[10px] uppercase tracking-wider text-white/50 block">{spec.label}</span>
-                        <span className="text-technical text-sm font-bold text-white">{spec.value}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
               </motion.div>
-            </div>
+
+              {page.technicalSpecs && page.technicalSpecs.length > 0 && (
+                <motion.div
+                  className="flex flex-wrap gap-3 mt-5"
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {page.technicalSpecs.slice(0, 4).map((spec, i) => (
+                    <motion.div
+                      key={i}
+                      variants={staggerItem}
+                      className="bg-white/10 backdrop-blur-sm border border-white/10 px-4 py-2 hover:bg-white/15 transition-colors"
+                    >
+                      <span className="text-[10px] uppercase tracking-wider text-white/50 block">{spec.label}</span>
+                      <span className="text-technical text-sm font-bold text-white">{spec.value}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </motion.div>
           </div>
         </section>
 
         <div className="container-industrial py-12 md:py-16">
-          {/* Description */}
-          <motion.p {...fadeUp(0.1)} className="text-lg md:text-xl text-muted-foreground max-w-3xl mb-12 leading-relaxed">
+          {/* Description with clip reveal */}
+          <motion.p {...clipReveal(0.1)} className="text-lg md:text-xl text-muted-foreground max-w-3xl mb-12 leading-relaxed">
             {page.description}
           </motion.p>
 
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-10">
-              {/* Content */}
-              <div className="space-y-5 text-muted-foreground leading-relaxed">
-                {page.content.map((p, i) => (
-                  <motion.p key={i} {...fadeUp(0.15 + i * 0.05)}>{p}</motion.p>
-                ))}
-              </div>
+            {/* ═══ MAIN CONTENT ═══ */}
+            <div className="lg:col-span-2 space-y-14">
 
-              {/* Process Steps */}
+              {/* Content paragraphs — stagger */}
+              <motion.div
+                className="space-y-5 text-muted-foreground leading-relaxed"
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
+              >
+                {page.content.map((p, i) => (
+                  <motion.p key={i} variants={staggerItem}>{p}</motion.p>
+                ))}
+              </motion.div>
+
+              {/* Process Steps — numbered timeline style */}
               {page.processSteps && page.processSteps.length > 0 && (
-                <motion.div {...fadeUp(0.2)}>
+                <motion.div {...slideUp(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" /> Süreç Adımları
+                    <div className="accent-line !w-8" />
+                    <Layers size={20} className="text-primary" />
+                    Süreç Adımları
                   </h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <motion.div
+                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {page.processSteps.map((step, i) => (
-                      <div key={i} className="flex items-center gap-3 bg-card border border-border px-4 py-4">
-                        <span className="text-technical text-xs text-primary font-bold shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                      <motion.div
+                        key={i}
+                        variants={staggerItem}
+                        className="group flex items-center gap-3 bg-card border border-border px-4 py-4 hover:border-primary hover:bg-primary/5 transition-all duration-300"
+                        whileHover={{ x: 4 }}
+                      >
+                        <span className="text-technical text-xs text-primary font-bold shrink-0 w-7 h-7 bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                         <span className="text-sm font-medium">{step}</span>
-                      </div>
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
 
-              {/* Advantages */}
+              {/* Advantages — slide from left */}
               {page.advantages && page.advantages.length > 0 && (
-                <motion.div {...fadeUp(0.25)}>
+                <motion.div {...slideUp(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" /> Avantajlarımız
+                    <div className="accent-line !w-8" />
+                    <Zap size={20} className="text-primary" />
+                    Avantajlarımız
                   </h2>
-                  <div className="grid sm:grid-cols-2 gap-3">
+                  <motion.div
+                    className="grid sm:grid-cols-2 gap-3"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {page.advantages.map((adv, i) => (
                       <motion.div
                         key={i}
-                        className="flex items-start gap-3 bg-card border border-border p-4 hover:border-primary transition-colors"
+                        variants={staggerItem}
+                        className="group flex items-start gap-3 bg-card border border-border p-4 hover:border-primary transition-all duration-300 relative overflow-hidden"
                         whileHover={{ x: 4 }}
                       >
-                        <CheckCircle2 size={18} className="text-primary shrink-0 mt-0.5" />
-                        <span className="text-sm">{adv}</span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <CheckCircle2 size={18} className="text-primary shrink-0 mt-0.5 relative z-10" />
+                        <span className="text-sm relative z-10">{adv}</span>
                       </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
 
-              {/* Features - Redesigned with icon boxes */}
+              {/* Features — scale-in cards */}
               {page.features && page.features.length > 0 && (
-                <motion.div {...fadeUp(0.3)}>
+                <motion.div {...slideUp(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
-                    <div className="accent-line !w-8" /> Öne Çıkan Özellikler
+                    <div className="accent-line !w-8" />
+                    <Sparkles size={20} className="text-primary" />
+                    Öne Çıkan Özellikler
                   </h2>
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <motion.div
+                    className="grid sm:grid-cols-2 gap-4"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {page.features.map((feature, i) => (
                       <motion.div
                         key={feature}
+                        variants={staggerItem}
                         className="group border border-border bg-card p-5 hover:border-primary hover:shadow-lg transition-all duration-300 relative overflow-hidden"
-                        whileHover={{ y: -4 }}
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.05 }}
+                        whileHover={{ y: -4, scale: 1.01 }}
                       >
-                        <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-colors duration-300" />
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <span className="text-technical text-xs font-bold text-primary">{String(i + 1).padStart(2, "0")}</span>
+                        <div className="absolute top-0 left-0 w-1 h-full bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+                        <div className="absolute bottom-0 right-0 w-20 h-20 bg-primary/5 rounded-full translate-x-10 translate-y-10 group-hover:scale-[3] transition-transform duration-500" />
+                        <div className="flex items-start gap-4 relative z-10">
+                          <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                            <span className="text-technical text-xs font-bold">{String(i + 1).padStart(2, "0")}</span>
                           </div>
-                          <div>
-                            <span className="text-sm font-semibold group-hover:text-primary transition-colors">{feature}</span>
-                          </div>
+                          <span className="text-sm font-semibold group-hover:text-primary transition-colors">{feature}</span>
                         </div>
                       </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
 
-              {/* Machines Section */}
+              {/* Machines — scale reveal */}
               {page.machines && page.machines.length > 0 && (
-                <motion.div {...fadeUp(0.35)}>
+                <motion.div {...scaleIn(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
                     <div className="accent-line !w-8" />
                     <Cpu size={20} className="text-primary" />
                     Makine Parkuru
                   </h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <motion.div
+                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {page.machines.map((machine, i) => (
                       <motion.div
                         key={i}
-                        className="border border-border bg-card p-5 hover:border-primary transition-all group"
+                        variants={staggerItem}
+                        className="border border-border bg-card p-5 hover:border-primary transition-all group relative overflow-hidden"
                         whileHover={{ y: -4, boxShadow: "0 8px 24px hsl(var(--primary) / 0.1)" }}
                       >
+                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/0 via-primary to-primary/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                         <div className="flex items-center gap-2 mb-3">
-                          <div className="w-8 h-8 bg-primary/10 flex items-center justify-center">
-                            <Cpu size={16} className="text-primary" />
+                          <div className="w-8 h-8 bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+                            <Cpu size={16} className="text-primary group-hover:text-primary-foreground transition-colors" />
                           </div>
                           <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">{machine.brand}</span>
                         </div>
@@ -280,41 +373,49 @@ const ServiceDetail = () => {
                         <p className="text-technical text-xs text-muted-foreground">{machine.specs}</p>
                       </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
 
-              {/* Materials Section */}
+              {/* Materials — slide left cards */}
               {page.materials && page.materials.length > 0 && (
-                <motion.div {...fadeUp(0.4)}>
+                <motion.div {...slideUp(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
                     <div className="accent-line !w-8" />
                     <FlaskConical size={20} className="text-primary" />
                     İşlenebilir Malzemeler
                   </h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <motion.div
+                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
                     {page.materials.map((mat, i) => (
                       <motion.div
                         key={i}
+                        variants={staggerItem}
                         className="border border-border bg-card overflow-hidden hover:border-primary transition-all group"
                         whileHover={{ y: -4 }}
                       >
-                        <div className="bg-primary/5 px-5 py-3 border-b border-border">
-                          <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{mat.name}</h4>
-                          <span className="text-technical text-xs text-primary">{mat.grade}</span>
+                        <div className="bg-primary/5 px-5 py-3 border-b border-border relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
+                          <h4 className="font-bold text-sm group-hover:text-primary transition-colors relative z-10">{mat.name}</h4>
+                          <span className="text-technical text-xs text-primary relative z-10">{mat.grade}</span>
                         </div>
                         <div className="px-5 py-3">
                           <p className="text-xs text-muted-foreground">{mat.properties}</p>
                         </div>
                       </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </motion.div>
               )}
 
               {/* Comparison Tables */}
               {page.comparisonTables && page.comparisonTables.length > 0 && (
-                <motion.div {...fadeUp(0.42)} className="space-y-8">
+                <motion.div {...scaleIn(0.1)} className="space-y-8">
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
                     <div className="accent-line !w-8" /> Teknik Karşılaştırma Tabloları
                   </h2>
@@ -326,100 +427,140 @@ const ServiceDetail = () => {
 
               {/* FAQ Section */}
               {page.faq && page.faq.length > 0 && (
-                <motion.div {...fadeUp(0.45)}>
+                <motion.div {...slideUp(0.1)}>
                   <h2 className="heading-industrial text-xl mb-6 flex items-center gap-3">
                     <div className="accent-line !w-8" /> Sıkça Sorulan Sorular
                   </h2>
                   <Accordion type="single" collapsible className="space-y-2">
                     {page.faq.map((item, i) => (
-                      <AccordionItem key={i} value={`faq-${i}`} className="border border-border bg-card px-5">
-                        <AccordionTrigger className="text-sm font-semibold text-left hover:text-primary transition-colors py-4">
-                          {item.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-sm text-muted-foreground pb-4">
-                          {item.answer}
-                        </AccordionContent>
-                      </AccordionItem>
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.05, duration: 0.4 }}
+                      >
+                        <AccordionItem value={`faq-${i}`} className="border border-border bg-card px-5 hover:border-primary/50 transition-colors">
+                          <AccordionTrigger className="text-sm font-semibold text-left hover:text-primary transition-colors py-4">
+                            {item.question}
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground pb-4">
+                            {item.answer}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </motion.div>
                     ))}
                   </Accordion>
                 </motion.div>
               )}
             </div>
 
-            {/* Sidebar - NOT sticky */}
-            <div className="space-y-6">
-              {page.technicalSpecs && page.technicalSpecs.length > 0 && (
-                <motion.div className="border border-border bg-card" {...fadeUp(0.2)}>
-                  <div className="bg-primary p-4 flex items-center gap-3">
-                    <Gauge size={20} className="text-primary-foreground" />
-                    <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider">Teknik Özellikler</h3>
-                  </div>
-                  <div className="divide-y divide-border">
-                    {page.technicalSpecs.map((spec, i) => (
-                      <div key={i} className="flex justify-between items-center px-4 py-3">
-                        <span className="text-xs text-muted-foreground">{spec.label}</span>
-                        <span className="text-technical text-xs font-bold text-foreground">{spec.value}</span>
-                      </div>
-                    ))}
+            {/* ═══ SIDEBAR — STICKY ═══ */}
+            <div className="lg:col-span-1">
+              <div className="lg:sticky lg:top-24 space-y-6">
+                {page.technicalSpecs && page.technicalSpecs.length > 0 && (
+                  <motion.div
+                    className="border border-border bg-card overflow-hidden"
+                    {...slideLeft(0.2)}
+                  >
+                    <div className="bg-primary p-4 flex items-center gap-3 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary" />
+                      <Gauge size={20} className="text-primary-foreground relative z-10" />
+                      <h3 className="font-bold text-primary-foreground text-sm uppercase tracking-wider relative z-10">Teknik Özellikler</h3>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {page.technicalSpecs.map((spec, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex justify-between items-center px-4 py-3 hover:bg-primary/5 transition-colors"
+                          initial={{ opacity: 0, x: 20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.3 + i * 0.04 }}
+                        >
+                          <span className="text-xs text-muted-foreground">{spec.label}</span>
+                          <span className="text-technical text-xs font-bold text-foreground">{spec.value}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                <motion.div
+                  className="border-2 border-primary bg-card p-6 relative overflow-hidden group"
+                  {...slideLeft(0.3)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+                  <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-primary/10 rounded-full group-hover:scale-150 transition-transform duration-700" />
+                  <div className="relative z-10">
+                    <h3 className="font-bold text-lg mb-2">Projeniz için teklif alın</h3>
+                    <p className="text-sm text-muted-foreground mb-5">
+                      {page.title} hizmeti hakkında detaylı bilgi ve fiyat teklifi için bizimle iletişime geçin.
+                    </p>
+                    <Link to="/iletisim" className="btn-industrial-primary w-full flex items-center justify-center gap-2 text-center group/btn">
+                      Teklif Al <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
                 </motion.div>
-              )}
 
-              <motion.div className="border border-primary bg-card p-6" {...fadeUp(0.25)}>
-                <h3 className="font-bold text-lg mb-2">Projeniz için teklif alın</h3>
-                <p className="text-sm text-muted-foreground mb-5">
-                  {page.title} hizmeti hakkında detaylı bilgi ve fiyat teklifi için bizimle iletişime geçin.
-                </p>
-                <Link to="/iletisim" className="btn-industrial-primary w-full flex items-center justify-center gap-2 text-center">
-                  Teklif Al <ArrowRight size={16} />
-                </Link>
-              </motion.div>
-
-              {/* Meeting CTA */}
-              <motion.div className="border border-border bg-card p-6" {...fadeUp(0.3)}>
-                <div className="w-10 h-10 bg-primary/10 flex items-center justify-center mb-3">
-                  <Calendar size={18} className="text-primary" />
-                </div>
-                <h3 className="font-bold text-sm mb-2">Online Toplantı Planlayın</h3>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Mühendislik ekibimizle Google Meet üzerinden projenizi detaylı konuşun.
-                </p>
-                <Link to="/iletisim" className="text-xs font-semibold text-primary flex items-center gap-1 hover:gap-2 transition-all">
-                  Toplantı Talep Et <ArrowRight size={12} />
-                </Link>
-              </motion.div>
+                <motion.div
+                  className="border border-border bg-card p-6 hover:border-primary/50 transition-colors group"
+                  {...slideLeft(0.4)}
+                >
+                  <div className="w-10 h-10 bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary transition-colors duration-300">
+                    <Calendar size={18} className="text-primary group-hover:text-primary-foreground transition-colors" />
+                  </div>
+                  <h3 className="font-bold text-sm mb-2">Online Toplantı Planlayın</h3>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Mühendislik ekibimizle Google Meet üzerinden projenizi detaylı konuşun.
+                  </p>
+                  <Link to="/iletisim" className="text-xs font-semibold text-primary flex items-center gap-1 hover:gap-2 transition-all">
+                    Toplantı Talep Et <ArrowRight size={12} />
+                  </Link>
+                </motion.div>
+              </div>
             </div>
           </div>
 
           {/* Related pages */}
           {relatedPages.length > 0 && (
-            <motion.div className="mt-20 pt-12 border-t border-border" {...fadeUp(0.5)}>
+            <motion.div className="mt-20 pt-12 border-t border-border" {...slideUp(0.1)}>
               <h2 className="heading-industrial text-xl mb-8 flex items-center gap-3">
                 <div className="accent-line !w-8" /> İlgili Sayfalar
               </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <motion.div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
                 {relatedPages.slice(0, 8).map((rp) => (
-                  <Link
-                    key={rp.slug}
-                    to={`/${rp.category}/${rp.slug}`}
-                    className="border border-border bg-card p-5 hover:border-primary transition-colors group"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{rp.categoryLabel}</span>
-                      <ArrowUpRight size={14} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
-                    <h3 className="font-bold text-sm group-hover:text-primary transition-colors">{rp.title}</h3>
-                    <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{rp.description}</p>
-                    {rp.technicalSpecs && rp.technicalSpecs.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
-                        {rp.technicalSpecs.slice(0, 2).map((spec, i) => (
-                          <span key={i} className="text-technical text-[10px] text-primary bg-primary/10 px-2 py-0.5">{spec.value}</span>
-                        ))}
+                  <motion.div key={rp.slug} variants={staggerItem}>
+                    <Link
+                      to={`/${rp.category}/${rp.slug}`}
+                      className="block border border-border bg-card p-5 hover:border-primary transition-all group h-full relative overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{rp.categoryLabel}</span>
+                          <ArrowUpRight size={14} className="text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                        </div>
+                        <h3 className="font-bold text-sm group-hover:text-primary transition-colors">{rp.title}</h3>
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{rp.description}</p>
+                        {rp.technicalSpecs && rp.technicalSpecs.length > 0 && (
+                          <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                            {rp.technicalSpecs.slice(0, 2).map((spec, i) => (
+                              <span key={i} className="text-technical text-[10px] text-primary bg-primary/10 px-2 py-0.5">{spec.value}</span>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </Link>
+                    </Link>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </div>
