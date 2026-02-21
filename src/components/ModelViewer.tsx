@@ -1,0 +1,351 @@
+import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { OrbitControls, Grid, Center } from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import {
+  RotateCcw, Grid3x3, Scissors, Loader2, Box,
+} from "lucide-react";
+
+// ── Types ──
+interface ModelViewerProps {
+  file: File | null;
+  onDimensions?: (dims: { x: number; y: number; z: number }) => void;
+}
+
+interface Dimensions {
+  x: number;
+  y: number;
+  z: number;
+}
+
+// ── STL Model ──
+const STLModel = ({
+  url,
+  clipping,
+  clipValue,
+  onDimensions,
+}: {
+  url: string;
+  clipping: boolean;
+  clipValue: number;
+  onDimensions: (d: Dimensions) => void;
+}) => {
+  const geometry = useLoader(STLLoader, url);
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { camera } = useThree();
+
+  const clippingPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), []);
+
+  useEffect(() => {
+    if (!geometry) return;
+    geometry.center();
+    geometry.computeBoundingBox();
+    const box = geometry.boundingBox!;
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    onDimensions({ x: +size.x.toFixed(2), y: +size.y.toFixed(2), z: +size.z.toFixed(2) });
+
+    // Auto-fit camera
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const dist = maxDim * 2;
+    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
+    (camera as THREE.PerspectiveCamera).near = 0.01;
+    (camera as THREE.PerspectiveCamera).far = maxDim * 20;
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+  }, [geometry, camera, onDimensions]);
+
+  useFrame(() => {
+    if (clipping && geometry.boundingBox) {
+      const box = geometry.boundingBox;
+      const size = box.max.y - box.min.y;
+      clippingPlane.constant = box.min.y + size * clipValue;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} geometry={geometry}>
+      <meshStandardMaterial
+        color="#94a3b8"
+        metalness={0.6}
+        roughness={0.35}
+        side={THREE.DoubleSide}
+        clippingPlanes={clipping ? [clippingPlane] : []}
+        clipShadows
+      />
+    </mesh>
+  );
+};
+
+// ── OBJ Model ──
+const OBJModel = ({
+  url,
+  clipping,
+  clipValue,
+  onDimensions,
+}: {
+  url: string;
+  clipping: boolean;
+  clipValue: number;
+  onDimensions: (d: Dimensions) => void;
+}) => {
+  const obj = useLoader(OBJLoader, url);
+  const { camera } = useThree();
+
+  const clippingPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), []);
+
+  useEffect(() => {
+    if (!obj) return;
+    const box = new THREE.Box3().setFromObject(obj);
+    const center = new THREE.Vector3();
+    const size = new THREE.Vector3();
+    box.getCenter(center);
+    box.getSize(size);
+
+    obj.position.sub(center);
+    onDimensions({ x: +size.x.toFixed(2), y: +size.y.toFixed(2), z: +size.z.toFixed(2) });
+
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const dist = maxDim * 2;
+    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
+    camera.lookAt(0, 0, 0);
+
+    obj.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: "#94a3b8",
+          metalness: 0.6,
+          roughness: 0.35,
+          side: THREE.DoubleSide,
+          clippingPlanes: clipping ? [clippingPlane] : [],
+        });
+      }
+    });
+  }, [obj, camera, clipping, clippingPlane, onDimensions]);
+
+  useFrame(() => {
+    if (clipping) {
+      const box = new THREE.Box3().setFromObject(obj);
+      const size = box.max.y - box.min.y;
+      clippingPlane.constant = box.min.y + size * clipValue;
+    }
+  });
+
+  return <primitive object={obj} />;
+};
+
+// ── Camera Reset Helper ──
+const CameraReset = ({ trigger }: { trigger: number }) => {
+  const { camera } = useThree();
+  useEffect(() => {
+    if (trigger > 0) {
+      camera.position.set(3, 2.5, 4);
+      camera.lookAt(0, 0, 0);
+    }
+  }, [trigger, camera]);
+  return null;
+};
+
+// ── Main Component ──
+const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [fileType, setFileType] = useState<"stl" | "obj" | null>(null);
+  const [dimensions, setDimensions] = useState<Dimensions | null>(null);
+  const [showGrid, setShowGrid] = useState(true);
+  const [clipping, setClipping] = useState(false);
+  const [clipValue, setClipValue] = useState(0.5);
+  const [resetTrigger, setResetTrigger] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!file) {
+      setFileUrl(null);
+      setFileType(null);
+      setDimensions(null);
+      return;
+    }
+
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (ext === "stl") setFileType("stl");
+    else if (ext === "obj") setFileType("obj");
+    else {
+      setFileType(null);
+      return;
+    }
+
+    setLoading(true);
+    const url = URL.createObjectURL(file);
+    setFileUrl(url);
+
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const handleDimensions = (d: Dimensions) => {
+    setDimensions(d);
+    setLoading(false);
+    onDimensions?.(d);
+  };
+
+  if (!file) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/30 border border-dashed border-border">
+        <Box size={48} className="text-muted-foreground/40 mb-3" />
+        <p className="text-sm text-muted-foreground font-medium">3D Önizleme</p>
+        <p className="text-xs text-muted-foreground/60 mt-1">STL veya OBJ dosyası yükleyin</p>
+      </div>
+    );
+  }
+
+  if (!fileType) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/30 border border-border">
+        <p className="text-sm text-muted-foreground">Bu dosya formatı 3D önizlemeyi desteklemiyor.</p>
+        <p className="text-xs text-muted-foreground/60 mt-1">STL veya OBJ formatında dosya yükleyin.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full flex flex-col">
+      {/* Toolbar */}
+      <div className="flex items-center gap-1 p-2 bg-card border-b border-border shrink-0 flex-wrap">
+        <button
+          onClick={() => setResetTrigger((t) => t + 1)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          title="Kamerayı Sıfırla"
+        >
+          <RotateCcw size={14} /> Sıfırla
+        </button>
+
+        <div className="w-px h-5 bg-border" />
+
+        <button
+          onClick={() => setShowGrid((g) => !g)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+            showGrid ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
+          title="Grid Aç/Kapa"
+        >
+          <Grid3x3 size={14} /> Grid
+        </button>
+
+        <div className="w-px h-5 bg-border" />
+
+        <button
+          onClick={() => setClipping((c) => !c)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+            clipping ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          }`}
+          title="Kesit Görünümü"
+        >
+          <Scissors size={14} /> Kesit
+        </button>
+
+        {clipping && (
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={clipValue}
+            onChange={(e) => setClipValue(parseFloat(e.target.value))}
+            className="w-24 h-1 accent-primary ml-1"
+          />
+        )}
+
+        {/* Dimensions badge */}
+        {dimensions && (
+          <div className="ml-auto flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
+            <span className="text-primary font-semibold">X</span>{dimensions.x}mm
+            <span className="text-primary font-semibold">Y</span>{dimensions.y}mm
+            <span className="text-primary font-semibold">Z</span>{dimensions.z}mm
+          </div>
+        )}
+      </div>
+
+      {/* Canvas */}
+      <div className="flex-1 relative bg-muted/20">
+        {loading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70">
+            <Loader2 size={24} className="animate-spin text-primary" />
+          </div>
+        )}
+
+        <Canvas
+          camera={{ position: [3, 2.5, 4], fov: 45 }}
+          gl={{ antialias: true, alpha: true, localClippingEnabled: true }}
+          style={{ background: "transparent" }}
+        >
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[5, 8, 5]} intensity={1} />
+            <directionalLight position={[-3, 2, -3]} intensity={0.3} />
+
+            <Center>
+              {fileUrl && fileType === "stl" && (
+                <STLModel
+                  url={fileUrl}
+                  clipping={clipping}
+                  clipValue={clipValue}
+                  onDimensions={handleDimensions}
+                />
+              )}
+              {fileUrl && fileType === "obj" && (
+                <OBJModel
+                  url={fileUrl}
+                  clipping={clipping}
+                  clipValue={clipValue}
+                  onDimensions={handleDimensions}
+                />
+              )}
+            </Center>
+
+            {showGrid && (
+              <Grid
+                args={[100, 100]}
+                cellSize={1}
+                cellThickness={0.5}
+                cellColor="#64748b"
+                sectionSize={5}
+                sectionThickness={1}
+                sectionColor="#475569"
+                fadeDistance={50}
+                fadeStrength={1}
+                followCamera={false}
+                position={[0, -0.01, 0]}
+              />
+            )}
+
+            <OrbitControls
+              makeDefault
+              enableDamping
+              dampingFactor={0.1}
+              minDistance={0.5}
+              maxDistance={500}
+            />
+            <CameraReset trigger={resetTrigger} />
+          </Suspense>
+        </Canvas>
+      </div>
+
+      {/* Dimensions Card */}
+      {dimensions && (
+        <div className="p-3 bg-card border-t border-border shrink-0">
+          <div className="grid grid-cols-3 gap-2">
+            {(["x", "y", "z"] as const).map((axis) => (
+              <div key={axis} className="text-center p-2 bg-muted/50">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{axis} Ekseni</p>
+                <p className="text-sm font-bold font-mono text-foreground">{dimensions[axis]} <span className="text-muted-foreground font-normal text-[10px]">mm</span></p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ModelViewer;
