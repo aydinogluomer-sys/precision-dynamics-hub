@@ -1,653 +1,433 @@
-import { useState, useCallback, Suspense, useEffect, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, Grid, Center, GizmoHelper, GizmoViewport } from "@react-three/drei";
+import { useState, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Center, Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Box, Camera, Ruler, Search, Lightbulb, Download, Share2,
-  ChevronDown, ChevronUp, Pencil, Maximize, RotateCcw,
-  Grid3x3, Scissors, TriangleRight, Palette, Loader2,
-  List, PenTool, Upload, MessageSquare, ArrowUpDown, ArrowUp, ArrowDown, X,
-  Check, Send,
+  Cog, User, ChevronLeft, Rocket, CheckCircle2, Upload, FileText, Zap, Clock,
+  Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight, Info, Lightbulb,
+  LayoutDashboard, FileStack, ShoppingCart,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useLoader } from "@react-three/fiber";
 
-// ── Part Table Data ──
-const partData = [
-  { id: "SB 2310-63-001", length: "0.6300", headDia: "2.358", bodyDia: "1.000", headThk: "0.179", insideDia: "0.118", step: "0.451", holeDist: "0.865", cboreDia: "0.318", drill: "0.159", insideOD: "0.000", depth: "0.000", checked: false },
-  { id: "SB 3525-90-001", length: "0.9000", headDia: "3.538", bodyDia: "2.500", headThk: "0.436", insideDia: "0.118", step: "0.464", holeDist: "1.510", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 2025-88", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 4325-88-001", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.467", insideDia: "0.118", step: "0.413", holeDist: "1.656", cboreDia: "0.514", drill: "0.257", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 4335-60", length: "0.6000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: true },
-  { id: "SB 4335-80", length: "0.8000", headDia: "4.330", bodyDia: "2.500", headThk: "0.250", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.350", checked: false },
-  { id: "SB 2025-100", length: "1.0000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 3525-120", length: "1.2000", headDia: "3.538", bodyDia: "2.500", headThk: "0.436", insideDia: "0.118", step: "0.464", holeDist: "1.510", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 4335-100", length: "1.0000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 2310-80", length: "0.8000", headDia: "2.358", bodyDia: "1.000", headThk: "0.179", insideDia: "0.118", step: "0.451", holeDist: "0.865", cboreDia: "0.318", drill: "0.159", insideOD: "0.000", depth: "0.000", checked: false },
-  { id: "SB 4325-120", length: "1.2000", headDia: "4.330", bodyDia: "2.500", headThk: "0.467", insideDia: "0.118", step: "0.413", holeDist: "1.656", cboreDia: "0.514", drill: "0.257", insideOD: "2.000", depth: "0.280", checked: false },
-  { id: "SB 2025-63", length: "0.6300", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
-];
+// ── Color constants (blue & orange accents) ──
+const BLUE = "#2563eb";
+const BLUE_LIGHT = "#dbeafe";
+const BLUE_DARK = "#1e3a5f";
+const ORANGE = "#ea580c";
+const ORANGE_LIGHT = "#fff7ed";
 
-const columns = [
-  { key: "id", label: "Ident Number", sublabel: "IDNR" },
-  { key: "length", label: "Length", sublabel: "L [Gümrük]" },
-  { key: "headDia", label: "Head Dia.", sublabel: "D [Gümrük]" },
-  { key: "bodyDia", label: "Body Dia.", sublabel: "D1 [Gümrük]" },
-  { key: "headThk", label: "Head Thickness", sublabel: "HTK [Gümrük]" },
-  { key: "insideDia", label: "Inside Dia.", sublabel: "ID [Gümrük]" },
-  { key: "step", label: "Step", sublabel: "STEP [Gümrük]" },
-  { key: "holeDist", label: "Hole Distance", sublabel: "DIS [Gümrük]" },
-  { key: "cboreDia", label: "Cbore Dia.", sublabel: "CBORE [Gümrük]" },
-  { key: "drill", label: "Drill", sublabel: "DRILL [Gümrük]" },
-  { key: "insideOD", label: "Inside OD", sublabel: "IOD [Gümrük]" },
-  { key: "depth", label: "Depth", sublabel: "DP [Gümrük]" },
-];
-
-// ── 3D Placeholder Model ──
-const PlaceholderModel = () => (
+// ── Complex 3D Part ──
+const ComplexPart = () => (
   <group>
+    {/* Main bracket body */}
     <mesh position={[0, 0, 0]}>
-      <cylinderGeometry args={[1.5, 1.5, 0.4, 64]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      <boxGeometry args={[2.4, 0.3, 1.6]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.75} roughness={0.25} />
     </mesh>
-    <mesh position={[0, 1.5, 0]}>
-      <cylinderGeometry args={[0.5, 0.5, 2.6, 32]} />
-      <meshStandardMaterial color="#64748b" metalness={0.6} roughness={0.35} />
+    {/* Left vertical wall */}
+    <mesh position={[-0.9, 0.6, 0]}>
+      <boxGeometry args={[0.25, 0.9, 1.6]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.75} roughness={0.25} />
     </mesh>
-    <mesh position={[0, 3, 0]}>
-      <cylinderGeometry args={[0.7, 0.7, 0.3, 32]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+    {/* Right vertical wall */}
+    <mesh position={[0.9, 0.6, 0]}>
+      <boxGeometry args={[0.25, 0.9, 1.6]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.75} roughness={0.25} />
     </mesh>
-    {[0, 60, 120, 180, 240, 300].map((angle, i) => {
-      const rad = (angle * Math.PI) / 180;
-      return (
-        <mesh key={i} position={[Math.cos(rad) * 1.1, 0.21, Math.sin(rad) * 1.1]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
-          <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
-        </mesh>
-      );
-    })}
+    {/* Top crossbar */}
+    <mesh position={[0, 1.05, 0]}>
+      <boxGeometry args={[2.05, 0.2, 0.8]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.75} roughness={0.25} />
+    </mesh>
+    {/* Mounting holes */}
+    {[[-0.6, -0.15, -0.5], [0.6, -0.15, -0.5], [-0.6, -0.15, 0.5], [0.6, -0.15, 0.5]].map((pos, i) => (
+      <mesh key={i} position={pos as [number, number, number]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.12, 0.03, 16, 32]} />
+        <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.2} />
+      </mesh>
+    ))}
+    {/* Reinforcement ribs */}
+    {[-0.3, 0.3].map((x, i) => (
+      <mesh key={`rib-${i}`} position={[x, 0.35, 0]} rotation={[0, 0, Math.PI / 4]}>
+        <boxGeometry args={[0.08, 0.5, 0.6]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.7} roughness={0.3} />
+      </mesh>
+    ))}
+    {/* Center bore */}
+    <mesh position={[0, 1.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <torusGeometry args={[0.2, 0.05, 16, 32]} />
+      <meshStandardMaterial color="#475569" metalness={0.85} roughness={0.15} />
+    </mesh>
   </group>
 );
 
-// ── STL Model ──
-const STLModel = ({ url, color, wireframe }: { url: string; color: string; wireframe: boolean }) => {
-  const geometry = useLoader(STLLoader, url);
-  const { camera } = useThree();
-  useEffect(() => {
-    if (!geometry) return;
-    geometry.center();
-    geometry.computeBoundingBox();
-    const size = new THREE.Vector3();
-    geometry.boundingBox!.getSize(size);
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const dist = maxDim * 2;
-    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
-    (camera as THREE.PerspectiveCamera).near = 0.01;
-    (camera as THREE.PerspectiveCamera).far = maxDim * 20;
-    camera.updateProjectionMatrix();
-    camera.lookAt(0, 0, 0);
-  }, [geometry, camera]);
-  return (
-    <mesh geometry={geometry}>
-      <meshStandardMaterial color={color} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} />
-    </mesh>
-  );
-};
-
-// ── STEP Model ──
-const STEPModel = ({ geometry, color, wireframe }: { geometry: THREE.BufferGeometry; color: string; wireframe: boolean }) => {
-  const { camera } = useThree();
-  useEffect(() => {
-    if (!geometry) return;
-    geometry.center();
-    geometry.computeBoundingBox();
-    const size = new THREE.Vector3();
-    geometry.boundingBox!.getSize(size);
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const dist = maxDim * 2;
-    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
-    (camera as THREE.PerspectiveCamera).near = 0.01;
-    (camera as THREE.PerspectiveCamera).far = maxDim * 20;
-    camera.updateProjectionMatrix();
-    camera.lookAt(0, 0, 0);
-  }, [geometry, camera]);
-  return (
-    <mesh geometry={geometry}>
-      <meshStandardMaterial color={color} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} />
-    </mesh>
-  );
-};
-
-const CameraReset = ({ trigger }: { trigger: number }) => {
-  const { camera } = useThree();
-  useEffect(() => {
-    if (trigger > 0) {
-      camera.position.set(4, 3, 5);
-      camera.lookAt(0, 0, 0);
-    }
-  }, [trigger, camera]);
-  return null;
-};
-
-const COLORS = [
-  { label: "Çelik", color: "#64748b" },
-  { label: "Altın", color: "#d4a574" },
-  { label: "Mavi", color: "#3b82f6" },
-  { label: "Kırmızı", color: "#ef4444" },
-  { label: "Siyah", color: "#1e293b" },
+// ── Surface finish options ──
+const surfaceFinishes = [
+  { id: "machined", label: "As-Machined", icon: Layers, desc: "Ra 3.2μm" },
+  { id: "bead", label: "Bead Blast", icon: Droplets, desc: "Matte finish" },
+  { id: "anodized", label: "Anodized", icon: Paintbrush, desc: "Type II/III" },
+  { id: "powder", label: "Powder Coat", icon: Package, desc: "Durable coat" },
 ];
-
-// ── RFQ Form Data ──
-interface RFQForm {
-  company: string;
-  email: string;
-  phone: string;
-  quantity: number;
-  notes: string;
-}
 
 // ── Main Component ──
 const TeklifAl = () => {
-  const navigate = useNavigate();
-
-  // Table state
-  const [checkedRows, setCheckedRows] = useState<Record<string, boolean>>(
-    Object.fromEntries(partData.map((p) => [p.id, p.checked]))
-  );
-  const [collapsed, setCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortKey, setSortKey] = useState<string | null>(null);
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
-
-  // 3D Viewer state
-  const [activeView, setActiveView] = useState<"3d" | "2d">("3d");
-  const [showGrid, setShowGrid] = useState(true);
-  const [wireframe, setWireframe] = useState(false);
-  const [modelColor, setModelColor] = useState("#64748b");
-  const [showColors, setShowColors] = useState(false);
-  const [resetTrigger, setResetTrigger] = useState(0);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [fileType, setFileType] = useState<"stl" | "obj" | "step" | null>(null);
-  const [stepGeometry, setStepGeometry] = useState<THREE.BufferGeometry | null>(null);
-  const [stepLoading, setStepLoading] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-
-  // RFQ form state
-  const [rfqForm, setRfqForm] = useState<RFQForm>({ company: "", email: "", phone: "", quantity: 1, notes: "" });
+  const [currentStep] = useState(2);
+  const [selectedFinish, setSelectedFinish] = useState("machined");
+  const [delivery, setDelivery] = useState<"standard" | "express">("standard");
+  const [quantity, setQuantity] = useState(25);
+  const [service] = useState("CNC Milling (3 & 5 Axis)");
+  const [material] = useState("Aluminum 6061-T6");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // ── Table logic ──
-  const handleSort = (key: string) => {
-    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortKey(key); setSortDir("asc"); }
-  };
-
-  const filteredAndSorted = useMemo(() => {
-    let data = [...partData];
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      data = data.filter((p) => Object.values(p).some((v) => String(v).toLowerCase().includes(q)));
-    }
-    if (sortKey) {
-      data.sort((a, b) => {
-        const av = (a as Record<string, unknown>)[sortKey] as string;
-        const bv = (b as Record<string, unknown>)[sortKey] as string;
-        const an = parseFloat(av), bn = parseFloat(bv);
-        if (!isNaN(an) && !isNaN(bn)) return sortDir === "asc" ? an - bn : bn - an;
-        return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
-      });
-    }
-    return data;
-  }, [searchQuery, sortKey, sortDir]);
-
-  const totalPages = Math.ceil(filteredAndSorted.length / pageSize);
-  const paginatedData = filteredAndSorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  const selectedCount = Object.values(checkedRows).filter(Boolean).length;
-  const selectedRow = partData.find((p) => checkedRows[p.id]);
-
-  const toggleSelectAll = () => {
-    const allSelected = paginatedData.every((p) => checkedRows[p.id]);
-    const updates = Object.fromEntries(paginatedData.map((p) => [p.id, !allSelected]));
-    setCheckedRows((prev) => ({ ...prev, ...updates }));
-  };
-
-  const toggleRow = (id: string) => setCheckedRows((prev) => ({ ...prev, [id]: !prev[id] }));
-
-  const clearSelection = () => {
-    const updates = Object.fromEntries(Object.entries(checkedRows).filter(([, v]) => v).map(([k]) => [k, false]));
-    setCheckedRows((prev) => ({ ...prev, ...updates }));
-  };
-
-  // ── File upload ──
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const ext = file.name.split(".").pop()?.toLowerCase();
-    if (ext !== "stl" && ext !== "obj" && ext !== "step" && ext !== "stp") return;
-    setUploadedFile(file);
-    setStepGeometry(null);
-
-    if (ext === "step" || ext === "stp") {
-      setFileType("step");
-      setFileUrl(null);
-      setStepLoading(true);
-      try {
-        const occtimportjs = (await import("occt-import-js")).default;
-        const occt = await occtimportjs();
-        const buffer = await file.arrayBuffer();
-        const result = occt.ReadStepFile(new Uint8Array(buffer), null);
-        const geo = new THREE.BufferGeometry();
-        const vertices: number[] = [];
-        const indices: number[] = [];
-        for (const mesh of result.meshes) {
-          const offset = vertices.length / 3;
-          for (let i = 0; i < mesh.attributes.position.array.length; i++) vertices.push(mesh.attributes.position.array[i]);
-          if (mesh.index) for (let i = 0; i < mesh.index.array.length; i++) indices.push(mesh.index.array[i] + offset);
-        }
-        geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
-        if (indices.length > 0) geo.setIndex(indices);
-        geo.computeVertexNormals();
-        setStepGeometry(geo);
-      } catch (err) { console.error("STEP parse error:", err); }
-      finally { setStepLoading(false); }
-    } else {
-      setFileType(ext as "stl" | "obj");
-      setFileUrl(URL.createObjectURL(file));
-    }
-  };
-
-  const toggleFullscreen = () => {
-    if (!canvasContainerRef.current) return;
-    if (!document.fullscreenElement) { canvasContainerRef.current.requestFullscreen(); setIsFullscreen(true); }
-    else { document.exitFullscreen(); setIsFullscreen(false); }
-  };
-
-  // ── RFQ Submit ──
-  const handleRFQSubmit = async () => {
-    if (!rfqForm.email.trim() || !rfqForm.company.trim()) {
-      toast.error("Firma adı ve e-posta gereklidir.");
-      return;
-    }
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     const rfqId = `RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     try {
       const { error } = await supabase.from("rfqs").insert({
         id: rfqId,
-        customer: rfqForm.company,
-        company: rfqForm.company,
-        email: rfqForm.email,
-        phone: rfqForm.phone || null,
-        quantity: rfqForm.quantity,
+        customer: "AeroBracket V2",
+        company: "Precision Client",
+        email: "client@precision.com",
+        quantity,
         date: new Date().toISOString().split("T")[0],
         status: "Yeni",
-        notes: rfqForm.notes || null,
-        files: uploadedFile ? [uploadedFile.name] : null,
+        service,
+        material,
+        notes: `Surface: ${selectedFinish}, Delivery: ${delivery}`,
+        files: ["Aerospace_Bracket_v2.step"],
       });
       if (error) throw error;
-      setIsSubmitted(true);
-      toast.success("Teklif talebiniz başarıyla gönderildi!");
+      toast.success("Quote request submitted successfully! We'll respond within 24 hours.");
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
-      toast.error("Gönderim hatası: " + message);
-    } finally { setIsSubmitting(false); }
+      toast.error("Submission error: " + (err instanceof Error ? err.message : "Unknown"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const totalPrice = delivery === "express" ? 1820 : 1420;
+
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-
-      <main className="pt-24 pb-12">
-        <div className="container-industrial">
-          {/* Page Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="heading-industrial text-2xl">Teklif Al — CAD Parça Görüntüleyici</h1>
-              <p className="text-sm text-muted-foreground mt-1">Parça seçin, 3D inceleyin ve hızlı teklif talep edin</p>
+    <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
+      {/* ── NAVBAR ── */}
+      <nav className="border-b" style={{ borderColor: "#e2e8f0", backgroundColor: "#ffffff" }}>
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: BLUE_DARK }}>
+              <Cog size={18} className="text-white" />
             </div>
-            <div className="flex items-center gap-2">
-              <label className="btn-industrial-primary text-xs flex items-center gap-2 py-2.5 px-5 cursor-pointer">
-                <Upload size={14} /> STL/OBJ/STEP Yükle
-                <input type="file" accept=".stl,.obj,.step,.stp" onChange={handleFileUpload} className="hidden" />
-              </label>
-            </div>
+            <span className="text-lg font-bold tracking-tight" style={{ color: BLUE_DARK }}>PrecisionQuoting</span>
           </div>
-
-          {/* ── Search Bar ── */}
-          <div className="bg-card border border-border border-b-0 p-3 flex items-center gap-3">
-            <div className="relative flex-1 max-w-sm">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Parça ara... (ID, boyut, vb.)"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-background border border-border pl-9 pr-8 py-2 text-xs focus:outline-none focus:border-primary transition-colors"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground">
-                <span className="text-primary font-bold">{selectedCount}</span>/{filteredAndSorted.length} seçili
-              </span>
-              {selectedCount > 0 && (
-                <button onClick={clearSelection} className="text-xs font-medium text-destructive border border-destructive/30 px-3 py-1.5 hover:bg-destructive/10 transition-colors flex items-center gap-1.5">
-                  <X size={12} /> Seçimi Kaldır ({selectedCount})
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* ── Part Table ── */}
-          <div className="bg-card border border-border mb-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="w-10 p-3">
-                      <Checkbox
-                        checked={paginatedData.length > 0 && paginatedData.every((p) => checkedRows[p.id])}
-                        onCheckedChange={toggleSelectAll}
-                      />
-                    </th>
-                    <th className="w-8 p-3 text-center text-[10px] font-semibold text-muted-foreground">#</th>
-                    <th className="w-8 p-3"></th>
-                    {columns.map((col) => (
-                      <th
-                        key={col.key}
-                        className="p-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer hover:text-foreground transition-colors select-none"
-                        onClick={() => handleSort(col.key)}
-                      >
-                        <div className="flex flex-col">
-                          <div className="flex items-center gap-1.5">
-                            {col.label}
-                            {sortKey === col.key ? (
-                              sortDir === "asc" ? <ArrowUp size={10} className="text-primary" /> : <ArrowDown size={10} className="text-primary" />
-                            ) : (
-                              <ArrowUpDown size={10} className="text-muted-foreground/30" />
-                            )}
-                            <Pencil size={10} className="text-muted-foreground/50" />
-                          </div>
-                          <span className="text-[9px] font-normal normal-case tracking-normal text-muted-foreground/60">{col.sublabel}</span>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedData.map((part, idx) => {
-                    const isSelected = checkedRows[part.id];
-                    return (
-                      <tr
-                        key={part.id}
-                        className={`border-b border-border transition-colors ${
-                          isSelected ? "bg-destructive/5 border-l-2 border-l-destructive" : "hover:bg-muted/30"
-                        }`}
-                      >
-                        <td className="p-3"><Checkbox checked={isSelected} onCheckedChange={() => toggleRow(part.id)} /></td>
-                        <td className="p-3 text-center text-xs text-muted-foreground font-semibold">{(currentPage - 1) * pageSize + idx + 1}</td>
-                        <td className="p-3">{isSelected && <Download size={14} className="text-destructive" />}</td>
-                        <td className="p-3 font-mono font-semibold text-foreground">{part.id}</td>
-                        {columns.slice(1).map((col) => (
-                          <td key={col.key} className="p-3 font-mono text-muted-foreground">
-                            {(part as Record<string, unknown>)[col.key] as string}
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Collapse toggle */}
+          {/* Nav links */}
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#64748b" }}>
+              <LayoutDashboard size={14} /> Dashboard
+            </a>
+            <a href="#" className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#64748b" }}>
+              <FileStack size={14} /> Recent Quotes
+            </a>
+            <a href="#" className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#64748b" }}>
+              <ShoppingCart size={14} /> Orders
+            </a>
             <button
-              onClick={() => setCollapsed((c) => !c)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors border-t border-border"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-lg transition-colors"
+              style={{ backgroundColor: BLUE }}
             >
-              {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
-              {collapsed ? "Tabloyu genişlet" : `Sıkıştırılmış görünümü göster (${partData.length} ürün)`}
+              <User size={14} /> Profile
             </button>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-2.5 border-t border-border bg-muted/30">
-                <span className="text-xs text-muted-foreground">Sayfa {currentPage} / {totalPages} ({filteredAndSorted.length} parça)</span>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">İlk</button>
-                  <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">‹ Önceki</button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button key={page} onClick={() => setCurrentPage(page)} className={`w-7 h-7 text-xs font-medium transition-colors ${page === currentPage ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>{page}</button>
-                  ))}
-                  <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">Sonraki ›</button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">Son</button>
-                </div>
-              </div>
-            )}
           </div>
+        </div>
+      </nav>
 
-          {/* ── Split Panel: 3D Viewer + Info Tabs ── */}
-          <div className="grid lg:grid-cols-[1fr_380px] gap-0 border border-t-0 border-border">
-            {/* Left: 3D Viewer */}
-            <div className="border-r border-border flex flex-col">
-              {/* Toolbar */}
-              <div className="flex items-center gap-1 p-2 bg-card border-b border-border flex-wrap">
-                <button onClick={() => setActiveView("3d")} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${activeView === "3d" ? "text-primary bg-primary/10" : "text-muted-foreground hover:bg-muted"}`}>
-                  <Box size={14} /> 3D
-                </button>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted"><Camera size={14} /></button>
-                <button onClick={() => setActiveView("2d")} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${activeView === "2d" ? "text-primary bg-primary/10" : "text-muted-foreground hover:bg-muted"}`}>2D</button>
-                <div className="w-px h-5 bg-border" />
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted"><Ruler size={14} /> Ölçüm</button>
-                <div className="w-px h-5 bg-border" />
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted"><Search size={14} /> 3D Ara <ChevronDown size={12} /></button>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted"><Lightbulb size={14} /> Tavsiyeler</button>
-                <div className="w-px h-5 bg-border" />
-                <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"><Download size={14} /> CAD (1) İndir</button>
-                <div className="ml-auto flex items-center gap-1">
-                  <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"><Share2 size={14} /></button>
+      {/* ── MAIN CONTENT ── */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page title + Step badge */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#0f172a" }}>
+              Get a Precision Quote
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "#94a3b8" }}>
+              Industrial accuracy meeting high-speed production cycles.
+            </p>
+          </div>
+          <div className="text-right">
+            <Badge className="text-[10px] font-bold px-3 py-1 rounded-full" style={{ backgroundColor: BLUE_LIGHT, color: BLUE, border: "none" }}>
+              STEP {currentStep} OF 3
+            </Badge>
+            <p className="text-xs font-semibold mt-1" style={{ color: "#64748b" }}>Manufacturing Details</p>
+          </div>
+        </div>
+
+        {/* ── STEPPER ── */}
+        <div className="flex items-center gap-0 mb-8">
+          {[
+            { num: "01", label: "UPLOAD", done: true },
+            { num: "02", label: "SPECIFICATIONS", active: true },
+            { num: "03", label: "REVIEW & SUBMIT", pending: true },
+          ].map((s, i) => (
+            <div key={i} className="flex items-center flex-1">
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{
+                    backgroundColor: s.done ? BLUE : s.active ? BLUE : "#e2e8f0",
+                    color: s.done || s.active ? "#ffffff" : "#94a3b8",
+                  }}
+                >
+                  {s.done ? <CheckCircle2 size={14} /> : s.num}
+                </div>
+                <span
+                  className="text-xs font-bold tracking-wider"
+                  style={{ color: s.active ? BLUE : s.done ? BLUE : "#94a3b8" }}
+                >
+                  {s.num}. {s.label}
+                </span>
+              </div>
+              {i < 2 && (
+                <div className="flex-1 h-0.5 mx-4 rounded-full" style={{ backgroundColor: s.done ? BLUE : "#e2e8f0" }} />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* ── TWO COLUMN LAYOUT ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+          {/* ══ LEFT COLUMN ══ */}
+          <div className="space-y-6">
+            {/* File Upload Card */}
+            <div className="bg-white border rounded-xl p-4 flex items-center justify-between" style={{ borderColor: "#e2e8f0" }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#dcfce7" }}>
+                  <CheckCircle2 size={18} style={{ color: "#16a34a" }} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "#0f172a" }}>Aerospace_Bracket_v2.step</p>
+                  <p className="text-xs" style={{ color: "#94a3b8" }}>14.5 MB • STEP Format</p>
                 </div>
               </div>
+              <button className="px-4 py-2 text-xs font-semibold rounded-lg" style={{ backgroundColor: "#f1f5f9", color: "#64748b" }}>
+                Change File
+              </button>
+            </div>
 
-              {/* Sub-toolbar */}
-              <div className="flex items-center gap-1 px-2 py-1.5 bg-muted/30 border-b border-border">
-                <button onClick={() => setResetTrigger((t) => t + 1)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors" title="Sıfırla"><RotateCcw size={13} /></button>
-                <button onClick={() => setShowGrid((g) => !g)} className={`p-1.5 transition-colors ${showGrid ? "text-primary bg-primary/10" : "text-muted-foreground hover:bg-muted"}`} title="Grid"><Grid3x3 size={13} /></button>
-                <button onClick={() => setWireframe((w) => !w)} className={`p-1.5 transition-colors ${wireframe ? "text-primary bg-primary/10" : "text-muted-foreground hover:bg-muted"}`} title="Wireframe"><TriangleRight size={13} /></button>
-                <div className="relative">
-                  <button onClick={() => setShowColors((c) => !c)} className="p-1.5 text-muted-foreground hover:bg-muted transition-colors flex items-center gap-1" title="Renk">
-                    <Palette size={13} />
-                    <span className="w-3 h-3 border border-border" style={{ backgroundColor: modelColor }} />
-                  </button>
-                  {showColors && (
-                    <div className="absolute top-full left-0 mt-1 z-20 bg-card border border-border p-2 flex gap-1.5 shadow-lg">
-                      {COLORS.map((c) => (
-                        <button key={c.color} onClick={() => { setModelColor(c.color); setShowColors(false); }} className={`w-5 h-5 border-2 transition-all ${modelColor === c.color ? "border-primary scale-110" : "border-border"}`} style={{ backgroundColor: c.color }} title={c.label} />
-                      ))}
-                    </div>
-                  )}
+            {/* 3D CAD Viewer */}
+            <div className="bg-white border rounded-xl overflow-hidden" style={{ borderColor: "#e2e8f0" }}>
+              <div className="px-4 py-2.5 border-b flex items-center justify-between" style={{ borderColor: "#e2e8f0" }}>
+                <span className="text-xs font-bold tracking-wider" style={{ color: "#64748b" }}>CAD PREVIEW</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: "#dcfce7", color: "#16a34a" }}>PARSED</span>
                 </div>
               </div>
-
-              {/* 3D Canvas */}
-              <div ref={canvasContainerRef} className="flex-1 relative min-h-[400px] lg:min-h-[480px] bg-muted/10">
-                {stepLoading && (
-                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/80">
-                    <Loader2 size={24} className="animate-spin text-primary mb-2" />
-                    <p className="text-xs text-muted-foreground">STEP dosyası işleniyor...</p>
-                  </div>
-                )}
-
-                {/* Left vertical toolbar */}
-                <div className="absolute left-2 top-2 z-10 flex flex-col gap-1">
-                  <button className="w-8 h-8 flex items-center justify-center bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors"><List size={14} /></button>
-                  <button className="w-8 h-8 flex items-center justify-center bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors"><PenTool size={14} /></button>
-                  <button className="w-8 h-8 flex items-center justify-center bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors"><Scissors size={14} /></button>
-                </div>
-
-                {/* Bottom-right controls */}
-                <div className="absolute right-2 bottom-2 z-10 flex items-center gap-1">
-                  <button onClick={toggleFullscreen} className="w-8 h-8 flex items-center justify-center bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors" title="Tam Ekran"><Maximize size={14} /></button>
-                </div>
-
-                <Canvas camera={{ position: [4, 3, 5], fov: 45 }} gl={{ antialias: true, alpha: true, localClippingEnabled: true }} style={{ background: "transparent" }}>
+              <div className="h-[320px] relative" style={{ backgroundColor: "#f8fafc" }}>
+                <Canvas camera={{ position: [4, 3, 4], fov: 40 }} gl={{ antialias: true }}>
                   <Suspense fallback={null}>
-                    <ambientLight intensity={0.5} />
-                    <directionalLight position={[5, 8, 5]} intensity={1} castShadow />
+                    <ambientLight intensity={0.6} />
+                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
                     <directionalLight position={[-3, 2, -3]} intensity={0.3} />
                     <Center>
-                      {fileUrl && fileType === "stl" && <STLModel url={fileUrl} color={modelColor} wireframe={wireframe} />}
-                      {stepGeometry && fileType === "step" && <STEPModel geometry={stepGeometry} color={modelColor} wireframe={wireframe} />}
-                      {!fileUrl && !stepGeometry && <PlaceholderModel />}
+                      <ComplexPart />
                     </Center>
-                    <axesHelper args={[3]} />
-                    {showGrid && (
-                      <Grid args={[100, 100]} cellSize={1} cellThickness={0.5} cellColor="#94a3b8" sectionSize={5} sectionThickness={1} sectionColor="#64748b" fadeDistance={30} fadeStrength={1} followCamera={false} position={[0, -0.01, 0]} />
-                    )}
-                    <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={100} />
-                    <GizmoHelper alignment="top-right" margin={[70, 70]}>
-                      <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
-                    </GizmoHelper>
-                    <CameraReset trigger={resetTrigger} />
+                    <OrbitControls makeDefault enablePan enableZoom minDistance={2} maxDistance={15} />
+                    <Environment preset="studio" />
                   </Suspense>
                 </Canvas>
+                {/* Subtle grid overlay */}
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
+                  backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }} />
               </div>
             </div>
 
-            {/* Right: Info Tabs */}
-            <div className="bg-card flex flex-col">
-              <Tabs defaultValue="info" className="flex-1 flex flex-col">
-                <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 px-2 h-auto py-0">
-                  <TabsTrigger value="info" className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Parça bilgileri</TabsTrigger>
-                  <TabsTrigger value="similar" className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Benzer parçalar</TabsTrigger>
-                  <TabsTrigger value="rfq" className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary">RFQ</TabsTrigger>
-                </TabsList>
+            {/* Manufacturing Specifications */}
+            <div className="bg-white border rounded-xl p-6" style={{ borderColor: "#e2e8f0" }}>
+              <h2 className="text-base font-bold mb-5 flex items-center gap-2" style={{ color: "#0f172a" }}>
+                <Cog size={16} style={{ color: BLUE }} /> Manufacturing Specifications
+              </h2>
 
-                {/* Tab: Part Info */}
-                <TabsContent value="info" className="flex-1 p-5 m-0 space-y-5">
-                  <div>
-                    <h2 className="heading-industrial text-lg mb-1">DME - Sprue Bushings</h2>
-                    <p className="text-xs text-muted-foreground">Standart enjeksiyon kalıp bileşeni</p>
+              {/* Service & Material selects */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-[10px] font-bold tracking-widest mb-1.5" style={{ color: "#94a3b8" }}>SERVICE</label>
+                  <div className="border rounded-lg px-3 py-2.5 text-sm font-medium flex items-center justify-between" style={{ borderColor: "#e2e8f0", color: "#0f172a" }}>
+                    {service}
+                    <ChevronLeft size={14} className="rotate-[-90deg]" style={{ color: "#94a3b8" }} />
                   </div>
-                  <div className="space-y-3">
-                    {[
-                      ["Shorttext", "Sprue Bushings"],
-                      ["Son değişiklik", "08.08.2017 12:11:15"],
-                      ["Parça", "Gümrük"],
-                      ["Malzeme", "H13 Tool Steel"],
-                      ["Ident Number", selectedRow?.id || "SB 4335-60"],
-                    ].map(([label, value]) => (
-                      <div key={label} className="flex justify-between items-center py-2 border-b border-border">
-                        <span className="text-xs text-muted-foreground">{label}</span>
-                        <span className="text-xs font-semibold text-foreground">{value}</span>
-                      </div>
-                    ))}
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold tracking-widest mb-1.5" style={{ color: "#94a3b8" }}>MATERIAL</label>
+                  <div className="border rounded-lg px-3 py-2.5 text-sm font-medium flex items-center justify-between" style={{ borderColor: "#e2e8f0", color: "#0f172a" }}>
+                    {material}
+                    <ChevronLeft size={14} className="rotate-[-90deg]" style={{ color: "#94a3b8" }} />
                   </div>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <Badge className="text-[10px] bg-primary/20 text-primary border-primary/30 hover:bg-primary/30">CAD</Badge>
-                    <Badge className="text-[10px] bg-industrial-accent-light text-industrial-accent-dark border-industrial-accent/30 hover:bg-industrial-accent-light">Components</Badge>
-                    <Badge variant="secondary" className="text-[10px]">LIBRARY</Badge>
-                    <Badge variant="outline" className="text-[10px]">system</Badge>
-                  </div>
+                </div>
+              </div>
 
-                  {selectedRow && (
-                    <div className="mt-4 p-4 bg-muted/50 border border-border">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-3">Seçili Parça Boyutları</p>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div><span className="text-muted-foreground">Length</span><p className="font-mono font-bold">{selectedRow.length}"</p></div>
-                        <div><span className="text-muted-foreground">Head Dia</span><p className="font-mono font-bold">{selectedRow.headDia}"</p></div>
-                        <div><span className="text-muted-foreground">Body Dia</span><p className="font-mono font-bold">{selectedRow.bodyDia}"</p></div>
-                        <div><span className="text-muted-foreground">Head Thk</span><p className="font-mono font-bold">{selectedRow.headThk}"</p></div>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
+              {/* Surface Finish */}
+              <div className="mb-6">
+                <label className="block text-[10px] font-bold tracking-widest mb-3" style={{ color: "#94a3b8" }}>SURFACE FINISH</label>
+                <div className="grid grid-cols-4 gap-3">
+                  {surfaceFinishes.map((f) => {
+                    const Icon = f.icon;
+                    const isActive = selectedFinish === f.id;
+                    return (
+                      <button
+                        key={f.id}
+                        onClick={() => setSelectedFinish(f.id)}
+                        className="border-2 rounded-xl p-3.5 text-center transition-all duration-200"
+                        style={{
+                          borderColor: isActive ? BLUE : "#e2e8f0",
+                          backgroundColor: isActive ? BLUE_LIGHT : "#ffffff",
+                        }}
+                      >
+                        <Icon size={20} className="mx-auto mb-1.5" style={{ color: isActive ? BLUE : "#94a3b8" }} />
+                        <p className="text-xs font-bold" style={{ color: isActive ? BLUE : "#0f172a" }}>{f.label}</p>
+                        <p className="text-[10px]" style={{ color: "#94a3b8" }}>{f.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-                {/* Tab: Similar Parts */}
-                <TabsContent value="similar" className="flex-1 p-5 m-0">
-                  <h3 className="heading-industrial text-sm mb-4">Benzer Parçalar</h3>
-                  <div className="space-y-3">
-                    {partData.filter((p) => !checkedRows[p.id]).slice(0, 4).map((part) => (
-                      <div key={part.id} className="flex items-center justify-between p-3 border border-border hover:border-primary/40 transition-colors">
-                        <div>
-                          <p className="text-xs font-mono font-semibold">{part.id}</p>
-                          <p className="text-[10px] text-muted-foreground">{part.bodyDia}" body • {part.length}" length</p>
-                        </div>
-                        <button className="text-[10px] text-primary font-semibold border border-primary px-2 py-1 hover:bg-primary/10 transition-colors">Görüntüle</button>
-                      </div>
-                    ))}
+              {/* Quantity & Delivery */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-[10px] font-bold tracking-widest mb-1.5" style={{ color: "#94a3b8" }}>QUANTITY</label>
+                  <div className="flex items-center border rounded-lg overflow-hidden" style={{ borderColor: "#e2e8f0" }}>
+                    <input
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                      className="flex-1 px-3 py-2.5 text-sm font-bold focus:outline-none"
+                      style={{ color: "#0f172a" }}
+                    />
+                    <span className="px-3 text-[10px] font-bold tracking-widest" style={{ color: "#94a3b8", backgroundColor: "#f8fafc" }}>UNITS</span>
                   </div>
-                </TabsContent>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold tracking-widest mb-1.5" style={{ color: "#94a3b8" }}>DELIVERY VELOCITY</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setDelivery("standard")}
+                      className="border-2 rounded-lg p-2.5 text-center transition-all"
+                      style={{
+                        borderColor: delivery === "standard" ? BLUE : "#e2e8f0",
+                        backgroundColor: delivery === "standard" ? BLUE_LIGHT : "#ffffff",
+                      }}
+                    >
+                      <Clock size={14} className="mx-auto mb-1" style={{ color: delivery === "standard" ? BLUE : "#94a3b8" }} />
+                      <p className="text-[10px] font-bold" style={{ color: delivery === "standard" ? BLUE : "#0f172a" }}>Standard</p>
+                      <p className="text-[9px]" style={{ color: "#94a3b8" }}>10-12 Days</p>
+                    </button>
+                    <button
+                      onClick={() => setDelivery("express")}
+                      className="border-2 rounded-lg p-2.5 text-center transition-all"
+                      style={{
+                        borderColor: delivery === "express" ? ORANGE : "#e2e8f0",
+                        backgroundColor: delivery === "express" ? ORANGE_LIGHT : "#ffffff",
+                      }}
+                    >
+                      <Zap size={14} className="mx-auto mb-1" style={{ color: delivery === "express" ? ORANGE : "#94a3b8" }} />
+                      <p className="text-[10px] font-bold" style={{ color: delivery === "express" ? ORANGE : "#0f172a" }}>Express</p>
+                      <p className="text-[9px]" style={{ color: "#94a3b8" }}>3-5 Days</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                {/* Tab: RFQ */}
-                <TabsContent value="rfq" className="flex-1 p-5 m-0">
-                  {isSubmitted ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                        <Check size={32} className="text-primary" />
-                      </div>
-                      <h3 className="heading-industrial text-sm mb-2">Teklif Talebiniz Alındı!</h3>
-                      <p className="text-xs text-muted-foreground mb-4">24 saat içinde size dönüş yapacağız.</p>
-                      <button onClick={() => { setIsSubmitted(false); setRfqForm({ company: "", email: "", phone: "", quantity: 1, notes: "" }); }} className="text-xs text-primary font-semibold border border-primary px-4 py-2 hover:bg-primary/10 transition-colors">Yeni Teklif</button>
-                    </div>
-                  ) : (
-                    <>
-                      <h3 className="heading-industrial text-sm mb-2">Request for Quote</h3>
-                      <p className="text-xs text-muted-foreground mb-5">Bu parça için fiyat teklifi talep edin.</p>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Firma Adı *</label>
-                          <input value={rfqForm.company} onChange={(e) => setRfqForm((f) => ({ ...f, company: e.target.value }))} className="w-full bg-background border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="Firma adınız" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">E-posta *</label>
-                          <input type="email" value={rfqForm.email} onChange={(e) => setRfqForm((f) => ({ ...f, email: e.target.value }))} className="w-full bg-background border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="ornek@firma.com" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Telefon</label>
-                          <input type="tel" value={rfqForm.phone} onChange={(e) => setRfqForm((f) => ({ ...f, phone: e.target.value }))} className="w-full bg-background border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors" placeholder="+90 5XX XXX XX XX" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Adet</label>
-                          <input type="number" min={1} value={rfqForm.quantity} onChange={(e) => setRfqForm((f) => ({ ...f, quantity: parseInt(e.target.value) || 1 }))} className="w-full bg-background border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Notlar</label>
-                          <textarea rows={3} value={rfqForm.notes} onChange={(e) => setRfqForm((f) => ({ ...f, notes: e.target.value }))} className="w-full bg-background border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors resize-none" placeholder="Tolerans, malzeme, teslimat tercihi..." />
-                        </div>
-                        <button onClick={handleRFQSubmit} disabled={isSubmitting} className="btn-industrial-primary w-full text-xs flex items-center justify-center gap-2 py-3 disabled:opacity-50">
-                          {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                          {isSubmitting ? "Gönderiliyor..." : "Teklif Talep Et"}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </TabsContent>
-              </Tabs>
+              {/* Navigation Buttons */}
+              <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: "#f1f5f9" }}>
+                <button className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg border" style={{ borderColor: "#e2e8f0", color: "#64748b" }}>
+                  <ChevronLeft size={14} /> BACK
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: ORANGE }}
+                >
+                  <Rocket size={16} />
+                  {isSubmitting ? "SUBMITTING..." : "SUBMIT FOR MANUFACTURING"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ══ RIGHT COLUMN ══ */}
+          <div className="space-y-6">
+            {/* Quote Summary Card */}
+            <div className="bg-white border rounded-xl p-5" style={{ borderColor: "#e2e8f0" }}>
+              <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4" style={{ color: "#94a3b8" }}>QUOTE REAL-TIME SUMMARY</h3>
+
+              <div className="space-y-3 mb-4">
+                {[
+                  ["Project Name", "AeroBracket V2"],
+                  ["Process", "CNC Milling"],
+                  ["Material", "AL 6061-T6"],
+                  ["Order Quantity", `${quantity} Units`],
+                ].map(([key, value]) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <span className="text-xs" style={{ color: "#94a3b8" }}>{key}</span>
+                    <span className="text-xs font-bold" style={{ color: "#0f172a" }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Dashed separator */}
+              <div className="border-t-2 border-dashed my-4" style={{ borderColor: "#e2e8f0" }} />
+
+              {/* Total */}
+              <div className="mb-3">
+                <p className="text-[10px] font-bold tracking-[0.2em] mb-1" style={{ color: "#94a3b8" }}>TOTAL VALUATION</p>
+                <p className="text-3xl font-bold" style={{ color: BLUE }}>
+                  ${totalPrice.toLocaleString()}.00
+                </p>
+                <div className="flex items-center gap-1.5 mt-2">
+                  <CheckCircle2 size={12} style={{ color: "#16a34a" }} />
+                  <span className="text-[10px] font-medium" style={{ color: "#16a34a" }}>
+                    {delivery === "express" ? "Includes High-Speed Express Processing" : "Standard processing included"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Speed Tip */}
+              <div className="rounded-lg p-3 mt-4" style={{ backgroundColor: BLUE_LIGHT }}>
+                <div className="flex items-start gap-2">
+                  <Lightbulb size={14} className="mt-0.5 shrink-0" style={{ color: BLUE }} />
+                  <p className="text-[11px] font-medium" style={{ color: BLUE }}>
+                    <span className="font-bold">SPEED TIP:</span> Scale to 50 units for 15% batch efficiency savings.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Assistance Card */}
+            <div className="relative rounded-xl p-5 overflow-hidden" style={{ backgroundColor: BLUE_DARK }}>
+              {/* Filigree icon */}
+              <div className="absolute -right-4 -bottom-4 opacity-10">
+                <HardHat size={100} className="text-white" />
+              </div>
+
+              <h3 className="text-sm font-bold text-white mb-2">Technical Assistance</h3>
+              <p className="text-xs leading-relaxed mb-4" style={{ color: "#94a3b8" }}>
+                Our precision engineers are ready to review your design for manufacturability and optimize your production workflow.
+              </p>
+              <button
+                className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-lg border transition-colors hover:bg-white/10"
+                style={{ borderColor: "rgba(255,255,255,0.2)", color: "#ffffff" }}
+              >
+                <HardHat size={14} /> CONSULT ENGINEER
+                <ArrowRight size={12} />
+              </button>
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 };
