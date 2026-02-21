@@ -1,11 +1,11 @@
-import { useState, Suspense, useMemo } from "react";
+import { useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Center, Environment } from "@react-three/drei";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
   Cog, ChevronLeft, Rocket, CheckCircle2, Zap, Clock,
-  Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight, Lightbulb,
+  Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight,
   Upload, ClipboardCheck, Eye, Send,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -87,18 +87,6 @@ const TeklifAl = () => {
   const [selectedMaterial, setSelectedMaterial] = useState("al6061");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Dinamik fiyat hesaplama
-  const pricing = useMemo(() => {
-    const mat = materials.find((m) => m.id === selectedMaterial)!;
-    const finish = surfaceFinishes.find((f) => f.id === selectedFinish)!;
-    const unitBase = mat.unitPrice + finish.priceAdd;
-    const subtotal = unitBase * quantity;
-    const expressMultiplier = delivery === "express" ? 1.3 : 1;
-    const total = Math.round(subtotal * expressMultiplier);
-    const perUnit = Math.round(unitBase * expressMultiplier * 100) / 100;
-    return { unitBase, subtotal, total, perUnit, expressExtra: delivery === "express" ? Math.round(subtotal * 0.3) : 0 };
-  }, [selectedMaterial, selectedFinish, quantity, delivery]);
-
   const currentService = services.find((s) => s.id === selectedService)!;
   const currentMaterial = materials.find((m) => m.id === selectedMaterial)!;
 
@@ -116,7 +104,7 @@ const TeklifAl = () => {
         status: "Yeni",
         service: currentService.label,
         material: currentMaterial.label,
-        notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}, Toplam: ₺${pricing.total}`,
+        notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
         files: ["Aerospace_Bracket_v2.step"],
       });
       if (error) throw error;
@@ -385,7 +373,6 @@ const TeklifAl = () => {
                   ["Malzeme", currentMaterial.label],
                   ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
                   ["Sipariş Adedi", `${quantity} Adet`],
-                  ["Birim Fiyat", `₺${pricing.perUnit}`],
                 ].map(([key, value]) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">{key}</span>
@@ -394,40 +381,15 @@ const TeklifAl = () => {
                 ))}
               </div>
 
-              {delivery === "express" && (
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-destructive">Ekspres Ek Ücreti (+%30)</span>
-                  <span className="text-xs font-bold text-destructive">+₺{pricing.expressExtra}</span>
-                </div>
-              )}
-
-              {/* Kesik çizgi ayraç */}
               <div className="border-t-2 border-dashed border-border my-4" />
 
-              {/* Toplam */}
-              <div className="mb-3">
-                <p className="text-[10px] font-bold tracking-[0.2em] mb-1 text-muted-foreground">TOPLAM FİYAT</p>
-                <p className="text-3xl font-bold text-primary">
-                  ₺{pricing.total.toLocaleString("tr-TR")}
-                </p>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <CheckCircle2 size={12} className="text-green-600" />
-                  <span className="text-[10px] font-medium text-green-600">
-                    {delivery === "express"
-                      ? "Yüksek hızlı ekspres işleme dahil"
-                      : "Standart üretim süreci dahil"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Hız İpucu */}
-              <div className="p-3 mt-4 bg-industrial-accent-light">
-                <div className="flex items-start gap-2">
-                  <Lightbulb size={14} className="mt-0.5 shrink-0 text-primary" />
-                  <p className="text-[11px] font-medium text-primary">
-                    <span className="font-bold">HIZ İPUCU:</span> 50 adede çıkarak %15 toplu üretim tasarrufu elde edin.
-                  </p>
-                </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 size={12} className="text-green-600" />
+                <span className="text-[10px] font-medium text-green-600">
+                  {delivery === "express"
+                    ? "Yüksek hızlı ekspres işleme dahil"
+                    : "Standart üretim süreci dahil"}
+                </span>
               </div>
             </div>
 
