@@ -8,7 +8,7 @@ import {
   Box, Camera, Ruler, Search, Lightbulb, Download, Share2,
   ChevronDown, ChevronUp, Pencil, Maximize, RotateCcw,
   Grid3x3, Scissors, TriangleRight, Palette, Loader2,
-  List, PenTool, Upload, MessageSquare,
+  List, PenTool, Upload, MessageSquare, ArrowUpDown, ArrowUp, ArrowDown, Filter, X,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -18,21 +18,26 @@ import Footer from "@/components/Footer";
 
 // ── Part Table Data ──
 const partData = [
-  { id: "SB 4335-20", length: "2.000", headDia: "0.750", bodyDia: "0.500", headThk: "0.250", material: "H13", checked: false },
-  { id: "SB 4335-25", length: "2.500", headDia: "0.750", bodyDia: "0.500", headThk: "0.250", material: "H13", checked: false },
-  { id: "SB 4335-30", length: "3.000", headDia: "0.875", bodyDia: "0.625", headThk: "0.312", material: "H13", checked: false },
-  { id: "SB 4335-40", length: "4.000", headDia: "1.000", bodyDia: "0.750", headThk: "0.375", material: "S7", checked: false },
-  { id: "SB 4335-60", length: "6.000", headDia: "1.250", bodyDia: "0.875", headThk: "0.437", material: "S7", checked: true },
-  { id: "SB 4335-80", length: "8.000", headDia: "1.500", bodyDia: "1.000", headThk: "0.500", material: "H13", checked: false },
+  { id: "SB 2310-63-001", length: "0.6300", headDia: "2.358", bodyDia: "1.000", headThk: "0.179", insideDia: "0.118", step: "0.451", holeDist: "0.865", cboreDia: "0.318", drill: "0.159", insideOD: "0.000", depth: "0.000", checked: false },
+  { id: "SB 3525-90-001", length: "0.9000", headDia: "3.538", bodyDia: "2.500", headThk: "0.436", insideDia: "0.118", step: "0.464", holeDist: "1.510", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 2025-88", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 4325-88-001", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.467", insideDia: "0.118", step: "0.413", holeDist: "1.656", cboreDia: "0.514", drill: "0.257", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 4335-60", length: "0.6000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: true },
 ];
 
 const columns = [
-  { key: "id", label: "Ident Number" },
-  { key: "length", label: "Length [Gümrük]" },
-  { key: "headDia", label: "Head Dia. [Gümrük]" },
-  { key: "bodyDia", label: "Body Dia" },
-  { key: "headThk", label: "Head Thickness" },
-  { key: "material", label: "Material" },
+  { key: "id", label: "Ident Number", sublabel: "IDNR" },
+  { key: "length", label: "Length", sublabel: "L [Gümrük]" },
+  { key: "headDia", label: "Head Dia.", sublabel: "D [Gümrük]" },
+  { key: "bodyDia", label: "Body Dia.", sublabel: "D1 [Gümrük]" },
+  { key: "headThk", label: "Head Thickness", sublabel: "HTK [Gümrük]" },
+  { key: "insideDia", label: "Inside Dia.", sublabel: "ID [Gümrük]" },
+  { key: "step", label: "Step", sublabel: "STEP [Gümrük]" },
+  { key: "holeDist", label: "Hole Distance", sublabel: "DIS [Gümrük]" },
+  { key: "cboreDia", label: "Cbore Dia.", sublabel: "CBORE [Gümrük]" },
+  { key: "drill", label: "Drill", sublabel: "DRILL [Gümrük]" },
+  { key: "insideOD", label: "Inside OD", sublabel: "IOD [Gümrük]" },
+  { key: "depth", label: "Depth", sublabel: "DP [Gümrük]" },
 ];
 
 // ── 3D Placeholder Model (Flanş/Silindir) ──
@@ -130,6 +135,39 @@ const CADDashboard = () => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const filteredAndSorted = useMemo(() => {
+    let data = [...partData];
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      data = data.filter((p) =>
+        Object.values(p).some((v) => String(v).toLowerCase().includes(q))
+      );
+    }
+    if (sortKey) {
+      data.sort((a, b) => {
+        const av = (a as Record<string, unknown>)[sortKey] as string;
+        const bv = (b as Record<string, unknown>)[sortKey] as string;
+        const an = parseFloat(av);
+        const bn = parseFloat(bv);
+        if (!isNaN(an) && !isNaN(bn)) return sortDir === "asc" ? an - bn : bn - an;
+        return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+    }
+    return data;
+  }, [searchQuery, sortKey, sortDir]);
 
   // File upload handler
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,6 +217,28 @@ const CADDashboard = () => {
             </div>
           </div>
 
+          {/* ── Search Bar ── */}
+          <div className="bg-card border border-border border-b-0 p-3 flex items-center gap-3">
+            <div className="relative flex-1 max-w-sm">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Parça ara... (ID, boyut, vb.)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-background border border-border pl-9 pr-8 py-2 text-xs focus:outline-none focus:border-primary transition-colors"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              <span className="text-primary font-bold">{Object.values(checkedRows).filter(Boolean).length}</span>/{filteredAndSorted.length} seçili
+            </span>
+          </div>
+
           {/* ── Part Table ── */}
           <div className="bg-card border border-border mb-0">
             <div className="overflow-x-auto">
@@ -188,18 +248,32 @@ const CADDashboard = () => {
                     <th className="w-10 p-3">
                       <Checkbox />
                     </th>
+                    <th className="w-8 p-3 text-center text-[10px] font-semibold text-muted-foreground">#</th>
+                    <th className="w-8 p-3"></th>
                     {columns.map((col) => (
-                      <th key={col.key} className="p-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        <div className="flex items-center gap-1.5">
-                          {col.label}
-                          <Pencil size={10} className="text-muted-foreground/50" />
+                      <th
+                        key={col.key}
+                        className="p-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer hover:text-foreground transition-colors select-none"
+                        onClick={() => handleSort(col.key)}
+                      >
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-1.5">
+                            {col.label}
+                            {sortKey === col.key ? (
+                              sortDir === "asc" ? <ArrowUp size={10} className="text-primary" /> : <ArrowDown size={10} className="text-primary" />
+                            ) : (
+                              <ArrowUpDown size={10} className="text-muted-foreground/30" />
+                            )}
+                            <Pencil size={10} className="text-muted-foreground/50" />
+                          </div>
+                          <span className="text-[9px] font-normal normal-case tracking-normal text-muted-foreground/60">{col.sublabel}</span>
                         </div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {partData.map((part) => {
+                  {filteredAndSorted.map((part, idx) => {
                     const isSelected = checkedRows[part.id];
                     return (
                       <tr
@@ -211,14 +285,16 @@ const CADDashboard = () => {
                         <td className="p-3">
                           <Checkbox checked={isSelected} onCheckedChange={() => toggleRow(part.id)} />
                         </td>
-                        <td className="p-3 font-mono font-semibold text-foreground">{part.id}</td>
-                        <td className="p-3 font-mono text-muted-foreground">{part.length}"</td>
-                        <td className="p-3 font-mono text-muted-foreground">{part.headDia}"</td>
-                        <td className="p-3 font-mono text-muted-foreground">{part.bodyDia}"</td>
-                        <td className="p-3 font-mono text-muted-foreground">{part.headThk}"</td>
+                        <td className="p-3 text-center text-xs text-muted-foreground font-semibold">{idx + 1}</td>
                         <td className="p-3">
-                          <Badge variant="secondary" className="text-[10px]">{part.material}</Badge>
+                          {isSelected && <Download size={14} className="text-destructive" />}
                         </td>
+                        <td className="p-3 font-mono font-semibold text-foreground">{part.id}</td>
+                        {columns.slice(1).map((col) => (
+                          <td key={col.key} className="p-3 font-mono text-muted-foreground">
+                            {(part as Record<string, unknown>)[col.key] as string}
+                          </td>
+                        ))}
                       </tr>
                     );
                   })}
@@ -457,7 +533,7 @@ const CADDashboard = () => {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border">
                       <span className="text-xs text-muted-foreground">Malzeme</span>
-                      <span className="text-xs font-semibold text-foreground">{selectedRow?.material || "H13"}</span>
+                      <span className="text-xs font-semibold text-foreground">H13 Tool Steel</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border">
                       <span className="text-xs text-muted-foreground">Ident Number</span>
@@ -506,7 +582,7 @@ const CADDashboard = () => {
                       <div key={part.id} className="flex items-center justify-between p-3 border border-border hover:border-primary/40 transition-colors">
                         <div>
                           <p className="text-xs font-mono font-semibold">{part.id}</p>
-                          <p className="text-[10px] text-muted-foreground">{part.material} • {part.length}" length</p>
+                          <p className="text-[10px] text-muted-foreground">{part.bodyDia}" body • {part.length}" length</p>
                         </div>
                         <button className="text-[10px] text-primary font-semibold border border-primary px-2 py-1 hover:bg-primary/10 transition-colors">
                           Görüntüle
