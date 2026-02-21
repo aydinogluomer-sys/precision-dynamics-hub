@@ -23,6 +23,13 @@ const partData = [
   { id: "SB 2025-88", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
   { id: "SB 4325-88-001", length: "0.8800", headDia: "4.330", bodyDia: "2.500", headThk: "0.467", insideDia: "0.118", step: "0.413", holeDist: "1.656", cboreDia: "0.514", drill: "0.257", insideOD: "2.000", depth: "0.280", checked: false },
   { id: "SB 4335-60", length: "0.6000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: true },
+  { id: "SB 4335-80", length: "0.8000", headDia: "4.330", bodyDia: "2.500", headThk: "0.250", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.350", checked: false },
+  { id: "SB 2025-100", length: "1.0000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 3525-120", length: "1.2000", headDia: "3.538", bodyDia: "2.500", headThk: "0.436", insideDia: "0.118", step: "0.464", holeDist: "1.510", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 4335-100", length: "1.0000", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "1.000", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 2310-80", length: "0.8000", headDia: "2.358", bodyDia: "1.000", headThk: "0.179", insideDia: "0.118", step: "0.451", holeDist: "0.865", cboreDia: "0.318", drill: "0.159", insideOD: "0.000", depth: "0.000", checked: false },
+  { id: "SB 4325-120", length: "1.2000", headDia: "4.330", bodyDia: "2.500", headThk: "0.467", insideDia: "0.118", step: "0.413", holeDist: "1.656", cboreDia: "0.514", drill: "0.257", insideOD: "2.000", depth: "0.280", checked: false },
+  { id: "SB 2025-63", length: "0.6300", headDia: "4.330", bodyDia: "2.500", headThk: "0.187", insideDia: "0.500", step: "0.413", holeDist: "1.656", cboreDia: "0.375", drill: "0.250", insideOD: "2.000", depth: "0.280", checked: false },
 ];
 
 const columns = [
@@ -98,7 +105,32 @@ const DashSTLModel = ({ url, color, wireframe }: { url: string; color: string; w
   );
 };
 
-// ── Camera Reset ──
+// ── STEP Model for Dashboard ──
+const DashSTEPModel = ({ geometry, color, wireframe }: { geometry: THREE.BufferGeometry; color: string; wireframe: boolean }) => {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (!geometry) return;
+    geometry.center();
+    geometry.computeBoundingBox();
+    const size = new THREE.Vector3();
+    geometry.boundingBox!.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const dist = maxDim * 2;
+    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
+    (camera as THREE.PerspectiveCamera).near = 0.01;
+    (camera as THREE.PerspectiveCamera).far = maxDim * 20;
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+  }, [geometry, camera]);
+
+  return (
+    <mesh geometry={geometry}>
+      <meshStandardMaterial color={color} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} />
+    </mesh>
+  );
+};
+
 const CameraReset = ({ trigger }: { trigger: number }) => {
   const { camera } = useThree();
   useEffect(() => {
@@ -133,11 +165,16 @@ const CADDashboard = () => {
   const [resetTrigger, setResetTrigger] = useState(0);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [fileType, setFileType] = useState<"stl" | "obj" | "step" | null>(null);
+  const [stepGeometry, setStepGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [stepLoading, setStepLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   const handleSort = (key: string) => {
     if (sortKey === key) {
@@ -169,15 +206,77 @@ const CADDashboard = () => {
     return data;
   }, [searchQuery, sortKey, sortDir]);
 
+  const totalPages = Math.ceil(filteredAndSorted.length / pageSize);
+  const paginatedData = filteredAndSorted.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const selectedCount = Object.values(checkedRows).filter(Boolean).length;
+
+  const toggleSelectAll = () => {
+    const allSelected = paginatedData.every((p) => checkedRows[p.id]);
+    const updates = Object.fromEntries(paginatedData.map((p) => [p.id, !allSelected]));
+    setCheckedRows((prev) => ({ ...prev, ...updates }));
+  };
+
+  const deleteSelected = () => {
+    // In a real app this would delete from DB; here we just uncheck
+    const updates = Object.fromEntries(
+      Object.entries(checkedRows).filter(([, v]) => v).map(([k]) => [k, false])
+    );
+    setCheckedRows((prev) => ({ ...prev, ...updates }));
+  };
+
   // File upload handler
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const ext = file.name.split(".").pop()?.toLowerCase();
-    if (ext !== "stl" && ext !== "obj") return;
+    if (ext !== "stl" && ext !== "obj" && ext !== "step" && ext !== "stp") return;
     setUploadedFile(file);
-    const url = URL.createObjectURL(file);
-    setFileUrl(url);
+    setStepGeometry(null);
+
+    if (ext === "step" || ext === "stp") {
+      setFileType("step");
+      setFileUrl(null);
+      setStepLoading(true);
+      try {
+        const occtimportjs = (await import("occt-import-js")).default;
+        const occt = await occtimportjs();
+        const buffer = await file.arrayBuffer();
+        const fileBuffer = new Uint8Array(buffer);
+        const result = occt.ReadStepFile(fileBuffer, null);
+
+        const geo = new THREE.BufferGeometry();
+        const vertices: number[] = [];
+        const indices: number[] = [];
+
+        for (const mesh of result.meshes) {
+          const offset = vertices.length / 3;
+          for (let i = 0; i < mesh.attributes.position.array.length; i++) {
+            vertices.push(mesh.attributes.position.array[i]);
+          }
+          if (mesh.index) {
+            for (let i = 0; i < mesh.index.array.length; i++) {
+              indices.push(mesh.index.array[i] + offset);
+            }
+          }
+        }
+
+        geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        if (indices.length > 0) {
+          geo.setIndex(indices);
+        }
+        geo.computeVertexNormals();
+        setStepGeometry(geo);
+      } catch (err) {
+        console.error("STEP file parsing error:", err);
+      } finally {
+        setStepLoading(false);
+      }
+    } else {
+      setFileType(ext as "stl" | "obj");
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+    }
   };
 
   const toggleFullscreen = () => {
@@ -211,8 +310,8 @@ const CADDashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               <label className="btn-industrial-primary text-xs flex items-center gap-2 py-2.5 px-5 cursor-pointer">
-                <Upload size={14} /> STL/OBJ Yükle
-                <input type="file" accept=".stl,.obj" onChange={handleFileUpload} className="hidden" />
+                <Upload size={14} /> STL/OBJ/STEP Yükle
+                <input type="file" accept=".stl,.obj,.step,.stp" onChange={handleFileUpload} className="hidden" />
               </label>
             </div>
           </div>
@@ -234,9 +333,19 @@ const CADDashboard = () => {
                 </button>
               )}
             </div>
-            <span className="text-xs text-muted-foreground">
-              <span className="text-primary font-bold">{Object.values(checkedRows).filter(Boolean).length}</span>/{filteredAndSorted.length} seçili
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground">
+                <span className="text-primary font-bold">{selectedCount}</span>/{filteredAndSorted.length} seçili
+              </span>
+              {selectedCount > 0 && (
+                <button
+                  onClick={deleteSelected}
+                  className="text-xs font-medium text-destructive border border-destructive/30 px-3 py-1.5 hover:bg-destructive/10 transition-colors flex items-center gap-1.5"
+                >
+                  <X size={12} /> Seçimi Kaldır ({selectedCount})
+                </button>
+              )}
+            </div>
           </div>
 
           {/* ── Part Table ── */}
@@ -246,7 +355,10 @@ const CADDashboard = () => {
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
                     <th className="w-10 p-3">
-                      <Checkbox />
+                      <Checkbox
+                        checked={paginatedData.length > 0 && paginatedData.every((p) => checkedRows[p.id])}
+                        onCheckedChange={toggleSelectAll}
+                      />
                     </th>
                     <th className="w-8 p-3 text-center text-[10px] font-semibold text-muted-foreground">#</th>
                     <th className="w-8 p-3"></th>
@@ -273,7 +385,7 @@ const CADDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAndSorted.map((part, idx) => {
+                  {paginatedData.map((part, idx) => {
                     const isSelected = checkedRows[part.id];
                     return (
                       <tr
@@ -285,7 +397,7 @@ const CADDashboard = () => {
                         <td className="p-3">
                           <Checkbox checked={isSelected} onCheckedChange={() => toggleRow(part.id)} />
                         </td>
-                        <td className="p-3 text-center text-xs text-muted-foreground font-semibold">{idx + 1}</td>
+                        <td className="p-3 text-center text-xs text-muted-foreground font-semibold">{(currentPage - 1) * pageSize + idx + 1}</td>
                         <td className="p-3">
                           {isSelected && <Download size={14} className="text-destructive" />}
                         </td>
@@ -310,6 +422,58 @@ const CADDashboard = () => {
               {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
               {collapsed ? "Tabloyu genişlet" : `Sıkıştırılmış görünümü göster (${partData.length} ürün)`}
             </button>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-4 py-2.5 border-t border-border bg-muted/30">
+                <span className="text-xs text-muted-foreground">
+                  Sayfa {currentPage} / {totalPages} ({filteredAndSorted.length} parça)
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                  >
+                    İlk
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                  >
+                    ‹ Önceki
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-7 h-7 text-xs font-medium transition-colors ${
+                        page === currentPage
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-muted"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                  >
+                    Sonraki ›
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                  >
+                    Son
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Split Panel: 3D Viewer + Info Tabs ── */}
@@ -423,6 +587,14 @@ const CADDashboard = () => {
 
               {/* 3D Canvas */}
               <div ref={canvasContainerRef} className="flex-1 relative min-h-[400px] lg:min-h-[480px] bg-muted/10">
+                {/* Loading overlay for STEP */}
+                {stepLoading && (
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/80">
+                    <Loader2 size={24} className="animate-spin text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground">STEP dosyası işleniyor...</p>
+                  </div>
+                )}
+
                 {/* Left vertical toolbar */}
                 <div className="absolute left-2 top-2 z-10 flex flex-col gap-1">
                   <button className="w-8 h-8 flex items-center justify-center bg-card/90 border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors">
@@ -458,9 +630,13 @@ const CADDashboard = () => {
                     <directionalLight position={[-3, 2, -3]} intensity={0.3} />
 
                     <Center>
-                      {fileUrl ? (
+                      {fileUrl && fileType === "stl" && (
                         <DashSTLModel url={fileUrl} color={modelColor} wireframe={wireframe} />
-                      ) : (
+                      )}
+                      {stepGeometry && fileType === "step" && (
+                        <DashSTEPModel geometry={stepGeometry} color={modelColor} wireframe={wireframe} />
+                      )}
+                      {!fileUrl && !stepGeometry && (
                         <PlaceholderModel />
                       )}
                     </Center>
