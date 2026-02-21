@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import {
   Cog, ChevronLeft, ChevronRight, Rocket, CheckCircle2, Zap, Clock,
   Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight,
-  Upload, Eye, Send, Shield, Gauge, FileCheck, Edit3,
+  Upload, Eye, Send, Shield, Gauge, FileCheck, Edit3, FileUp,
+  ClipboardList, AlertCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
@@ -77,7 +78,7 @@ const services = [
 
 // ── Ana Bileşen ──
 const TeklifAl = () => {
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(1);
   const [selectedFinish, setSelectedFinish] = useState("machined");
   const [delivery, setDelivery] = useState<"standard" | "express">("standard");
   const [quantity, setQuantity] = useState(25);
@@ -85,10 +86,7 @@ const TeklifAl = () => {
   const [selectedMaterial, setSelectedMaterial] = useState("al-6061-t6");
   const [customMaterial, setCustomMaterial] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<{ name: string; size: string } | null>({
-    name: "Aerospace_Bracket_v2.step",
-    size: "14.5 MB",
-  });
+  const [uploadedFile, setUploadedFile] = useState<{ name: string; size: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentService = services.find((s) => s.id === selectedService)!;
@@ -132,7 +130,16 @@ const TeklifAl = () => {
     }
   };
 
+  const canProceed = () => {
+    if (currentStep === 1 && !uploadedFile) return false;
+    return true;
+  };
+
   const handleNext = () => {
+    if (!canProceed()) {
+      toast.error("Lütfen devam etmeden önce dosya yükleyiniz.");
+      return;
+    }
     if (currentStep < 4) setCurrentStep(currentStep + 1);
   };
 
@@ -146,6 +153,320 @@ const TeklifAl = () => {
     { num: "03", label: "İNCELE", icon: Eye, done: currentStep > 3, active: currentStep === 3 },
     { num: "04", label: "GÖNDER", icon: Send, done: false, active: currentStep === 4 },
   ];
+
+  // ── Adım 1: Dosya Yükleme ──
+  const renderStep1 = () => (
+    <div className="space-y-6">
+      <div className="card-industrial p-6">
+        <h2 className="text-base font-bold mb-5 flex items-center gap-2">
+          <Upload size={16} className="text-primary" /> CAD Dosyası Yükleme
+        </h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Üretilecek parçanın 3D modelini yükleyin. STEP, STP, IGES, STL, OBJ ve 3MF formatları desteklenir.
+        </p>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".step,.stp,.iges,.igs,.stl,.obj,.3mf,.x_t,.x_b"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
+        {uploadedFile ? (
+          <>
+            {/* Yüklenen Dosya Kartı */}
+            <div className="p-4 flex items-center justify-between border border-primary/30 bg-primary/5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 flex items-center justify-center bg-primary/10 text-primary">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{uploadedFile.name}</p>
+                  <p className="text-xs text-muted-foreground">{uploadedFile.size} • STEP Format</p>
+                </div>
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 text-xs font-semibold bg-muted text-muted-foreground hover:bg-border transition-colors"
+              >
+                Dosyayı Değiştir
+              </button>
+            </div>
+
+            {/* 3D CAD Viewer */}
+            <div className="card-industrial overflow-hidden mt-6">
+              <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-muted-foreground">CAD ÖNİZLEME</span>
+                <span className="text-[10px] px-2 py-0.5 font-semibold bg-primary/10 text-primary">HAZIR</span>
+              </div>
+              <div className="h-[320px] relative bg-muted">
+                <Canvas camera={{ position: [4, 3, 4], fov: 40 }} gl={{ antialias: true }}>
+                  <Suspense fallback={null}>
+                    <ambientLight intensity={0.6} />
+                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
+                    <directionalLight position={[-3, 2, -3]} intensity={0.3} />
+                    <Center>
+                      <ComplexPart />
+                    </Center>
+                    <OrbitControls makeDefault enablePan enableZoom minDistance={2} maxDistance={15} />
+                    <Environment preset="studio" />
+                  </Suspense>
+                </Canvas>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Dosya yükleme alanı */
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full border-2 border-dashed border-border hover:border-primary/50 p-12 flex flex-col items-center gap-4 transition-colors group"
+          >
+            <div className="w-16 h-16 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+              <FileUp size={28} />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-bold">CAD dosyanızı buraya sürükleyin veya tıklayın</p>
+              <p className="text-xs text-muted-foreground mt-1">STEP, STP, IGES, STL, OBJ, 3MF • Maks. 100 MB</p>
+            </div>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  // ── Adım 2: Üretim Spesifikasyonları ──
+  const renderStep2 = () => (
+    <div className="space-y-6">
+      {/* Dosya Kartı (mini) */}
+      {uploadedFile && (
+        <div className="card-industrial p-3 flex items-center gap-3">
+          <CheckCircle2 size={16} className="text-primary shrink-0" />
+          <p className="text-xs font-bold truncate">{uploadedFile.name}</p>
+          <p className="text-[10px] text-muted-foreground shrink-0">{uploadedFile.size}</p>
+        </div>
+      )}
+
+      <div className="card-industrial p-6">
+        <h2 className="text-base font-bold mb-5 flex items-center gap-2">
+          <Cog size={16} className="text-primary" /> Üretim Spesifikasyonları
+        </h2>
+
+        {/* Hizmet & Malzeme */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">HİZMET</label>
+            <select
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {services.map((s) => (
+                <option key={s.id} value={s.id}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">MALZEME</label>
+            <select
+              value={selectedMaterial}
+              onChange={(e) => setSelectedMaterial(e.target.value)}
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {materialOptions.map((group) => (
+                <optgroup key={group.category} label={group.category}>
+                  {group.items.map((m) => (
+                    <option key={m.id} value={m.id}>{m.label}</option>
+                  ))}
+                </optgroup>
+              ))}
+              <optgroup label="─────────">
+                <option value="other">Diğer (Manuel Giriş)</option>
+              </optgroup>
+            </select>
+            {selectedMaterial === "other" && (
+              <div className="mt-2 flex items-center gap-2">
+                <Edit3 size={14} className="text-muted-foreground shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Malzeme adını yazınız..."
+                  value={customMaterial}
+                  onChange={(e) => setCustomMaterial(e.target.value)}
+                  className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Yüzey İşlemi */}
+        <div className="mb-6">
+          <label className="block text-[10px] font-bold tracking-widest mb-3 text-muted-foreground">YÜZEY İŞLEMİ</label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {surfaceFinishes.map((f) => {
+              const Icon = f.icon;
+              const isActive = selectedFinish === f.id;
+              return (
+                <button
+                  key={f.id}
+                  onClick={() => setSelectedFinish(f.id)}
+                  className={`border-2 p-3.5 text-center transition-all duration-200 ${
+                    isActive
+                      ? "border-primary bg-industrial-accent-light"
+                      : "border-border bg-background hover:border-muted-foreground"
+                  }`}
+                >
+                  <Icon size={20} className={`mx-auto mb-1.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                  <p className={`text-xs font-bold ${isActive ? "text-primary" : "text-foreground"}`}>{f.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{f.desc}</p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Miktar & Teslimat */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">MİKTAR</label>
+            <div className="flex items-center border border-border overflow-hidden">
+              <input
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                className="flex-1 px-3 py-2.5 text-sm font-bold focus:outline-none bg-background text-foreground"
+              />
+              <span className="px-3 text-[10px] font-bold tracking-widest text-muted-foreground bg-muted">ADET</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">TESLİMAT HIZI</label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setDelivery("standard")}
+                className={`border-2 p-2.5 text-center transition-all ${
+                  delivery === "standard"
+                    ? "border-primary bg-industrial-accent-light"
+                    : "border-border bg-background"
+                }`}
+              >
+                <Clock size={14} className={`mx-auto mb-1 ${delivery === "standard" ? "text-primary" : "text-muted-foreground"}`} />
+                <p className={`text-[10px] font-bold ${delivery === "standard" ? "text-primary" : "text-foreground"}`}>Standart</p>
+                <p className="text-[9px] text-muted-foreground">10-12 Gün</p>
+              </button>
+              <button
+                onClick={() => setDelivery("express")}
+                className={`border-2 p-2.5 text-center transition-all ${
+                  delivery === "express"
+                    ? "border-destructive bg-destructive/10"
+                    : "border-border bg-background"
+                }`}
+              >
+                <Zap size={14} className={`mx-auto mb-1 ${delivery === "express" ? "text-destructive" : "text-muted-foreground"}`} />
+                <p className={`text-[10px] font-bold ${delivery === "express" ? "text-destructive" : "text-foreground"}`}>Ekspres</p>
+                <p className="text-[9px] text-muted-foreground">3-5 Gün</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Adım 3: İnceleme ──
+  const renderStep3 = () => (
+    <div className="space-y-6">
+      <div className="card-industrial p-6">
+        <h2 className="text-base font-bold mb-5 flex items-center gap-2">
+          <ClipboardList size={16} className="text-primary" /> Sipariş Özeti
+        </h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Lütfen aşağıdaki bilgileri kontrol edin. Bir sorun yoksa "İleri" ile gönderim adımına geçebilirsiniz.
+        </p>
+
+        <div className="space-y-4">
+          {/* Dosya bilgisi */}
+          <div className="p-4 bg-muted/50 border border-border">
+            <p className="text-[10px] font-bold tracking-widest text-muted-foreground mb-2">DOSYA</p>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={14} className="text-primary" />
+              <span className="text-sm font-bold">{uploadedFile?.name ?? "Yüklenmedi"}</span>
+              {uploadedFile && <span className="text-xs text-muted-foreground">({uploadedFile.size})</span>}
+            </div>
+          </div>
+
+          {/* Spesifikasyon özeti */}
+          <div className="p-4 bg-muted/50 border border-border">
+            <p className="text-[10px] font-bold tracking-widest text-muted-foreground mb-3">ÜRETİM DETAYLARI</p>
+            <div className="space-y-2.5">
+              {[
+                ["Hizmet", currentService.label],
+                ["Malzeme", materialLabel],
+                ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
+                ["Miktar", `${quantity} Adet`],
+                ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
+              ].map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">{key}</span>
+                  <span className="text-xs font-bold">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Uyarı */}
+          <div className="flex items-start gap-3 p-4 bg-primary/5 border border-primary/20">
+            <AlertCircle size={16} className="text-primary shrink-0 mt-0.5" />
+            <p className="text-xs text-muted-foreground">
+              Teklif talebiniz gönderildikten sonra mühendislerimiz dosyanızı inceleyecek ve 
+              24 saat içinde size detaylı fiyat ve süre bilgisi ile dönüş yapacaktır.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Adım 4: Gönderim ──
+  const renderStep4 = () => (
+    <div className="space-y-6">
+      <div className="card-industrial p-6 text-center">
+        <div className="w-16 h-16 mx-auto flex items-center justify-center bg-primary/10 mb-4">
+          <Rocket size={28} className="text-primary" />
+        </div>
+        <h2 className="text-lg font-bold mb-2">Teklif Talebinizi Gönderin</h2>
+        <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+          Tüm bilgileriniz hazır. "Üretime Gönder" butonuna tıklayarak teklif talebinizi ekibimize iletebilirsiniz.
+        </p>
+
+        {/* Mini özet */}
+        <div className="text-left max-w-sm mx-auto space-y-2 mb-6 p-4 bg-muted/50 border border-border">
+          {[
+            ["Dosya", uploadedFile?.name ?? "-"],
+            ["Hizmet", currentService.label],
+            ["Malzeme", materialLabel],
+            ["Miktar", `${quantity} Adet`],
+          ].map(([k, v]) => (
+            <div key={k} className="flex justify-between text-xs">
+              <span className="text-muted-foreground">{k}</span>
+              <span className="font-bold">{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1: return renderStep1();
+      case 2: return renderStep2();
+      case 3: return renderStep3();
+      case 4: return renderStep4();
+      default: return renderStep1();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -177,7 +498,10 @@ const TeklifAl = () => {
             return (
               <div key={i} className="flex items-center flex-1">
                 <button
-                  onClick={() => setCurrentStep(i + 1)}
+                  onClick={() => {
+                    // Sadece tamamlanmış veya aktif adımlara git
+                    if (i + 1 <= currentStep) setCurrentStep(i + 1);
+                  }}
                   className="flex items-center gap-2 group"
                 >
                   <div
@@ -211,208 +535,34 @@ const TeklifAl = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
           {/* ══ SOL KOLON ══ */}
           <div className="space-y-6">
-            {/* Dosya Kartı */}
-            <div className="card-industrial p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-primary/10 text-primary">
-                  <CheckCircle2 size={18} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold">{uploadedFile?.name ?? "Dosya seçilmedi"}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {uploadedFile ? `${uploadedFile.size} • STEP Format` : "Lütfen dosya yükleyin"}
-                  </p>
-                </div>
-              </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".step,.stp,.iges,.igs,.stl,.obj,.3mf,.x_t,.x_b"
-                className="hidden"
-                onChange={handleFileChange}
-              />
+            {renderCurrentStep()}
+
+            {/* Alt Navigasyon */}
+            <div className="flex items-center justify-between pt-4 border-t border-border">
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 text-xs font-semibold bg-muted text-muted-foreground hover:bg-border transition-colors"
+                onClick={handleBack}
+                disabled={currentStep <= 1}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors disabled:opacity-40"
               >
-                Dosyayı Değiştir
+                <ChevronLeft size={14} /> GERİ
               </button>
-            </div>
-
-            {/* 3D CAD Görüntüleyici */}
-            <div className="card-industrial overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wider text-muted-foreground">CAD ÖNİZLEME</span>
-                <span className="text-[10px] px-2 py-0.5 font-semibold bg-primary/10 text-primary">HAZIR</span>
-              </div>
-              <div className="h-[320px] relative bg-muted">
-                <Canvas camera={{ position: [4, 3, 4], fov: 40 }} gl={{ antialias: true }}>
-                  <Suspense fallback={null}>
-                    <ambientLight intensity={0.6} />
-                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
-                    <directionalLight position={[-3, 2, -3]} intensity={0.3} />
-                    <Center>
-                      <ComplexPart />
-                    </Center>
-                    <OrbitControls makeDefault enablePan enableZoom minDistance={2} maxDistance={15} />
-                    <Environment preset="studio" />
-                  </Suspense>
-                </Canvas>
-              </div>
-            </div>
-
-            {/* Üretim Spesifikasyonları */}
-            <div className="card-industrial p-6">
-              <h2 className="text-base font-bold mb-5 flex items-center gap-2">
-                <Cog size={16} className="text-primary" /> Üretim Spesifikasyonları
-              </h2>
-
-              {/* Hizmet & Malzeme */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">HİZMET</label>
-                  <select
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {services.map((s) => (
-                      <option key={s.id} value={s.id}>{s.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">MALZEME</label>
-                  <select
-                    value={selectedMaterial}
-                    onChange={(e) => setSelectedMaterial(e.target.value)}
-                    className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {materialOptions.map((group) => (
-                      <optgroup key={group.category} label={group.category}>
-                        {group.items.map((m) => (
-                          <option key={m.id} value={m.id}>{m.label}</option>
-                        ))}
-                      </optgroup>
-                    ))}
-                    <optgroup label="─────────">
-                      <option value="other">Diğer (Manuel Giriş)</option>
-                    </optgroup>
-                  </select>
-                  {selectedMaterial === "other" && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <Edit3 size={14} className="text-muted-foreground shrink-0" />
-                      <input
-                        type="text"
-                        placeholder="Malzeme adını yazınız..."
-                        value={customMaterial}
-                        onChange={(e) => setCustomMaterial(e.target.value)}
-                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Yüzey İşlemi */}
-              <div className="mb-6">
-                <label className="block text-[10px] font-bold tracking-widest mb-3 text-muted-foreground">YÜZEY İŞLEMİ</label>
-                <div className="grid grid-cols-4 gap-3">
-                  {surfaceFinishes.map((f) => {
-                    const Icon = f.icon;
-                    const isActive = selectedFinish === f.id;
-                    return (
-                      <button
-                        key={f.id}
-                        onClick={() => setSelectedFinish(f.id)}
-                        className={`border-2 p-3.5 text-center transition-all duration-200 ${
-                          isActive
-                            ? "border-primary bg-industrial-accent-light"
-                            : "border-border bg-background hover:border-muted-foreground"
-                        }`}
-                      >
-                        <Icon size={20} className={`mx-auto mb-1.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-                        <p className={`text-xs font-bold ${isActive ? "text-primary" : "text-foreground"}`}>{f.label}</p>
-                        <p className="text-[10px] text-muted-foreground">{f.desc}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Miktar & Teslimat */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">MİKTAR</label>
-                  <div className="flex items-center border border-border overflow-hidden">
-                    <input
-                      type="number"
-                      min={1}
-                      value={quantity}
-                      onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                      className="flex-1 px-3 py-2.5 text-sm font-bold focus:outline-none bg-background text-foreground"
-                    />
-                    <span className="px-3 text-[10px] font-bold tracking-widest text-muted-foreground bg-muted">ADET</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">TESLİMAT HIZI</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setDelivery("standard")}
-                      className={`border-2 p-2.5 text-center transition-all ${
-                        delivery === "standard"
-                          ? "border-primary bg-industrial-accent-light"
-                          : "border-border bg-background"
-                      }`}
-                    >
-                      <Clock size={14} className={`mx-auto mb-1 ${delivery === "standard" ? "text-primary" : "text-muted-foreground"}`} />
-                      <p className={`text-[10px] font-bold ${delivery === "standard" ? "text-primary" : "text-foreground"}`}>Standart</p>
-                      <p className="text-[9px] text-muted-foreground">10-12 Gün</p>
-                    </button>
-                    <button
-                      onClick={() => setDelivery("express")}
-                      className={`border-2 p-2.5 text-center transition-all ${
-                        delivery === "express"
-                          ? "border-destructive bg-destructive/10"
-                          : "border-border bg-background"
-                      }`}
-                    >
-                      <Zap size={14} className={`mx-auto mb-1 ${delivery === "express" ? "text-destructive" : "text-muted-foreground"}`} />
-                      <p className={`text-[10px] font-bold ${delivery === "express" ? "text-destructive" : "text-foreground"}`}>Ekspres</p>
-                      <p className="text-[9px] text-muted-foreground">3-5 Gün</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Alt Navigasyon */}
-              <div className="flex items-center justify-between pt-4 border-t border-border">
+              {currentStep < 4 ? (
                 <button
-                  onClick={handleBack}
-                  disabled={currentStep <= 1}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors disabled:opacity-40"
+                  onClick={handleNext}
+                  className="btn-industrial-primary flex items-center gap-2"
                 >
-                  <ChevronLeft size={14} /> GERİ
+                  İLERİ <ChevronRight size={16} />
                 </button>
-                {currentStep < 4 ? (
-                  <button
-                    onClick={handleNext}
-                    className="btn-industrial-primary flex items-center gap-2"
-                  >
-                    İLERİ <ChevronRight size={16} />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="btn-industrial-primary flex items-center gap-2 disabled:opacity-50"
-                  >
-                    <Rocket size={16} />
-                    {isSubmitting ? "GÖNDERİLİYOR..." : "ÜRETİME GÖNDER"}
-                  </button>
-                )}
-              </div>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="btn-industrial-primary flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Rocket size={16} />
+                  {isSubmitting ? "GÖNDERİLİYOR..." : "ÜRETİME GÖNDER"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -426,7 +576,7 @@ const TeklifAl = () => {
 
               <div className="space-y-3 mb-4">
                 {[
-                  ["Proje Adı", "AeroBracket V2"],
+                  ["Dosya", uploadedFile?.name ?? "Yüklenmedi"],
                   ["Hizmet", currentService.label],
                   ["Malzeme", materialLabel],
                   ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
