@@ -97,6 +97,34 @@ export const servicePages: ServicePageData[] = [
       { question: "Minimum sipariş adedi var mı?", answer: "Hayır, tek parçadan seri üretime kadar her adette üretim yapıyoruz. Prototip siparişleri de kabul ediyoruz." },
       { question: "Teslimat süreniz ne kadar?", answer: "Standart parçalarda 5-10 iş günü, ekspres üretimde 2 iş gününe kadar inebiliyoruz. Prototip için 3-5 iş günü." },
     ],
+    comparisonTables: [
+      {
+        title: "CNC Frezeleme Eksen Karşılaştırması",
+        description: "Parça geometrisine göre en uygun eksen konfigürasyonunu belirleyin",
+        headers: ["Özellik", "3 Eksen", "4 Eksen (3+1)", "5 Eksen Simultane"],
+        rows: [
+          ["Geometri Kapasitesi", "Düz yüzeyler, cep", "Silindirik profiller", "Karmaşık serbest formlar"],
+          ["Bağlama Sayısı", "2-4 bağlama", "1-2 bağlama", "Tek bağlama"],
+          ["Tolerans", "±0.02mm", "±0.01mm", "±0.005mm"],
+          ["Yüzey Kalitesi", "Ra 1.6µm", "Ra 0.8µm", "Ra 0.4µm"],
+          ["Setup Süresi", "Kısa", "Orta", "Uzun (ilk parça)"],
+          ["Birim Maliyet", "$", "$$", "$$$"],
+          ["Tipik Uygulama", "Plaka, braket", "Flanş, kanal", "Türbin, implant"],
+        ],
+        highlight: 2,
+      },
+      {
+        title: "İşleme Stratejileri ve Yüzey Kalitesi",
+        headers: ["Strateji", "İlerleme Hızı", "Yüzey Kalitesi (Ra)", "Takım Ömrü", "Uygulama"],
+        rows: [
+          ["Kaba İşleme (HPC)", "5000-8000 mm/dk", "Ra 3.2-6.3µm", "Standart", "Talaş hacmi maksimizasyonu"],
+          ["Yarı Finiş", "2000-4000 mm/dk", "Ra 1.6-3.2µm", "İyi", "Son şekle yaklaşma"],
+          ["Finiş İşleme", "1000-2000 mm/dk", "Ra 0.8-1.6µm", "Uzun", "Son yüzey kalitesi"],
+          ["HSM (Yüksek Hız)", "8000-15000 mm/dk", "Ra 0.4-0.8µm", "Kısa", "İnce cidar, sert malzeme"],
+          ["Süper Finiş", "500-1000 mm/dk", "Ra 0.1-0.4µm", "Çok uzun", "Optik yüzeyler, kalıp"],
+        ],
+      },
+    ],
   },
   {
     slug: "cnc-tornalama",
@@ -166,6 +194,34 @@ export const servicePages: ServicePageData[] = [
       { question: "Seri üretim için uygun mu?", answer: "Evet, bar besleyicili tezgahlarımızda gece-gündüz kesintisiz seri üretim yapabiliyoruz." },
       { question: "Hangi çap aralığında tornalama yapabiliyorsunuz?", answer: "Swiss tip torna ile 0.3mm'den başlayarak konvansiyonel torna ile 500mm çapa kadar geniş bir aralıkta tornalama yapabiliyoruz." },
     ],
+    comparisonTables: [
+      {
+        title: "CNC Torna Konfigürasyon Karşılaştırması",
+        headers: ["Özellik", "2 Eksen Torna", "Canlı Takımlı (C/Y)", "Turn-Mill", "Swiss Torna"],
+        rows: [
+          ["Çap Aralığı", "Ø10-500mm", "Ø10-380mm", "Ø10-300mm", "Ø0.3-32mm"],
+          ["İşleme Tipi", "Sadece tornalama", "Torna + delme/freze", "Torna + freze komple", "Uzun/ince parçalar"],
+          ["Tolerans", "±0.01mm", "±0.005mm", "±0.005mm", "±0.003mm"],
+          ["Yüzey Kalitesi", "Ra 0.8µm", "Ra 0.4µm", "Ra 0.4µm", "Ra 0.2µm"],
+          ["Setup Süresi", "Kısa", "Orta", "Uzun", "Orta"],
+          ["Birim Maliyet", "$", "$$", "$$$", "$$"],
+          ["Tipik Parça", "Mil, burç", "Flanş, valf gövde", "Karmaşık gövde", "Pin, vida, konektör"],
+        ],
+        highlight: 3,
+      },
+      {
+        title: "Torna Malzeme İşlenebilirlik Matrisi",
+        headers: ["Malzeme", "Kesme Hızı (m/dk)", "İlerleme (mm/dev)", "Takım Tipi", "İşlenebilirlik"],
+        rows: [
+          ["Otomat Çeliği (11SMnPb30)", "180-250", "0.15-0.35", "Kaplamalı karbür", "★★★★★"],
+          ["Alüminyum 6061", "300-600", "0.10-0.30", "PCD / Elmas", "★★★★★"],
+          ["Pirinç CuZn39Pb3", "200-400", "0.10-0.25", "Kaplamasız karbür", "★★★★★"],
+          ["Paslanmaz 304", "120-180", "0.08-0.20", "CVD kaplamalı", "★★★☆☆"],
+          ["Titanyum Grade 5", "40-80", "0.05-0.15", "PVD kaplamalı", "★★☆☆☆"],
+          ["İnkonel 718", "20-40", "0.05-0.10", "Seramik / CBN", "★☆☆☆☆"],
+        ],
+      },
+    ],
   },
   {
     slug: "hassas-mikro-isleme",
@@ -232,6 +288,32 @@ export const servicePages: ServicePageData[] = [
       { question: "Maliyet standart CNC'den yüksek mi?", answer: "Evet, özel takımlar, yavaş ilerleme hızları ve hassas ölçüm gereksinimleri nedeniyle maliyet daha yüksektir. Ancak bu, standart yöntemlerle elde edilemeyecek sonuçlar içindir." },
       { question: "Seri üretim yapabiliyor musunuz?", answer: "Evet, otomatik besleyicili Swiss torna ve palletli 5 eksen sistemleri ile mikro parçalarda bile seri üretim yapabiliyoruz." },
       { question: "Ölçüm raporu veriyor musunuz?", answer: "Her mikro parça optik veya CMM ile ölçülür. AS9100/ISO 13485 uyumlu ölçüm raporları ve sertifikalar sağlıyoruz." },
+    ],
+    comparisonTables: [
+      {
+        title: "Mikro İşleme Teknoloji Karşılaştırması",
+        headers: ["Parametre", "Mikro Frezeleme", "Mikro Tornalama", "Mikro Delme", "Mikro EDM"],
+        rows: [
+          ["Min. Özellik Boyutu", "50µm", "300µm (çap)", "50µm (delik)", "10µm"],
+          ["Tolerans", "±2µm", "±3µm", "±5µm", "±1µm"],
+          ["Yüzey Kalitesi", "Ra 0.1µm", "Ra 0.2µm", "Ra 0.4µm", "Ra 0.05µm"],
+          ["İşleme Hızı", "Orta", "Yüksek", "Düşük", "Çok düşük"],
+          ["Malzeme Kısıtı", "Tümü", "Silindirik", "Tümü", "İletken"],
+          ["Maliyet", "$$$", "$$", "$$", "$$$$"],
+          ["Tipik Uygulama", "Optik, implant", "Pin, vida", "Nozul, enjektör", "Mikro kalıp"],
+        ],
+      },
+      {
+        title: "Sektörel Mikro İşleme Gereksinimleri",
+        headers: ["Sektör", "Tipik Parça", "Tolerans Beklentisi", "Yüzey Beklentisi", "Sertifika"],
+        rows: [
+          ["Medikal", "İmplant, cerrahi alet", "±2-5µm", "Ra 0.1-0.4µm", "ISO 13485"],
+          ["Havacılık", "Yakıt enjektör, sensör", "±5-10µm", "Ra 0.2-0.8µm", "AS9100D"],
+          ["Elektronik", "Konektör pin, PCB", "±3-5µm", "Ra 0.2-0.4µm", "IPC-A-610"],
+          ["Saat & Optik", "Mekanizma, lens tutucu", "±1-3µm", "Ra 0.05-0.1µm", "ISO 1413"],
+          ["Otomotiv", "Enjektör nozul, sensör", "±5-10µm", "Ra 0.4-0.8µm", "IATF 16949"],
+        ],
+      },
     ],
   },
   {
@@ -300,6 +382,34 @@ export const servicePages: ServicePageData[] = [
       { question: "Doğrusallık nasıl sağlanır?", answer: "Özel kılavuzlama burs sistemleri, yüksek basınçlı soğutma sıvısı ve optimize edilmiş kesme parametreleri ile sapma minimuma indirilir." },
       { question: "İç yüzey kalitesi iyileştirilebilir mi?", answer: "Evet, raybalama ve honlama işlemleriyle Ra 0.2µm'ye kadar yüzey kalitesi elde edilebilir. H6 toleransında çap hassasiyeti sağlanır." },
     ],
+    comparisonTables: [
+      {
+        title: "Derin Delik Delme Yöntemleri Karşılaştırması",
+        headers: ["Parametre", "Gun Drilling", "BTA Delme", "Trepan Delme", "Konvansiyonel Matkap"],
+        rows: [
+          ["Çap Aralığı", "Ø2-20mm", "Ø20-200mm", "Ø50-300mm", "Ø1-50mm"],
+          ["Maks. L/D Oranı", "100:1", "50:1", "30:1", "5:1"],
+          ["Doğrusallık", "0.02mm/100mm", "0.05mm/100mm", "0.1mm/100mm", "0.5mm/100mm"],
+          ["Yüzey Kalitesi", "Ra 0.4-0.8µm", "Ra 0.8-1.6µm", "Ra 1.6-3.2µm", "Ra 3.2-6.3µm"],
+          ["Talaş Kontrolü", "Harici soğutma", "İç talaş tahliye", "Halka talaş", "Manuel"],
+          ["Maliyet", "$$$", "$$", "$$", "$"],
+          ["Tipik Uygulama", "Yağ kanalı, namlu", "Silindir gövde", "Büyük boru", "Standart delik"],
+        ],
+        highlight: 0,
+      },
+      {
+        title: "Raybalama ve Honlama Tolerans Seviyeleri",
+        headers: ["İşlem", "Çap Toleransı", "Yüzey Kalitesi (Ra)", "Silindiriklik", "Uygulama"],
+        rows: [
+          ["Standart Delme", "H11 (±0.1mm)", "Ra 3.2-6.3µm", "0.05mm", "Cıvata deliği"],
+          ["Hassas Raybalama", "H7 (±0.01mm)", "Ra 0.8-1.6µm", "0.01mm", "Pim yatağı, burç"],
+          ["İnce Raybalama", "H6 (±0.008mm)", "Ra 0.4-0.8µm", "0.005mm", "Rulman yatağı"],
+          ["Honlama", "H5 (±0.005mm)", "Ra 0.1-0.4µm", "0.002mm", "Hidrolik silindir"],
+          ["Süper Finiş Honlama", "H4 (±0.003mm)", "Ra 0.05-0.1µm", "0.001mm", "Motor silindir"],
+        ],
+        highlight: 3,
+      },
+    ],
   },
 
   // ── Hizmetler > Ön Üretim ──
@@ -360,6 +470,31 @@ export const servicePages: ServicePageData[] = [
       { question: "Moldflow simülasyonu zorunlu mu?", answer: "Zorunlu değildir ancak özellikle karmaşık parçalarda dolum problemlerini, çökme izlerini ve eğilmeyi önlemek için şiddetle tavsiye ederiz." },
       { question: "Alüminyum mı çelik kalıp mı seçmeliyim?", answer: "10.000 adete kadar üretim için alüminyum kalıp ekonomiktir. Daha yüksek hacimler için çelik kalıp uzun vadede maliyet avantajı sağlar." },
     ],
+    comparisonTables: [
+      {
+        title: "Enjeksiyon Kalıp Malzemesi Seçim Matrisi",
+        headers: ["Kalıp Malzemesi", "Sertlik", "Kalıp Ömrü", "Teslimat Süresi", "Maliyet", "Uygulama"],
+        rows: [
+          ["Al 7075", "150 HB", "10.000+ çevrim", "2-3 hafta", "$", "Prototip, düşük hacim"],
+          ["P20 (1.2311)", "280-320 HB", "500.000+ çevrim", "4-6 hafta", "$$", "Orta hacim, genel amaç"],
+          ["H13 (1.2344)", "45-52 HRC", "1.000.000+ çevrim", "6-8 hafta", "$$$", "Yüksek hacim, sıcak iş"],
+          ["S136 (1.2083)", "48-52 HRC", "1.000.000+ çevrim", "6-8 hafta", "$$$$", "Optik, medikal, korozyon"],
+          ["NAK80", "38-42 HRC", "500.000+ çevrim", "5-7 hafta", "$$$", "Yüksek parlaklık, ön sertleştirilmiş"],
+        ],
+        highlight: 2,
+      },
+      {
+        title: "Kavite Sayısı ve Üretim Verimliliği",
+        headers: ["Kavite", "Çevrim/Saat", "Parça/Saat", "Birim Maliyet", "Kalıp Maliyeti", "Önerilen Hacim"],
+        rows: [
+          ["Tek kavite", "60-120", "60-120", "$$$", "$", "1-10.000 adet"],
+          ["2 kavite", "60-120", "120-240", "$$", "1.5×", "10.000-50.000"],
+          ["4 kavite", "50-100", "200-400", "$$", "2×", "50.000-200.000"],
+          ["8 kavite", "40-80", "320-640", "$", "3×", "200.000-500.000"],
+          ["16+ kavite", "30-60", "480-960+", "$", "4-5×", "500.000+"],
+        ],
+      },
+    ],
   },
   {
     slug: "basinçli-dokum",
@@ -404,6 +539,30 @@ export const servicePages: ServicePageData[] = [
       "İnce duvarlı parça kapasitesi",
       "Yüksek üretim hızı ve düşük birim maliyet",
     ],
+    comparisonTables: [
+      {
+        title: "Basınçlı Döküm Alaşım Karşılaştırması",
+        headers: ["Alaşım", "Çekme Dayanımı", "Yoğunluk", "Döküm Sıcaklığı", "Min. Duvar", "Uygulama"],
+        rows: [
+          ["ADC12 (Al-Si)", "280 MPa", "2.74 g/cm³", "640-680°C", "0.8mm", "Genel amaç, motor gövde"],
+          ["A380 (Al-Si-Cu)", "320 MPa", "2.71 g/cm³", "650-700°C", "0.8mm", "Yüksek dayanım, yapısal"],
+          ["ZA-8 (Zn-Al)", "350 MPa", "6.3 g/cm³", "420-440°C", "0.5mm", "İnce duvar, somun"],
+          ["ZA-27 (Zn-Al)", "420 MPa", "5.0 g/cm³", "440-480°C", "0.75mm", "Ağır yük, rulman"],
+          ["AZ91D (Mg)", "230 MPa", "1.81 g/cm³", "620-650°C", "1.0mm", "Hafif, elektronik muhafaza"],
+        ],
+      },
+      {
+        title: "Döküm Kalite Sınıfları (ISO 8062)",
+        headers: ["Kalite Sınıfı", "Boyut Toleransı", "Yüzey Kalitesi", "Gözeneklilik", "Maliyet", "Uygulama"],
+        rows: [
+          ["CT4", "±0.05mm", "Ra 0.8-1.6µm", "Çok düşük", "$$$$", "Havacılık, medikal"],
+          ["CT5", "±0.1mm", "Ra 1.6-3.2µm", "Düşük", "$$$", "Otomotiv kritik"],
+          ["CT6", "±0.2mm", "Ra 3.2-6.3µm", "Orta", "$$", "Genel endüstriyel"],
+          ["CT7", "±0.3mm", "Ra 6.3-12.5µm", "Kabul edilebilir", "$", "Dekoratif, yapısal"],
+        ],
+        highlight: 2,
+      },
+    ],
   },
   {
     slug: "silikon-kaliplama",
@@ -446,6 +605,31 @@ export const servicePages: ServicePageData[] = [
       "1-100 adet kısa seri üretim",
       "4 farklı sertlik seçeneği",
       "Overmolding kapasitesi",
+    ],
+    comparisonTables: [
+      {
+        title: "Silikon Kalıplama Malzeme Karşılaştırması",
+        headers: ["Malzeme", "Shore Sertlik", "Uzama (%)", "Sıcaklık Aralığı", "Yırtılma Direnci", "Uygulama"],
+        rows: [
+          ["PU 60A", "60 Shore A", "450%", "-30°C / +80°C", "25 kN/m", "Esnek conta, tampon"],
+          ["PU 80A", "80 Shore A", "350%", "-30°C / +90°C", "35 kN/m", "Tutamak, kapak"],
+          ["PU 90A", "90 Shore A", "250%", "-20°C / +100°C", "45 kN/m", "Yapısal, yük taşıyan"],
+          ["Silikon 40A", "40 Shore A", "600%", "-60°C / +300°C", "20 kN/m", "Yüksek sıcaklık, medikal"],
+          ["Silikon 70A", "70 Shore A", "400%", "-55°C / +250°C", "30 kN/m", "O-ring, conta, tuş takımı"],
+          ["Epoksi Reçine", "80 Shore D", "5%", "-40°C / +120°C", "Rijit", "Prototip, model"],
+        ],
+      },
+      {
+        title: "Üretim Yöntemi Karşılaştırması (Kısa Seri)",
+        headers: ["Yöntem", "Min. Adet", "Teslimat", "Parça Maliyeti", "Kalıp Maliyeti", "Yüzey Kalitesi"],
+        rows: [
+          ["Vakumlu Döküm", "1", "1-3 gün", "$$", "$", "İyi (master'a bağlı)"],
+          ["3D Baskı (SLA)", "1", "1-2 gün", "$$$", "Yok", "Çok iyi"],
+          ["CNC İşleme", "1", "3-5 gün", "$$$$", "Yok", "Mükemmel"],
+          ["Silikon Enjeksiyon", "500+", "2-4 hafta", "$", "$$$", "Mükemmel"],
+          ["Sıkıştırma Kalıplama", "100+", "1-3 hafta", "$$", "$$", "İyi"],
+        ],
+      },
     ],
   },
   {
@@ -490,6 +674,21 @@ export const servicePages: ServicePageData[] = [
       "3D baskı ile hızlı prototipleme",
       "Üretim ortamında doğrulama testi",
     ],
+    comparisonTables: [
+      {
+        title: "Fikstür Tipi Seçim Rehberi",
+        headers: ["Fikstür Tipi", "Bağlama Kuvveti", "Tekrarlanabilirlik", "Değişim Süresi", "Maliyet", "Uygulama"],
+        rows: [
+          ["Mekanik Mengene", "10-50 kN", "±0.02mm", "1-2 dk", "$", "Genel frezeleme"],
+          ["Hidrolik Bağlama", "20-100 kN", "±0.005mm", "10-20 sn", "$$$", "Seri üretim, otomatik"],
+          ["Pnömatik Bağlama", "5-30 kN", "±0.01mm", "5-10 sn", "$$", "Hafif parçalar, hızlı"],
+          ["Vakumlu Bağlama", "1-10 kN", "±0.01mm", "5 sn", "$$", "İnce plaka, hassas"],
+          ["Manyetik Tablo", "5-20 kN", "±0.01mm", "3 sn", "$$", "Ferromanyetik, taşlama"],
+          ["Modüler Fikstür", "Değişken", "±0.01mm", "15-30 dk", "$$$$", "Çok amaçlı, esnek"],
+        ],
+        highlight: 1,
+      },
+    ],
   },
 
   // ── Hizmetler > Yüzey İşlemleri ──
@@ -533,6 +732,32 @@ export const servicePages: ServicePageData[] = [
       "Ayna parlaklığına kadar parlatma",
       "Montaja hazır yüzey teslimatı",
       "Geniş parça boyutu kapasitesi",
+    ],
+    comparisonTables: [
+      {
+        title: "Mekanik Yüzey İşlem Yöntemleri Karşılaştırması",
+        headers: ["Yöntem", "Yüzey Kalitesi (Ra)", "İşlem Süresi", "Parça Boyutu", "Maliyet", "Uygulama"],
+        rows: [
+          ["Kumlama (Cam Kumu)", "Ra 1.6-3.2µm", "5-15 dk", "1500×800mm", "$", "Temizleme, pürüzlendirme"],
+          ["Kumlama (Al₂O₃)", "Ra 2.0-4.0µm", "5-15 dk", "1500×800mm", "$", "Boya öncesi hazırlık"],
+          ["Vibrasyonlu Yüzme", "Ra 0.4-1.6µm", "30-120 dk", "Küçük parçalar", "$", "Çapak alma, köşe kırma"],
+          ["Merkezsiz Parlatma", "Ra 0.1-0.4µm", "10-30 dk", "Ø5-100mm", "$$", "Mil, pim parlatma"],
+          ["Mekanik Parlatma", "Ra 0.05-0.2µm", "15-60 dk", "Değişken", "$$$", "Ayna parlaklığı"],
+          ["Fırçalama", "Ra 0.4-1.2µm", "5-10 dk", "Düz yüzeyler", "$", "Satine efekt, dekoratif"],
+        ],
+      },
+      {
+        title: "Abrasive Medya Seçim Tablosu",
+        headers: ["Medya Tipi", "Tane Boyutu", "Sertlik", "Uygun Malzeme", "Etki"],
+        rows: [
+          ["Cam Kumu", "0.1-0.5mm", "Orta", "Tüm metaller", "Hassas temizlik, mat yüzey"],
+          ["Alüminyum Oksit", "0.2-1.0mm", "Yüksek", "Çelik, dökme demir", "Agresif temizlik, pürüzlendirme"],
+          ["Çelik Grit", "0.2-2.0mm", "Çok yüksek", "Çelik, döküm", "Ağır pas/kum temizleme"],
+          ["Seramik Medya", "3-15mm", "Yüksek", "Tüm metaller", "Çapak alma, yüzey düzeltme"],
+          ["Plastik Medya", "2-10mm", "Düşük", "Alüminyum, plastik", "Nazik çapak alma"],
+          ["Ceviz Kabuğu", "0.5-2.0mm", "Düşük", "Yumuşak metaller", "Temizlik (boyut değişimi yok)"],
+        ],
+      },
     ],
   },
   {
@@ -687,6 +912,20 @@ export const servicePages: ServicePageData[] = [
       "Ultrasonik temizlik kapasitesi",
       "Sonraki işlemlere hazır yüzey",
     ],
+    comparisonTables: [
+      {
+        title: "Kimyasal Yüzey İşlem Yöntemleri",
+        headers: ["İşlem", "Uygulanan Malzeme", "Kaplama/Etki", "Korozyon Direnci", "Standart", "Uygulama"],
+        rows: [
+          ["Pasivasyon (Nitrik)", "Paslanmaz çelik", "Krom oksit tabaka", "500+ saat", "ASTM A967", "Medikal, gıda"],
+          ["Pasivasyon (Sitrik)", "Paslanmaz çelik", "Krom oksit tabaka", "500+ saat", "ASTM A967", "Çevreci alternatif"],
+          ["Fosfatlama (Çinko)", "Çelik", "5-15µm çinko fosfat", "200+ saat", "MIL-DTL-16232", "Boya altı hazırlık"],
+          ["Fosfatlama (Mangan)", "Çelik", "5-25µm mangan fosfat", "150+ saat", "MIL-DTL-16232", "Aşınma direnci, yağ tutma"],
+          ["Elektropolish", "Paslanmaz çelik", "Yüzey düzeltme", "750+ saat", "ASTM B912", "Medikal, gıda, optik"],
+          ["Alodine (Chromate)", "Alüminyum", "0.5-4µm dönüşüm", "168+ saat", "MIL-DTL-5541", "Boya altı, iletkenlik"],
+        ],
+      },
+    ],
   },
   {
     slug: "boya-koruyucu-kaplamalar",
@@ -726,6 +965,21 @@ export const servicePages: ServicePageData[] = [
       "RAL standart ve özel renkler",
       "1000+ saat tuz testi dayanımı",
       "260°C sıcaklık dayanımlı PTFE kaplama",
+    ],
+    comparisonTables: [
+      {
+        title: "Boya & Kaplama Türleri Karşılaştırması",
+        headers: ["Kaplama Türü", "Kalınlık", "Sıcaklık Dayanımı", "Tuz Testi", "Sürtünme Kats.", "Uygulama"],
+        rows: [
+          ["Toz Boya (Polyester)", "60-120µm", "180°C", "1000+ saat", "0.30-0.40", "Dış mekan, dekoratif"],
+          ["Toz Boya (Epoksi)", "60-100µm", "120°C", "1500+ saat", "0.35-0.45", "İç mekan, kimyasal direnci"],
+          ["Islak Boya (2K PU)", "25-50µm", "130°C", "500+ saat", "0.30-0.40", "Düzgün yüzey, ince kaplama"],
+          ["Seramik Kaplama", "50-100µm", "1000°C", "2000+ saat", "0.15-0.25", "Egzoz, motor, yüksek sıcaklık"],
+          ["PTFE (Teflon)", "15-40µm", "260°C", "500+ saat", "0.05-0.10", "Yapışmazlık, düşük sürtünme"],
+          ["E-Kap (Elektro Kaplama)", "20-40µm", "150°C", "1000+ saat", "0.35-0.45", "Otomotiv, elektrik yalıtım"],
+          ["DLC (Diamond-Like)", "1-5µm", "350°C", "5000+ saat", "0.05-0.15", "Aşınma, medikal, uzay"],
+        ],
+      },
     ],
   },
 
@@ -771,6 +1025,32 @@ export const servicePages: ServicePageData[] = [
       "Çoklu malzeme desteği",
       "Dinamik (yuvarlak parça) işaretleme",
     ],
+    comparisonTables: [
+      {
+        title: "Lazer İşaretleme Teknoloji Karşılaştırması",
+        headers: ["Lazer Tipi", "Dalga Boyu", "Güç Aralığı", "Uygun Malzeme", "Hız", "Uygulama"],
+        rows: [
+          ["Fiber Lazer", "1064nm", "20-100W", "Metal, plastik", "10.000 mm/s", "Genel amaç, seri üretim"],
+          ["CO₂ Lazer", "10.600nm", "10-60W", "Ahşap, plastik, deri", "5.000 mm/s", "Organik malzeme, ambalaj"],
+          ["UV Lazer", "355nm", "3-15W", "Plastik, cam, silikon", "3.000 mm/s", "Hassas, ısıya duyarlı"],
+          ["Yeşil Lazer", "532nm", "5-20W", "Bakır, altın, PCB", "5.000 mm/s", "Yansıtıcı metaller"],
+          ["MOPA Fiber", "1064nm", "20-60W", "Metal (renkli)", "8.000 mm/s", "Renkli işaretleme, paslanmaz"],
+        ],
+        highlight: 0,
+      },
+      {
+        title: "Malzeme Bazlı Lazer İşaretleme Parametreleri",
+        headers: ["Malzeme", "Önerilen Lazer", "Güç", "Hız", "Kontrast", "Notlar"],
+        rows: [
+          ["Paslanmaz Çelik", "Fiber / MOPA", "20-50W", "500-2000 mm/s", "Yüksek", "Siyah oksit veya beyaz tavlama"],
+          ["Alüminyum", "Fiber", "30-60W", "800-3000 mm/s", "Orta-Yüksek", "Eloksal üzeri mükemmel"],
+          ["Titanyum", "Fiber / MOPA", "20-40W", "300-1500 mm/s", "Yüksek", "Renkli tavlama mümkün"],
+          ["ABS Plastik", "Fiber / UV", "5-20W", "1000-5000 mm/s", "Orta", "Renk değişimi ile"],
+          ["Cam", "UV / CO₂", "3-10W", "200-800 mm/s", "Orta", "Mikro çatlak tekniği"],
+          ["Sertleştirilmiş Çelik", "Fiber", "30-80W", "300-1000 mm/s", "Çok yüksek", "Derin kazıma mümkün"],
+        ],
+      },
+    ],
   },
   {
     slug: "tavlama",
@@ -808,6 +1088,20 @@ export const servicePages: ServicePageData[] = [
       "Lazer tavlama ile yüzey bütünlüğü koruması",
       "Medikal parça uygunluğu",
       "Kalıcı ve aşınmaz renk değişimi",
+    ],
+    comparisonTables: [
+      {
+        title: "Tavlama Türleri ve Parametreleri",
+        headers: ["Tavlama Türü", "Sıcaklık Aralığı", "Soğutma", "Sertlik Değişimi", "Amaç", "Uygulama"],
+        rows: [
+          ["Stress Giderme", "550-650°C", "Fırında yavaş", "Değişmez", "İç gerilme giderme", "CNC sonrası, kaynak sonrası"],
+          ["Yumuşatma", "680-720°C", "Fırında çok yavaş", "Düşer (150-200 HB)", "İşlenebilirlik artırma", "Sert çeliklerin işlenmesi"],
+          ["Normalizasyon", "850-950°C", "Havada", "Homojenleşir", "Tane inceltme", "Döküm, dövme sonrası"],
+          ["Tam Tavlama", "800-900°C", "Fırında yavaş", "Düşer (min.)", "Tam yumuşatma", "Soğuk şekillendirme öncesi"],
+          ["Sementasyon", "880-940°C", "Yağ/su", "Yüzey 58-62 HRC", "Yüzey sertleştirme", "Dişli, mil, kam"],
+          ["İndüksiyon", "850-1000°C", "Su/polimer", "Yüzey 50-60 HRC", "Lokal sertleştirme", "Mil yatağı, kam yüzeyi"],
+        ],
+      },
     ],
   },
   {
@@ -847,6 +1141,20 @@ export const servicePages: ServicePageData[] = [
       "ISO/IEC standartlarına tam uyum",
       "Savunma sanayi IUID desteği",
     ],
+    comparisonTables: [
+      {
+        title: "Endüstriyel Kod Türleri Karşılaştırması",
+        headers: ["Kod Türü", "Veri Kapasitesi", "Min. Alan", "Hata Düzeltme", "Okuma Mesafesi", "Uygulama"],
+        rows: [
+          ["DataMatrix (ECC200)", "2.335 alfanümerik", "2.5×2.5mm", "%30 (Reed-Solomon)", "Yakın (50cm)", "Küçük parça, havacılık"],
+          ["QR Code", "4.296 alfanümerik", "5×5mm", "%30 (Level H)", "Uzak (2m+)", "Genel, mobil okuma"],
+          ["GS1-128 Barkod", "48 karakter", "25×10mm", "Düşük", "Uzak (1m)", "Lojistik, stok yönetimi"],
+          ["Micro QR", "35 alfanümerik", "3×3mm", "%15", "Yakın (30cm)", "Çok küçük parçalar"],
+          ["PDF417", "1.850 alfanümerik", "15×5mm", "%50", "Orta (1m)", "Belge, sertifika"],
+          ["UID / IUID", "Değişken", "Değişken", "Yüksek", "Değişken", "Savunma, askeri"],
+        ],
+      },
+    ],
   },
   {
     slug: "logo-markalama",
@@ -884,6 +1192,19 @@ export const servicePages: ServicePageData[] = [
       "1200 DPI yüksek çözünürlük",
       "Kavisli yüzeylerde pad printing",
       "1000+ parça/saat seri üretim hızı",
+    ],
+    comparisonTables: [
+      {
+        title: "Markalama Yöntemleri Karşılaştırması",
+        headers: ["Yöntem", "Çözünürlük", "Dayanıklılık", "Renk", "Yüzey Tipi", "Maliyet/Parça", "Hacim"],
+        rows: [
+          ["Lazer İşaretleme", "0.01mm", "Kalıcı (ömür boyu)", "Tek ton", "Düz/kavisli", "$$", "1-1M+"],
+          ["Pad Printing", "0.1mm", "İyi (1000+ saat)", "Çok renkli", "Kavisli ideal", "$", "100-100K"],
+          ["Serigrafi", "0.2mm", "İyi (500+ saat)", "Çok renkli", "Düz yüzey", "$", "500-1M+"],
+          ["Etiket (Vinil)", "DPI bazlı", "Orta (dış mekan 3-5 yıl)", "Full color", "Düz", "$", "1-10K"],
+          ["Tampon Baskı", "0.1mm", "Orta", "Çok renkli", "Düzensiz yüzey", "$", "100-50K"],
+        ],
+      },
     ],
   },
 
@@ -925,6 +1246,20 @@ export const servicePages: ServicePageData[] = [
       "2000N+ çekme kuvveti garantisi",
       "<3 saniye çevrim süresi",
     ],
+    comparisonTables: [
+      {
+        title: "Insert Uygulama Yöntemleri Karşılaştırması",
+        headers: ["Yöntem", "Çekme Kuvveti", "Çevrim Süresi", "Uygun Malzeme", "Maliyet", "Avantaj"],
+        rows: [
+          ["Ultrasonik", "1500-2500N", "<2 sn", "Termoplastik", "$$", "Hızlı, temiz, tekrarlanabilir"],
+          ["Isıl (Heat Staking)", "2000-3500N", "3-5 sn", "Termoplastik", "$$", "Yüksek çekme direnci"],
+          ["Pres (Self-tapping)", "1000-2000N", "<1 sn", "Plastik, hafif metal", "$", "Ekonomik, hızlı"],
+          ["Mold-in", "3000-5000N", "Kalıplama süresi", "Enjeksiyon plastik", "$$$", "En yüksek dayanım"],
+          ["Yapıştırıcı", "500-1500N", "Kürleme süresi", "Tüm malzemeler", "$", "Esnek, düşük gerilme"],
+        ],
+        highlight: 1,
+      },
+    ],
   },
   {
     slug: "mekanik-montaj",
@@ -962,6 +1297,21 @@ export const servicePages: ServicePageData[] = [
       "Otomatik besleme sistemi ile yüksek verimlilik",
       "1000+ ünite/gün kapasite",
       "Seri numarası bazlı izlenebilirlik",
+    ],
+    comparisonTables: [
+      {
+        title: "Bağlantı Elemanı Tork Değerleri (Kuru, Sınıf 8.8)",
+        headers: ["Vida Boyutu", "Tork (Nm)", "Ön Yükleme (kN)", "Anahtar Boyutu", "Tolerans (±%)", "Kontrol Yöntemi"],
+        rows: [
+          ["M3", "1.5-2.0", "2.5", "5.5mm", "±5%", "Dijital tork metre"],
+          ["M4", "3.0-4.0", "4.5", "7mm", "±5%", "Dijital tork metre"],
+          ["M5", "6.0-8.0", "8.0", "8mm", "±5%", "Tork anahtarı"],
+          ["M6", "10.0-12.0", "12.0", "10mm", "±5%", "Tork anahtarı"],
+          ["M8", "25.0-30.0", "22.0", "13mm", "±5%", "Tork anahtarı"],
+          ["M10", "50.0-60.0", "35.0", "17mm", "±5%", "Elektronik tork"],
+          ["M12", "85.0-100.0", "50.0", "19mm", "±5%", "Elektronik tork"],
+        ],
+      },
     ],
   },
   {
@@ -1001,6 +1351,20 @@ export const servicePages: ServicePageData[] = [
       "VCI ve desiccant koruma",
       "DDP/FCA esnek teslimat seçenekleri",
     ],
+    comparisonTables: [
+      {
+        title: "Paketleme Türleri ve Koruma Seviyeleri",
+        headers: ["Paketleme Türü", "Koruma Seviyesi", "Nem Koruma", "Darbe Koruma", "Maliyet", "Uygun Parça"],
+        rows: [
+          ["PE Poşet", "Temel", "Düşük", "Yok", "$", "Genel, küçük parçalar"],
+          ["Vakumlu Poşet", "Yüksek", "Mükemmel", "Düşük", "$$", "Korozyona hassas metal"],
+          ["ESD Torba", "Yüksek", "İyi", "Düşük", "$$", "Elektronik, PCB"],
+          ["Köpük Yerleştirme", "Çok yüksek", "Orta", "Mükemmel", "$$$", "Hassas, kırılgan parçalar"],
+          ["VCI Kağıt/Film", "Yüksek", "Mükemmel", "Düşük", "$$", "Uzun süreli metal depolama"],
+          ["Ahşap Kasa", "Maksimum", "İyi", "Çok yüksek", "$$$$", "Ağır, büyük, değerli"],
+        ],
+      },
+    ],
   },
   {
     slug: "kaynakli-imalat",
@@ -1038,6 +1402,31 @@ export const servicePages: ServicePageData[] = [
       "4 farklı NDT muayene yöntemi",
       "EN ISO 3834-2 kalite standardı",
       "TIG, MIG/MAG ve direnç kaynağı kapasitesi",
+    ],
+    comparisonTables: [
+      {
+        title: "Kaynak Yöntemleri Karşılaştırması",
+        headers: ["Yöntem", "Malzeme Kalınlığı", "Hız", "Isı Girdisi", "Deformasyon", "Uygulama"],
+        rows: [
+          ["TIG (GTAW)", "0.5-10mm", "Düşük", "Düşük-Orta", "Düşük", "Hassas, ince iş, Al/Ti"],
+          ["MIG/MAG (GMAW)", "1-20mm", "Yüksek", "Orta-Yüksek", "Orta", "Seri üretim, çelik/Al"],
+          ["Direnç (Nokta)", "0.2-3mm", "Çok yüksek", "Düşük (lokal)", "Çok düşük", "Sac metal, otomotiv"],
+          ["Lazer Kaynak", "0.1-8mm", "Çok yüksek", "Çok düşük", "Minimum", "Hassas, medikal, elektronik"],
+          ["Elektron Işın", "0.5-100mm", "Orta", "Çok düşük", "Minimum", "Havacılık, nükleer"],
+          ["Sürtünme Karıştırma", "1-50mm", "Orta", "Düşük", "Düşük", "Al alaşımlar, uzay"],
+        ],
+      },
+      {
+        title: "NDT (Tahribatsız Muayene) Yöntemleri",
+        headers: ["Yöntem", "Kısaltma", "Tespit Yeteneği", "Hassasiyet", "Uygulama Hızı", "Standart"],
+        rows: [
+          ["Radyografik Test", "RT", "İç hatalar, gözeneklilik", "Yüksek", "Yavaş", "EN ISO 17636"],
+          ["Ultrasonik Test", "UT", "İç çatlak, delaminasyon", "Çok yüksek", "Orta", "EN ISO 17640"],
+          ["Penetrant Test", "PT", "Yüzey çatlakları", "Yüksek", "Orta", "EN ISO 3452"],
+          ["Manyetik Parçacık", "MT", "Yüzey/yüzey altı çatlak", "Yüksek", "Hızlı", "EN ISO 17638"],
+          ["Görsel Muayene", "VT", "Yüzey kusurları", "Orta", "Çok hızlı", "EN ISO 17637"],
+        ],
+      },
     ],
   },
 
