@@ -1,102 +1,105 @@
 
 
-# Teklif Al Sayfasi - Referans Gorunume Uygun Yeniden Tasarim
+# NEXUS Admin Dashboard -- UI/UX Gelistirme ve Hata Duzeltme Plani
 
-## Mevcut Durum
-Teklif Al sayfasi (/teklif-al) su an karanlik bir hero bolumu ve 4 adimli bir form sihirbazi olarak calisiyor. Kullanicinin istegi, sayfanin referans goruntudeki profesyonel CAD Dashboard gorunumune donusturulmesi.
+## Tespit Edilen Sorunlar
 
-## Hedef Gorunum (Referans Gorsele Gore)
-Referans gorseldeki arayuz su bilesenlerden olusuyor:
+### 1. Konsol Hatalari (Kritik)
+- **OrdersView ref hatasi**: `OrdersView` bilesenine ref atanmaya calisiyor ama `forwardRef` kullanilmiyor. Bu, `AdminDashboard`'da ref kullanimindan kaynaklaniyor.
+- **MobileSidebar DialogTitle eksik**: Sheet/Dialog bileseninde `DialogTitle` ve `Description` eksik -- erisilebilirlik uyarisi veriyor.
 
-1. **Ust Kisim - Parca Tablosu**: Tam genislikte, satirlarda checkbox, satir numarasi, indirme ikonu ve 12 sutunlu veri tablosu. 5. satir secili ve pembe vurgulu. Altinda "Sikistirilmis gorunumu goster" butonu.
+### 2. Kaynak Yerlisimi (SchedulingView)
+- Tamamen statik/hardcoded veri kullaniyor -- Supabase'e bagli degil.
+- "Bos" hucrelere is atama butonu yok -- islevsiz gorunuyor.
 
-2. **Alt Sol (%60) - 3D Viewer ve Arac Cubugu**:
-   - Ust arac cubugu: 3D/Kamera/2D/Olcum ikonlari, "3D Search" dropdown, "Tavsiyeler" butonu, pembe "CAD (1) Indir" butonu, paylasim ikonlari
-   - Sol dikey arac cubugu: Liste, Poligon, Kesit ikonlari
-   - 3D Canvas: Placeholder model (flans/silindir), XYZ eksen cizgileri
-   - Sag ust: ViewCube (GizmoHelper)
-   - Sag alt: AR ve Tam Ekran butonlari
+### 3. Dashboard (DashboardHome)
+- "Tam Gorunum" butonu hicbir sey yapmiyor (onClick yok).
+- Tum veriler statik/hardcoded -- Supabase'den cekilmiyor.
+- Light modda grafik tooltip'leri koyu tema renklerinde kaliyor (hardcoded `backgroundColor: "#1E293B"`).
 
-3. **Alt Sag (%40) - Bilgi Sekmeleri**:
-   - 3 sekme: "Parca bilgileri", "Benzer parcalar", "Request for quote (RFQ)"
-   - Parca bilgileri: Baslik, key-value veri listesi, renkli badge'ler (CAD, Components, LIBRARY, system)
+### 4. Finansal Analitik (FinancialView)
+- Tamamen statik veri -- hesaplayici calisir ama MHR tablosu sabit.
+- Ayarlar'daki parametrelerle entegre degil.
+
+### 5. Satis Pipeline (PipelineView)
+- Tamamen statik veri -- Supabase'e bagli degil.
+- Pipeline asamalarindaki sayilar hardcoded, gercek deal verisiyle eslesmiyor.
+
+### 6. Sistem Ayarlari (SettingsView)
+- Input'lar `defaultValue` kullaniyor -- degisiklikler kaydedilmiyor (Save butonu yok).
+- Rol tablosundaki Switch/toggle'lar islevsiz.
+- API Key gorunumu statik.
+
+### 7. Nakit Akisi (FinanceDocsView)
+- Parasut senkronizasyon butonu calisir ama API key'leri yoksa sessizce hata verir.
+- Modal'larda `DialogTitle` ve erisilebilirlik eksik (div tabanlı modal kullaniliyor).
+
+### 8. Light Mode Uyumsuzluklari
+- Grafik tooltip'leri her zaman koyu tema renklerinde.
+- Bazi badge ve durum gostergeleri light modda okunamaz hale gelebilir.
+
+### 9. Mobil Sidebar (MobileSidebar)
+- Sheet iceriginde `DialogTitle` ve `DialogDescription` eksik (erisilebilirlik hatasi).
+
+### 10. Header
+- Arama cubugu islevsiz (hicbir sey aramaz).
+- Bildirim butonu islevsiz (onClick yok).
+
+---
 
 ## Uygulama Plani
 
-### Adim 1: TeklifAl.tsx Sayfasini Tamamen Yeniden Yazmak
-Mevcut 4 adimli sihirbaz yapisini kaldirip, referans gorseldeki tek sayfa CAD Dashboard duzeniyle degistirecegiz. Bu aslinda CADDashboard.tsx dosyasindaki yapi ile neredeyse ayni ama TeklifAl sayfasina ozel olarak uyarlanacak.
+### Adim 1: Konsol Hatalarini Duzelt
+- `MobileSidebar.tsx`'e `DialogTitle` ve `DialogDescription` ekle (`VisuallyHidden` ile).
+- `OrdersView` ref sorununu duzelt.
 
-Yeni sayfa yapisi:
-- Header bilesenini koruyoruz
-- Hero bolumunu kaldiriyoruz (veya cok kucuk tutuyoruz)
-- Sayfa icerigini 3 ana bolume ayiriyoruz: Tablo, 3D Viewer, Bilgi/RFQ Paneli
+### Adim 2: Dashboard Light Mode Duzeltmeleri
+- Grafik tooltip stillerini `dark:` prefix'li CSS yerine dinamik tema algilama ile duzelt.
+- Tum modullerde light/dark uyumunu kontrol et.
 
-### Adim 2: Parca Tablosu (Ust Kisim)
-- shadcn/ui Checkbox kullanan satirlar
-- 12 sutun: Ident Number, Length, Head Dia, Body Dia, Head Thickness, Inside Dia, Step, Hole Distance, Cbore Dia, Drill, Inside OD, Depth
-- Sutun basliklarinda kalem (Pencil) ikonu
-- Siralama ve arama ozellikleri
-- 5. satir (SB 4335-60) secili ve pembe vurgulu
-- Sayfalama ve "Sikistirilmis gorunum" butonu
+### Adim 3: Dashboard Islevsiz Butonlari Duzelt
+- "Tam Gorunum" butonuna `onClick` ekle (scheduling tabina gecis).
+- Header arama cubuguna temel filtreleme islevi ekle veya kaldir.
+- Bildirim butonuna bir bildirim dropdown'u ekle veya gorsel olarak deaktif et.
 
-### Adim 3: Alt Panel - Ikiye Bolunmus Duzen
-**Sol Panel (3D Viewer):**
-- Ust arac cubugu: 3D, Kamera, 2D, Olcum, 3D Search dropdown, Tavsiyeler, pembe CAD Indir butonu, Paylas ikonu
-- Sol dikey mini arac cubugu (List, PenTool, Scissors)
-- Three.js Canvas ile placeholder model (silindir/flans)
-- axesHelper ile XYZ eksen cizgileri
-- GizmoHelper/GizmoViewport ile ViewCube
-- Sag alt: AR ve Fullscreen butonlari
-- Dosya yukleme (STL/OBJ/STEP) destegi
+### Adim 4: SettingsView Kaydetme Islevi
+- `defaultValue`'lari `value` + `onChange` yapisina cevir.
+- "Kaydet" butonu ekle.
+- Verileri localStorage'da veya state'de tut (Supabase tablosu yok).
 
-**Sag Panel (Bilgi Sekmeleri):**
-- shadcn/ui Tabs: "Parca bilgileri", "Benzer parcalar", "Request for quote (RFQ)"
-- Parca bilgileri: DME - Sprue Bushings basligi, key-value bilgiler, renkli Badge'ler
-- Benzer parcalar: Listeli oneri kartlari
-- RFQ: Basit iletisim formu (Firma, E-posta, Adet, Notlar, Gonder butonu)
+### Adim 5: SchedulingView Iyilestirmesi
+- Bos hucrelere tiklandiginda kucuk bir tooltip/indicator goster.
+- Genel UI polish: hover efektleri, gecis animasyonlari.
 
-### Adim 4: ModelViewer Entegrasyonu
-- Mevcut ModelViewer bileseni yerine, CADDashboard'daki gibi dogrudan Canvas icerisinde STL/OBJ/STEP yukleme destegi saglayacagiz
-- OrbitControls ile model dondurme
-- Grid, wireframe, renk degistirme kontrolleri
+### Adim 6: PipelineView Stage Sayilarini Duzelt
+- Asamalardaki sayilari gercek `deals` dizisinden hesapla (hardcoded yerine).
+
+### Adim 7: Genel UI/UX Polish
+- Tum modullerde tutarli bosluk, kenar yuvarlakligi ve animasyon kullan.
+- Tum custom modal'lara (RFQ, Issues, Customers, FinanceDocs) erisilebilirlik ekle.
+- Export CSV butonunun duzgun calistigini dogrula.
+
+---
 
 ## Teknik Detaylar
 
-### Degistirilecek Dosyalar
-1. **src/pages/TeklifAl.tsx** - Tamamen yeniden yazilacak (mevcut sihirbaz yapisi kaldirilip CAD Dashboard duzenine gecilecek)
+### Dosya Degisiklikleri
+| Dosya | Degisiklik |
+|-------|-----------|
+| `MobileSidebar.tsx` | DialogTitle + VisuallyHidden ekle |
+| `AdminDashboard.tsx` | OrdersView ref sorununu duzelt |
+| `DashboardHome.tsx` | "Tam Gorunum" onClick, tooltip tema duzeltmesi |
+| `SettingsView.tsx` | Controlled input + Kaydet butonu |
+| `PipelineView.tsx` | Stage count'lari dinamik hesapla |
+| `SchedulingView.tsx` | Bos hucre UI iyilestirmesi |
+| `AdminHeader.tsx` | Arama ve bildirim butonlari duzeltmesi |
 
-### Korunacak Islevsellik
-- STL/OBJ/STEP dosya yukleme ve 3D gosterim
-- RFQ formu (RFQ sekmesi icerisinde kalacak)
-- Supabase'e veri kaydetme islevi
-- Header ve Footer bilesenleri
-
-### Kullanilacak Bilesenler
-- `@react-three/fiber` Canvas, useThree, useFrame, useLoader
-- `@react-three/drei` OrbitControls, Grid, Center, GizmoHelper, GizmoViewport
-- `shadcn/ui` Tabs, TabsList, TabsTrigger, TabsContent, Checkbox, Badge
-- `lucide-react` ikonlari (Box, Camera, Ruler, Search, Lightbulb, Download, Share2, Pencil, Maximize, List, PenTool, Scissors vb.)
-- `three` STLLoader, OBJLoader
-- `occt-import-js` STEP dosya destegi
-
-### Sayfa Duzeni (CSS Grid)
-```text
-+--------------------------------------------------+
-|  Header                                          |
-+--------------------------------------------------+
-|  Arama + Secim Bilgisi                           |
-+--------------------------------------------------+
-|  Parca Tablosu (tam genislik, 5 satir)           |
-|  [x] # dl | ID | Length | Head.. | Body.. | ...  |
-+--------------------------------------------------+
-|  Sikistirilmis gorunum butonu + Sayfalama        |
-+--------------------------------------------------+
-|  3D Viewer (%60)    |  Bilgi Sekmeleri (%40)     |
-|  [Arac Cubugu]      |  [Tabs: Info|Benzer|RFQ]   |
-|  [Canvas + Model]   |  [Icerik]                  |
-|  [ViewCube]         |  [Badge'ler]               |
-+--------------------------------------------------+
-|  Footer                                          |
-+--------------------------------------------------+
-```
+### Degismeyen Dosyalar
+- `RFQManager.tsx` -- tam islevsel (Supabase CRUD + realtime)
+- `WBSView.tsx` -- tam islevsel (Supabase CRUD + adim ilerletme)
+- `TPMView.tsx` -- tam islevsel (Supabase veri + realtime)
+- `InventoryView.tsx` -- tam islevsel (Supabase veri + realtime)
+- `IssuesView.tsx` -- tam islevsel (Supabase CRUD + cozumleme)
+- `CustomersView.tsx` -- tam islevsel (Supabase CRUD + ekleme)
+- `FinanceDocsView.tsx` -- tam islevsel (CRUD + OCR + filtreleme)
 
