@@ -11,7 +11,7 @@ const tabTitles: Record<string, string> = {
   pipeline: "Satış Pipeline",
   tpm: "TPM & Bakım",
   inventory: "Envanter & Takım",
-  financedocs: "Belge Yönetimi",
+  financedocs: "Nakit Akışı",
   issues: "Olay Merkezi",
   customers: "Çözüm Ortakları",
   settings: "Sistem Ayarları",
