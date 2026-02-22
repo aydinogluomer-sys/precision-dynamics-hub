@@ -16,6 +16,7 @@ import FinancialView from "@/components/admin/FinancialView";
 import PipelineView from "@/components/admin/PipelineView";
 import TPMView from "@/components/admin/TPMView";
 import InventoryView from "@/components/admin/InventoryView";
+import FinanceDocsView from "@/components/admin/FinanceDocsView";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ const AdminDashboard = () => {
       case "pipeline": return <PipelineView />;
       case "tpm": return <TPMView />;
       case "inventory": return <InventoryView />;
+      case "financedocs": return <FinanceDocsView />;
       case "issues": return <IssuesView />;
       case "customers": return <CustomersView />;
       case "settings": return <SettingsView />;
