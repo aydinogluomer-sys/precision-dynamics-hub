@@ -47,32 +47,32 @@ const OrdersView = () => {
   }
 
   return (
-    <div className="bg-[#1E293B] rounded-xl border border-[#334155] overflow-hidden animate-[fadeInUp_0.4s_ease-out]">
+    <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden animate-[fadeInUp_0.4s_ease-out]">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead>
-            <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-[#334155]">
+          <thead className="sticky top-0 dark:bg-[#1E293B] bg-white z-10">
+            <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
               <th className="text-left p-4">Sipariş No</th>
-              <th className="text-left p-4">RFQ Ref</th>
+              <th className="text-left p-4 hidden lg:table-cell">RFQ Ref</th>
               <th className="text-left p-4">Müşteri</th>
-              <th className="text-left p-4">Parça</th>
-              <th className="text-left p-4">Adet</th>
-              <th className="text-left p-4">Sipariş Tarihi</th>
-              <th className="text-left p-4">Termin</th>
+              <th className="text-left p-4 hidden md:table-cell">Parça</th>
+              <th className="text-right p-4 font-mono">Adet</th>
+              <th className="text-left p-4 hidden lg:table-cell">Sipariş Tarihi</th>
+              <th className="text-left p-4 hidden md:table-cell">Termin</th>
               <th className="text-left p-4">Durum</th>
               <th className="text-left p-4">İlerleme</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((o) => (
-              <tr key={o.id} className="border-b border-[#334155]/50 hover:bg-white/5 transition-colors">
+              <tr key={o.id} className="dark:border-[#334155]/50 border-slate-100 border-b dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
                 <td className="p-4 font-bold text-[#0AA2CD]">{o.id}</td>
-                <td className="p-4 text-slate-400">{o.rfq_ref || "-"}</td>
-                <td className="p-4 text-white">{o.customer || "-"}</td>
-                <td className="p-4 text-slate-300">{o.part_name || "-"}</td>
-                <td className="p-4 text-white font-bold">{o.quantity || "-"}</td>
-                <td className="p-4 text-slate-400">{o.order_date || "-"}</td>
-                <td className="p-4 text-slate-400">{o.deadline || "-"}</td>
+                <td className="p-4 dark:text-slate-400 text-slate-500 hidden lg:table-cell">{o.rfq_ref || "-"}</td>
+                <td className="p-4 dark:text-white text-slate-800">{o.customer || "-"}</td>
+                <td className="p-4 dark:text-slate-300 text-slate-600 hidden md:table-cell">{o.part_name || "-"}</td>
+                <td className="p-4 dark:text-white text-slate-800 font-bold text-right font-mono tabular-nums">{o.quantity || "-"}</td>
+                <td className="p-4 dark:text-slate-400 text-slate-500 hidden lg:table-cell">{o.order_date || "-"}</td>
+                <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{o.deadline || "-"}</td>
                 <td className="p-4">
                   <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${statusColors[o.status || ""] || "bg-slate-500/20 text-slate-400"}`}>
                     {o.status || "-"}
@@ -80,10 +80,10 @@ const OrdersView = () => {
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-20 h-2 bg-[#0F172A] rounded-full overflow-hidden">
+                    <div className="w-20 h-2 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
                       <div className="h-full bg-[#0AA2CD] rounded-full" style={{ width: `${o.progress || 0}%` }} />
                     </div>
-                    <span className="text-xs font-bold text-white">{o.progress || 0}%</span>
+                    <span className="text-xs font-bold dark:text-white text-slate-800 font-mono tabular-nums">{o.progress || 0}%</span>
                   </div>
                 </td>
               </tr>

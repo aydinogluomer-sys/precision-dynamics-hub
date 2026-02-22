@@ -38,13 +38,13 @@ const IssuesView = () => {
   const [resolveModal, setResolveModal] = useState<Issue | null>(null);
   const [resolution, setResolution] = useState("");
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const { data } = await supabase.from("issues").select("*").order("created_at", { ascending: false });
     if (data) setIssues(data as Issue[]);
     setLoading(false);
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const resolve = async () => {
     if (!resolveModal) return;
@@ -52,7 +52,7 @@ const IssuesView = () => {
     toast.success("Olay çözümlendi");
     setResolveModal(null);
     setResolution("");
-    fetch();
+    fetchData();
   };
 
   const categories = ["Takım Arızası", "CAM/NC Hatası", "İnsan Hatası", "Kaynak Kusuru", "Kritik Donanım"];
@@ -61,7 +61,6 @@ const IssuesView = () => {
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
-      {/* Category cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {categories.map((cat) => {
           const Icon = categoryIcons[cat] || AlertTriangle;
@@ -76,7 +75,6 @@ const IssuesView = () => {
         })}
       </div>
 
-      {/* Issues list */}
       <div className="space-y-3">
         {issues.length === 0 ? (
           <div className="text-center py-20 text-slate-500">
@@ -84,7 +82,7 @@ const IssuesView = () => {
             <p className="font-medium">Kayıtlı olay yok</p>
           </div>
         ) : issues.map((issue) => (
-          <div key={issue.id} className={`bg-[#1E293B] rounded-xl border border-[#334155] p-4 ${
+          <div key={issue.id} className={`dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 ${
             issue.severity === "high" ? "border-l-4 border-l-red-500" : ""
           }`}>
             <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
@@ -99,8 +97,8 @@ const IssuesView = () => {
                     {issue.severity === "high" ? "Müdahale Gerekli" : issue.severity === "normal" ? "Normal" : "Bilgilendirme"}
                   </span>
                 </div>
-                <p className="text-sm text-white font-bold mt-1">{issue.category} — {issue.machine}</p>
-                <p className="text-xs text-slate-400">İş: {issue.job} • {issue.date}</p>
+                <p className="text-sm dark:text-white text-slate-800 font-bold mt-1">{issue.category} — {issue.machine}</p>
+                <p className="text-xs dark:text-slate-400 text-slate-500">İş: {issue.job} • {issue.date} {issue.cost ? `• Maliyet: ₺${Number(issue.cost).toLocaleString("tr-TR")}` : ""}</p>
               </div>
               {issue.status !== "resolved" && (
                 <button onClick={() => setResolveModal(issue)} className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/20">
@@ -108,7 +106,7 @@ const IssuesView = () => {
                 </button>
               )}
             </div>
-            {issue.detail && <p className="text-xs text-slate-300 italic bg-[#0F172A] rounded p-2 mt-2">"{issue.detail}"</p>}
+            {issue.detail && <p className="text-xs dark:text-slate-300 text-slate-600 italic dark:bg-[#0F172A] bg-slate-50 rounded p-2 mt-2">"{issue.detail}"</p>}
             {issue.resolution && (
               <div className="mt-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
@@ -119,23 +117,22 @@ const IssuesView = () => {
         ))}
       </div>
 
-      {/* Resolve modal */}
       {resolveModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setResolveModal(null)}>
-          <div className="bg-[#1E293B] rounded-xl border border-[#334155] w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-black text-white">Olay Çözümleme — {resolveModal.id}</h3>
-              <button onClick={() => setResolveModal(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+              <h3 className="font-black dark:text-white text-slate-800">Olay Çözümleme — {resolveModal.id}</h3>
+              <button onClick={() => setResolveModal(null)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
             </div>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teşhis Özeti</label>
             <textarea
               value={resolution}
               onChange={(e) => setResolution(e.target.value)}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#0AA2CD] min-h-[80px]"
+              className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD] min-h-[80px]"
               placeholder="Çözüm açıklamasını girin..."
             />
             <div className="flex gap-2 mt-4">
-              <button onClick={() => setResolveModal(null)} className="flex-1 py-2 bg-slate-700 text-slate-300 rounded-lg text-xs font-bold">İptal</button>
+              <button onClick={() => setResolveModal(null)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
               <button onClick={resolve} className="flex-1 py-2 bg-emerald-500 text-white rounded-lg text-xs font-bold">Müdahaleyi Onayla</button>
             </div>
           </div>
