@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 const metrics = [
   { label: "Genel OEE", value: "84.2%", icon: Gauge, color: "text-[#0AA2CD]", bg: "bg-[#0AA2CD]/10", trend: "+2.1%", up: true, bars: [60, 70, 65, 80, 75, 85, 78, 84, 82, 84] },
@@ -19,6 +20,23 @@ const activeOrders = [
   { id: "ORD-2025-101", product: "Motor Gövdesi", machine: "CNC-01", progress: 75, deadline: "2025-02-28" },
   { id: "ORD-2025-102", product: "Bağlantı Plakası", machine: "CNC-02", progress: 40, deadline: "2025-03-05" },
   { id: "ORD-2025-103", product: "Dişli Mili", machine: "Lazer-01", progress: 90, deadline: "2025-02-25" },
+];
+
+const oeeHistory = [
+  { month: "Eyl", oee: 76, availability: 85, performance: 90, quality: 97 },
+  { month: "Eki", oee: 78, availability: 87, performance: 91, quality: 97 },
+  { month: "Kas", oee: 80, availability: 88, performance: 92, quality: 98 },
+  { month: "Ara", oee: 79, availability: 86, performance: 93, quality: 97 },
+  { month: "Oca", oee: 82, availability: 90, performance: 93, quality: 98 },
+  { month: "Şub", oee: 84, availability: 91, performance: 95, quality: 98 },
+];
+
+const machineUtilization = [
+  { name: "Üretimde", value: 60, color: "#0AA2CD" },
+  { name: "Kurulum", value: 15, color: "#F97316" },
+  { name: "Boşta", value: 12, color: "#64748B" },
+  { name: "Bakım", value: 8, color: "#EF4444" },
+  { name: "Plansız Duruş", value: 5, color: "#A855F7" },
 ];
 
 const DashboardHome = () => {
@@ -47,6 +65,89 @@ const DashboardHome = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* OEE Trend Chart */}
+        <div className="lg:col-span-2 dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">OEE Trend Analizi (6 Ay)</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={oeeHistory} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} domain={[70, 100]} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1E293B", border: "1px solid #334155", borderRadius: "8px", fontSize: "12px" }}
+                  labelStyle={{ color: "#94A3B8", fontWeight: 700, marginBottom: 4 }}
+                  itemStyle={{ padding: "1px 0" }}
+                  formatter={(value: number, name: string) => {
+                    const labels: Record<string, string> = { oee: "OEE", availability: "Kullanılabilirlik", performance: "Performans", quality: "Kalite" };
+                    return [`%${value}`, labels[name] || name];
+                  }}
+                />
+                <Line type="monotone" dataKey="oee" stroke="#0AA2CD" strokeWidth={3} dot={{ r: 4, fill: "#0AA2CD" }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="availability" stroke="#F97316" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="performance" stroke="#FBBF24" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="quality" stroke="#34D399" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-wrap gap-4 mt-3">
+            {[
+              { label: "OEE", color: "#0AA2CD" },
+              { label: "Kullanılabilirlik", color: "#F97316" },
+              { label: "Performans", color: "#FBBF24" },
+              { label: "Kalite", color: "#34D399" },
+            ].map((l) => (
+              <div key={l.label} className="flex items-center gap-1.5">
+                <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: l.color }} />
+                <span className="text-[10px] dark:text-slate-400 text-slate-500 font-medium">{l.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Machine Utilization Pie Chart */}
+        <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Makine Kullanım Oranı</h3>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={machineUtilization}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={45}
+                  outerRadius={75}
+                  paddingAngle={3}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {machineUtilization.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1E293B", border: "1px solid #334155", borderRadius: "8px", fontSize: "12px" }}
+                  formatter={(value: number) => [`%${value}`, ""]}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-1.5 mt-2">
+            {machineUtilization.map((item) => (
+              <div key={item.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-[11px] dark:text-slate-300 text-slate-600">{item.name}</span>
+                </div>
+                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">%{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -86,14 +187,14 @@ const DashboardHome = () => {
                 <AlertTriangle className="w-4 h-4 text-red-400 animate-pulse" />
                 <span className="text-xs font-bold text-red-400">Kritik Durma</span>
               </div>
-              <p className="text-[11px] text-slate-300">CNC-03 Spindle arızası — E-0442</p>
+              <p className="text-[11px] dark:text-slate-300 text-slate-600">CNC-03 Spindle arızası — E-0442</p>
             </div>
             <div className="border-l-4 border-amber-500 bg-amber-500/10 rounded-r-lg p-3">
               <div className="flex items-center gap-2 mb-1">
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
                 <span className="text-xs font-bold text-amber-400">Bakım Uyarısı</span>
               </div>
-              <p className="text-[11px] text-slate-300">Abkant-01 periyodik bakım zamanı</p>
+              <p className="text-[11px] dark:text-slate-300 text-slate-600">Abkant-01 periyodik bakım zamanı</p>
             </div>
           </div>
         </div>

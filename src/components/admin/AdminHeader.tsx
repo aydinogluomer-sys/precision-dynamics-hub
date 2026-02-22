@@ -1,5 +1,5 @@
-import { Search, Bell, Download, Menu, Activity, Sun, Moon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Search, Bell, Download, Activity, Sun, Moon } from "lucide-react";
+import { useState, useEffect, ReactNode } from "react";
 
 const tabTitles: Record<string, string> = {
   dashboard: "Kontrol Paneli",
@@ -21,9 +21,10 @@ interface Props {
   activeTab: string;
   onToggleSidebar: () => void;
   onExportCSV: () => void;
+  mobileSidebar?: ReactNode;
 }
 
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV }: Props) => {
+const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, mobileSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -31,11 +32,9 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV }: Props) => {
   }, [darkMode]);
 
   return (
-    <header className="h-14 border-b border-[#334155] dark:bg-[#0F172A] bg-white flex items-center justify-between px-4 shrink-0">
+    <header className="h-14 border-b dark:border-[#334155] border-slate-200 dark:bg-[#0F172A] bg-white flex items-center justify-between px-4 shrink-0">
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        <button onClick={onToggleSidebar} className="text-slate-400 hover:text-white lg:hidden">
-          <Menu className="w-5 h-5" />
-        </button>
+        {mobileSidebar}
         <h2 className="font-black dark:text-white text-slate-800 text-xs sm:text-sm tracking-wider uppercase truncate">
           {tabTitles[activeTab] || "Dashboard"}
         </h2>
