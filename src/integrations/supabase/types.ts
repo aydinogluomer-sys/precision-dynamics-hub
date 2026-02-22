@@ -119,6 +119,78 @@ export type Database = {
         }
         Relationships: []
       }
+      machine_health: {
+        Row: {
+          created_at: string
+          filter_life: number | null
+          id: string
+          name: string
+          next_maintenance: number | null
+          oil_level: number | null
+          spindle_hours: number | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          filter_life?: number | null
+          id?: string
+          name: string
+          next_maintenance?: number | null
+          oil_level?: number | null
+          spindle_hours?: number | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          filter_life?: number | null
+          id?: string
+          name?: string
+          next_maintenance?: number | null
+          oil_level?: number | null
+          spindle_hours?: number | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      maintenance_logs: {
+        Row: {
+          cost: number | null
+          created_at: string
+          date: string
+          detail: string | null
+          duration: string | null
+          id: string
+          machine: string
+          status: string | null
+          technician: string | null
+          type: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          date?: string
+          detail?: string | null
+          duration?: string | null
+          id?: string
+          machine: string
+          status?: string | null
+          technician?: string | null
+          type?: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          date?: string
+          detail?: string | null
+          duration?: string | null
+          id?: string
+          machine?: string
+          status?: string | null
+          technician?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       meetings: {
         Row: {
           company: string | null
@@ -208,6 +280,42 @@ export type Database = {
           },
         ]
       }
+      raw_materials: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+          spec: string | null
+          stock: number | null
+          unit: string | null
+          unit_cost: number | null
+          waste_rate: number | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          spec?: string | null
+          stock?: number | null
+          unit?: string | null
+          unit_cost?: number | null
+          waste_rate?: number | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          spec?: string | null
+          stock?: number | null
+          unit?: string | null
+          unit_cost?: number | null
+          waste_rate?: number | null
+        }
+        Relationships: []
+      }
       rfqs: {
         Row: {
           company: string | null
@@ -253,6 +361,42 @@ export type Database = {
           quantity?: number | null
           service?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      tool_inventory: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string
+          id: string
+          min_stock: number | null
+          name: string
+          stock: number | null
+          supplier: string | null
+          unit_cost: number | null
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          min_stock?: number | null
+          name: string
+          stock?: number | null
+          supplier?: string | null
+          unit_cost?: number | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          min_stock?: number | null
+          name?: string
+          stock?: number | null
+          supplier?: string | null
+          unit_cost?: number | null
         }
         Relationships: []
       }

@@ -1,31 +1,60 @@
-import { useState } from "react";
-import { Package, AlertTriangle, Plus, Minus, Scissors, Wrench } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Package, AlertTriangle, Scissors, Wrench, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const toolInventory = [
-  { id: "TK-001", name: "Ø12 Parmak Freze (HSS)", category: "Freze", stock: 8, minStock: 5, unitCost: 180, supplier: "Dormer Pramet" },
-  { id: "TK-002", name: "Ø6 Karbür Parmak Freze", category: "Freze", stock: 3, minStock: 5, unitCost: 420, supplier: "Sandvik" },
-  { id: "TK-003", name: "CNMG 120408 Insert", category: "Kesici Uç", stock: 24, minStock: 10, unitCost: 85, supplier: "Iscar" },
-  { id: "TK-004", name: "WNMG 080408 Insert", category: "Kesici Uç", stock: 2, minStock: 8, unitCost: 72, supplier: "Kennametal" },
-  { id: "TK-005", name: "Ø8.5 HSS Matkap", category: "Matkap", stock: 12, minStock: 6, unitCost: 45, supplier: "Gühring" },
-  { id: "TK-006", name: "M10x1.5 Kılavuz", category: "Kılavuz", stock: 4, minStock: 4, unitCost: 95, supplier: "Emuge" },
-  { id: "TK-007", name: "Ø16 Karbür Matkap", category: "Matkap", stock: 1, minStock: 3, unitCost: 650, supplier: "Sandvik" },
-];
+interface Tool {
+  id: string;
+  code: string;
+  name: string;
+  category: string | null;
+  stock: number;
+  min_stock: number;
+  unit_cost: number;
+  supplier: string | null;
+}
 
-const rawMaterials = [
-  { id: "HM-001", name: "Alüminyum 6061-T6", spec: "Ø80 × 300mm", stock: 45, unit: "adet", unitCost: 320, wasteRate: 22 },
-  { id: "HM-002", name: "Çelik 1040 (C45)", spec: "Ø60 × 200mm", stock: 120, unit: "adet", unitCost: 180, wasteRate: 28 },
-  { id: "HM-003", name: "AISI 316L", spec: "150×150×50mm", stock: 8, unit: "adet", unitCost: 890, wasteRate: 35 },
-  { id: "HM-004", name: "POM-C (Delrin)", spec: "Ø100 × 500mm", stock: 15, unit: "adet", unitCost: 210, wasteRate: 15 },
-  { id: "HM-005", name: "7075-T6 Alüminyum", spec: "200×100×30mm", stock: 22, unit: "adet", unitCost: 540, wasteRate: 40 },
-];
+interface RawMaterial {
+  id: string;
+  code: string;
+  name: string;
+  spec: string | null;
+  stock: number;
+  unit: string;
+  unit_cost: number;
+  waste_rate: number;
+}
 
 const InventoryView = () => {
   const [tab, setTab] = useState<"tools" | "materials">("tools");
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [materials, setMaterials] = useState<RawMaterial[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const criticalTools = toolInventory.filter((t) => t.stock <= t.minStock);
-  const totalToolValue = toolInventory.reduce((s, t) => s + t.stock * t.unitCost, 0);
-  const totalMaterialValue = rawMaterials.reduce((s, m) => s + m.stock * m.unitCost, 0);
-  const avgWaste = rawMaterials.reduce((s, m) => s + m.wasteRate, 0) / rawMaterials.length;
+  const fetchData = async () => {
+    const [{ data: tData }, { data: mData }] = await Promise.all([
+      supabase.from("tool_inventory").select("*").order("code"),
+      supabase.from("raw_materials").select("*").order("code"),
+    ]);
+    if (tData) setTools(tData as Tool[]);
+    if (mData) setMaterials(mData as RawMaterial[]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+    const ch1 = supabase.channel("tool-inv-rt").on("postgres_changes", { event: "*", schema: "public", table: "tool_inventory" }, () => fetchData()).subscribe();
+    const ch2 = supabase.channel("raw-mat-rt").on("postgres_changes", { event: "*", schema: "public", table: "raw_materials" }, () => fetchData()).subscribe();
+    return () => { supabase.removeChannel(ch1); supabase.removeChannel(ch2); };
+  }, []);
+
+  const criticalTools = tools.filter((t) => t.stock <= t.min_stock);
+  const totalToolValue = tools.reduce((s, t) => s + t.stock * t.unit_cost, 0);
+  const totalMaterialValue = materials.reduce((s, m) => s + m.stock * m.unit_cost, 0);
+  const avgWaste = materials.length > 0 ? materials.reduce((s, m) => s + m.waste_rate, 0) / materials.length : 0;
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+  }
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
@@ -68,7 +97,7 @@ const InventoryView = () => {
             <table className="w-full text-sm">
               <thead className="sticky top-0 dark:bg-[#1E293B] bg-white z-10">
                 <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
-                  <th className="text-left p-4">ID</th>
+                  <th className="text-left p-4">Kod</th>
                   <th className="text-left p-4">Takım Adı</th>
                   <th className="text-left p-4 hidden md:table-cell">Kategori</th>
                   <th className="text-right p-4">Stok</th>
@@ -79,17 +108,17 @@ const InventoryView = () => {
                 </tr>
               </thead>
               <tbody>
-                {toolInventory.map((t) => {
-                  const critical = t.stock <= t.minStock;
+                {tools.map((t) => {
+                  const critical = t.stock <= t.min_stock;
                   return (
                     <tr key={t.id} className={`dark:border-[#334155]/50 border-slate-100 border-b dark:hover:bg-white/5 hover:bg-slate-50 transition-colors ${critical ? "dark:bg-red-500/5 bg-red-50" : ""}`}>
-                      <td className="p-4 font-bold text-[#0AA2CD] text-xs">{t.id}</td>
+                      <td className="p-4 font-bold text-[#0AA2CD] text-xs">{t.code}</td>
                       <td className="p-4 dark:text-white text-slate-800 font-medium text-xs">{t.name}</td>
-                      <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell text-xs">{t.category}</td>
+                      <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell text-xs">{t.category || "-"}</td>
                       <td className={`p-4 text-right font-bold font-mono tabular-nums ${critical ? "text-red-400" : "dark:text-white text-slate-800"}`}>{t.stock}</td>
-                      <td className="p-4 text-right dark:text-slate-500 text-slate-400 hidden md:table-cell font-mono tabular-nums">{t.minStock}</td>
-                      <td className="p-4 text-right dark:text-slate-300 text-slate-600 font-mono tabular-nums">₺{t.unitCost}</td>
-                      <td className="p-4 dark:text-slate-400 text-slate-500 hidden lg:table-cell text-xs">{t.supplier}</td>
+                      <td className="p-4 text-right dark:text-slate-500 text-slate-400 hidden md:table-cell font-mono tabular-nums">{t.min_stock}</td>
+                      <td className="p-4 text-right dark:text-slate-300 text-slate-600 font-mono tabular-nums">₺{t.unit_cost}</td>
+                      <td className="p-4 dark:text-slate-400 text-slate-500 hidden lg:table-cell text-xs">{t.supplier || "-"}</td>
                       <td className="p-4">
                         {critical ? (
                           <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-red-500/20 text-red-400 animate-pulse">Sipariş Ver</span>
@@ -110,7 +139,7 @@ const InventoryView = () => {
             <table className="w-full text-sm">
               <thead className="sticky top-0 dark:bg-[#1E293B] bg-white z-10">
                 <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
-                  <th className="text-left p-4">ID</th>
+                  <th className="text-left p-4">Kod</th>
                   <th className="text-left p-4">Malzeme</th>
                   <th className="text-left p-4 hidden md:table-cell">Ebat</th>
                   <th className="text-right p-4">Stok</th>
@@ -120,17 +149,17 @@ const InventoryView = () => {
                 </tr>
               </thead>
               <tbody>
-                {rawMaterials.map((m) => (
+                {materials.map((m) => (
                   <tr key={m.id} className="dark:border-[#334155]/50 border-slate-100 border-b dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
-                    <td className="p-4 font-bold text-[#0AA2CD] text-xs">{m.id}</td>
+                    <td className="p-4 font-bold text-[#0AA2CD] text-xs">{m.code}</td>
                     <td className="p-4 dark:text-white text-slate-800 font-medium text-xs">{m.name}</td>
-                    <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell text-xs font-mono">{m.spec}</td>
+                    <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell text-xs font-mono">{m.spec || "-"}</td>
                     <td className="p-4 text-right dark:text-white text-slate-800 font-bold font-mono tabular-nums">{m.stock}</td>
-                    <td className="p-4 text-right dark:text-slate-300 text-slate-600 font-mono tabular-nums">₺{m.unitCost}</td>
+                    <td className="p-4 text-right dark:text-slate-300 text-slate-600 font-mono tabular-nums">₺{m.unit_cost}</td>
                     <td className="p-4 text-right">
-                      <span className={`text-xs font-bold font-mono tabular-nums ${m.wasteRate > 30 ? "text-red-400" : m.wasteRate > 20 ? "text-amber-400" : "text-emerald-400"}`}>%{m.wasteRate}</span>
+                      <span className={`text-xs font-bold font-mono tabular-nums ${m.waste_rate > 30 ? "text-red-400" : m.waste_rate > 20 ? "text-amber-400" : "text-emerald-400"}`}>%{m.waste_rate}</span>
                     </td>
-                    <td className="p-4 text-right dark:text-white text-slate-800 font-bold font-mono tabular-nums hidden md:table-cell">₺{(m.stock * m.unitCost).toLocaleString("tr-TR")}</td>
+                    <td className="p-4 text-right dark:text-white text-slate-800 font-bold font-mono tabular-nums hidden md:table-cell">₺{(m.stock * m.unit_cost).toLocaleString("tr-TR")}</td>
                   </tr>
                 ))}
               </tbody>
