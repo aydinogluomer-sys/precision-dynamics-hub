@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
+import MobileSidebar from "@/components/admin/MobileSidebar";
 import DashboardHome from "@/components/admin/DashboardHome";
 import RFQManager from "@/components/admin/RFQManager";
 import OrdersView from "@/components/admin/OrdersView";
@@ -71,19 +72,30 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen flex dark:bg-[#0F172A] bg-slate-50 dark:text-white text-slate-800">
-      <AdminSidebar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        collapsed={sidebarCollapsed}
-        onCollapse={setSidebarCollapsed}
-        userEmail={userEmail}
-        onLogout={handleLogout}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <AdminSidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          collapsed={sidebarCollapsed}
+          onCollapse={setSidebarCollapsed}
+          userEmail={userEmail}
+          onLogout={handleLogout}
+        />
+      </div>
       <div className="flex-1 flex flex-col min-w-0">
         <AdminHeader
           activeTab={activeTab}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           onExportCSV={handleExportCSV}
+          mobileSidebar={
+            <MobileSidebar
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              userEmail={userEmail}
+              onLogout={handleLogout}
+            />
+          }
         />
         <main className="flex-1 overflow-y-auto p-3 sm:p-6">
           {renderContent()}
