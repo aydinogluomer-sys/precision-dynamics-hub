@@ -1,41 +1,92 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
+import { Save } from "lucide-react";
 
 const tabs = ["Üretim Parametreleri", "İş Akışı", "Roller", "API"];
 
+const defaultParams = {
+  cncRate: "450",
+  laborRate: "180",
+  profitMargin: "25",
+  wasteRate: "3",
+};
+
+const defaultApiSettings = {
+  emailNotifications: true,
+  realtimeSync: true,
+};
+
 const SettingsView = () => {
   const [active, setActive] = useState(0);
+  const [params, setParams] = useState(defaultParams);
+  const [apiSettings, setApiSettings] = useState(defaultApiSettings);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("nexus-settings");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.params) setParams(parsed.params);
+      if (parsed.apiSettings) setApiSettings(parsed.apiSettings);
+    }
+  }, []);
+
+  const handleParamChange = (key: keyof typeof defaultParams, value: string) => {
+    setParams((p) => ({ ...p, [key]: value }));
+    setDirty(true);
+  };
+
+  const handleSave = () => {
+    localStorage.setItem("nexus-settings", JSON.stringify({ params, apiSettings }));
+    setDirty(false);
+    toast.success("Ayarlar kaydedildi");
+  };
+
+  const paramFields = [
+    { key: "cncRate" as const, label: "CNC Saatlik Ücret (₺/saat)" },
+    { key: "laborRate" as const, label: "İşçilik Ücreti (₺/saat)" },
+    { key: "profitMargin" as const, label: "Kar Marjı (%)" },
+    { key: "wasteRate" as const, label: "Fire Oranı (%)" },
+  ];
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
-      <div className="flex gap-2 flex-wrap">
-        {tabs.map((t, i) => (
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex gap-2 flex-wrap">
+          {tabs.map((t, i) => (
+            <button
+              key={t}
+              onClick={() => setActive(i)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
+                active === i ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        {dirty && (
           <button
-            key={t}
-            onClick={() => setActive(i)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-              active === i ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"
-            }`}
+            onClick={handleSave}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500 text-white text-xs font-bold hover:bg-emerald-600 transition-colors animate-[fadeInUp_0.2s_ease-out]"
           >
-            {t}
+            <Save className="w-3.5 h-3.5" />
+            Kaydet
           </button>
-        ))}
+        )}
       </div>
 
       <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-6">
         {active === 0 && (
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Üretim Parametreleri</h3>
-            {[
-              { label: "CNC Saatlik Ücret (₺/saat)", value: "450" },
-              { label: "İşçilik Ücreti (₺/saat)", value: "180" },
-              { label: "Kar Marjı (%)", value: "25" },
-              { label: "Fire Oranı (%)", value: "3" },
-            ].map((p) => (
-              <div key={p.label} className="flex items-center justify-between gap-4">
+            {paramFields.map((p) => (
+              <div key={p.key} className="flex items-center justify-between gap-4">
                 <label className="text-sm dark:text-slate-300 text-slate-600">{p.label}</label>
                 <input
-                  defaultValue={p.value}
+                  value={params[p.key]}
+                  onChange={(e) => handleParamChange(p.key, e.target.value)}
                   className="w-32 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-right font-mono tabular-nums focus:outline-none focus:border-[#0AA2CD]"
                 />
               </div>
@@ -98,11 +149,17 @@ const SettingsView = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between dark:bg-[#0F172A] bg-slate-50 rounded-lg p-3">
                 <span className="text-sm dark:text-slate-300 text-slate-600">E-posta Bildirimleri</span>
-                <Switch defaultChecked />
+                <Switch
+                  checked={apiSettings.emailNotifications}
+                  onCheckedChange={(v) => { setApiSettings((s) => ({ ...s, emailNotifications: v })); setDirty(true); }}
+                />
               </div>
               <div className="flex items-center justify-between dark:bg-[#0F172A] bg-slate-50 rounded-lg p-3">
                 <span className="text-sm dark:text-slate-300 text-slate-600">Realtime Sync</span>
-                <Switch defaultChecked />
+                <Switch
+                  checked={apiSettings.realtimeSync}
+                  onCheckedChange={(v) => { setApiSettings((s) => ({ ...s, realtimeSync: v })); setDirty(true); }}
+                />
               </div>
               <div className="dark:bg-[#0F172A] bg-slate-50 rounded-lg p-3">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">API Key</p>
