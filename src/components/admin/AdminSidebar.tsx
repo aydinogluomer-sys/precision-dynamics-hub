@@ -25,15 +25,15 @@ interface Props {
 
 const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }: Props) => {
   return (
-    <aside className={`${collapsed ? "w-16" : "w-64"} bg-[#0F172A] border-r border-[#334155] flex flex-col transition-all duration-300 shrink-0`}>
+    <aside className={`${collapsed ? "w-0 lg:w-16 overflow-hidden" : "w-64"} dark:bg-[#0F172A] bg-white border-r dark:border-[#334155] border-slate-200 flex flex-col transition-all duration-300 shrink-0 fixed lg:relative inset-y-0 left-0 z-40 ${collapsed ? "lg:overflow-visible" : ""}`}>
       {/* Logo */}
-      <div className="p-4 border-b border-[#334155] flex items-center gap-3">
+      <div className="p-4 border-b dark:border-[#334155] border-slate-200 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-[#0AA2CD]/20 flex items-center justify-center shrink-0">
           <Cpu className="w-5 h-5 text-[#0AA2CD]" />
         </div>
         {!collapsed && (
           <div>
-            <h1 className="font-black text-white text-sm tracking-widest">NEXUS</h1>
+            <h1 className="font-black dark:text-white text-slate-800 text-sm tracking-widest">NEXUS</h1>
             <p className="text-[9px] text-slate-500 tracking-wider">v2.4 • MAS TECHNIC</p>
           </div>
         )}
@@ -50,7 +50,7 @@ const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
                 active
                   ? "bg-[#0AA2CD]/10 text-[#0AA2CD] border-l-4 border-[#0AA2CD] pl-2"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  : "dark:text-slate-400 text-slate-500 dark:hover:text-white hover:text-slate-800 dark:hover:bg-white/5 hover:bg-slate-100"
               }`}
             >
               <item.icon className="w-5 h-5 shrink-0" />
@@ -61,14 +61,14 @@ const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }
       </nav>
 
       {/* User */}
-      <div className="p-3 border-t border-[#334155]">
+      <div className="p-3 border-t dark:border-[#334155] border-slate-200">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#0AA2CD]/20 flex items-center justify-center text-[#0AA2CD] font-bold text-xs shrink-0">
             {userEmail.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-white truncate">{userEmail}</p>
+              <p className="text-xs font-medium dark:text-white text-slate-800 truncate">{userEmail}</p>
               <p className="text-[10px] text-slate-500">Yönetici</p>
             </div>
           )}

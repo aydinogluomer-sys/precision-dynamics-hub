@@ -27,14 +27,14 @@ const DashboardHome = () => {
       {/* OEE Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
-          <div key={m.label} className="bg-[#1E293B] rounded-xl border border-[#334155] p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all">
+          <div key={m.label} className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all">
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{m.label}</span>
               <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center`}>
                 <m.icon className={`w-4 h-4 ${m.color}`} />
               </div>
             </div>
-            <p className="text-2xl font-black text-white mb-3">{m.value}</p>
+            <p className="text-2xl font-black dark:text-white text-slate-800 mb-3">{m.value}</p>
             <div className="flex items-end gap-0.5 h-8 mb-2">
               {m.bars.map((v, i) => (
                 <div key={i} className={`flex-1 rounded-sm ${m.bg}`} style={{ height: `${v}%` }} />
@@ -51,7 +51,7 @@ const DashboardHome = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Machine Overview */}
-        <div className="lg:col-span-2 bg-[#1E293B] rounded-xl border border-[#334155] p-5">
+        <div className="lg:col-span-2 dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Makine Planlama Özeti</h3>
             <button className="text-xs text-[#0AA2CD] font-bold hover:underline">Tam Görünüm →</button>
@@ -59,13 +59,13 @@ const DashboardHome = () => {
           <div className="space-y-3">
             {machines.map((m) => (
               <div key={m.name} className="flex items-center gap-3">
-                <span className="text-xs font-bold text-white w-20">{m.name}</span>
+                <span className="text-xs font-bold dark:text-white text-slate-800 w-20">{m.name}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                   m.status === "Aktif" ? "bg-emerald-500/20 text-emerald-400" :
                   m.status === "Bakım" ? "bg-red-500/20 text-red-400" :
                   "bg-slate-500/20 text-slate-400"
                 }`}>{m.status}</span>
-                <div className="flex-1 h-6 bg-[#0F172A] rounded-lg overflow-hidden">
+                <div className="flex-1 h-6 dark:bg-[#0F172A] bg-slate-100 rounded-lg overflow-hidden">
                   {m.progress > 0 && (
                     <div className="h-full bg-[#0AA2CD]/30 rounded-lg flex items-center px-2" style={{ width: `${m.progress}%` }}>
                       <span className="text-[10px] font-bold text-[#0AA2CD]">{m.job}</span>
@@ -78,7 +78,7 @@ const DashboardHome = () => {
         </div>
 
         {/* Alerts */}
-        <div className="bg-[#1E293B] rounded-xl border border-[#334155] p-5">
+        <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Acil Uyarılar</h3>
           <div className="space-y-3">
             <div className="border-l-4 border-red-500 bg-red-500/10 rounded-r-lg p-3">
@@ -100,12 +100,12 @@ const DashboardHome = () => {
       </div>
 
       {/* Active Orders */}
-      <div className="bg-[#1E293B] rounded-xl border border-[#334155] p-5">
+      <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
         <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Aktif Üretim Siparişleri</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-[#334155]">
+              <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b dark:border-[#334155] border-slate-200">
                 <th className="text-left pb-3">ID</th>
                 <th className="text-left pb-3">Ürün</th>
                 <th className="text-left pb-3">Makine</th>
@@ -115,16 +115,16 @@ const DashboardHome = () => {
             </thead>
             <tbody>
               {activeOrders.map((o) => (
-                <tr key={o.id} className="border-b border-[#334155]/50 hover:bg-white/5 transition-colors">
+                <tr key={o.id} className="border-b dark:border-[#334155]/50 border-slate-100 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                   <td className="py-3 font-bold text-[#0AA2CD]">{o.id}</td>
-                  <td className="py-3 text-white">{o.product}</td>
+                  <td className="py-3 dark:text-white text-slate-800">{o.product}</td>
                   <td className="py-3 text-slate-400">{o.machine}</td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-24 h-2 bg-[#0F172A] rounded-full overflow-hidden">
+                      <div className="w-24 h-2 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
                         <div className="h-full bg-[#0AA2CD] rounded-full transition-all duration-1000" style={{ width: `${o.progress}%` }} />
                       </div>
-                      <span className="text-xs font-bold text-white">{o.progress}%</span>
+                      <span className="text-xs font-bold dark:text-white text-slate-800">{o.progress}%</span>
                     </div>
                   </td>
                   <td className="py-3 text-slate-400">{o.deadline}</td>

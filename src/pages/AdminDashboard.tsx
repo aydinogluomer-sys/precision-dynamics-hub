@@ -60,7 +60,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0F172A] text-white">
+    <div className="min-h-screen flex dark:bg-[#0F172A] bg-slate-50 dark:text-white text-slate-800">
       <AdminSidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           onExportCSV={handleExportCSV}
         />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6">
           {renderContent()}
         </main>
       </div>
