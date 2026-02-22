@@ -70,14 +70,13 @@ const RFQManager = () => {
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
-      {/* Filters */}
       <div className="flex flex-wrap gap-2">
         {filters.map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-              filter === f ? "bg-[#0AA2CD] text-white" : "bg-[#1E293B] text-slate-400 hover:text-white"
+              filter === f ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"
             }`}
           >
             {f} {f !== "Tümü" && `(${rfqs.filter((r) => r.status === f).length})`}
@@ -85,8 +84,7 @@ const RFQManager = () => {
         ))}
       </div>
 
-      {/* Table */}
-      <div className="bg-[#1E293B] rounded-xl border border-[#334155] overflow-hidden">
+      <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" />
@@ -99,15 +97,15 @@ const RFQManager = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead>
-                <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-[#334155]">
+              <thead className="sticky top-0 dark:bg-[#1E293B] bg-white z-10">
+                <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
                   <th className="text-left p-4">ID</th>
                   <th className="text-left p-4">Müşteri</th>
-                  <th className="text-left p-4">Firma</th>
-                  <th className="text-left p-4">Hizmet</th>
-                  <th className="text-left p-4">Malzeme</th>
-                  <th className="text-left p-4">Adet</th>
-                  <th className="text-left p-4">Tarih</th>
+                  <th className="text-left p-4 hidden lg:table-cell">Firma</th>
+                  <th className="text-left p-4 hidden md:table-cell">Hizmet</th>
+                  <th className="text-left p-4 hidden lg:table-cell">Malzeme</th>
+                  <th className="text-right p-4 font-mono">Adet</th>
+                  <th className="text-left p-4 hidden md:table-cell">Tarih</th>
                   <th className="text-left p-4">Durum</th>
                   <th className="text-left p-4">İşlem</th>
                 </tr>
@@ -117,15 +115,15 @@ const RFQManager = () => {
                   <tr
                     key={r.id}
                     onClick={() => setSelectedRFQ(r)}
-                    className="border-b border-[#334155]/50 hover:bg-white/5 transition-colors cursor-pointer"
+                    className="dark:border-[#334155]/50 border-slate-100 border-b dark:hover:bg-white/5 hover:bg-slate-50 transition-colors cursor-pointer"
                   >
                     <td className="p-4 font-bold text-[#0AA2CD]">{r.id}</td>
-                    <td className="p-4 text-white">{r.customer || "-"}</td>
-                    <td className="p-4 text-slate-400">{r.company || "-"}</td>
-                    <td className="p-4 text-slate-300">{r.service || "-"}</td>
-                    <td className="p-4 text-slate-300">{r.material || "-"}</td>
-                    <td className="p-4 text-white font-bold">{r.quantity || "-"}</td>
-                    <td className="p-4 text-slate-400">{r.date || "-"}</td>
+                    <td className="p-4 dark:text-white text-slate-800">{r.customer || "-"}</td>
+                    <td className="p-4 dark:text-slate-400 text-slate-500 hidden lg:table-cell">{r.company || "-"}</td>
+                    <td className="p-4 dark:text-slate-300 text-slate-600 hidden md:table-cell">{r.service || "-"}</td>
+                    <td className="p-4 dark:text-slate-300 text-slate-600 hidden lg:table-cell">{r.material || "-"}</td>
+                    <td className="p-4 dark:text-white text-slate-800 font-bold text-right font-mono tabular-nums">{r.quantity || "-"}</td>
+                    <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{r.date || "-"}</td>
                     <td className="p-4">
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${statusColors[r.status || ""] || statusColors.Yeni}`}>
                         {r.status || "Yeni"}
@@ -150,10 +148,10 @@ const RFQManager = () => {
       {/* Detail Panel */}
       {selectedRFQ && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setSelectedRFQ(null)}>
-          <div className="bg-[#1E293B] rounded-xl border border-[#334155] w-full max-w-lg p-6" onClick={(e) => e.stopPropagation()}>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-lg p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-black text-white">{selectedRFQ.id}</h3>
-              <button onClick={() => setSelectedRFQ(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+              <h3 className="font-black dark:text-white text-slate-800">{selectedRFQ.id}</h3>
+              <button onClick={() => setSelectedRFQ(null)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-2 text-sm">
               {[
@@ -162,8 +160,8 @@ const RFQManager = () => {
                 ["Adet", selectedRFQ.quantity], ["Notlar", selectedRFQ.notes],
               ].map(([k, v]) => (
                 <div key={k as string} className="flex justify-between">
-                  <span className="text-slate-400">{k}</span>
-                  <span className="text-white font-medium">{v || "-"}</span>
+                  <span className="dark:text-slate-400 text-slate-500">{k}</span>
+                  <span className="dark:text-white text-slate-800 font-medium">{v || "-"}</span>
                 </div>
               ))}
             </div>
@@ -179,39 +177,27 @@ const RFQManager = () => {
       {/* Price Modal */}
       {priceModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setPriceModal(null)}>
-          <div className="bg-[#1E293B] rounded-xl border border-[#334155] w-full max-w-md p-6 animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-black text-white mb-4">Teklif Oluştur — {priceModal.id}</h3>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6 animate-[scaleIn_0.2s_ease-out]" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-black dark:text-white text-slate-800 mb-4">Teklif Oluştur — {priceModal.id}</h3>
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teklif Fiyatı (TRY)</label>
-                <input
-                  type="number"
-                  value={priceForm.price}
-                  onChange={(e) => setPriceForm({ ...priceForm, price: e.target.value })}
-                  className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#0AA2CD]"
-                  placeholder="0.00"
-                />
+                <input type="number" value={priceForm.price} onChange={(e) => setPriceForm({ ...priceForm, price: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD]" placeholder="0.00" />
               </div>
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teslim Süresi (Gün)</label>
-                <input
-                  type="number"
-                  value={priceForm.days}
-                  onChange={(e) => setPriceForm({ ...priceForm, days: e.target.value })}
-                  className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#0AA2CD]"
-                />
+                <input type="number" value={priceForm.days} onChange={(e) => setPriceForm({ ...priceForm, days: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD]" />
               </div>
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Notlar</label>
-                <textarea
-                  value={priceForm.notes}
-                  onChange={(e) => setPriceForm({ ...priceForm, notes: e.target.value })}
-                  className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#0AA2CD] min-h-[60px]"
-                />
+                <textarea value={priceForm.notes} onChange={(e) => setPriceForm({ ...priceForm, notes: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD] min-h-[60px]" />
               </div>
             </div>
             <div className="flex gap-2 mt-5">
-              <button onClick={() => setPriceModal(null)} className="flex-1 py-2 bg-slate-700 text-slate-300 rounded-lg text-xs font-bold">İptal</button>
+              <button onClick={() => setPriceModal(null)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
               <button onClick={sendQuote} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5">
                 <Send className="w-3.5 h-3.5" /> Teklifi Gönder
               </button>

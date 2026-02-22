@@ -12,6 +12,10 @@ import SchedulingView from "@/components/admin/SchedulingView";
 import IssuesView from "@/components/admin/IssuesView";
 import CustomersView from "@/components/admin/CustomersView";
 import SettingsView from "@/components/admin/SettingsView";
+import FinancialView from "@/components/admin/FinancialView";
+import PipelineView from "@/components/admin/PipelineView";
+import TPMView from "@/components/admin/TPMView";
+import InventoryView from "@/components/admin/InventoryView";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -52,6 +56,10 @@ const AdminDashboard = () => {
       case "orders": return <OrdersView />;
       case "wbs": return <WBSView />;
       case "scheduling": return <SchedulingView />;
+      case "financial": return <FinancialView />;
+      case "pipeline": return <PipelineView />;
+      case "tpm": return <TPMView />;
+      case "inventory": return <InventoryView />;
       case "issues": return <IssuesView />;
       case "customers": return <CustomersView />;
       case "settings": return <SettingsView />;

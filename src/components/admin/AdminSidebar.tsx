@@ -1,6 +1,6 @@
 import { 
   LayoutDashboard, FileText, Package, GitBranch, CalendarDays, 
-  AlertTriangle, Users, Settings, LogOut, Cpu
+  AlertTriangle, Users, Settings, LogOut, Cpu, DollarSign, TrendingUp, Wrench, Boxes
 } from "lucide-react";
 
 const menuItems = [
@@ -9,6 +9,10 @@ const menuItems = [
   { id: "orders", label: "Üretim Günlüğü", icon: Package },
   { id: "wbs", label: "İş Akış Hattı", icon: GitBranch },
   { id: "scheduling", label: "Kaynak Yerleşimi", icon: CalendarDays },
+  { id: "financial", label: "Finansal Analitik", icon: DollarSign },
+  { id: "pipeline", label: "Satış Pipeline", icon: TrendingUp },
+  { id: "tpm", label: "TPM & Bakım", icon: Wrench },
+  { id: "inventory", label: "Envanter & Takım", icon: Boxes },
   { id: "issues", label: "Olay Merkezi", icon: AlertTriangle },
   { id: "customers", label: "Çözüm Ortakları", icon: Users },
   { id: "settings", label: "Sistem Ayarları", icon: Settings },
@@ -26,7 +30,6 @@ interface Props {
 const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }: Props) => {
   return (
     <aside className={`${collapsed ? "w-0 lg:w-16 overflow-hidden" : "w-64"} dark:bg-[#0F172A] bg-white border-r dark:border-[#334155] border-slate-200 flex flex-col transition-all duration-300 shrink-0 fixed lg:relative inset-y-0 left-0 z-40 ${collapsed ? "lg:overflow-visible" : ""}`}>
-      {/* Logo */}
       <div className="p-4 border-b dark:border-[#334155] border-slate-200 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-[#0AA2CD]/20 flex items-center justify-center shrink-0">
           <Cpu className="w-5 h-5 text-[#0AA2CD]" />
@@ -39,7 +42,6 @@ const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }
         )}
       </div>
 
-      {/* Menu */}
       <nav className="flex-1 py-3 space-y-0.5 px-2 overflow-y-auto">
         {menuItems.map((item) => {
           const active = activeTab === item.id;
@@ -60,7 +62,6 @@ const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }
         })}
       </nav>
 
-      {/* User */}
       <div className="p-3 border-t dark:border-[#334155] border-slate-200">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-[#0AA2CD]/20 flex items-center justify-center text-[#0AA2CD] font-bold text-xs shrink-0">
