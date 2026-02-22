@@ -221,7 +221,7 @@ const TeklifAl = () => {
           /* Dosya yükleme alanı - büyük */
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full min-h-[340px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
+            className="w-full min-h-[280px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
           >
             <div className="w-20 h-20 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
               <FileUp size={36} />
@@ -606,39 +606,41 @@ const TeklifAl = () => {
 
           {/* ══ SAĞ KOLON ══ */}
           <div className="space-y-6">
-            {/* Teklif Özeti Kartı */}
-            <div className="card-industrial p-5">
-              <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">
-                CANLI TEKLİF ÖZETİ
-              </h3>
+            {/* Teklif Özeti Kartı - sadece adım 2+ */}
+            {currentStep >= 2 && (
+              <div className="card-industrial p-5">
+                <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">
+                  CANLI TEKLİF ÖZETİ
+                </h3>
 
-              <div className="space-y-3 mb-4">
-                {[
-                  ["Dosya", uploadedFile?.name ?? "Yüklenmedi"],
-                  ["Hizmet", currentService.label],
-                  ["Malzeme", materialLabel],
-                  ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
-                  ["Sipariş Adedi", `${quantity} Adet`],
-                  ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
-                ].map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{key}</span>
-                    <span className="text-xs font-bold">{value}</span>
-                  </div>
-                ))}
+                <div className="space-y-3 mb-4">
+                  {[
+                    ["Dosya", uploadedFile?.name ?? "Yüklenmedi"],
+                    ["Hizmet", currentService.label],
+                    ["Malzeme", materialLabel],
+                    ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
+                    ["Sipariş Adedi", `${quantity} Adet`],
+                    ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
+                  ].map(([key, value]) => (
+                    <div key={key} className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">{key}</span>
+                      <span className="text-xs font-bold">{value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t-2 border-dashed border-border my-4" />
+
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 size={12} className="text-primary" />
+                  <span className="text-[10px] font-medium text-primary">
+                    {delivery === "express"
+                      ? "Yüksek hızlı ekspres işleme dahil"
+                      : "Standart üretim süreci dahil"}
+                  </span>
+                </div>
               </div>
-
-              <div className="border-t-2 border-dashed border-border my-4" />
-
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={12} className="text-primary" />
-                <span className="text-[10px] font-medium text-primary">
-                  {delivery === "express"
-                    ? "Yüksek hızlı ekspres işleme dahil"
-                    : "Standart üretim süreci dahil"}
-                </span>
-              </div>
-            </div>
+            )}
 
             {/* Teknik Destek Kartı */}
             <div className="relative p-5 overflow-hidden bg-industrial-dark">
