@@ -5,7 +5,7 @@ import {
   FileText, Upload, Plus, Download, Search, Filter, Brain,
   Receipt, CreditCard, FileCheck, Building2, TrendingUp, TrendingDown,
   CheckCircle2, Clock, AlertTriangle, X, Eye, Trash2, Edit3,
-  FileSpreadsheet, FileUp, RefreshCw, Sparkles, ChevronDown, Calendar
+  FileSpreadsheet, FileUp, RefreshCw, Sparkles, ChevronDown, Calendar, ScanLine, Loader2
 } from "lucide-react";
 
 const DOC_TYPES = [
@@ -87,6 +87,8 @@ const FinanceDocsView = () => {
   const [uploading, setUploading] = useState(false);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
   const [showAiPanel, setShowAiPanel] = useState(false);
+  const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
+  const [parasutSyncing, setParasutSyncing] = useState(false);
 
   const fetchDocs = async () => {
     const { data, error } = await supabase
@@ -179,6 +181,46 @@ const FinanceDocsView = () => {
     }
   };
 
+  const triggerOCR = async (filePath: string, docId: string, fileName: string) => {
+    setOcrProcessing(docId);
+    toast.info(`🔍 "${fileName}" için AI OCR başlatılıyor...`);
+    try {
+      const { data, error } = await supabase.functions.invoke("ocr-invoice", {
+        body: { file_path: filePath, doc_id: docId },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`✅ "${fileName}" OCR tamamlandı — veriler otomatik dolduruldu`);
+    } catch (e: any) {
+      console.error("OCR error:", e);
+      toast.error(`OCR hatası: ${e.message || "Bilinmeyen hata"}`);
+    } finally {
+      setOcrProcessing(null);
+    }
+  };
+
+  const handleParasutSync = async () => {
+    setParasutSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("parasut-sync");
+      if (error) throw error;
+      if (data?.error) {
+        if (data.configured === false) {
+          toast.error(data.error);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+      toast.success(`✅ ${data.message || "Senkronizasyon tamamlandı"}`);
+    } catch (e: any) {
+      console.error("Paraşüt sync error:", e);
+      toast.error(`Paraşüt hatası: ${e.message || "Bilinmeyen hata"}`);
+    } finally {
+      setParasutSyncing(false);
+    }
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files?.length) return;
@@ -203,18 +245,25 @@ const FinanceDocsView = () => {
       }
 
       const docType = ext === "pdf" ? "e-fatura" : ["doc", "docx"].includes(ext || "") ? "fatura" : "fatura";
-      const { error: insertError } = await supabase.from("financial_documents").insert({
+      const isImageOrPdf = ["jpg", "jpeg", "png", "webp", "pdf"].includes(ext || "");
+      
+      const { data: insertData, error: insertError } = await supabase.from("financial_documents").insert({
         doc_type: docType,
         title: file.name.replace(/\.[^/.]+$/, ""),
-        source: ext === "pdf" ? "e-fatura" : ["doc", "docx"].includes(ext || "") ? "word" : "yükleme",
+        source: isImageOrPdf ? "ocr-bekliyor" : "yükleme",
         file_urls: [path],
         status: "beklemede",
-      } as any);
+      } as any).select().single();
 
       if (insertError) {
         toast.error(`Kayıt hatası: ${insertError.message}`);
       } else {
         toast.success(`"${file.name}" başarıyla yüklendi`);
+        
+        // Trigger OCR for images and PDFs
+        if (isImageOrPdf && insertData) {
+          triggerOCR(path, (insertData as any).id, file.name);
+        }
       }
     }
     setUploading(false);
@@ -562,10 +611,13 @@ const FinanceDocsView = () => {
             </div>
             <div className="p-6">
               <label className="flex flex-col items-center justify-center border-2 border-dashed dark:border-[#334155] border-slate-300 rounded-xl p-8 cursor-pointer dark:hover:border-[#0AA2CD]/50 hover:border-[#0AA2CD]/50 transition-colors">
-                <Upload className="w-10 h-10 dark:text-slate-500 text-slate-400 mb-3" />
+                <ScanLine className="w-10 h-10 text-violet-400 mb-3" />
                 <p className="text-sm font-bold dark:text-white text-slate-800">Dosya Sürükle veya Tıkla</p>
                 <p className="text-[10px] dark:text-slate-500 text-slate-400 mt-1">
                   Fatura/fiş fotoğrafı (JPG, PNG) • E-fatura (PDF) • Word dosyası (DOC, DOCX)
+                </p>
+                <p className="text-[10px] text-violet-400 font-bold mt-2 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> Görsel dosyalar otomatik AI OCR ile işlenir
                 </p>
                 <input
                   type="file"
@@ -644,7 +696,7 @@ const FinanceDocsView = () => {
         </div>
       )}
 
-      {/* Paraşüt Integration Info */}
+      {/* Paraşüt Integration */}
       <div className="dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200 rounded-xl p-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
@@ -654,11 +706,27 @@ const FinanceDocsView = () => {
             <h4 className="text-sm font-bold dark:text-white text-slate-800">Paraşüt Entegrasyonu</h4>
             <p className="text-[10px] dark:text-slate-400 text-slate-500">API anahtarınızı bağlayarak otomatik belge senkronizasyonu yapabilirsiniz.</p>
           </div>
-          <button className="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-500 text-xs font-bold border border-orange-500/20 hover:bg-orange-500/20 transition-colors">
-            Bağlan
+          <button 
+            onClick={handleParasutSync}
+            disabled={parasutSyncing}
+            className="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-500 text-xs font-bold border border-orange-500/20 hover:bg-orange-500/20 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+          >
+            {parasutSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            {parasutSyncing ? "Senkronize ediliyor..." : "Senkronize Et"}
           </button>
         </div>
       </div>
+
+      {/* OCR Processing Indicator */}
+      {ocrProcessing && (
+        <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-xl dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200 shadow-xl">
+          <ScanLine className="w-5 h-5 text-violet-500 animate-pulse" />
+          <div>
+            <p className="text-xs font-bold dark:text-white text-slate-800">AI OCR İşleniyor</p>
+            <p className="text-[10px] dark:text-slate-400 text-slate-500">Fatura verileri çıkarılıyor...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
