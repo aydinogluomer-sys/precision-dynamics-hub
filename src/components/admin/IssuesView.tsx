@@ -1,0 +1,148 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2, AlertTriangle, Wrench, Code, UserX, Package, Cog, CheckCircle2, X } from "lucide-react";
+import { toast } from "sonner";
+
+interface Issue {
+  id: string;
+  job: string | null;
+  category: string | null;
+  date: string | null;
+  status: string | null;
+  severity: string | null;
+  machine: string | null;
+  detail: string | null;
+  resolution: string | null;
+  cost: number | null;
+}
+
+const categoryIcons: Record<string, typeof Wrench> = {
+  "Takım Arızası": Wrench,
+  "CAM/NC Hatası": Code,
+  "İnsan Hatası": UserX,
+  "Kaynak Kusuru": Package,
+  "Kritik Donanım": Cog,
+};
+
+const categoryColors: Record<string, string> = {
+  "Takım Arızası": "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  "CAM/NC Hatası": "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  "İnsan Hatası": "bg-slate-500/10 text-slate-400 border-slate-500/20",
+  "Kaynak Kusuru": "bg-orange-500/10 text-orange-400 border-orange-500/20",
+  "Kritik Donanım": "bg-red-500/10 text-red-400 border-red-500/20",
+};
+
+const IssuesView = () => {
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [resolveModal, setResolveModal] = useState<Issue | null>(null);
+  const [resolution, setResolution] = useState("");
+
+  const fetch = async () => {
+    const { data } = await supabase.from("issues").select("*").order("created_at", { ascending: false });
+    if (data) setIssues(data as Issue[]);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetch(); }, []);
+
+  const resolve = async () => {
+    if (!resolveModal) return;
+    await supabase.from("issues").update({ status: "resolved", resolution }).eq("id", resolveModal.id);
+    toast.success("Olay çözümlendi");
+    setResolveModal(null);
+    setResolution("");
+    fetch();
+  };
+
+  const categories = ["Takım Arızası", "CAM/NC Hatası", "İnsan Hatası", "Kaynak Kusuru", "Kritik Donanım"];
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+
+  return (
+    <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
+      {/* Category cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {categories.map((cat) => {
+          const Icon = categoryIcons[cat] || AlertTriangle;
+          const count = issues.filter((i) => i.category === cat && i.status !== "resolved").length;
+          return (
+            <div key={cat} className={`rounded-xl border p-4 ${categoryColors[cat] || "bg-slate-500/10 border-slate-500/20"}`}>
+              <Icon className="w-5 h-5 mb-2" />
+              <p className="text-[10px] font-black uppercase tracking-widest">{cat}</p>
+              <p className="text-2xl font-black mt-1">{count}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Issues list */}
+      <div className="space-y-3">
+        {issues.length === 0 ? (
+          <div className="text-center py-20 text-slate-500">
+            <AlertTriangle className="w-12 h-12 mx-auto mb-3" />
+            <p className="font-medium">Kayıtlı olay yok</p>
+          </div>
+        ) : issues.map((issue) => (
+          <div key={issue.id} className={`bg-[#1E293B] rounded-xl border border-[#334155] p-4 ${
+            issue.severity === "high" ? "border-l-4 border-l-red-500" : ""
+          }`}>
+            <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-[#0AA2CD]">{issue.id}</span>
+                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-black ${
+                    issue.severity === "high" ? "bg-red-500/20 text-red-400 animate-pulse" :
+                    issue.severity === "normal" ? "bg-amber-500/20 text-amber-400" :
+                    "bg-blue-500/20 text-blue-400"
+                  }`}>
+                    {issue.severity === "high" ? "Müdahale Gerekli" : issue.severity === "normal" ? "Normal" : "Bilgilendirme"}
+                  </span>
+                </div>
+                <p className="text-sm text-white font-bold mt-1">{issue.category} — {issue.machine}</p>
+                <p className="text-xs text-slate-400">İş: {issue.job} • {issue.date}</p>
+              </div>
+              {issue.status !== "resolved" && (
+                <button onClick={() => setResolveModal(issue)} className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/20">
+                  Çözümle
+                </button>
+              )}
+            </div>
+            {issue.detail && <p className="text-xs text-slate-300 italic bg-[#0F172A] rounded p-2 mt-2">"{issue.detail}"</p>}
+            {issue.resolution && (
+              <div className="mt-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <p className="text-xs text-emerald-300">{issue.resolution}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Resolve modal */}
+      {resolveModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setResolveModal(null)}>
+          <div className="bg-[#1E293B] rounded-xl border border-[#334155] w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-black text-white">Olay Çözümleme — {resolveModal.id}</h3>
+              <button onClick={() => setResolveModal(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teşhis Özeti</label>
+            <textarea
+              value={resolution}
+              onChange={(e) => setResolution(e.target.value)}
+              className="w-full mt-1 px-3 py-2 rounded-lg bg-[#0F172A] border border-[#334155] text-white focus:outline-none focus:border-[#0AA2CD] min-h-[80px]"
+              placeholder="Çözüm açıklamasını girin..."
+            />
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setResolveModal(null)} className="flex-1 py-2 bg-slate-700 text-slate-300 rounded-lg text-xs font-bold">İptal</button>
+              <button onClick={resolve} className="flex-1 py-2 bg-emerald-500 text-white rounded-lg text-xs font-bold">Müdahaleyi Onayla</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default IssuesView;
