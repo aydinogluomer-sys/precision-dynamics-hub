@@ -77,6 +77,84 @@ export type Database = {
         }
         Relationships: []
       }
+      financial_documents: {
+        Row: {
+          ai_category_suggestion: string | null
+          ai_summary: string | null
+          amount: number | null
+          category: string | null
+          created_at: string
+          currency: string | null
+          doc_date: string | null
+          doc_number: string | null
+          doc_type: string
+          due_date: string | null
+          file_urls: string[] | null
+          id: string
+          notes: string | null
+          payment_status: string | null
+          source: string | null
+          status: string | null
+          tags: string[] | null
+          title: string | null
+          total_amount: number | null
+          updated_at: string
+          vat_amount: number | null
+          vat_rate: number | null
+          vendor: string | null
+        }
+        Insert: {
+          ai_category_suggestion?: string | null
+          ai_summary?: string | null
+          amount?: number | null
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          doc_date?: string | null
+          doc_number?: string | null
+          doc_type?: string
+          due_date?: string | null
+          file_urls?: string[] | null
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          source?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          total_amount?: number | null
+          updated_at?: string
+          vat_amount?: number | null
+          vat_rate?: number | null
+          vendor?: string | null
+        }
+        Update: {
+          ai_category_suggestion?: string | null
+          ai_summary?: string | null
+          amount?: number | null
+          category?: string | null
+          created_at?: string
+          currency?: string | null
+          doc_date?: string | null
+          doc_number?: string | null
+          doc_type?: string
+          due_date?: string | null
+          file_urls?: string[] | null
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          source?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          total_amount?: number | null
+          updated_at?: string
+          vat_amount?: number | null
+          vat_rate?: number | null
+          vendor?: string | null
+        }
+        Relationships: []
+      }
       issues: {
         Row: {
           category: string | null
