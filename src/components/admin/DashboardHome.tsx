@@ -79,7 +79,7 @@ const DashboardHome = () => {
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} domain={[70, 100]} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1E293B", border: "1px solid #334155", borderRadius: "8px", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "hsl(222.2 47.4% 11.2%)", border: "1px solid hsl(217.2 32.6% 17.5%)", borderRadius: "8px", fontSize: "12px", color: "#e2e8f0" }}
                   labelStyle={{ color: "#94A3B8", fontWeight: 700, marginBottom: 4 }}
                   itemStyle={{ padding: "1px 0" }}
                   formatter={(value: number, name: string) => {
@@ -130,7 +130,7 @@ const DashboardHome = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#1E293B", border: "1px solid #334155", borderRadius: "8px", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "hsl(222.2 47.4% 11.2%)", border: "1px solid hsl(217.2 32.6% 17.5%)", borderRadius: "8px", fontSize: "12px", color: "#e2e8f0" }}
                   formatter={(value: number) => [`%${value}`, ""]}
                 />
               </PieChart>
@@ -155,7 +155,7 @@ const DashboardHome = () => {
         <div className="lg:col-span-2 dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Makine Planlama Özeti</h3>
-            <button className="text-xs text-[#0AA2CD] font-bold hover:underline">Tam Görünüm →</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent('nexus-navigate', { detail: 'scheduling' }))} className="text-xs text-[#0AA2CD] font-bold hover:underline">Tam Görünüm →</button>
           </div>
           <div className="space-y-3">
             {machines.map((m) => (

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight } from "lucide-react";
 
-const stages = [
-  { id: "prospect", label: "Prospeksiyon", icon: Filter, color: "bg-blue-500", count: 12 },
-  { id: "qualify", label: "Kalifikasyon", icon: PhoneCall, color: "bg-cyan-500", count: 8 },
-  { id: "rfq", label: "Teknik Keşif / RFQ", icon: Mail, color: "bg-[#0AA2CD]", count: 5 },
-  { id: "quote", label: "Teklif & Müzakere", icon: Handshake, color: "bg-amber-500", count: 3 },
-  { id: "po", label: "Sipariş Onayı", icon: Truck, color: "bg-emerald-500", count: 2 },
-  { id: "followup", label: "Teslimat Takibi", icon: Star, color: "bg-purple-500", count: 1 },
+const stagesDef = [
+  { id: "prospect", label: "Prospeksiyon", icon: Filter, color: "bg-blue-500" },
+  { id: "qualify", label: "Kalifikasyon", icon: PhoneCall, color: "bg-cyan-500" },
+  { id: "rfq", label: "Teknik Keşif / RFQ", icon: Mail, color: "bg-[#0AA2CD]" },
+  { id: "quote", label: "Teklif & Müzakere", icon: Handshake, color: "bg-amber-500" },
+  { id: "po", label: "Sipariş Onayı", icon: Truck, color: "bg-emerald-500" },
+  { id: "followup", label: "Teslimat Takibi", icon: Star, color: "bg-purple-500" },
 ];
 
 const deals = [
@@ -28,6 +28,7 @@ const outreachTemplates = [
 const PipelineView = () => {
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const filteredDeals = selectedStage ? deals.filter((d) => d.stage === selectedStage) : deals;
+  const stages = stagesDef.map((s) => ({ ...s, count: deals.filter((d) => d.stage === s.id).length }));
   const totalPipelineValue = deals.reduce((s, d) => s + d.value, 0);
   const weightedValue = deals.reduce((s, d) => s + d.value * (d.probability / 100), 0);
 

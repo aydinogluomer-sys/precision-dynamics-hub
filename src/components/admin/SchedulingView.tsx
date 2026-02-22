@@ -48,8 +48,8 @@ const SchedulingView = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="h-16 rounded-lg border border-dashed dark:border-[#334155] border-slate-200 flex items-center justify-center">
-                            <span className="text-[9px] dark:text-slate-600 text-slate-400">Boş</span>
+                          <div className="h-16 rounded-lg border border-dashed dark:border-[#334155] border-slate-200 flex items-center justify-center group hover:border-[#0AA2CD]/40 hover:bg-[#0AA2CD]/5 transition-all cursor-pointer">
+                            <span className="text-[9px] dark:text-slate-600 text-slate-400 group-hover:text-[#0AA2CD] transition-colors">+ Ata</span>
                           </div>
                         )}
                       </td>
