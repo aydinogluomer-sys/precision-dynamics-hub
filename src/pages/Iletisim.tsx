@@ -6,6 +6,18 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const meetingSchema = z.object({
+  name: z.string().trim().min(2, "Ad en az 2 karakter olmalı").max(100, "Ad en fazla 100 karakter olabilir"),
+  email: z.string().trim().email("Geçerli bir e-posta adresi girin").max(255),
+  company: z.string().max(100).optional().or(z.literal("")),
+  phone: z.string().max(20).optional().or(z.literal("")),
+  date: z.string().min(1, "Tarih seçin"),
+  time: z.string().min(1, "Saat seçin"),
+  topic: z.string().min(1, "Konu seçin").max(200),
+  notes: z.string().max(1000, "Notlar en fazla 1000 karakter olabilir").optional().or(z.literal("")),
+});
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -32,17 +44,26 @@ const Iletisim = () => {
 
   const handleMeetingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const parsed = meetingSchema.safeParse(meetingForm);
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Geçersiz giriş.";
+      toast.error(firstError);
+      return;
+    }
+
     setMeetingLoading(true);
     try {
+      const v = parsed.data;
       const { error } = await supabase.from("meetings").insert({
-        name: meetingForm.name,
-        email: meetingForm.email,
-        company: meetingForm.company || null,
-        phone: meetingForm.phone || null,
-        meeting_date: meetingForm.date,
-        meeting_time: meetingForm.time,
-        topic: meetingForm.topic,
-        notes: meetingForm.notes || null,
+        name: v.name,
+        email: v.email,
+        company: v.company || null,
+        phone: v.phone || null,
+        meeting_date: v.date,
+        meeting_time: v.time,
+        topic: v.topic,
+        notes: v.notes || null,
       });
       if (error) throw error;
       toast.success("Toplantı talebiniz alındı! En kısa sürede Google Meet davet linki gönderilecektir.");
