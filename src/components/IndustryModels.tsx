@@ -165,23 +165,6 @@ const FanModel = () => {
   );
 };
 
-/* 10 — Prototip Üretim: Layered cube */
-const PrototypeModel = () => {
-  const g = useRef<THREE.Group>(null);
-  const { teal, metal, dark } = usePalette();
-  useFrame((_, d) => { if (g.current) { g.current.rotation.y += d * 0.5; g.current.rotation.x = Math.sin(Date.now() * 0.0005) * 0.15; } });
-  return (
-    <group ref={g}>
-      {Array.from({ length: 6 }).map((_, i) => (
-        <mesh key={i} position={[0, (i - 2.5) * 0.22, 0]}>
-          <boxGeometry args={[1.0 - i * 0.05, 0.18, 1.0 - i * 0.05]} />
-          <meshStandardMaterial color={i % 2 === 0 ? metal : dark} metalness={0.85} roughness={0.2} transparent opacity={0.85} />
-        </mesh>
-      ))}
-      <mesh position={[0, 0.9, 0]}><boxGeometry args={[0.6, 0.05, 0.6]} /><meshStandardMaterial color={teal} metalness={0.9} roughness={0.1} emissive={teal} emissiveIntensity={0.4} /></mesh>
-    </group>
-  );
-};
 
 /* 11 — Yenilenebilir Enerji: Wind turbine */
 const WindTurbineModel = () => {
@@ -262,7 +245,7 @@ const DrillBitModel = () => {
 /* ──────── Model map ──────── */
 export type IndustryType =
   | "aerospace" | "defense" | "robotics" | "automotive" | "medical"
-  | "marine" | "hydraulic" | "piping" | "hvac" | "prototype"
+  | "marine" | "hydraulic" | "piping" | "hvac"
   | "renewable" | "oilgas" | "power" | "mining";
 
 const modelMap: Record<IndustryType, React.FC> = {
@@ -275,7 +258,6 @@ const modelMap: Record<IndustryType, React.FC> = {
   hydraulic: HydraulicModel,
   piping: PipeFittingModel,
   hvac: FanModel,
-  prototype: PrototypeModel,
   renewable: WindTurbineModel,
   oilgas: ValveModel,
   power: BusbarModel,

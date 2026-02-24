@@ -5,6 +5,20 @@ import { TextReveal } from "./ScrollReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IndustryType } from "./IndustryModels";
 
+import imgAerospace from "@/assets/industry-aerospace.jpg";
+import imgDefense from "@/assets/industry-defense.jpg";
+import imgRobotics from "@/assets/industry-robotics.jpg";
+import imgAutomotive from "@/assets/industry-automotive.jpg";
+import imgMedical from "@/assets/industry-medical.jpg";
+import imgMarine from "@/assets/industry-marine.jpg";
+import imgHydraulic from "@/assets/industry-hydraulic.jpg";
+import imgPiping from "@/assets/industry-piping.jpg";
+import imgHvac from "@/assets/industry-hvac.jpg";
+import imgRenewable from "@/assets/industry-renewable.jpg";
+import imgOilgas from "@/assets/industry-oilgas.jpg";
+import imgPower from "@/assets/industry-power.jpg";
+import imgMining from "@/assets/industry-mining.jpg";
+
 const IndustryCanvas = lazy(() => import("./IndustryModels"));
 
 interface Industry {
@@ -12,23 +26,23 @@ interface Industry {
   description: string;
   highlight: string;
   modelType: IndustryType;
+  image: string;
 }
 
 const industries: Industry[] = [
-  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları", highlight: "±0.005mm tolerans", modelType: "aerospace" },
-  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler", highlight: "Yüksek güvenilirlik", modelType: "defense" },
-  { name: "Robotik", description: "Hassas hareket sistemleri ve aktüatörler", highlight: "Yüksek tekrarlanabilirlik", modelType: "robotics" },
-  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında üretim", highlight: "Seri üretim kapasitesi", modelType: "automotive" },
-  { name: "Medikal", description: "ISO 13485 uyumlu medikal bileşenler", highlight: "Biyouyumlu malzemeler", modelType: "medical" },
-  { name: "Yelken & Yat Sistemleri", description: "Deniz koşullarına dayanıklı parçalar", highlight: "Korozyon direnci", modelType: "marine" },
-  { name: "Hidrolik & Pnömatik", description: "Yüksek basınç sistemleri bileşenleri", highlight: "350+ bar dayanım", modelType: "hydraulic" },
-  { name: "Boru & Bağlantı Parçaları", description: "Endüstriyel boru sistemleri ve fittings", highlight: "Sızdırmazlık garantisi", modelType: "piping" },
-  { name: "İklim Teknolojileri", description: "HVAC sistem komponentleri üretimi", highlight: "Enerji verimli tasarım", modelType: "hvac" },
-  { name: "Prototip Üretim", description: "Hızlı prototipleme ve küçük seri üretim", highlight: "48 saat teslimat", modelType: "prototype" },
-  { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistem parçaları", highlight: "Sürdürülebilir üretim", modelType: "renewable" },
-  { name: "Petrol & Gaz", description: "Rafineri ve boru hattı ekipmanları", highlight: "API standartları", modelType: "oilgas" },
-  { name: "Güç Dağıtım Sistemleri", description: "Enerji iletim ve dağıtım bileşenleri", highlight: "Yüksek iletkenlik", modelType: "power" },
-  { name: "Madencilik Ekipmanları", description: "Ağır hizmet madencilik komponentleri", highlight: "Aşınma direnci", modelType: "mining" },
+  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları", highlight: "±0.005mm tolerans", modelType: "aerospace", image: imgAerospace },
+  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler", highlight: "Yüksek güvenilirlik", modelType: "defense", image: imgDefense },
+  { name: "Robotik", description: "Hassas hareket sistemleri ve aktüatörler", highlight: "Yüksek tekrarlanabilirlik", modelType: "robotics", image: imgRobotics },
+  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında üretim", highlight: "Seri üretim kapasitesi", modelType: "automotive", image: imgAutomotive },
+  { name: "Medikal", description: "ISO 13485 uyumlu medikal bileşenler", highlight: "Biyouyumlu malzemeler", modelType: "medical", image: imgMedical },
+  { name: "Yelken & Yat Sistemleri", description: "Deniz koşullarına dayanıklı parçalar", highlight: "Korozyon direnci", modelType: "marine", image: imgMarine },
+  { name: "Hidrolik & Pnömatik", description: "Yüksek basınç sistemleri bileşenleri", highlight: "350+ bar dayanım", modelType: "hydraulic", image: imgHydraulic },
+  { name: "Boru & Bağlantı Parçaları", description: "Endüstriyel boru sistemleri ve fittings", highlight: "Sızdırmazlık garantisi", modelType: "piping", image: imgPiping },
+  { name: "İklim Teknolojileri", description: "HVAC sistem komponentleri üretimi", highlight: "Enerji verimli tasarım", modelType: "hvac", image: imgHvac },
+  { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistem parçaları", highlight: "Sürdürülebilir üretim", modelType: "renewable", image: imgRenewable },
+  { name: "Petrol & Gaz", description: "Rafineri ve boru hattı ekipmanları", highlight: "API standartları", modelType: "oilgas", image: imgOilgas },
+  { name: "Güç Dağıtım Sistemleri", description: "Enerji iletim ve dağıtım bileşenleri", highlight: "Yüksek iletkenlik", modelType: "power", image: imgPower },
+  { name: "Madencilik Ekipmanları", description: "Ağır hizmet madencilik komponentleri", highlight: "Aşınma direnci", modelType: "mining", image: imgMining },
 ];
 
 const IndustriesSection = () => {
@@ -139,18 +153,18 @@ const IndustryCard = ({
           ) : (
             <motion.div
               key="placeholder"
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute inset-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-center text-muted-foreground/50">
-                <div className="w-12 h-12 mx-auto mb-2 border border-border/50 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-primary/20 rounded-sm" />
-                </div>
-                <span className="text-xs">{isMobile ? "Dokunun" : "Hover"}</span>
-              </div>
+              <img
+                src={industry.image}
+                alt={industry.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
             </motion.div>
           )}
         </AnimatePresence>
