@@ -10,6 +10,46 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Auth check
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const SUPABASE_URL_AUTH = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(SUPABASE_URL_AUTH, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check admin role
+    const userId = claimsData.claims.sub;
+    const SUPABASE_SERVICE_ROLE_KEY_PRE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const adminCheck = createClient(SUPABASE_URL_AUTH, SUPABASE_SERVICE_ROLE_KEY_PRE);
+
+    const { data: roleData } = await adminCheck
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (!roleData) {
+      return new Response(JSON.stringify({ error: "Admin yetkisi gerekli" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const PARASUT_CLIENT_ID = Deno.env.get("PARASUT_CLIENT_ID");
     const PARASUT_CLIENT_SECRET = Deno.env.get("PARASUT_CLIENT_SECRET");
     const PARASUT_COMPANY_ID = Deno.env.get("PARASUT_COMPANY_ID");
@@ -25,9 +65,7 @@ serve(async (req) => {
       });
     }
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = adminCheck;
 
     // Get Paraşüt OAuth token
     const tokenRes = await fetch("https://api.parasut.com/oauth/token", {
