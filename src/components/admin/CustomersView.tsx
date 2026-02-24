@@ -29,6 +29,15 @@ const CustomersView = () => {
   useEffect(() => { fetchData(); }, []);
 
   const addCustomer = async () => {
+    // Client-side validation matching DB constraints
+    if (form.name && form.name.length > 200) { toast.error("Ad en fazla 200 karakter olabilir"); return; }
+    if (form.company && form.company.length > 200) { toast.error("Firma adı en fazla 200 karakter olabilir"); return; }
+    if (form.city && form.city.length > 100) { toast.error("Şehir en fazla 100 karakter olabilir"); return; }
+    if (form.phone && form.phone.length > 30) { toast.error("Telefon en fazla 30 karakter olabilir"); return; }
+    if (form.email && form.email.length > 255) { toast.error("E-posta en fazla 255 karakter olabilir"); return; }
+    if (form.email && !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(form.email)) {
+      toast.error("Geçerli bir e-posta adresi girin"); return;
+    }
     const { error } = await supabase.from("customers").insert(form);
     if (error) { toast.error("Eklenemedi"); return; }
     toast.success("Müşteri eklendi");
