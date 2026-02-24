@@ -54,6 +54,7 @@ const HeroSection = () => {
   const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success" | "error">("idle");
   const [uploadedFileName, setUploadedFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadAttemptsRef = useRef<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -80,6 +81,16 @@ const HeroSection = () => {
       setUploadState("error");
       return;
     }
+
+    // Client-side rate limiting: max 3 uploads per 60 seconds
+    const now = Date.now();
+    uploadAttemptsRef.current = uploadAttemptsRef.current.filter((t) => now - t < 60000);
+    if (uploadAttemptsRef.current.length >= 3) {
+      toast.error("Çok fazla deneme. Lütfen 1 dakika bekleyin.");
+      setUploadState("error");
+      return;
+    }
+    uploadAttemptsRef.current.push(now);
 
     setUploadState("uploading");
     setUploadedFileName(file.name);
