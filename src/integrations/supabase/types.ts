@@ -50,6 +50,27 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          created_at: string
+          file_urls: string[] | null
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          file_urls?: string[] | null
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          file_urls?: string[] | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       faq_analytics: {
         Row: {
           category: string | null
