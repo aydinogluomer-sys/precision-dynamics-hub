@@ -385,6 +385,11 @@ ALTER TABLE public.faq_analytics       ENABLE ROW LEVEL SECURITY;
 -- ────────────────────────────────────────
 -- 6.1 user_roles
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Admins can read all roles"  ON public.user_roles;
+DROP POLICY IF EXISTS "Users can read own roles"   ON public.user_roles;
+DROP POLICY IF EXISTS "Admins can insert roles"    ON public.user_roles;
+DROP POLICY IF EXISTS "Admins can update roles"    ON public.user_roles;
+DROP POLICY IF EXISTS "Admins can delete roles"    ON public.user_roles;
 CREATE POLICY "Admins can read all roles"  ON public.user_roles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
 CREATE POLICY "Users can read own roles"   ON public.user_roles FOR SELECT TO authenticated USING (auth.uid() = user_id);
 CREATE POLICY "Admins can insert roles"    ON public.user_roles FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
@@ -394,6 +399,10 @@ CREATE POLICY "Admins can delete roles"    ON public.user_roles FOR DELETE TO au
 -- ────────────────────────────────────────
 -- 6.2 customers
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read customers"   ON public.customers;
+DROP POLICY IF EXISTS "Staff can insert customers" ON public.customers;
+DROP POLICY IF EXISTS "Staff can update customers" ON public.customers;
+DROP POLICY IF EXISTS "Admins can delete customers" ON public.customers;
 CREATE POLICY "Staff can read customers"   ON public.customers FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert customers" ON public.customers FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update customers" ON public.customers FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -403,6 +412,10 @@ CREATE POLICY "Admins can delete customers" ON public.customers FOR DELETE TO au
 -- 6.3 rfqs
 -- ────────────────────────────────────────
 -- Anonim kullanıcılar teklif gönderebilir (sınırlı kontrol ile)
+DROP POLICY IF EXISTS "Anyone can submit RFQ"     ON public.rfqs;
+DROP POLICY IF EXISTS "Staff can read rfqs"       ON public.rfqs;
+DROP POLICY IF EXISTS "Staff can update rfqs"     ON public.rfqs;
+DROP POLICY IF EXISTS "Admins can delete rfqs"    ON public.rfqs;
 CREATE POLICY "Anyone can submit RFQ"     ON public.rfqs FOR INSERT WITH CHECK (id IS NOT NULL AND length(id) > 0);
 CREATE POLICY "Staff can read rfqs"       ON public.rfqs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can update rfqs"     ON public.rfqs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -411,6 +424,10 @@ CREATE POLICY "Admins can delete rfqs"    ON public.rfqs FOR DELETE TO authentic
 -- ────────────────────────────────────────
 -- 6.4 orders
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read orders"     ON public.orders;
+DROP POLICY IF EXISTS "Staff can insert orders"   ON public.orders;
+DROP POLICY IF EXISTS "Staff can update orders"   ON public.orders;
+DROP POLICY IF EXISTS "Admins can delete orders"  ON public.orders;
 CREATE POLICY "Staff can read orders"     ON public.orders FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert orders"   ON public.orders FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update orders"   ON public.orders FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -419,6 +436,10 @@ CREATE POLICY "Admins can delete orders"  ON public.orders FOR DELETE TO authent
 -- ────────────────────────────────────────
 -- 6.5 wbs
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read wbs"        ON public.wbs;
+DROP POLICY IF EXISTS "Staff can insert wbs"      ON public.wbs;
+DROP POLICY IF EXISTS "Staff can update wbs"      ON public.wbs;
+DROP POLICY IF EXISTS "Admins can delete wbs"     ON public.wbs;
 CREATE POLICY "Staff can read wbs"        ON public.wbs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert wbs"      ON public.wbs FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update wbs"      ON public.wbs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -428,6 +449,10 @@ CREATE POLICY "Admins can delete wbs"     ON public.wbs FOR DELETE TO authentica
 -- 6.6 meetings
 -- ────────────────────────────────────────
 -- Sahiplik bazlı: Kullanıcı sadece kendi toplantılarını görebilir
+DROP POLICY IF EXISTS "meetings_select_policy"    ON public.meetings;
+DROP POLICY IF EXISTS "meetings_insert_policy"    ON public.meetings;
+DROP POLICY IF EXISTS "meetings_update_policy"    ON public.meetings;
+DROP POLICY IF EXISTS "meetings_delete_policy"    ON public.meetings;
 CREATE POLICY "meetings_select_policy"    ON public.meetings FOR SELECT TO authenticated USING (auth.uid() = user_id);
 CREATE POLICY "meetings_insert_policy"    ON public.meetings FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "meetings_update_policy"    ON public.meetings FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
@@ -436,6 +461,10 @@ CREATE POLICY "meetings_delete_policy"    ON public.meetings FOR DELETE TO authe
 -- ────────────────────────────────────────
 -- 6.7 issues
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read issues"     ON public.issues;
+DROP POLICY IF EXISTS "Staff can insert issues"   ON public.issues;
+DROP POLICY IF EXISTS "Staff can update issues"   ON public.issues;
+DROP POLICY IF EXISTS "Admins can delete issues"  ON public.issues;
 CREATE POLICY "Staff can read issues"     ON public.issues FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert issues"   ON public.issues FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update issues"   ON public.issues FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -444,6 +473,10 @@ CREATE POLICY "Admins can delete issues"  ON public.issues FOR DELETE TO authent
 -- ────────────────────────────────────────
 -- 6.8 financial_documents (Sadece Admin)
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Admins can read financial_documents"   ON public.financial_documents;
+DROP POLICY IF EXISTS "Admins can insert financial_documents" ON public.financial_documents;
+DROP POLICY IF EXISTS "Admins can update financial_documents" ON public.financial_documents;
+DROP POLICY IF EXISTS "Admins can delete financial_documents" ON public.financial_documents;
 CREATE POLICY "Admins can read financial_documents"   ON public.financial_documents FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
 CREATE POLICY "Admins can insert financial_documents" ON public.financial_documents FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
 CREATE POLICY "Admins can update financial_documents" ON public.financial_documents FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
@@ -452,6 +485,10 @@ CREATE POLICY "Admins can delete financial_documents" ON public.financial_docume
 -- ────────────────────────────────────────
 -- 6.9 machine_health
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read machine_health"   ON public.machine_health;
+DROP POLICY IF EXISTS "Staff can insert machine_health" ON public.machine_health;
+DROP POLICY IF EXISTS "Staff can update machine_health" ON public.machine_health;
+DROP POLICY IF EXISTS "Admins can delete machine_health" ON public.machine_health;
 CREATE POLICY "Staff can read machine_health"   ON public.machine_health FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert machine_health" ON public.machine_health FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update machine_health" ON public.machine_health FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -460,6 +497,10 @@ CREATE POLICY "Admins can delete machine_health" ON public.machine_health FOR DE
 -- ────────────────────────────────────────
 -- 6.10 maintenance_logs
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read maintenance_logs"   ON public.maintenance_logs;
+DROP POLICY IF EXISTS "Staff can insert maintenance_logs" ON public.maintenance_logs;
+DROP POLICY IF EXISTS "Staff can update maintenance_logs" ON public.maintenance_logs;
+DROP POLICY IF EXISTS "Admins can delete maintenance_logs" ON public.maintenance_logs;
 CREATE POLICY "Staff can read maintenance_logs"   ON public.maintenance_logs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert maintenance_logs" ON public.maintenance_logs FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update maintenance_logs" ON public.maintenance_logs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -468,6 +509,10 @@ CREATE POLICY "Admins can delete maintenance_logs" ON public.maintenance_logs FO
 -- ────────────────────────────────────────
 -- 6.11 tool_inventory
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read tool_inventory"   ON public.tool_inventory;
+DROP POLICY IF EXISTS "Staff can insert tool_inventory" ON public.tool_inventory;
+DROP POLICY IF EXISTS "Staff can update tool_inventory" ON public.tool_inventory;
+DROP POLICY IF EXISTS "Admins can delete tool_inventory" ON public.tool_inventory;
 CREATE POLICY "Staff can read tool_inventory"   ON public.tool_inventory FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert tool_inventory" ON public.tool_inventory FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update tool_inventory" ON public.tool_inventory FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -476,6 +521,10 @@ CREATE POLICY "Admins can delete tool_inventory" ON public.tool_inventory FOR DE
 -- ────────────────────────────────────────
 -- 6.12 raw_materials
 -- ────────────────────────────────────────
+DROP POLICY IF EXISTS "Staff can read raw_materials"   ON public.raw_materials;
+DROP POLICY IF EXISTS "Staff can insert raw_materials" ON public.raw_materials;
+DROP POLICY IF EXISTS "Staff can update raw_materials" ON public.raw_materials;
+DROP POLICY IF EXISTS "Admins can delete raw_materials" ON public.raw_materials;
 CREATE POLICY "Staff can read raw_materials"   ON public.raw_materials FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Staff can insert raw_materials" ON public.raw_materials FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
 CREATE POLICY "Staff can update raw_materials" ON public.raw_materials FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
@@ -485,6 +534,9 @@ CREATE POLICY "Admins can delete raw_materials" ON public.raw_materials FOR DELE
 -- 6.13 faq_analytics
 -- ────────────────────────────────────────
 -- Anonim INSERT: event_type zorunlu, sadece 'search' veya 'click' değerleri kabul edilir
+DROP POLICY IF EXISTS "Anyone can insert faq analytics" ON public.faq_analytics;
+DROP POLICY IF EXISTS "Staff can read faq analytics"    ON public.faq_analytics;
+DROP POLICY IF EXISTS "Admins can delete faq analytics" ON public.faq_analytics;
 CREATE POLICY "Anyone can insert faq analytics" ON public.faq_analytics FOR INSERT WITH CHECK (event_type IS NOT NULL AND length(event_type) > 0);
 CREATE POLICY "Staff can read faq analytics"    ON public.faq_analytics FOR SELECT TO authenticated USING (is_staff(auth.uid()));
 CREATE POLICY "Admins can delete faq analytics" ON public.faq_analytics FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
