@@ -390,11 +390,51 @@ DROP POLICY IF EXISTS "Users can read own roles"   ON public.user_roles;
 DROP POLICY IF EXISTS "Admins can insert roles"    ON public.user_roles;
 DROP POLICY IF EXISTS "Admins can update roles"    ON public.user_roles;
 DROP POLICY IF EXISTS "Admins can delete roles"    ON public.user_roles;
-CREATE POLICY "Admins can read all roles"  ON public.user_roles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Users can read own roles"   ON public.user_roles FOR SELECT TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "Admins can insert roles"    ON public.user_roles FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can update roles"    ON public.user_roles FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can delete roles"    ON public.user_roles FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'Admins can read all roles'
+  ) THEN
+    CREATE POLICY "Admins can read all roles" ON public.user_roles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'Users can read own roles'
+  ) THEN
+    CREATE POLICY "Users can read own roles" ON public.user_roles FOR SELECT TO authenticated USING (auth.uid() = user_id);
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'Admins can insert roles'
+  ) THEN
+    CREATE POLICY "Admins can insert roles" ON public.user_roles FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'Admins can update roles'
+  ) THEN
+    CREATE POLICY "Admins can update roles" ON public.user_roles FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'Admins can delete roles'
+  ) THEN
+    CREATE POLICY "Admins can delete roles" ON public.user_roles FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+  END IF;
+END $$;
 
 -- ────────────────────────────────────────
 -- 6.2 customers
