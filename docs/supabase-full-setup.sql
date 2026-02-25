@@ -1,7 +1,7 @@
 -- ============================================================
 -- MAS TECHNİC - SUPABASE TAM KURULUM BETİĞİ
 -- Referans & Yedek Dokümantasyonu
--- Tarih: 2026-02-25
+-- Tarih: 2026-02-25 (Canlı DB ile doğrulanmış versiyon)
 -- ============================================================
 -- Bu dosya mevcut canlı veritabanının birebir kopyasıdır.
 -- Sıfırdan kurulum veya felaket kurtarma senaryoları için kullanılabilir.
@@ -73,7 +73,7 @@ $$;
 -- 2.1 user_roles - Kullanıcı Rolleri
 CREATE TABLE IF NOT EXISTS public.user_roles (
   id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id    uuid NOT NULL,
+  user_id    uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   role       app_role NOT NULL,
   UNIQUE (user_id, role)
 );
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS public.meetings (
   meeting_time text NOT NULL,
   notes        text,
   status       text NOT NULL DEFAULT 'pending',
-  user_id      uuid DEFAULT auth.uid(),
+  user_id      uuid DEFAULT auth.uid() REFERENCES auth.users(id),
   created_at   timestamptz NOT NULL DEFAULT now()
 );
 
@@ -268,33 +268,92 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+-- Not: user_roles.user_id -> auth.users(id) ve meetings.user_id -> auth.users(id)
+-- ilişkileri tablo tanımlarında inline olarak belirtilmiştir (Bölüm 2).
+
 
 -- ************************************************************
--- BÖLÜM 4: CHECK KISITLAMALARI (customers)
+-- BÖLÜM 4: CHECK KISITLAMALARI
 -- ************************************************************
 
+-- ── 4.1 customers tablosu ──
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_name_len   CHECK (length(name) <= 200);
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_name_length CHECK ((name IS NULL) OR (length(name) <= 200));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_company_len CHECK (length(company) <= 200);
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_company_length CHECK ((company IS NULL) OR (length(company) <= 200));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_city_len    CHECK (length(city) <= 100);
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_city_length CHECK ((city IS NULL) OR (length(city) <= 100));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_phone_len   CHECK (length(phone) <= 30);
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_phone_length CHECK ((phone IS NULL) OR (length(phone) <= 30));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_email_len   CHECK (length(email) <= 255);
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_email_length CHECK ((email IS NULL) OR (length(email) <= 255));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.customers ADD CONSTRAINT chk_email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+  ALTER TABLE public.customers ADD CONSTRAINT check_customer_email_format CHECK ((email IS NULL) OR (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- ── 4.2 meetings tablosu ──
+DO $$ BEGIN
+  ALTER TABLE public.meetings ADD CONSTRAINT check_name_length CHECK (length(name) >= 2 AND length(name) <= 100);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.meetings ADD CONSTRAINT check_email_length CHECK (length(email) <= 255);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.meetings ADD CONSTRAINT check_phone_length CHECK ((phone IS NULL) OR (length(phone) <= 20));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.meetings ADD CONSTRAINT check_topic_length CHECK (length(topic) >= 1 AND length(topic) <= 200);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.meetings ADD CONSTRAINT check_notes_length CHECK ((notes IS NULL) OR (length(notes) <= 1000));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- ── 4.3 rfqs tablosu ──
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_customer_length CHECK ((customer IS NULL) OR (length(customer) <= 200));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_company_length CHECK ((company IS NULL) OR (length(company) <= 200));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_email_length CHECK ((email IS NULL) OR (length(email) <= 255));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_service_length CHECK ((service IS NULL) OR (length(service) <= 100));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_material_length CHECK ((material IS NULL) OR (length(material) <= 100));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_notes_length CHECK ((notes IS NULL) OR (length(notes) <= 2000));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  ALTER TABLE public.rfqs ADD CONSTRAINT check_rfq_quantity_positive CHECK ((quantity IS NULL) OR (quantity > 0));
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- ── 4.4 faq_analytics tablosu ──
+DO $$ BEGIN
+  ALTER TABLE public.faq_analytics ADD CONSTRAINT faq_analytics_event_type_check CHECK (event_type = ANY (ARRAY['search', 'click']));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 
@@ -320,114 +379,115 @@ ALTER TABLE public.faq_analytics       ENABLE ROW LEVEL SECURITY;
 -- ************************************************************
 -- BÖLÜM 6: RLS POLİTİKALARI (Tablo Bazında Gruplu)
 -- ************************************************************
--- Not: Tüm politikalar RESTRICTIVE (Permissive: No) olarak tanımlanmıştır.
+-- Not: Tüm politikalar PERMISSIVE (Supabase varsayılanı) olarak tanımlanmıştır.
+-- Canlı veritabanından doğrulanmıştır.
 
 -- ────────────────────────────────────────
 -- 6.1 user_roles
 -- ────────────────────────────────────────
-CREATE POLICY "Admins can read all roles"  ON public.user_roles AS RESTRICTIVE FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Users can read own roles"   ON public.user_roles AS RESTRICTIVE FOR SELECT TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "Admins can insert roles"    ON public.user_roles AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can update roles"    ON public.user_roles AS RESTRICTIVE FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can delete roles"    ON public.user_roles AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can read all roles"  ON public.user_roles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Users can read own roles"   ON public.user_roles FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Admins can insert roles"    ON public.user_roles FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can update roles"    ON public.user_roles FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can delete roles"    ON public.user_roles FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.2 customers
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read customers"   ON public.customers AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert customers" ON public.customers AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update customers" ON public.customers AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete customers" ON public.customers AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read customers"   ON public.customers FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert customers" ON public.customers FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update customers" ON public.customers FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete customers" ON public.customers FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.3 rfqs
 -- ────────────────────────────────────────
 -- Anonim kullanıcılar teklif gönderebilir (sınırlı kontrol ile)
-CREATE POLICY "Anyone can submit RFQ"     ON public.rfqs AS RESTRICTIVE FOR INSERT WITH CHECK (id IS NOT NULL AND length(id) > 0);
-CREATE POLICY "Staff can read rfqs"       ON public.rfqs AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can update rfqs"     ON public.rfqs AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete rfqs"    ON public.rfqs AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Anyone can submit RFQ"     ON public.rfqs FOR INSERT WITH CHECK (id IS NOT NULL AND length(id) > 0);
+CREATE POLICY "Staff can read rfqs"       ON public.rfqs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can update rfqs"     ON public.rfqs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete rfqs"    ON public.rfqs FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.4 orders
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read orders"     ON public.orders AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert orders"   ON public.orders AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update orders"   ON public.orders AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete orders"  ON public.orders AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read orders"     ON public.orders FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert orders"   ON public.orders FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update orders"   ON public.orders FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete orders"  ON public.orders FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.5 wbs
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read wbs"        ON public.wbs AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert wbs"      ON public.wbs AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update wbs"      ON public.wbs AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete wbs"     ON public.wbs AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read wbs"        ON public.wbs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert wbs"      ON public.wbs FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update wbs"      ON public.wbs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete wbs"     ON public.wbs FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.6 meetings
 -- ────────────────────────────────────────
 -- Sahiplik bazlı: Kullanıcı sadece kendi toplantılarını görebilir
-CREATE POLICY "meetings_select_policy"    ON public.meetings AS RESTRICTIVE FOR SELECT TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "meetings_insert_policy"    ON public.meetings AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "meetings_update_policy"    ON public.meetings AS RESTRICTIVE FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "meetings_delete_policy"    ON public.meetings AS RESTRICTIVE FOR DELETE TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "meetings_select_policy"    ON public.meetings FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "meetings_insert_policy"    ON public.meetings FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "meetings_update_policy"    ON public.meetings FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "meetings_delete_policy"    ON public.meetings FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
 -- ────────────────────────────────────────
 -- 6.7 issues
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read issues"     ON public.issues AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert issues"   ON public.issues AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update issues"   ON public.issues AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete issues"  ON public.issues AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read issues"     ON public.issues FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert issues"   ON public.issues FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update issues"   ON public.issues FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete issues"  ON public.issues FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.8 financial_documents (Sadece Admin)
 -- ────────────────────────────────────────
-CREATE POLICY "Admins can read financial_documents"   ON public.financial_documents AS RESTRICTIVE FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can insert financial_documents" ON public.financial_documents AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can update financial_documents" ON public.financial_documents AS RESTRICTIVE FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can delete financial_documents" ON public.financial_documents AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can read financial_documents"   ON public.financial_documents FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can insert financial_documents" ON public.financial_documents FOR INSERT TO authenticated WITH CHECK (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can update financial_documents" ON public.financial_documents FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins can delete financial_documents" ON public.financial_documents FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.9 machine_health
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read machine_health"   ON public.machine_health AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert machine_health" ON public.machine_health AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update machine_health" ON public.machine_health AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete machine_health" ON public.machine_health AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read machine_health"   ON public.machine_health FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert machine_health" ON public.machine_health FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update machine_health" ON public.machine_health FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete machine_health" ON public.machine_health FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.10 maintenance_logs
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read maintenance_logs"   ON public.maintenance_logs AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert maintenance_logs" ON public.maintenance_logs AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update maintenance_logs" ON public.maintenance_logs AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete maintenance_logs" ON public.maintenance_logs AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read maintenance_logs"   ON public.maintenance_logs FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert maintenance_logs" ON public.maintenance_logs FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update maintenance_logs" ON public.maintenance_logs FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete maintenance_logs" ON public.maintenance_logs FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.11 tool_inventory
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read tool_inventory"   ON public.tool_inventory AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert tool_inventory" ON public.tool_inventory AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update tool_inventory" ON public.tool_inventory AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete tool_inventory" ON public.tool_inventory AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read tool_inventory"   ON public.tool_inventory FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert tool_inventory" ON public.tool_inventory FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update tool_inventory" ON public.tool_inventory FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete tool_inventory" ON public.tool_inventory FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.12 raw_materials
 -- ────────────────────────────────────────
-CREATE POLICY "Staff can read raw_materials"   ON public.raw_materials AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Staff can insert raw_materials" ON public.raw_materials AS RESTRICTIVE FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
-CREATE POLICY "Staff can update raw_materials" ON public.raw_materials AS RESTRICTIVE FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete raw_materials" ON public.raw_materials AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+CREATE POLICY "Staff can read raw_materials"   ON public.raw_materials FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Staff can insert raw_materials" ON public.raw_materials FOR INSERT TO authenticated WITH CHECK (is_staff(auth.uid()));
+CREATE POLICY "Staff can update raw_materials" ON public.raw_materials FOR UPDATE TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete raw_materials" ON public.raw_materials FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 
 -- ────────────────────────────────────────
 -- 6.13 faq_analytics
 -- ────────────────────────────────────────
--- Anonim INSERT: event_type zorunlu ve boş olamaz
-CREATE POLICY "Anyone can insert faq analytics" ON public.faq_analytics AS RESTRICTIVE FOR INSERT WITH CHECK (event_type IS NOT NULL AND length(event_type) > 0);
-CREATE POLICY "Staff can read faq analytics"    ON public.faq_analytics AS RESTRICTIVE FOR SELECT TO authenticated USING (is_staff(auth.uid()));
-CREATE POLICY "Admins can delete faq analytics" ON public.faq_analytics AS RESTRICTIVE FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
+-- Anonim INSERT: event_type zorunlu, sadece 'search' veya 'click' değerleri kabul edilir
+CREATE POLICY "Anyone can insert faq analytics" ON public.faq_analytics FOR INSERT WITH CHECK (event_type IS NOT NULL AND length(event_type) > 0);
+CREATE POLICY "Staff can read faq analytics"    ON public.faq_analytics FOR SELECT TO authenticated USING (is_staff(auth.uid()));
+CREATE POLICY "Admins can delete faq analytics" ON public.faq_analytics FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'));
 -- Not: faq_analytics tablosunda UPDATE politikası yoktur (tasarım gereği).
 
 
@@ -472,6 +532,7 @@ CREATE TRIGGER set_updated_at
 
 -- ============================================================
 -- DOSYA SONU
--- Toplam: 1 Enum, 3 Fonksiyon, 13 Tablo, ~45 RLS Politikası,
---         6 CHECK Kısıtlaması, 1 Trigger, 2 Storage Bucket (referans)
+-- Toplam: 1 Enum, 3 Fonksiyon, 13 Tablo, ~48 RLS Politikası,
+--         19 CHECK Kısıtlaması, 3 Foreign Key, 1 Trigger,
+--         2 Storage Bucket (referans)
 -- ============================================================
