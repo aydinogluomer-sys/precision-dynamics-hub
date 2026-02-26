@@ -205,8 +205,8 @@ const MaterialCard = ({ mat, index, anim }: CardProps) => {
 
       {/* Index */}
       <div
-        className="absolute top-0 right-0 p-6 text-[10px] z-20"
-        style={{ fontFamily: "'JetBrains Mono', monospace", color: "#1e293b" }}
+        className="absolute top-0 right-0 p-6 text-[10px] z-20 font-mono"
+        style={{ color: "#1e293b" }}
       >
         {String(index + 1).padStart(2, "0")}
       </div>
@@ -216,8 +216,8 @@ const MaterialCard = ({ mat, index, anim }: CardProps) => {
         <div className="w-12 h-1 mb-6" style={{ background: mat.color }} />
         <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
         <div
-          className="text-[10px] tracking-[0.2em] mb-6"
-          style={{ fontFamily: "'JetBrains Mono', monospace", color: "#64748b" }}
+          className="text-[10px] tracking-[0.2em] mb-6 font-mono"
+          style={{ color: "#64748b" }}
         >
           {mat.typeCode}
         </div>
@@ -230,8 +230,8 @@ const MaterialCard = ({ mat, index, anim }: CardProps) => {
           {mat.specs.map((spec) => (
             <div
               key={spec.label}
-              className="flex justify-between mb-3"
-              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "10px" }}
+              className="flex justify-between mb-3 font-mono"
+              style={{ fontSize: "10px" }}
             >
               <span style={{ color: "#94a3b8" }}>{spec.label}</span>
               <span className="text-white font-medium">{spec.value}</span>

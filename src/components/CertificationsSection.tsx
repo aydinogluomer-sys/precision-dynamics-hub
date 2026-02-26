@@ -64,7 +64,7 @@ const CertificationsSection = () => {
             >
               <Check className="w-[18px] h-[18px] text-primary flex-shrink-0" strokeWidth={3} />
               <div>
-                <span className="font-semibold text-sm block">{cert.name}</span>
+                <span className="font-semibold text-sm block font-mono">{cert.name}</span>
                 <span className="text-xs text-muted-foreground">{cert.description}</span>
               </div>
             </motion.div>
