@@ -38,8 +38,8 @@ const StickyIntroReveal = () => {
     ]
   );
 
-  return (
-    <div ref={containerRef} className="relative" style={{ height: "200vh" }}>
+    return (
+    <div ref={containerRef} className="relative" style={{ height: "300vh" }}>
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
         style={{ backgroundColor: "#020617" }}
