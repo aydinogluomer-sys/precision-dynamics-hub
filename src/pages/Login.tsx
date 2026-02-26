@@ -110,7 +110,7 @@ const Login = () => {
         <FloatingPaths position={-1} />
 
         <motion.div
-          className="relative z-10 max-w-md px-12"
+          className="relative z-10 max-w-md px-12 flex flex-col items-start justify-center"
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
@@ -156,12 +156,6 @@ const Login = () => {
             </span>
           </div>
 
-          <div className="mt-12 p-6 border border-white/10 bg-white/[0.02]">
-            <p className="text-white/50 text-sm italic leading-relaxed">
-              "MAS TECHNIC ile üretim süreçlerimizi çok daha verimli yönetiyoruz."
-            </p>
-            <p className="text-white/30 text-xs mt-3">— Müşteri Referansı</p>
-          </div>
         </motion.div>
       </div>
 
