@@ -94,16 +94,6 @@ const OdemeTab = () => {
   const totalUnpaid = unpaid.reduce((a, p) => a + (p.total_amount || 0), 0);
   const totalPaid = paid.reduce((a, p) => a + (p.total_amount || 0), 0);
 
-  if (payments.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <CreditCard size={40} className="mb-3 opacity-30" />
-        <p className="text-sm font-medium">Henüz ödeme kaydı bulunmuyor.</p>
-        <p className="text-xs mt-1">Fatura ve ödeme durumlarınızı bu sekmeden takip edebileceksiniz.</p>
-      </div>
-    );
-  }
-
   const isOverdue = (due: string | null) => {
     if (!due) return false;
     return new Date(due) < new Date();
@@ -111,21 +101,60 @@ const OdemeTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-background border border-border p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Toplam Ödeme</p>
-          <p className="text-xl font-bold font-mono mt-1">{payments.length} adet</p>
-        </div>
-        <div className="bg-background border border-border p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Ödenen Toplam</p>
-          <p className="text-xl font-bold font-mono mt-1 text-green-600">₺{totalPaid.toLocaleString("tr-TR")}</p>
-        </div>
-        <div className="bg-background border border-border p-4">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Bekleyen Borç</p>
-          <p className="text-xl font-bold font-mono mt-1 text-red-600">₺{totalUnpaid.toLocaleString("tr-TR")}</p>
+      {/* Payment Method Buttons - Always visible */}
+      <div>
+        <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider text-muted-foreground">Ödeme Yöntemleri</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button
+            onClick={() => { setSelectedPayment(null); setPaymentMethod("card"); setShowCardDialog(true); }}
+            className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
+          >
+            <CreditCard size={20} className="text-primary shrink-0" />
+            <div>
+              <p className="text-sm font-medium">Kredi / Banka Kartı</p>
+              <p className="text-xs text-muted-foreground">Visa, Mastercard</p>
+            </div>
+          </button>
+          <button
+            onClick={() => { setSelectedPayment(null); setShowHavaleDialog(true); }}
+            className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
+          >
+            <Landmark size={20} className="text-primary shrink-0" />
+            <div>
+              <p className="text-sm font-medium">Havale / EFT</p>
+              <p className="text-xs text-muted-foreground">Banka hesap bilgileri</p>
+            </div>
+          </button>
+          <button
+            onClick={() => { setSelectedPayment(null); setShowCekDialog(true); }}
+            className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
+          >
+            <FileCheck size={20} className="text-primary shrink-0" />
+            <div>
+              <p className="text-sm font-medium">Çek</p>
+              <p className="text-xs text-muted-foreground">Çek bilgisi bildirin</p>
+            </div>
+          </button>
         </div>
       </div>
+
+      {/* Summary */}
+      {payments.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-background border border-border p-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Toplam Ödeme</p>
+            <p className="text-xl font-bold font-mono mt-1">{payments.length} adet</p>
+          </div>
+          <div className="bg-background border border-border p-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Ödenen Toplam</p>
+            <p className="text-xl font-bold font-mono mt-1 text-green-600">₺{totalPaid.toLocaleString("tr-TR")}</p>
+          </div>
+          <div className="bg-background border border-border p-4">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Bekleyen Borç</p>
+            <p className="text-xl font-bold font-mono mt-1 text-red-600">₺{totalUnpaid.toLocaleString("tr-TR")}</p>
+          </div>
+        </div>
+      )}
 
       {/* Overdue warning */}
       {unpaid.some(p => isOverdue(p.due_date)) && (
@@ -135,55 +164,62 @@ const OdemeTab = () => {
         </div>
       )}
 
-      {/* Payment list */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
-              <th className="pb-3 pr-4">Belge No</th>
-              <th className="pb-3 pr-4">Açıklama</th>
-              <th className="pb-3 pr-4">Fatura Tarihi</th>
-              <th className="pb-3 pr-4">Vade</th>
-              <th className="pb-3 pr-4 text-right">Tutar</th>
-              <th className="pb-3 pr-4">Durum</th>
-              <th className="pb-3">İşlem</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map(p => (
-              <tr key={p.id} className={`border-b border-border/50 last:border-0 ${p.payment_status !== "ödendi" && isOverdue(p.due_date) ? "bg-destructive/5" : ""}`}>
-                <td className="py-3 pr-4 font-mono text-xs">{p.doc_number || p.id.slice(0, 8)}</td>
-                <td className="py-3 pr-4">{p.title || "—"}</td>
-                <td className="py-3 pr-4 text-muted-foreground">{p.doc_date || "—"}</td>
-                <td className="py-3 pr-4 text-muted-foreground">
-                  {p.due_date || "—"}
-                  {p.payment_status !== "ödendi" && isOverdue(p.due_date) && (
-                    <span className="ml-1 text-destructive text-[10px] font-semibold">GECİKMİŞ</span>
-                  )}
-                </td>
-                <td className="py-3 pr-4 text-right font-mono font-semibold">
-                  ₺{(p.total_amount || 0).toLocaleString("tr-TR")}
-                </td>
-                <td className="py-3 pr-4">
-                  <Badge variant="outline" className={statusColor(p.payment_status)}>
-                    {statusLabel(p.payment_status)}
-                  </Badge>
-                </td>
-                <td className="py-3">
-                  {p.payment_status !== "ödendi" ? (
-                    <Button size="sm" variant="outline" onClick={() => handlePayClick(p)} className="text-xs">
-                      Öde
-                    </Button>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">—</span>
-                  )}
-                </td>
+      {/* Payment list or empty */}
+      {payments.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 text-muted-foreground border border-border bg-background">
+          <CreditCard size={32} className="mb-2 opacity-30" />
+          <p className="text-sm font-medium">Henüz fatura kaydı bulunmuyor.</p>
+          <p className="text-xs mt-1">Fatura oluşturulduğunda burada görünecektir.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
+                <th className="pb-3 pr-4">Belge No</th>
+                <th className="pb-3 pr-4">Açıklama</th>
+                <th className="pb-3 pr-4">Fatura Tarihi</th>
+                <th className="pb-3 pr-4">Vade</th>
+                <th className="pb-3 pr-4 text-right">Tutar</th>
+                <th className="pb-3 pr-4">Durum</th>
+                <th className="pb-3">İşlem</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+            </thead>
+            <tbody>
+              {payments.map(p => (
+                <tr key={p.id} className={`border-b border-border/50 last:border-0 ${p.payment_status !== "ödendi" && isOverdue(p.due_date) ? "bg-destructive/5" : ""}`}>
+                  <td className="py-3 pr-4 font-mono text-xs">{p.doc_number || p.id.slice(0, 8)}</td>
+                  <td className="py-3 pr-4">{p.title || "—"}</td>
+                  <td className="py-3 pr-4 text-muted-foreground">{p.doc_date || "—"}</td>
+                  <td className="py-3 pr-4 text-muted-foreground">
+                    {p.due_date || "—"}
+                    {p.payment_status !== "ödendi" && isOverdue(p.due_date) && (
+                      <span className="ml-1 text-destructive text-[10px] font-semibold">GECİKMİŞ</span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-4 text-right font-mono font-semibold">
+                    ₺{(p.total_amount || 0).toLocaleString("tr-TR")}
+                  </td>
+                  <td className="py-3 pr-4">
+                    <Badge variant="outline" className={statusColor(p.payment_status)}>
+                      {statusLabel(p.payment_status)}
+                    </Badge>
+                  </td>
+                  <td className="py-3">
+                    {p.payment_status !== "ödendi" ? (
+                      <Button size="sm" variant="outline" onClick={() => handlePayClick(p)} className="text-xs">
+                        Öde
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       {/* Method Selection Dialog */}
       <Dialog open={showMethodDialog} onOpenChange={setShowMethodDialog}>
         <DialogContent className="sm:max-w-md">
