@@ -88,7 +88,7 @@ const CapabilitiesSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="kabiliyetler"
-        className="sticky top-0 h-screen overflow-hidden flex items-center bg-secondary"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-secondary"
       >
         {/* Blueprint grid background */}
         <div
