@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Package, Loader2 } from "lucide-react";
+import { Package, Loader2, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Order {
   id: string;
@@ -13,12 +15,14 @@ interface Order {
   quantity: number | null;
   order_date: string | null;
   deadline: string | null;
+  rfq_ref: string | null;
 }
 
 const statusColor = (s: string | null) => {
   switch (s) {
     case "Üretimde": return "bg-blue-500/10 text-blue-600 border-blue-200";
     case "Tamamlandı": return "bg-green-500/10 text-green-600 border-green-200";
+    case "Sevkiyata Hazır": return "bg-emerald-500/10 text-emerald-600 border-emerald-200";
     case "Beklemede": return "bg-amber-500/10 text-amber-600 border-amber-200";
     default: return "bg-muted text-muted-foreground";
   }
@@ -32,13 +36,20 @@ const SiparislerimTab = () => {
     const fetch = async () => {
       const { data } = await supabase
         .from("orders")
-        .select("id, part_name, status, progress, quantity, order_date, deadline")
+        .select("id, part_name, status, progress, quantity, order_date, deadline, rfq_ref")
         .order("created_at", { ascending: false });
       setOrders((data as Order[]) || []);
       setLoading(false);
     };
     fetch();
   }, []);
+
+  const handleReorder = (order: Order) => {
+    toast.info(`"${order.part_name}" için yeniden sipariş talebi oluşturuluyor...`);
+    // Navigate to teklif-al with pre-filled data would be ideal
+    // For now just toast and redirect
+    window.location.href = "/teklif-al";
+  };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
 
@@ -62,7 +73,8 @@ const SiparislerimTab = () => {
             <th className="pb-3 pr-4">İlerleme</th>
             <th className="pb-3 pr-4">Adet</th>
             <th className="pb-3 pr-4">Sipariş</th>
-            <th className="pb-3">Termin</th>
+            <th className="pb-3 pr-4">Termin</th>
+            <th className="pb-3">İşlem</th>
           </tr>
         </thead>
         <tbody>
@@ -75,12 +87,19 @@ const SiparislerimTab = () => {
               <td className="py-3 pr-4 w-32">
                 <div className="flex items-center gap-2">
                   <Progress value={o.progress || 0} className="h-2 flex-1" />
-                  <span className="text-xs text-muted-foreground">{o.progress || 0}%</span>
+                  <span className="text-xs text-muted-foreground font-mono">{o.progress || 0}%</span>
                 </div>
               </td>
               <td className="py-3 pr-4 font-mono">{o.quantity ?? "—"}</td>
               <td className="py-3 pr-4 text-muted-foreground">{o.order_date || "—"}</td>
-              <td className="py-3 text-muted-foreground">{o.deadline || "—"}</td>
+              <td className="py-3 pr-4 text-muted-foreground">{o.deadline || "—"}</td>
+              <td className="py-3">
+                {o.status === "Tamamlandı" && (
+                  <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8" onClick={() => handleReorder(o)}>
+                    <RefreshCw size={14} /> Yeniden Sipariş
+                  </Button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
