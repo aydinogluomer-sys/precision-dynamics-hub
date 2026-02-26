@@ -131,17 +131,21 @@ const IndustryCard = ({
       onClick={() => isMobile && onActivate(industry.modelType)}
     >
       {/* 3D model area */}
-      <div className="relative h-48 overflow-hidden bg-muted/50">
+      <div className="relative h-48 overflow-hidden bg-[hsl(var(--card))]">
         <AnimatePresence mode="wait">
           {isActive ? (
             <motion.div
               key="canvas"
               className="absolute inset-0 z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             >
+              {/* Radial glow background behind 3D model */}
+              <div className="absolute inset-0" style={{
+                background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.08) 0%, transparent 70%)"
+              }} />
               <Suspense fallback={
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -149,6 +153,11 @@ const IndustryCard = ({
               }>
                 <IndustryCanvas type={industry.modelType} />
               </Suspense>
+              {/* Subtle grid pattern overlay */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
+                backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
+                backgroundSize: "20px 20px"
+              }} />
             </motion.div>
           ) : (
             <motion.div
