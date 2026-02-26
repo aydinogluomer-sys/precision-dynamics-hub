@@ -98,7 +98,7 @@ const MaterialsSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="malzemeler"
-        className="sticky top-0 h-screen overflow-hidden flex items-center"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20"
         style={{ backgroundColor: "#020617" }}
       >
         {/* Blueprint grid */}
