@@ -88,7 +88,7 @@ const CapabilitiesSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="kabiliyetler"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-secondary"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-background"
       >
 
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
@@ -112,23 +112,20 @@ const CapabilitiesSection = () => {
             className="flex items-center justify-center gap-0"
             style={{ opacity: ctaOpacity, y: ctaY }}
           >
-            <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
+            <div className="flex-1 h-px relative bg-border">
               <div
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-secondary"
-                style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-background border border-primary/40"
               />
             </div>
             <a
               href="#teklif"
-              className="px-10 py-3.5 text-xs font-bold uppercase tracking-[0.08em] text-primary transition-all duration-300 hover:bg-primary hover:text-white whitespace-nowrap"
-              style={{ border: "1px solid rgba(6, 136, 173, 0.35)" }}
+              className="px-10 py-3.5 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-white whitespace-nowrap"
             >
               Teknik Kapasiteyi İncele
             </a>
-            <div className="flex-1 h-px relative" style={{ background: "rgba(6, 136, 173, 0.18)" }}>
+            <div className="flex-1 h-px relative bg-border">
               <div
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-secondary"
-                style={{ border: "1.5px solid rgba(6, 136, 173, 0.35)" }}
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-background border border-primary/40"
               />
             </div>
           </motion.div>
