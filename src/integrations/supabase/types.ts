@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      customer_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_type: string | null
+          file_url: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          rfq_id: string | null
+          user_id: string
+          version: number | null
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_type?: string | null
+          file_url: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          rfq_id?: string | null
+          user_id: string
+          version?: number | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          rfq_id?: string | null
+          user_id?: string
+          version?: number | null
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           balance: number | null
@@ -120,6 +159,7 @@ export type Database = {
           title: string | null
           total_amount: number | null
           updated_at: string
+          user_id: string | null
           vat_amount: number | null
           vat_rate: number | null
           vendor: string | null
@@ -145,6 +185,7 @@ export type Database = {
           title?: string | null
           total_amount?: number | null
           updated_at?: string
+          user_id?: string | null
           vat_amount?: number | null
           vat_rate?: number | null
           vendor?: string | null
@@ -170,6 +211,7 @@ export type Database = {
           title?: string | null
           total_amount?: number | null
           updated_at?: string
+          user_id?: string | null
           vat_amount?: number | null
           vat_rate?: number | null
           vendor?: string | null
@@ -415,6 +457,39 @@ export type Database = {
         }
         Relationships: []
       }
+      quality_reports: {
+        Row: {
+          created_at: string
+          file_url: string | null
+          id: string
+          notes: string | null
+          order_id: string | null
+          report_type: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          report_type?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          report_type?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       raw_materials: {
         Row: {
           code: string
@@ -456,6 +531,8 @@ export type Database = {
           company: string | null
           created_at: string
           customer: string | null
+          customer_approved: boolean | null
+          customer_approved_at: string | null
           date: string | null
           email: string | null
           files: string[] | null
@@ -463,7 +540,9 @@ export type Database = {
           material: string | null
           notes: string | null
           phone: string | null
+          price_valid_until: string | null
           quantity: number | null
+          quoted_price: number | null
           service: string | null
           status: string | null
           user_id: string | null
@@ -472,6 +551,8 @@ export type Database = {
           company?: string | null
           created_at?: string
           customer?: string | null
+          customer_approved?: boolean | null
+          customer_approved_at?: string | null
           date?: string | null
           email?: string | null
           files?: string[] | null
@@ -479,7 +560,9 @@ export type Database = {
           material?: string | null
           notes?: string | null
           phone?: string | null
+          price_valid_until?: string | null
           quantity?: number | null
+          quoted_price?: number | null
           service?: string | null
           status?: string | null
           user_id?: string | null
@@ -488,6 +571,8 @@ export type Database = {
           company?: string | null
           created_at?: string
           customer?: string | null
+          customer_approved?: boolean | null
+          customer_approved_at?: string | null
           date?: string | null
           email?: string | null
           files?: string[] | null
@@ -495,10 +580,83 @@ export type Database = {
           material?: string | null
           notes?: string | null
           phone?: string | null
+          price_valid_until?: string | null
           quantity?: number | null
+          quoted_price?: number | null
           service?: string | null
           status?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_staff: boolean | null
+          message: string
+          ticket_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_staff?: boolean | null
+          message: string
+          ticket_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_staff?: boolean | null
+          message?: string
+          ticket_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          order_id: string | null
+          priority: string | null
+          status: string | null
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          order_id?: string | null
+          priority?: string | null
+          status?: string | null
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          order_id?: string | null
+          priority?: string | null
+          status?: string | null
+          subject?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
