@@ -18,6 +18,7 @@ import UretimTab from "@/components/musteri/UretimTab";
 import TeknikArsivTab from "@/components/musteri/TeknikArsivTab";
 import KaliteRaporTab from "@/components/musteri/KaliteRaporTab";
 import FinansTab from "@/components/musteri/FinansTab";
+import OdemeTab from "@/components/musteri/OdemeTab";
 import DestekTab from "@/components/musteri/DestekTab";
 
 interface Profile {
@@ -138,6 +139,7 @@ const MusteriPaneli = () => {
                     <TabsTrigger value="arsiv" className={tabTriggerClass}>Teknik Arşiv</TabsTrigger>
                     <TabsTrigger value="kalite" className={tabTriggerClass}>Kalite</TabsTrigger>
                     <TabsTrigger value="finans" className={tabTriggerClass}>Finans</TabsTrigger>
+                    <TabsTrigger value="odeme" className={tabTriggerClass}>Ödeme</TabsTrigger>
                     <TabsTrigger value="destek" className={tabTriggerClass}>Destek</TabsTrigger>
                   </TabsList>
                 </div>
@@ -162,6 +164,9 @@ const MusteriPaneli = () => {
                 </TabsContent>
                 <TabsContent value="finans" className="mt-0">
                   <div className="bg-card border border-border border-t-0 p-6"><FinansTab /></div>
+                </TabsContent>
+                <TabsContent value="odeme" className="mt-0">
+                  <div className="bg-card border border-border border-t-0 p-6"><OdemeTab /></div>
                 </TabsContent>
                 <TabsContent value="destek" className="mt-0">
                   <div className="bg-card border border-border border-t-0 p-6"><DestekTab /></div>
