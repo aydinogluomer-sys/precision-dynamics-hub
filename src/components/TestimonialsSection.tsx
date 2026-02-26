@@ -43,6 +43,15 @@ const TestimonialsSection = () => {
       className="section-industrial relative overflow-hidden"
       style={{ backgroundColor: "#0F172A" }}
     >
+      {/* Blueprint grid background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
       <div className="container-industrial relative z-10">
         {/* Header */}
         <TextReveal className="text-center mb-16">
