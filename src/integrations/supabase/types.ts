@@ -347,6 +347,7 @@ export type Database = {
           quantity: number | null
           rfq_ref: string | null
           status: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -359,6 +360,7 @@ export type Database = {
           quantity?: number | null
           rfq_ref?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -371,6 +373,7 @@ export type Database = {
           quantity?: number | null
           rfq_ref?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -463,6 +466,7 @@ export type Database = {
           quantity: number | null
           service: string | null
           status: string | null
+          user_id: string | null
         }
         Insert: {
           company?: string | null
@@ -478,6 +482,7 @@ export type Database = {
           quantity?: number | null
           service?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           company?: string | null
@@ -493,6 +498,7 @@ export type Database = {
           quantity?: number | null
           service?: string | null
           status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
