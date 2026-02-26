@@ -416,11 +416,15 @@ const Header = () => {
 
             {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-3 shrink-0">
-              <Link to="/giris" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap">
+              <Link
+                to="/giris"
+                className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                 Giriş Yap
               </Link>
-              <Link to="/teklif-al" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5">
-                Teklif Al
+              <Link to="/teklif-al" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5" style={{ transform: "skewX(-4deg)" }}>
+                <span style={{ display: "inline-block", transform: "skewX(4deg)" }}>Teklif Al</span>
               </Link>
             </div>
 
