@@ -14,7 +14,7 @@ const FloatingPaths = ({ position }: FloatingPathsProps) => {
     } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
       684 - i * 5 * position
     } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    color: `rgba(6, 136, 173, ${0.05 + i * 0.015})`,
+    color: `rgba(6, 136, 173, ${0.08 + i * 0.02})`,
     width: 0.5 + i * 0.03,
   }));
 
@@ -36,13 +36,14 @@ const FloatingPaths = ({ position }: FloatingPathsProps) => {
             initial={{ pathLength: 0.3, opacity: 0.4 }}
             animate={{
               pathLength: 1,
-              opacity: [0.2, 0.5, 0.2],
-              pathOffset: [0, 1],
+              opacity: [0.3, 0.6, 0.3],
+              pathOffset: [0, 1, 0],
             }}
             transition={{
-              duration: 20 + Math.random() * 10,
+              duration: 15 + Math.random() * 10,
               repeat: Infinity,
               ease: "linear",
+              repeatType: "loop",
             }}
           />
         ))}
