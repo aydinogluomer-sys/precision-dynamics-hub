@@ -1,85 +1,83 @@
 
+# Font Kullanim Plani: Space Grotesk vs IBM Plex Mono
 
-# Mevcut Supabase Altyapi Dokumantasyonu -- Tam SQL Kurulum Betigi
+## Genel Strateji
 
-Bu plan, mevcut veritabanindaki **tum tablolari, fonksiyonlari, RLS politikalarini ve kisitlamalari** tek bir SQL dosyasina derleyecektir. Bu dosya referans dokumantasyon olarak saklanacak ve gerektiginde sifirdan kurulum icin kullanilabilecektir.
-
----
-
-## Kapsam
-
-Asagidaki bilesenlerin tamami tek bir SQL dosyasinda yer alacaktir:
-
-- 1 Enum tanimlama (`app_role`)
-- 2 Security Definer fonksiyon (`has_role`, `is_staff`)
-- 1 Trigger fonksiyonu (`update_updated_at_column`)
-- 13 Tablo olusturma (customers, rfqs, orders, wbs, meetings, issues, financial_documents, machine_health, maintenance_logs, tool_inventory, raw_materials, faq_analytics, user_roles)
-- Tum RLS politikalari (toplam ~45 politika)
-- CHECK kisitlamalari (customers tablosu)
-- Storage bucket tanimlamalari (referans olarak)
+| Font | Rol | Neden |
+|------|-----|-------|
+| **Space Grotesk** | Ana UI fontu (basliklar, paragraflar, butonlar, navigasyon) | Geometrik, modern, okunakli -- marka kimligine uygun |
+| **IBM Plex Mono** | Teknik/veri icerikleri, footer, badge'ler, kod referanslari | Monospace = muhendislik/hassasiyet hissi, endüstriyel karakter |
 
 ---
 
-## Olusturulacak Dosya
+## Bolum Bolum Atama
 
-**`docs/supabase-full-setup.sql`** -- Tek bir referans SQL dosyasi
+### Space Grotesk (font-sans) -- Varsayilan, Degisiklik Gerekmez
+- **Header / Navigasyon**: Marka adi, menu linkleri, butonlar
+- **Hero Section**: Ana baslik, alt baslik, CTA butonlari
+- **StickyIntroReveal**: "Mas Technic, CNC Freze..." paragraf metni
+- **Services Section**: Basliklar, aciklamalar
+- **Industries Section**: Basliklar, sektor isimleri
+- **How We Work Section**: Adim baslik ve aciklamalari
+- **Why Us Section**: Basliklar, aciklama metinleri
+- **Testimonials Section**: Musteri yorumlari, isimler
+- **FAQ Section**: Soru/cevap metinleri
+- **CTA Sections**: Basliklar, buton metinleri
+- **Tum sayfa baslik ve paragraf icerikleri** (Hakkimizda, Iletisim, Blog, SSS vb.)
 
-### Dosya Yapisi (sirali):
+### IBM Plex Mono (font-mono) -- Guncellenmesi Gereken Bolumler
+
+1. **Footer** (zaten uygulanmis -- `fontFamily: "'IBM Plex Mono'"`)
+   - Tum footer icerigi mono kalacak
+
+2. **Stats Section** (`StatsSection.tsx`)
+   - Buyuk rakamlar (25+, 99.7%, 10K+ vb.) `font-mono` sinifi alacak
+   - Etiketler (Yillik Deneyim, Zamaninda Teslimat) Space Grotesk kalacak
+
+3. **Materials Section** (`MaterialsSection.tsx`)
+   - Malzeme spec/tolerans degerleri ve badge'ler `font-mono` alacak
+   - Malzeme basliklari (Aluminyum, Celik vb.) Space Grotesk kalacak
+
+4. **Capabilities Section** (`CapabilitiesSection.tsx`)
+   - Teknik spec degerleri (tolerans, olcu araligi vb.) `font-mono`
+   - Basliklar ve aciklamalar Space Grotesk
+
+5. **Certifications Section** (`CertificationsSection.tsx`)
+   - Sertifika kodlari (ISO 9001, AS9100D vb.) `font-mono`
+   - Aciklama metinleri Space Grotesk
+
+6. **Comparison Table** (`ComparisonTable.tsx`)
+   - Tablo icerisindeki sayisal degerler `font-mono`
+
+7. **Admin Panel** (zaten cogunlukla `font-mono` kullaniyor)
+   - Finansal rakamlar, tarihler, belge numaralari -- mevcut `font-mono` kullanimi korunacak
+
+---
+
+## Teknik Uygulama
+
+### 1. Tailwind config guncelleme
+`tailwind.config.ts` icindeki `fontFamily.mono` degerini `JetBrains Mono` yerine `IBM Plex Mono` olarak degistir. Boylece projede `font-mono` sinifi kullanan her yer otomatik olarak IBM Plex Mono'ya gecis yapar.
 
 ```text
-1. Hazirlik (enum, fonksiyonlar, trigger)
-2. Tablo olusturma (13 tablo)
-3. Foreign key iliskileri
-4. CHECK kisitlamalari
-5. RLS etkinlestirme
-6. RLS politikalari (tablo bazinda gruplu)
-7. Trigger baglama
-8. Storage bucket notlari
-9. Admin kullanici atama ornegi
+font-mono: ['IBM Plex Mono', 'monospace']   (eskisi: JetBrains Mono)
 ```
 
----
+### 2. CSS guncelleme
+`src/index.css` icindeki Google Font import satirindan JetBrains Mono'yu cikar (zaten `index.html` uzerinden IBM Plex Mono yukleniyor). `.text-technical` sinifini da IBM Plex Mono'ya guncelle.
 
-## Teknik Detaylar
+### 3. Footer temizligi
+`Footer.tsx` icerisindeki inline `fontFamily` stilini kaldir; `font-mono` Tailwind sinifi yeterli olacak cunku config guncellendikten sonra otomatik IBM Plex Mono gelecek.
 
-### Bolum 1: Enum ve Fonksiyonlar
-
-- `app_role` enum: `admin`, `staff`, `production`, `quality`
-- `has_role(uuid, app_role)`: Belirli bir rolun varligini kontrol eder (SECURITY DEFINER)
-- `is_staff(uuid)`: user_roles tablosunda herhangi bir kaydinin olup olmadigini kontrol eder (SECURITY DEFINER)
-- `update_updated_at_column()`: Trigger fonksiyonu, `updated_at` sutununu otomatik gunceller
-
-### Bolum 2: 13 Tablo
-
-Her tablo `CREATE TABLE IF NOT EXISTS` ile olusturulacak, mevcut sutun tipleri, default degerler ve nullable ayarlari birebir korunacaktir.
-
-### Bolum 3: RLS Politikalari
-
-Her tablo icin ayri ayri:
-- `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`
-- Tum RESTRICTIVE politikalar (`PERMISSIVE: No`) dogru komutlarla (SELECT/INSERT/UPDATE/DELETE)
-- `has_role()` ve `is_staff()` fonksiyonlari kullanilarak
-
-Ornek yapi:
-- **customers**: Staff okuma/yazma/guncelleme, Admin silme
-- **financial_documents**: Sadece Admin (tum islemler)
-- **rfqs**: Anonim INSERT (kisitli), Staff okuma/guncelleme, Admin silme
-- **meetings**: `user_id = auth.uid()` bazli sahiplik kontrolu
-- **user_roles**: Admin tum roller, kullanici kendi rolu
-
-### Bolum 4: CHECK Kisitlamalari
-
-customers tablosundaki mevcut kisitlamalar:
-- name, company: max 200 karakter
-- city: max 100 karakter
-- phone: max 30 karakter
-- email: max 255 karakter + format regex
+### 4. Bilesen guncellemeleri
+Asagidaki dosyalarda ilgili sayisal/teknik degerlere `font-mono` sinifi ekle:
+- `StatsSection.tsx` -- buyuk rakam elemanlarina
+- `MaterialsSection.tsx` -- spec badge'lerine
+- `CapabilitiesSection.tsx` -- teknik deger satirlarina
+- `CertificationsSection.tsx` -- sertifika kod metinlerine
 
 ---
 
-## Onemli Notlar
+## Sonuc
 
-- Bu dosya **referans ve yedek** amaclidir. Mevcut canli veritabanini degistirmez.
-- `CREATE TABLE IF NOT EXISTS` ve `CREATE POLICY IF NOT EXISTS` / `DO $$ ... $$` bloklari kullanilarak idempotent (tekrar calistirilabilir) yazilacaktir.
-- Dosya icinde aciklama satirlari Turkce olacaktir.
-
+Toplam **~8 dosyada** degisiklik yapilacak. Tum proje genelinde tek bir monospace font (IBM Plex Mono) kullanilacak, JetBrains Mono tamamen kaldirilacak. Space Grotesk ana icerik fontu olarak korunacak.
