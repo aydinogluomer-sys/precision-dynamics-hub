@@ -1,32 +1,44 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Loader2, Activity } from "lucide-react";
 
-interface WBS {
+interface OrderProduction {
   id: string;
   part_name: string | null;
-  customer: string | null;
   status: string | null;
-  current_step: number | null;
-  total_qty: number | null;
-  machine: string | null;
+  progress: number | null;
+  quantity: number | null;
   deadline: string | null;
 }
 
+const STEPS = [
+  { key: "malzeme", label: "Malzeme Bekliyor", threshold: 0 },
+  { key: "cam", label: "CAM Hazırlığında", threshold: 20 },
+  { key: "cnc", label: "CNC Tezgahta", threshold: 40 },
+  { key: "kalite", label: "Kalite Kontrolde", threshold: 70 },
+  { key: "sevkiyat", label: "Sevkiyata Hazır", threshold: 90 },
+];
+
+const getActiveStep = (progress: number) => {
+  for (let i = STEPS.length - 1; i >= 0; i--) {
+    if (progress >= STEPS[i].threshold) return i;
+  }
+  return 0;
+};
+
 const UretimTab = () => {
-  const [items, setItems] = useState<WBS[]>([]);
+  const [items, setItems] = useState<OrderProduction[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
-      // WBS doesn't have user_id yet — will show empty for customers until admin links data
       const { data } = await supabase
-        .from("wbs")
-        .select("id, part_name, customer, status, current_step, total_qty, machine, deadline")
+        .from("orders")
+        .select("id, part_name, status, progress, quantity, deadline")
+        .in("status", ["Beklemede", "Üretimde", "Sevkiyata Hazır"])
         .order("created_at", { ascending: false });
-      setItems((data as WBS[]) || []);
+      setItems((data as OrderProduction[]) || []);
       setLoading(false);
     };
     fetch();
@@ -45,36 +57,76 @@ const UretimTab = () => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
-            <th className="pb-3 pr-4">Parça</th>
-            <th className="pb-3 pr-4">Durum</th>
-            <th className="pb-3 pr-4">Adım</th>
-            <th className="pb-3 pr-4">Makine</th>
-            <th className="pb-3">Termin</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((w) => (
-            <tr key={w.id} className="border-b border-border/50 last:border-0">
-              <td className="py-3 pr-4 font-medium">{w.part_name || "—"}</td>
-              <td className="py-3 pr-4">
-                <Badge variant="outline">{w.status || "—"}</Badge>
-              </td>
-              <td className="py-3 pr-4">
-                <div className="flex items-center gap-2">
-                  <Progress value={w.current_step ? (w.current_step / 10) * 100 : 0} className="h-2 w-20" />
-                  <span className="text-xs text-muted-foreground">{w.current_step || 0}/10</span>
-                </div>
-              </td>
-              <td className="py-3 pr-4 text-muted-foreground">{w.machine || "—"}</td>
-              <td className="py-3 text-muted-foreground">{w.deadline || "—"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-6">
+      {items.map((item) => {
+        const progress = item.progress || 0;
+        const activeStep = getActiveStep(progress);
+
+        return (
+          <div key={item.id} className="border border-border bg-background p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-semibold text-sm">{item.part_name || "İsimsiz Parça"}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {item.quantity && `${item.quantity} adet`}
+                  {item.deadline && ` · Termin: ${item.deadline}`}
+                </p>
+              </div>
+              <Badge variant="outline" className={
+                item.status === "Üretimde" ? "bg-blue-500/10 text-blue-600 border-blue-200" :
+                item.status === "Sevkiyata Hazır" ? "bg-emerald-500/10 text-emerald-600 border-emerald-200" :
+                "bg-amber-500/10 text-amber-600 border-amber-200"
+              }>
+                {item.status}
+              </Badge>
+            </div>
+
+            {/* Step Progress */}
+            <div className="flex items-center gap-0">
+              {STEPS.map((step, i) => {
+                const isActive = i === activeStep;
+                const isCompleted = i < activeStep;
+                const isPending = i > activeStep;
+
+                return (
+                  <div key={step.key} className="flex items-center flex-1">
+                    <div className="flex flex-col items-center flex-1">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                        isCompleted ? "bg-primary text-primary-foreground" :
+                        isActive ? "bg-primary text-primary-foreground ring-4 ring-primary/20" :
+                        "bg-muted text-muted-foreground"
+                      }`}>
+                        {isCompleted ? "✓" : i + 1}
+                      </div>
+                      <span className={`text-[10px] mt-1.5 text-center leading-tight ${
+                        isActive ? "font-bold text-primary" :
+                        isCompleted ? "text-foreground" :
+                        "text-muted-foreground"
+                      }`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < STEPS.length - 1 && (
+                      <div className={`h-0.5 flex-1 mx-1 ${isCompleted ? "bg-primary" : "bg-border"}`} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Overall progress bar */}
+            <div className="mt-4 flex items-center gap-3">
+              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <span className="text-xs font-mono font-semibold text-muted-foreground">{progress}%</span>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
