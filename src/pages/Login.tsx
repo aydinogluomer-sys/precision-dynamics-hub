@@ -12,8 +12,12 @@ import {
   Shield,
   ChevronLeft,
   AtSign,
+  User,
+  Building2,
+  Phone,
+  MapPin,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FloatingPaths from "@/components/FloatingPaths";
@@ -33,7 +37,6 @@ const LinkedInIcon = (props: React.ComponentProps<"svg">) => (
   </svg>
 );
 
-/* ── Benefit list items ── */
 const benefits = [
   "Teklif taleplerinizi anlık takip edin",
   "Sipariş durumunuzu görüntüleyin",
@@ -41,7 +44,6 @@ const benefits = [
   "Mühendislerimizle doğrudan iletişim kurun",
 ];
 
-/* ── Social buttons ── */
 const SocialButtons = ({
   socialLoading,
   onSocial,
@@ -79,9 +81,8 @@ const SocialButtons = ({
   </div>
 );
 
-/* ── Separator ── */
 const AuthSeparator = () => (
-  <div className="relative my-7">
+  <div className="relative my-6">
     <div className="absolute inset-0 flex items-center">
       <div className="w-full border-t border-border" />
     </div>
@@ -93,40 +94,32 @@ const AuthSeparator = () => (
   </div>
 );
 
-/* ── Left panel ── */
 const LeftPanel = ({ isLogin }: { isLogin: boolean }) => (
   <div className="hidden lg:flex lg:w-[45%] relative bg-industrial-dark overflow-hidden items-center justify-center">
     <FloatingPaths position={1} />
     <FloatingPaths position={-1} />
-
     <motion.div
       className="relative z-10 max-w-sm px-10 flex flex-col items-start"
       initial={{ opacity: 0, x: -30 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Logo */}
       <div className="flex items-center gap-3 mb-12">
         <div className="w-11 h-11 bg-primary flex items-center justify-center">
           <span className="text-primary-foreground font-bold text-base">MT</span>
         </div>
         <div>
           <div className="text-white font-bold text-base tracking-tight">MAS TECHNIC</div>
-          <div className="text-white/40 text-[10px] uppercase tracking-[0.3em]">
-            Precision Engineering
-          </div>
+          <div className="text-white/40 text-[10px] uppercase tracking-[0.3em]">Precision Engineering</div>
         </div>
       </div>
-
       <div className="w-10 h-[2px] bg-primary mb-8" />
-
       <h2 className="text-2xl font-bold text-white tracking-tight mb-3">
         {isLogin ? "Hoş Geldiniz" : "Aramıza Katılın"}
       </h2>
       <p className="text-white/50 text-sm leading-relaxed mb-10">
         MAS TECHNIC müşteri portalı ile üretim süreçlerinizi tek noktadan yönetin.
       </p>
-
       <div className="space-y-4">
         {benefits.map((b, i) => (
           <motion.div
@@ -141,7 +134,6 @@ const LeftPanel = ({ isLogin }: { isLogin: boolean }) => (
           </motion.div>
         ))}
       </div>
-
       <div className="mt-14 pt-6 border-t border-white/10 flex items-center gap-3">
         <Shield size={14} className="text-primary/50" />
         <span className="text-[10px] text-white/25 uppercase tracking-wider">
@@ -152,10 +144,37 @@ const LeftPanel = ({ isLogin }: { isLogin: boolean }) => (
   </div>
 );
 
+/* ── Form field helper ── */
+const FormField = ({
+  label,
+  icon: Icon,
+  required = false,
+  children,
+}: {
+  label: string;
+  icon: React.ElementType;
+  required?: boolean;
+  children: React.ReactNode;
+}) => (
+  <div>
+    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+      {label} {!required && <span className="normal-case tracking-normal font-normal">(opsiyonel)</span>}
+    </label>
+    <div className="relative">
+      <Icon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
+      {children}
+    </div>
+  </div>
+);
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [company, setCompany] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -173,17 +192,30 @@ const Login = () => {
         return;
       }
       toast.success("Giriş başarılı!");
-      navigate("/");
+      navigate("/musteri-paneli");
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: window.location.origin },
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: { full_name: fullName },
+        },
       });
       if (error) {
         toast.error(error.message);
         setLoading(false);
         return;
+      }
+      // Update profile with extra fields
+      if (data.user) {
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          full_name: fullName,
+          company,
+          phone,
+          city,
+        });
       }
       toast.success("Kayıt başarılı! E-posta adresinizi doğrulayın.");
     }
@@ -194,7 +226,7 @@ const Login = () => {
     setSocialLoading(provider);
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${window.location.origin}/musteri-paneli` },
     });
     if (error) toast.error("Giriş başarısız: " + error.message);
     setSocialLoading(null);
@@ -204,150 +236,184 @@ const Login = () => {
     <div className="min-h-screen w-full flex">
       <LeftPanel isLogin={isLogin} />
 
-      {/* ── Right panel ── */}
       <div className="w-full lg:w-[55%] flex items-center justify-center bg-background px-6 py-12">
         <motion.div
-          className="w-full max-w-[400px]"
+          className="w-full max-w-[420px]"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
         >
-          {/* Back link */}
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors mb-10"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors mb-8"
           >
             <ChevronLeft size={14} />
             Ana Sayfa
           </Link>
 
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2 mb-8">
+          <div className="lg:hidden flex items-center gap-2 mb-6">
             <div className="w-10 h-10 bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">MT</span>
             </div>
             <div>
               <div className="font-bold text-sm tracking-tight">MAS TECHNIC</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-widest">
-                Müşteri Portalı
-              </div>
+              <div className="text-[10px] text-muted-foreground uppercase tracking-widest">Müşteri Portalı</div>
             </div>
           </div>
 
-          {/* Heading */}
-          <div className="mb-8">
+          <div className="mb-6">
             <h1 className="text-[26px] font-bold tracking-tight mb-2">
               {isLogin ? "Giriş Yapın" : "Hesap Oluşturun"}
             </h1>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isLogin
                 ? "Hesabınıza giriş yaparak projelerinizi takip edin."
-                : "Hızlı teklif ve proje takibi için hesap oluşturun."}
+                : "Bilgilerinizi doldurarak müşteri portalına erişim sağlayın."}
             </p>
           </div>
 
-          {/* Social */}
           <SocialButtons socialLoading={socialLoading} onSocial={handleSocialLogin} />
-
           <AuthSeparator />
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                E-posta
-              </label>
-              <div className="relative">
-                <AtSign size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
+          <AnimatePresence mode="wait">
+            <motion.form
+              key={isLogin ? "login" : "signup"}
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              initial={{ opacity: 0, x: isLogin ? -10 : 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: isLogin ? 10 : -10 }}
+              transition={{ duration: 0.25 }}
+            >
+              {/* Registration-only fields */}
+              {!isLogin && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FormField label="Ad Soyad" icon={User} required>
+                      <Input
+                        type="text"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="pl-10 h-11"
+                        placeholder="Ahmet Yılmaz"
+                        maxLength={100}
+                      />
+                    </FormField>
+                    <FormField label="Firma" icon={Building2}>
+                      <Input
+                        type="text"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        className="pl-10 h-11"
+                        placeholder="Firma Adı"
+                        maxLength={100}
+                      />
+                    </FormField>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FormField label="Telefon" icon={Phone}>
+                      <Input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="pl-10 h-11"
+                        placeholder="05XX XXX XX XX"
+                        maxLength={20}
+                      />
+                    </FormField>
+                    <FormField label="Şehir" icon={MapPin}>
+                      <Input
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="pl-10 h-11"
+                        placeholder="İstanbul"
+                        maxLength={50}
+                      />
+                    </FormField>
+                  </div>
+                </>
+              )}
+
+              <FormField label="E-posta" icon={AtSign} required>
                 <Input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12"
+                  className="pl-10 h-11"
                   placeholder="ornek@firma.com"
                 />
-              </div>
-            </div>
+              </FormField>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Şifre
-                </label>
-                {isLogin && (
-                  <button type="button" className="text-xs text-primary hover:underline">
-                    Şifremi Unuttum
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Şifre
+                  </label>
+                  {isLogin && (
+                    <button type="button" className="text-xs text-primary hover:underline">
+                      Şifremi Unuttum
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 pr-12 h-11"
+                    placeholder="••••••••"
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 font-semibold uppercase tracking-wider text-sm"
+              >
+                {loading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <>
+                    {isLogin ? "Giriş Yap" : "Hesap Oluştur"}
+                    <ArrowRight size={16} className="ml-2" />
+                  </>
                 )}
-              </div>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-12 h-12"
-                  placeholder="••••••••"
-                  minLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
+              </Button>
+            </motion.form>
+          </AnimatePresence>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full h-12 font-semibold uppercase tracking-wider text-sm mt-2"
-            >
-              {loading ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <>
-                  {isLogin ? "Giriş Yap" : "Hesap Oluştur"}
-                  <ArrowRight size={16} className="ml-2" />
-                </>
-              )}
-            </Button>
-          </form>
-
-          {/* Toggle */}
-          <div className="text-center mt-8">
+          <div className="text-center mt-6">
             <button
               onClick={() => setIsLogin(!isLogin)}
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               {isLogin ? (
-                <>
-                  Hesabınız yok mu?{" "}
-                  <span className="font-semibold text-primary">Kayıt Olun</span>
-                </>
+                <>Hesabınız yok mu? <span className="font-semibold text-primary">Kayıt Olun</span></>
               ) : (
-                <>
-                  Zaten hesabınız var mı?{" "}
-                  <span className="font-semibold text-primary">Giriş Yapın</span>
-                </>
+                <>Zaten hesabınız var mı? <span className="font-semibold text-primary">Giriş Yapın</span></>
               )}
             </button>
           </div>
 
-          {/* Terms */}
-          <p className="text-[11px] text-muted-foreground/50 text-center mt-8 leading-relaxed">
+          <p className="text-[11px] text-muted-foreground/50 text-center mt-6 leading-relaxed">
             Devam ederek{" "}
-            <Link to="/gizlilik-politikasi" className="underline hover:text-primary">
-              Gizlilik Politikası
-            </Link>
+            <Link to="/gizlilik-politikasi" className="underline hover:text-primary">Gizlilik Politikası</Link>
             {"'nı ve "}
-            <Link to="/kvkk" className="underline hover:text-primary">
-              KVKK Aydınlatma Metni
-            </Link>
+            <Link to="/kvkk" className="underline hover:text-primary">KVKK Aydınlatma Metni</Link>
             {"'ni kabul etmiş olursunuz."}
           </p>
         </motion.div>
