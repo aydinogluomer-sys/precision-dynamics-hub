@@ -1,83 +1,54 @@
 
-# Font Kullanim Plani: Space Grotesk vs IBM Plex Mono
 
-## Genel Strateji
+# Musteri Paneli: Koruma + Zengin Ozellikler
 
-| Font | Rol | Neden |
-|------|-----|-------|
-| **Space Grotesk** | Ana UI fontu (basliklar, paragraflar, butonlar, navigasyon) | Geometrik, modern, okunakli -- marka kimligine uygun |
-| **IBM Plex Mono** | Teknik/veri icerikleri, footer, badge'ler, kod referanslari | Monospace = muhendislik/hassasiyet hissi, endüstriyel karakter |
+## 1. Musteri icin ProtectedRoute olustur
 
----
+Mevcut `ProtectedRoute` admin icin tasarlanmis (`user_roles` tablosunu kontrol ediyor ve `/admin/login`'e yonlendiriyor). Musteriler icin farkli bir koruma bilesenine ihtiyac var:
 
-## Bolum Bolum Atama
+- **Yeni bileseni olustur:** `CustomerProtectedRoute` -- sadece oturum kontrolu yapar (rol kontrolu yok, cunku musterilerin `user_roles` tablosunda kaydi yok).
+- Giris yapilmamissa `/giris` sayfasina yonlendirir.
+- `MusteriPaneli` icindeki manuel oturum kontrolunu kaldir (artik route seviyesinde yapiliyor).
+- `App.tsx`'te `/musteri-paneli` rotasini `CustomerProtectedRoute` ile sar.
 
-### Space Grotesk (font-sans) -- Varsayilan, Degisiklik Gerekmez
-- **Header / Navigasyon**: Marka adi, menu linkleri, butonlar
-- **Hero Section**: Ana baslik, alt baslik, CTA butonlari
-- **StickyIntroReveal**: "Mas Technic, CNC Freze..." paragraf metni
-- **Services Section**: Basliklar, aciklamalar
-- **Industries Section**: Basliklar, sektor isimleri
-- **How We Work Section**: Adim baslik ve aciklamalari
-- **Why Us Section**: Basliklar, aciklama metinleri
-- **Testimonials Section**: Musteri yorumlari, isimler
-- **FAQ Section**: Soru/cevap metinleri
-- **CTA Sections**: Basliklar, buton metinleri
-- **Tum sayfa baslik ve paragraf icerikleri** (Hakkimizda, Iletisim, Blog, SSS vb.)
+## 2. Musteri Panelini Zenginlestir (Tab Yapisi)
 
-### IBM Plex Mono (font-mono) -- Guncellenmesi Gereken Bolumler
+Mevcut panelde sadece statik kartlar ve placeholder veriler var. Bunlari gercek, kullanilabilir sekmelere donusturecegiz:
 
-1. **Footer** (zaten uygulanmis -- `fontFamily: "'IBM Plex Mono'"`)
-   - Tum footer icerigi mono kalacak
+### Tab Yapisi:
+- **Genel Bakis** (varsayilan) -- Hos geldin mesaji, istatistik kartlari, son aktiviteler
+- **Siparislerim** -- Musterinin siparislerini listeleyen tablo (durum, ilerleme, tarih)
+- **Teklif Taleplerim** -- Musterinin gonderdigi RFQ'lari gosteren tablo
+- **Odeme Takibi** -- Fatura durumu, vadesi gecen/bekleyen odemeler
+- **Uretim Durumu** -- Aktif uretimdeki parcalarin ilerleme durumu (WBS verisi)
 
-2. **Stats Section** (`StatsSection.tsx`)
-   - Buyuk rakamlar (25+, 99.7%, 10K+ vb.) `font-mono` sinifi alacak
-   - Etiketler (Yillik Deneyim, Zamaninda Teslimat) Space Grotesk kalacak
+### Veri Kaynaklari:
+Mevcut tablolar (orders, rfqs, wbs, financial_documents) admin/staff RLS politikalarina sahip. Musterilerin kendi verilerini gorebilmesi icin:
 
-3. **Materials Section** (`MaterialsSection.tsx`)
-   - Malzeme spec/tolerans degerleri ve badge'ler `font-mono` alacak
-   - Malzeme basliklari (Aluminyum, Celik vb.) Space Grotesk kalacak
+### Veritabani Degisiklikleri:
+- `orders` tablosuna `user_id` (uuid, nullable, FK -> auth.users) kolonu ekle
+- `rfqs` tablosuna `user_id` (uuid, nullable, FK -> auth.users) kolonu ekle  
+- Her iki tabloya musteri icin SELECT RLS politikasi ekle: `auth.uid() = user_id`
+- Boylece musteriler sadece kendi siparis ve tekliflerini gorebilir
 
-4. **Capabilities Section** (`CapabilitiesSection.tsx`)
-   - Teknik spec degerleri (tolerans, olcu araligi vb.) `font-mono`
-   - Basliklar ve aciklamalar Space Grotesk
+### UI Bilesenleri:
+- Radix Tabs kullanilarak sekme navigasyonu
+- Her sekme icin:
+  - Veri varsa: Tablo gorunumu (tarih, durum badge'leri, ilerleme cubugu)
+  - Veri yoksa: Bos durum mesaji + aksiyona yonlendirme
+- Profil bilgileri sol tarafta sabit kalir
 
-5. **Certifications Section** (`CertificationsSection.tsx`)
-   - Sertifika kodlari (ISO 9001, AS9100D vb.) `font-mono`
-   - Aciklama metinleri Space Grotesk
+## Teknik Detaylar
 
-6. **Comparison Table** (`ComparisonTable.tsx`)
-   - Tablo icerisindeki sayisal degerler `font-mono`
+### Dosya Degisiklikleri:
+1. **Yeni:** `src/components/CustomerProtectedRoute.tsx` -- Sadece oturum kontrolu, `/giris`'e yonlendirme
+2. **Guncelle:** `src/App.tsx` -- `/musteri-paneli` rotasini `CustomerProtectedRoute` ile sar
+3. **Guncelle:** `src/pages/MusteriPaneli.tsx` -- Tab yapisi, gercek veri sorgulari, zengin UI
+4. **Veritabani:** Migration -- `orders` ve `rfqs` tablolarina `user_id` kolonu + RLS politikalari
 
-7. **Admin Panel** (zaten cogunlukla `font-mono` kullaniyor)
-   - Finansal rakamlar, tarihler, belge numaralari -- mevcut `font-mono` kullanimi korunacak
+### Siralama:
+1. Veritabani migration'i (user_id kolonlari + RLS)
+2. CustomerProtectedRoute bilesenini olustur
+3. App.tsx'te rotayi sar
+4. MusteriPaneli'ni tab yapisiyla yeniden tasarla
 
----
-
-## Teknik Uygulama
-
-### 1. Tailwind config guncelleme
-`tailwind.config.ts` icindeki `fontFamily.mono` degerini `JetBrains Mono` yerine `IBM Plex Mono` olarak degistir. Boylece projede `font-mono` sinifi kullanan her yer otomatik olarak IBM Plex Mono'ya gecis yapar.
-
-```text
-font-mono: ['IBM Plex Mono', 'monospace']   (eskisi: JetBrains Mono)
-```
-
-### 2. CSS guncelleme
-`src/index.css` icindeki Google Font import satirindan JetBrains Mono'yu cikar (zaten `index.html` uzerinden IBM Plex Mono yukleniyor). `.text-technical` sinifini da IBM Plex Mono'ya guncelle.
-
-### 3. Footer temizligi
-`Footer.tsx` icerisindeki inline `fontFamily` stilini kaldir; `font-mono` Tailwind sinifi yeterli olacak cunku config guncellendikten sonra otomatik IBM Plex Mono gelecek.
-
-### 4. Bilesen guncellemeleri
-Asagidaki dosyalarda ilgili sayisal/teknik degerlere `font-mono` sinifi ekle:
-- `StatsSection.tsx` -- buyuk rakam elemanlarina
-- `MaterialsSection.tsx` -- spec badge'lerine
-- `CapabilitiesSection.tsx` -- teknik deger satirlarina
-- `CertificationsSection.tsx` -- sertifika kod metinlerine
-
----
-
-## Sonuc
-
-Toplam **~8 dosyada** degisiklik yapilacak. Tum proje genelinde tek bir monospace font (IBM Plex Mono) kullanilacak, JetBrains Mono tamamen kaldirilacak. Space Grotesk ana icerik fontu olarak korunacak.
