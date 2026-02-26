@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Check } from "lucide-react";
 import materialAluminium from "@/assets/material-aluminium.jpg";
 import materialSteel from "@/assets/material-steel.jpg";
@@ -52,157 +53,102 @@ const materials = [
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
-};
+const badges = ["50+ Malzeme Seçeneği", "Sertifikalı Tedarikçiler", "Malzeme Test Raporları"];
 
 const MaterialsSection = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Header
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.08], [40, 0]);
+
+  // Each card gets its own reveal window
+  const card0Opacity = useTransform(scrollYProgress, [0.08, 0.18], [0, 1]);
+  const card0Y = useTransform(scrollYProgress, [0.08, 0.18], [60, 0]);
+  const card0Specs = useTransform(scrollYProgress, [0.16, 0.22], [0, 1]);
+
+  const card1Opacity = useTransform(scrollYProgress, [0.20, 0.30], [0, 1]);
+  const card1Y = useTransform(scrollYProgress, [0.20, 0.30], [60, 0]);
+  const card1Specs = useTransform(scrollYProgress, [0.28, 0.34], [0, 1]);
+
+  const card2Opacity = useTransform(scrollYProgress, [0.32, 0.42], [0, 1]);
+  const card2Y = useTransform(scrollYProgress, [0.32, 0.42], [60, 0]);
+  const card2Specs = useTransform(scrollYProgress, [0.40, 0.46], [0, 1]);
+
+  const card3Opacity = useTransform(scrollYProgress, [0.44, 0.54], [0, 1]);
+  const card3Y = useTransform(scrollYProgress, [0.44, 0.54], [60, 0]);
+  const card3Specs = useTransform(scrollYProgress, [0.52, 0.58], [0, 1]);
+
+  const cardAnimations = [
+    { opacity: card0Opacity, y: card0Y, specs: card0Specs },
+    { opacity: card1Opacity, y: card1Y, specs: card1Specs },
+    { opacity: card2Opacity, y: card2Y, specs: card2Specs },
+    { opacity: card3Opacity, y: card3Y, specs: card3Specs },
+  ];
+
+  // Badges
+  const badgesOpacity = useTransform(scrollYProgress, [0.60, 0.70], [0, 1]);
+  const badgesY = useTransform(scrollYProgress, [0.60, 0.70], [30, 0]);
+
   return (
-    <section
-      id="malzemeler"
-      className="section-industrial relative overflow-hidden"
-      style={{ backgroundColor: "#020617" }}
-    >
-      {/* Blueprint grid */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* Radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at 30% 70%, rgba(6, 136, 173, 0.12) 0%, transparent 50%)",
-        }}
-      />
-
-      <div className="container-industrial relative z-10">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <span
-            className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block"
-            style={{ color: "hsl(var(--primary))" }}
-          >
-            Malzeme
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Çalıştığımız Malzemeler
-          </h2>
-          <p className="text-base max-w-lg mx-auto" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
-            50'den fazla malzeme ve alaşım seçeneği ile endüstriyel ihtiyaçlarınıza çözüm
-          </p>
-        </motion.div>
-
-        {/* Cards Grid */}
-        <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {materials.map((mat, i) => (
-            <motion.div
-              key={mat.name}
-              variants={cardVariants}
-              className="relative h-[420px] overflow-hidden cursor-pointer transition-all duration-500 group"
-              style={{
-                background: "rgba(15, 23, 42, 0.5)",
-                border: "1px solid rgba(255, 255, 255, 0.05)",
-              }}
-            >
-              {/* Hover Image */}
-              <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                <img
-                  src={mat.image}
-                  alt={mat.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0.4) 50%, rgba(2, 6, 23, 0.2) 100%)" }}
-                />
-              </div>
-
-              {/* Index */}
-              <div
-                className="absolute top-0 right-0 p-6 text-[10px] z-20"
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  color: "#1e293b",
-                }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </div>
-
-              {/* Content */}
-              <div className="absolute inset-0 p-10 flex flex-col justify-end z-20">
-                <div
-                  className="w-12 h-1 mb-6 transition-all duration-300 group-hover:w-16"
-                  style={{ background: mat.color }}
-                />
-                <h3 className="text-2xl font-bold text-white mb-2 leading-tight">
-                  {mat.name}
-                </h3>
-                <div
-                  className="text-[10px] tracking-[0.2em] mb-6"
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#64748b",
-                  }}
-                >
-                  {mat.typeCode}
-                </div>
-
-                {/* Specs on hover */}
-                <div
-                  className="pt-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500"
-                  style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}
-                >
-                  {mat.specs.map((spec) => (
-                    <div
-                      key={spec.label}
-                      className="flex justify-between mb-3"
-                      style={{
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "10px",
-                      }}
-                    >
-                      <span style={{ color: "#94a3b8" }}>{spec.label}</span>
-                      <span className="text-white font-medium">{spec.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Bottom badges */}
+    <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
+      <section
+        id="malzemeler"
+        className="sticky top-0 h-screen overflow-hidden flex items-center"
+        style={{ backgroundColor: "#020617" }}
+      >
+        {/* Blueprint grid */}
         <div
-          className="flex flex-wrap justify-center items-center gap-6 pt-8"
-          style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}
-        >
-          {["50+ Malzeme Seçeneği", "Sertifikalı Tedarikçiler", "Malzeme Test Raporları"].map(
-            (badge, i) => (
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        {/* Radial glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at 30% 70%, rgba(6, 136, 173, 0.12) 0%, transparent 50%)",
+          }}
+        />
+
+        <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
+          {/* Header */}
+          <motion.div className="text-center mb-8 md:mb-12" style={{ opacity: headerOpacity, y: headerY }}>
+            <span
+              className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block"
+              style={{ color: "hsl(var(--primary))" }}
+            >
+              Malzeme
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Çalıştığımız Malzemeler
+            </h2>
+            <p className="text-base max-w-lg mx-auto" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+              50'den fazla malzeme ve alaşım seçeneği ile endüstriyel ihtiyaçlarınıza çözüm
+            </p>
+          </motion.div>
+
+          {/* Cards Grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 md:mb-12">
+            {materials.map((mat, i) => (
+              <MaterialCard key={mat.name} mat={mat} index={i} anim={cardAnimations[i]} />
+            ))}
+          </div>
+
+          {/* Bottom badges */}
+          <motion.div
+            className="flex flex-wrap justify-center items-center gap-6 pt-6"
+            style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", opacity: badgesOpacity, y: badgesY }}
+          >
+            {badges.map((badge, i) => (
               <span
                 key={badge}
                 className="inline-flex items-center gap-2 text-sm"
@@ -211,16 +157,89 @@ const MaterialsSection = () => {
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />
                 {badge}
                 {i < 2 && (
-                  <span className="ml-4" style={{ color: "rgba(255, 255, 255, 0.3)" }}>
-                    ·
-                  </span>
+                  <span className="ml-4" style={{ color: "rgba(255, 255, 255, 0.3)" }}>·</span>
                 )}
               </span>
-            )
-          )}
+            ))}
+          </motion.div>
         </div>
+      </section>
+    </div>
+  );
+};
+
+/* ── Individual Card ── */
+interface CardProps {
+  mat: (typeof materials)[number];
+  index: number;
+  anim: { opacity: any; y: any; specs: any };
+}
+
+const MaterialCard = ({ mat, index, anim }: CardProps) => {
+  return (
+    <motion.div
+      className="relative h-[380px] md:h-[420px] overflow-hidden"
+      style={{
+        opacity: anim.opacity,
+        y: anim.y,
+        background: "rgba(15, 23, 42, 0.5)",
+        border: "1px solid rgba(255, 255, 255, 0.05)",
+      }}
+    >
+      {/* Background image — revealed by scroll */}
+      <motion.div className="absolute inset-0 z-10" style={{ opacity: anim.specs }}>
+        <img
+          src={mat.image}
+          alt={mat.name}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0.4) 50%, rgba(2, 6, 23, 0.2) 100%)",
+          }}
+        />
+      </motion.div>
+
+      {/* Index */}
+      <div
+        className="absolute top-0 right-0 p-6 text-[10px] z-20"
+        style={{ fontFamily: "'JetBrains Mono', monospace", color: "#1e293b" }}
+      >
+        {String(index + 1).padStart(2, "0")}
       </div>
-    </section>
+
+      {/* Content */}
+      <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
+        <div className="w-12 h-1 mb-6" style={{ background: mat.color }} />
+        <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
+        <div
+          className="text-[10px] tracking-[0.2em] mb-6"
+          style={{ fontFamily: "'JetBrains Mono', monospace", color: "#64748b" }}
+        >
+          {mat.typeCode}
+        </div>
+
+        {/* Specs — revealed by scroll */}
+        <motion.div
+          className="pt-6"
+          style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", opacity: anim.specs }}
+        >
+          {mat.specs.map((spec) => (
+            <div
+              key={spec.label}
+              className="flex justify-between mb-3"
+              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "10px" }}
+            >
+              <span style={{ color: "#94a3b8" }}>{spec.label}</span>
+              <span className="text-white font-medium">{spec.value}</span>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </motion.div>
   );
 };
 
