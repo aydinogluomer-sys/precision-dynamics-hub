@@ -23,6 +23,7 @@ import Malzemeler from "./pages/Malzemeler";
 import MalzemeKategori from "./pages/MalzemeKategori";
 import TeklifAl from "./pages/TeklifAl";
 import CADDashboard from "./pages/CADDashboard";
+import MusteriPaneli from "./pages/MusteriPaneli";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const AnimatedRoutes = () => {
           <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
           <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
           <Route path="/giris" element={<Login />} />
+          <Route path="/musteri-paneli" element={<MusteriPaneli />} />
           <Route path="/teklif-al" element={<TeklifAl />} />
           <Route path="/cad-dashboard" element={<CADDashboard />} />
           <Route path="/admin/login" element={<AdminLogin />} />
