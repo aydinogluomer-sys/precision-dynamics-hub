@@ -55,7 +55,7 @@ const ComparisonTable = ({ table, index }: Props) => {
                       className={`text-sm py-3 whitespace-nowrap ${
                         cellIdx === 0
                           ? "font-semibold text-left"
-                          : "text-technical text-right text-muted-foreground"
+                          : "font-mono text-right text-muted-foreground"
                       }`}
                     >
                       {cell}

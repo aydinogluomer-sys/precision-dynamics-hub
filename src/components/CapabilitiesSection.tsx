@@ -127,8 +127,7 @@ const CapabilitiesSection = () => {
                     <div key={item.label} className="flex justify-between items-start gap-2">
                       <span className="text-sm text-muted-foreground">{item.label}</span>
                       <span
-                        className="text-sm font-medium text-right"
-                        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                      className="text-sm font-medium text-right font-mono"
                       >
                         {item.value}
                       </span>

@@ -54,8 +54,8 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
         }}
       >
         <div
-          className="text-5xl md:text-6xl font-bold text-primary mb-2"
-          style={{ fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}
+          className="text-5xl md:text-6xl font-bold text-primary mb-2 font-mono"
+          style={{ lineHeight: 1 }}
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
