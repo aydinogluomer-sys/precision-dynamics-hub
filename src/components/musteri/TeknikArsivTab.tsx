@@ -14,6 +14,7 @@ interface CustomerFile {
   version: number | null;
   notes: string | null;
   created_at: string;
+  signedUrl?: string;
 }
 
 const fileIcon = (type: string | null) => {
@@ -33,7 +34,17 @@ const TeknikArsivTab = () => {
       .from("customer_files")
       .select("id, file_name, file_url, file_type, version, notes, created_at")
       .order("created_at", { ascending: false });
-    setFiles((data as CustomerFile[]) || []);
+
+    const filesWithUrls = await Promise.all(
+      ((data as CustomerFile[]) || []).map(async (file) => {
+        const { data: urlData } = await supabase.storage
+          .from("customer-files")
+          .createSignedUrl(file.file_url, 3600);
+        return { ...file, signedUrl: urlData?.signedUrl };
+      })
+    );
+
+    setFiles(filesWithUrls);
     setLoading(false);
   };
 
@@ -53,15 +64,13 @@ const TeknikArsivTab = () => {
     const { error: uploadError } = await supabase.storage.from("customer-files").upload(path, file);
     if (uploadError) { toast.error("Dosya yüklenemedi: " + uploadError.message); setUploading(false); return; }
 
-    const { data: urlData } = supabase.storage.from("customer-files").getPublicUrl(path);
-
     const fileType = ["step", "stp", "iges", "igs"].includes(ext) ? "cad" :
                      ["pdf"].includes(ext) ? "pdf" : "other";
 
     const { error: dbError } = await supabase.from("customer_files").insert({
       user_id: session.user.id,
       file_name: file.name,
-      file_url: urlData.publicUrl,
+      file_url: path,
       file_type: fileType,
     });
 
@@ -111,8 +120,8 @@ const TeknikArsivTab = () => {
                   </p>
                 </div>
                 <Badge variant="outline" className="text-[10px] uppercase">{f.file_type || "dosya"}</Badge>
-                <a href={f.file_url} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0"><Download size={14} /></Button>
+                <a href={f.signedUrl || "#"} target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" disabled={!f.signedUrl}><Download size={14} /></Button>
                 </a>
               </div>
             );
