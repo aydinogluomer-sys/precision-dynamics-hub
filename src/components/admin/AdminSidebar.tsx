@@ -1,6 +1,6 @@
 import { 
   LayoutDashboard, FileText, Package, GitBranch, CalendarDays, 
-  AlertTriangle, Users, Settings, LogOut, Cpu, DollarSign, TrendingUp, Wrench, Boxes, Wallet
+  AlertTriangle, Users, Settings, LogOut, Cpu, DollarSign, TrendingUp, Wrench, Boxes, Wallet, MessageSquare
 } from "lucide-react";
 
 const menuItems = [
@@ -14,6 +14,7 @@ const menuItems = [
   { id: "tpm", label: "TPM & Bakım", icon: Wrench },
   { id: "inventory", label: "Envanter & Takım", icon: Boxes },
   { id: "financedocs", label: "Nakit Akışı", icon: Wallet },
+  { id: "support", label: "Destek Talepleri", icon: MessageSquare },
   { id: "issues", label: "Olay Merkezi", icon: AlertTriangle },
   { id: "customers", label: "Çözüm Ortakları", icon: Users },
   { id: "settings", label: "Sistem Ayarları", icon: Settings },

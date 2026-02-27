@@ -17,6 +17,7 @@ interface RFQ {
   quoted_price: number | null;
   price_valid_until: string | null;
   customer_approved: boolean | null;
+  rejection_reason: string | null;
 }
 
 const statusColor = (s: string | null) => {
@@ -36,7 +37,7 @@ const TekliflerimTab = () => {
   const fetchRfqs = async () => {
     const { data } = await supabase
       .from("rfqs")
-      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved")
+      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason")
       .order("created_at", { ascending: false });
     setRfqs((data as RFQ[]) || []);
     setLoading(false);
@@ -96,35 +97,38 @@ const TekliflerimTab = () => {
             </tr>
           </thead>
           <tbody>
-            {items.map((r) => (
-              <tr key={r.id} className="border-b border-border/50 last:border-0">
-                <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
-                <td className="py-3 pr-4">{r.service || "—"}</td>
-                <td className="py-3 pr-4">{r.material || "—"}</td>
-                <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
-                <td className="py-3 pr-4 font-mono font-semibold">
-                  {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
-                </td>
-                <td className="py-3 pr-4">
-                  <Badge variant="outline" className={statusColor(r.status)}>{r.status || "Beklemede"}</Badge>
-                </td>
-                <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
-                <td className="py-3">
-                  {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
-                    <Button
-                      size="sm"
-                      variant="default"
-                      className="gap-1.5 text-xs h-8"
-                      disabled={approving === r.id}
-                      onClick={() => handleApprove(r.id)}
-                    >
-                      {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-                      Onayla
-                    </Button>
-                  )}
-                </td>
-              </tr>
-            ))}
+              {items.map((r) => (
+                <tr key={r.id} className="border-b border-border/50 last:border-0">
+                  <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
+                  <td className="py-3 pr-4">{r.service || "—"}</td>
+                  <td className="py-3 pr-4">{r.material || "—"}</td>
+                  <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
+                  <td className="py-3 pr-4 font-mono font-semibold">
+                    {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
+                  </td>
+                  <td className="py-3 pr-4">
+                    <Badge variant="outline" className={statusColor(r.status)}>{r.status || "Beklemede"}</Badge>
+                    {r.status === "Reddedildi" && r.rejection_reason && (
+                      <p className="text-[10px] text-destructive mt-1 max-w-[200px]">Sebep: {r.rejection_reason}</p>
+                    )}
+                  </td>
+                  <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
+                  <td className="py-3">
+                    {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
+                      <Button
+                        size="sm"
+                        variant="default"
+                        className="gap-1.5 text-xs h-8"
+                        disabled={approving === r.id}
+                        onClick={() => handleApprove(r.id)}
+                      >
+                        {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                        Onayla
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

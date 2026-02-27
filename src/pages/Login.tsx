@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -167,6 +168,8 @@ const FormField = ({
   </div>
 );
 
+const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000001";
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -178,14 +181,26 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<HCaptcha>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!captchaToken) {
+      toast.error("Lütfen CAPTCHA doğrulamasını tamamlayın.");
+      return;
+    }
     setLoading(true);
 
     if (isLogin) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: { captchaToken },
+      });
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
       if (error) {
         toast.error("Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
         setLoading(false);
@@ -198,16 +213,18 @@ const Login = () => {
         email,
         password,
         options: {
+          captchaToken,
           emailRedirectTo: window.location.origin,
           data: { full_name: fullName },
         },
       });
+      setCaptchaToken(null);
+      captchaRef.current?.resetCaptcha();
       if (error) {
         toast.error(error.message);
         setLoading(false);
         return;
       }
-      // Update profile with extra fields
       if (data.user) {
         await supabase.from("profiles").upsert({
           id: data.user.id,
@@ -379,9 +396,18 @@ const Login = () => {
                 </div>
               </div>
 
+              <div className="flex justify-center">
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                />
+              </div>
+
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !captchaToken}
                 className="w-full h-12 font-semibold uppercase tracking-wider text-sm"
               >
                 {loading ? (

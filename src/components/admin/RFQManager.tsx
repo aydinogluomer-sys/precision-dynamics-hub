@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, X, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface RFQ {
   id: string;
@@ -17,6 +19,8 @@ interface RFQ {
   notes: string | null;
   files: string[] | null;
   created_at: string;
+  user_id: string | null;
+  quoted_price: number | null;
 }
 
 const statusColors: Record<string, string> = {
@@ -34,6 +38,8 @@ const RFQManager = () => {
   const [selectedRFQ, setSelectedRFQ] = useState<RFQ | null>(null);
   const [priceModal, setPriceModal] = useState<RFQ | null>(null);
   const [priceForm, setPriceForm] = useState({ price: "", days: "7", notes: "" });
+  const [rejectModal, setRejectModal] = useState<RFQ | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const fetchRFQs = async () => {
     const { data } = await supabase.from("rfqs").select("*").order("created_at", { ascending: false });
@@ -58,11 +64,67 @@ const RFQManager = () => {
     setSelectedRFQ(null);
   };
 
+  const handleApprove = async (rfq: RFQ) => {
+    // Update RFQ status
+    const { error } = await supabase.from("rfqs").update({ status: "Onaylandı" }).eq("id", rfq.id);
+    if (error) { toast.error("Onaylama hatası"); return; }
+
+    // Create invoice in financial_documents if there's a quoted price
+    if (rfq.quoted_price && rfq.user_id) {
+      const validUntil = new Date();
+      validUntil.setDate(validUntil.getDate() + 30);
+      
+      await supabase.from("financial_documents").insert({
+        user_id: rfq.user_id,
+        doc_type: "fatura",
+        title: `${rfq.service || "CNC"} - ${rfq.material || ""} (${rfq.quantity || 1} adet)`,
+        total_amount: rfq.quoted_price,
+        amount: rfq.quoted_price,
+        payment_status: "ödenmedi",
+        status: "onaylandı",
+        doc_date: new Date().toISOString().split("T")[0],
+        due_date: validUntil.toISOString().split("T")[0],
+        doc_number: `FTR-${rfq.id.slice(0, 6).toUpperCase()}`,
+        notes: `RFQ ${rfq.id} onayı ile oluşturuldu`,
+      });
+    }
+
+    toast.success("Teklif onaylandı ve fatura oluşturuldu!");
+    fetchRFQs();
+    setSelectedRFQ(null);
+  };
+
+  const handleReject = async () => {
+    if (!rejectModal) return;
+    const { error } = await supabase.from("rfqs").update({
+      status: "Reddedildi",
+      rejection_reason: rejectReason || null,
+    }).eq("id", rejectModal.id);
+    if (error) { toast.error("Red işlemi hatası"); return; }
+    toast.success("Teklif reddedildi");
+    setRejectModal(null);
+    setRejectReason("");
+    fetchRFQs();
+    setSelectedRFQ(null);
+  };
+
   const sendQuote = async () => {
-    if (!priceModal) return;
-    await updateStatus(priceModal.id, "Fiyat Verildi");
+    if (!priceModal || !priceForm.price) return;
+    const price = parseFloat(priceForm.price);
+    const validUntil = new Date();
+    validUntil.setDate(validUntil.getDate() + parseInt(priceForm.days || "7"));
+
+    const { error } = await supabase.from("rfqs").update({
+      status: "Fiyat Verildi",
+      quoted_price: price,
+      price_valid_until: validUntil.toISOString().split("T")[0],
+    }).eq("id", priceModal.id);
+
+    if (error) { toast.error("Fiyat gönderilemedi"); return; }
+    toast.success("Teklif fiyatı gönderildi!");
     setPriceModal(null);
     setPriceForm({ price: "", days: "7", notes: "" });
+    fetchRFQs();
   };
 
   const filters = ["Tümü", "Yeni", "Fiyat Verildi", "Onaylandı", "Reddedildi"];
@@ -105,6 +167,7 @@ const RFQManager = () => {
                   <th className="text-left p-4 hidden md:table-cell">Hizmet</th>
                   <th className="text-left p-4 hidden lg:table-cell">Malzeme</th>
                   <th className="text-right p-4 font-mono">Adet</th>
+                  <th className="text-right p-4 font-mono hidden md:table-cell">Fiyat</th>
                   <th className="text-left p-4 hidden md:table-cell">Tarih</th>
                   <th className="text-left p-4">Durum</th>
                   <th className="text-left p-4">İşlem</th>
@@ -123,6 +186,9 @@ const RFQManager = () => {
                     <td className="p-4 dark:text-slate-300 text-slate-600 hidden md:table-cell">{r.service || "-"}</td>
                     <td className="p-4 dark:text-slate-300 text-slate-600 hidden lg:table-cell">{r.material || "-"}</td>
                     <td className="p-4 dark:text-white text-slate-800 font-bold text-right font-mono tabular-nums">{r.quantity || "-"}</td>
+                    <td className="p-4 dark:text-white text-slate-800 font-bold text-right font-mono tabular-nums hidden md:table-cell">
+                      {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "-"}
+                    </td>
                     <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{r.date || "-"}</td>
                     <td className="p-4">
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${statusColors[r.status || ""] || statusColors.Yeni}`}>
@@ -157,7 +223,7 @@ const RFQManager = () => {
               {[
                 ["Müşteri", selectedRFQ.customer], ["Firma", selectedRFQ.company], ["E-posta", selectedRFQ.email],
                 ["Telefon", selectedRFQ.phone], ["Hizmet", selectedRFQ.service], ["Malzeme", selectedRFQ.material],
-                ["Adet", selectedRFQ.quantity], ["Notlar", selectedRFQ.notes],
+                ["Adet", selectedRFQ.quantity], ["Fiyat", selectedRFQ.quoted_price ? `₺${selectedRFQ.quoted_price.toLocaleString("tr-TR")}` : null], ["Notlar", selectedRFQ.notes],
               ].map(([k, v]) => (
                 <div key={k as string} className="flex justify-between">
                   <span className="dark:text-slate-400 text-slate-500">{k}</span>
@@ -166,13 +232,35 @@ const RFQManager = () => {
               ))}
             </div>
             <div className="flex gap-2 mt-6">
-              <button onClick={() => updateStatus(selectedRFQ.id, "Onaylandı")} className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/30">Onayla</button>
-              <button onClick={() => updateStatus(selectedRFQ.id, "Reddedildi")} className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-bold hover:bg-red-500/30">Reddet</button>
+              <button onClick={() => handleApprove(selectedRFQ)} className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/30">Onayla</button>
+              <button onClick={() => { setRejectModal(selectedRFQ); setSelectedRFQ(null); }} className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-bold hover:bg-red-500/30">Reddet</button>
               <button onClick={() => { setPriceModal(selectedRFQ); setSelectedRFQ(null); }} className="flex-1 py-2 bg-[#0AA2CD]/20 text-[#0AA2CD] rounded-lg text-xs font-bold hover:bg-[#0AA2CD]/30">Fiyat Ver</button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Reject Dialog */}
+      <Dialog open={!!rejectModal} onOpenChange={(o) => { if (!o) { setRejectModal(null); setRejectReason(""); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Teklif Reddi — {rejectModal?.id}</DialogTitle>
+            <DialogDescription>Red sebebini müşteriye iletmek için aşağıya yazın.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 mt-2">
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Red sebebi (opsiyonel)..."
+              className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-foreground focus:outline-none focus:border-primary min-h-[100px] text-sm"
+            />
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => { setRejectModal(null); setRejectReason(""); }}>İptal</Button>
+              <Button variant="destructive" className="flex-1" onClick={handleReject}>Reddet</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Price Modal */}
       {priceModal && (
@@ -186,7 +274,7 @@ const RFQManager = () => {
                   className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD]" placeholder="0.00" />
               </div>
               <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Teslim Süresi (Gün)</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Geçerlilik Süresi (Gün)</label>
                 <input type="number" value={priceForm.days} onChange={(e) => setPriceForm({ ...priceForm, days: e.target.value })}
                   className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 focus:outline-none focus:border-[#0AA2CD]" />
               </div>
@@ -198,7 +286,7 @@ const RFQManager = () => {
             </div>
             <div className="flex gap-2 mt-5">
               <button onClick={() => setPriceModal(null)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
-              <button onClick={sendQuote} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5">
+              <button onClick={sendQuote} disabled={!priceForm.price} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 disabled:opacity-50">
                 <Send className="w-3.5 h-3.5" /> Teklifi Gönder
               </button>
             </div>

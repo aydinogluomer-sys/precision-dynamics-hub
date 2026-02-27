@@ -110,9 +110,28 @@ const OdemeTab = () => {
             className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
           >
             <CreditCard size={20} className="text-primary shrink-0" />
-            <div>
+            <div className="flex-1">
               <p className="text-sm font-medium">Kredi / Banka Kartı</p>
-              <p className="text-xs text-muted-foreground">Visa, Mastercard</p>
+              <p className="text-xs text-muted-foreground">Visa, Mastercard, Stripe</p>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* Visa */}
+              <svg viewBox="0 0 48 32" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#1A1F71"/>
+                <path d="M19.5 21h-3l1.9-11.5h3L19.5 21zm8-11.5l-2.8 7.9-.3-1.6-1-5.3s-.1-1-1.4-1h-4.7l-.1.3s1.5.3 3.2 1.4l2.7 10.3h3.1l4.7-12h-3.1l-.3 0zm12.3 11.5h2.7l-2.4-11.5h-2.4c-1.1 0-1.3.8-1.3.8l-4.5 10.7h3.1l.6-1.7h3.8l.4 1.7zm-3.3-4l1.6-4.3.9 4.3h-2.5zM29 13.5l.4-2.5s-1.3-.5-2.6-.5c-1.4 0-4.8.6-4.8 3.6 0 2.8 3.9 2.8 3.9 4.3 0 1.4-3.5 1.2-4.6.3l-.4 2.6s1.3.6 3.3.6c2 0 4.9-.8 4.9-3.7 0-2.8-3.9-3.1-3.9-4.3 0-1.2 2.7-1 3.8-.4z" fill="white"/>
+              </svg>
+              {/* Mastercard */}
+              <svg viewBox="0 0 48 32" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#252525"/>
+                <circle cx="19" cy="16" r="8" fill="#EB001B"/>
+                <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
+                <path d="M24 10.3a8 8 0 0 1 0 11.4 8 8 0 0 1 0-11.4z" fill="#FF5F00"/>
+              </svg>
+              {/* Stripe */}
+              <svg viewBox="0 0 48 32" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#635BFF"/>
+                <path d="M22.5 13.3c0-.8.7-1.1 1.8-1.1 1.6 0 3.6.5 5.2 1.4V9.2c-1.7-.7-3.5-1-5.2-1-4.3 0-7.1 2.2-7.1 6 0 5.8 8 4.9 8 7.4 0 1-.8 1.3-2 1.3-1.7 0-4-.7-5.7-1.7v4.5c1.9.8 3.9 1.2 5.7 1.2 4.4 0 7.4-2.2 7.4-6 0-6.3-8-5.2-8-7.6z" fill="white"/>
+              </svg>
             </div>
           </button>
           <button
@@ -275,9 +294,24 @@ const OdemeTab = () => {
               <AlertCircle size={14} />
               <span>Stripe entegrasyonu yakında aktif olacaktır. Şu an için havale veya çek ile ödeme yapabilirsiniz.</span>
             </div>
-            <div className="flex gap-2">
-              <img src="https://cdn.jsdelivr.net/gh/nicepay-dev/nicepay-assets/img/visa.svg" alt="Visa" className="h-8 opacity-40" />
-              <img src="https://cdn.jsdelivr.net/gh/nicepay-dev/nicepay-assets/img/mastercard.svg" alt="Mastercard" className="h-8 opacity-40" />
+            <div className="flex items-center gap-3">
+              {/* Visa */}
+              <svg viewBox="0 0 48 32" className="h-8" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#1A1F71"/>
+                <path d="M19.5 21h-3l1.9-11.5h3L19.5 21zm8-11.5l-2.8 7.9-.3-1.6-1-5.3s-.1-1-1.4-1h-4.7l-.1.3s1.5.3 3.2 1.4l2.7 10.3h3.1l4.7-12h-3.1l-.3 0zm12.3 11.5h2.7l-2.4-11.5h-2.4c-1.1 0-1.3.8-1.3.8l-4.5 10.7h3.1l.6-1.7h3.8l.4 1.7zm-3.3-4l1.6-4.3.9 4.3h-2.5zM29 13.5l.4-2.5s-1.3-.5-2.6-.5c-1.4 0-4.8.6-4.8 3.6 0 2.8 3.9 2.8 3.9 4.3 0 1.4-3.5 1.2-4.6.3l-.4 2.6s1.3.6 3.3.6c2 0 4.9-.8 4.9-3.7 0-2.8-3.9-3.1-3.9-4.3 0-1.2 2.7-1 3.8-.4z" fill="white"/>
+              </svg>
+              {/* Mastercard */}
+              <svg viewBox="0 0 48 32" className="h-8" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#252525"/>
+                <circle cx="19" cy="16" r="8" fill="#EB001B"/>
+                <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
+                <path d="M24 10.3a8 8 0 0 1 0 11.4 8 8 0 0 1 0-11.4z" fill="#FF5F00"/>
+              </svg>
+              {/* Stripe */}
+              <svg viewBox="0 0 48 32" className="h-8" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#635BFF"/>
+                <path d="M22.5 13.3c0-.8.7-1.1 1.8-1.1 1.6 0 3.6.5 5.2 1.4V9.2c-1.7-.7-3.5-1-5.2-1-4.3 0-7.1 2.2-7.1 6 0 5.8 8 4.9 8 7.4 0 1-.8 1.3-2 1.3-1.7 0-4-.7-5.7-1.7v4.5c1.9.8 3.9 1.2 5.7 1.2 4.4 0 7.4-2.2 7.4-6 0-6.3-8-5.2-8-7.6z" fill="white"/>
+              </svg>
             </div>
             <Button variant="outline" className="w-full" onClick={() => { setShowCardDialog(false); setShowMethodDialog(true); }}>
               Geri Dön
