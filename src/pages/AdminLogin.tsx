@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Loader2, Lock } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-const HCAPTCHA_SITE_KEY = "ES_gS99VrPAHO3nKy0t6dNKEf8vp1VUs37Qmqh0VhBCPJErRdEm8sfaoJpgTVaci";
+const HCAPTCHA_SITE_KEY = "95ae4f14-f512-4a34-ad44-8e04ce323240";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
