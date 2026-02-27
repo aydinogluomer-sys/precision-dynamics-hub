@@ -168,7 +168,7 @@ const FormField = ({
   </div>
 );
 
-const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000001";
+const HCAPTCHA_SITE_KEY = "ES_gS99VrPAHO3nKy0t6dNKEf8vp1VUs37Qmqh0VhBCPJErRdEm8sfaoJpgTVaci";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
