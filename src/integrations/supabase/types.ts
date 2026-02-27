@@ -543,6 +543,7 @@ export type Database = {
           price_valid_until: string | null
           quantity: number | null
           quoted_price: number | null
+          rejection_reason: string | null
           service: string | null
           status: string | null
           user_id: string | null
@@ -563,6 +564,7 @@ export type Database = {
           price_valid_until?: string | null
           quantity?: number | null
           quoted_price?: number | null
+          rejection_reason?: string | null
           service?: string | null
           status?: string | null
           user_id?: string | null
@@ -583,6 +585,7 @@ export type Database = {
           price_valid_until?: string | null
           quantity?: number | null
           quoted_price?: number | null
+          rejection_reason?: string | null
           service?: string | null
           status?: string | null
           user_id?: string | null
