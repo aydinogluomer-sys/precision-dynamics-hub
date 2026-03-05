@@ -10,7 +10,7 @@ import MaterialsSection from "@/components/MaterialsSection";
 import WhyUsSection from "@/components/WhyUsSection";
 import CapabilitiesSection from "@/components/CapabilitiesSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import StatsSection from "@/components/StatsSection";
+// StatsSection is now integrated into TestimonialsSection
 import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
@@ -33,7 +33,7 @@ const Index = () => {
         <WhyUsSection />
         <CapabilitiesSection />
         <TestimonialsSection />
-        <StatsSection />
+        {/* StatsSection merged into TestimonialsSection */}
         <FAQBlogSection />
         <FinalCTASection />
       </main>
