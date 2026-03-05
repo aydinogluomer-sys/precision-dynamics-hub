@@ -1,7 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Home, Search, FileQuestion, HelpCircle } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
@@ -199,23 +199,52 @@ const NotFound = () => {
           Bu koordinatlarda işlenecek parça yok.
         </motion.p>
 
+        {/* Quick Links Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10 w-full max-w-lg"
+        >
+          {[
+            { label: "Ana Sayfa", to: "/", icon: Home },
+            { label: "Hizmetlerimiz", to: "/#hizmetler", icon: Search },
+            { label: "Teklif Al", to: "/teklif-al", icon: FileQuestion },
+            { label: "SSS", to: "/sss", icon: HelpCircle },
+          ].map((link, i) => (
+            <motion.div
+              key={link.to}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.95 + i * 0.08 }}
+            >
+              <Link
+                to={link.to}
+                className="flex flex-col items-center gap-2.5 p-4 rounded-lg border border-border/20 bg-card/30 backdrop-blur-sm hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 group"
+              >
+                <link.icon
+                  size={18}
+                  className="text-muted-foreground/60 group-hover:text-primary group-hover:scale-110 transition-all duration-300"
+                />
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60 group-hover:text-foreground transition-colors">
+                  {link.label}
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
         {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="flex gap-4 mt-10 flex-col sm:flex-row w-full max-w-xs sm:max-w-none sm:w-auto"
+          transition={{ delay: 1.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex gap-4 mt-8 flex-col sm:flex-row w-full max-w-xs sm:max-w-none sm:w-auto"
         >
           <Link
             to="/"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-[0.12em] no-underline transition-all duration-300 hover:-translate-y-0.5"
             style={{ boxShadow: "0 8px 30px hsl(var(--primary) / 0.2)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 8px 30px hsl(var(--primary) / 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 8px 30px hsl(var(--primary) / 0.2)";
-            }}
           >
             <ArrowLeft size={14} />
             Ana Sayfa
