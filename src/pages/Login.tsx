@@ -188,7 +188,7 @@ const Login = () => {
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">Şifre</label>
                   {isLogin && (
-                    <button type="button" className="text-xs text-primary hover:underline">Şifremi Unuttum</button>
+                    <Link to="/sifremi-unuttum" className="text-xs text-primary hover:underline">Şifremi Unuttum</Link>
                   )}
                 </div>
                 <div className="relative">

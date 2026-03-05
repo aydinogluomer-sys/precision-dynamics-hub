@@ -19,6 +19,8 @@ import BlogDetail from "./pages/BlogDetail";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Malzemeler from "./pages/Malzemeler";
 import MalzemeKategori from "./pages/MalzemeKategori";
 import TeklifAl from "./pages/TeklifAl";
@@ -57,6 +59,8 @@ const AnimatedRoutes = () => {
           <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
           <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
           <Route path="/giris" element={<Login />} />
+          <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
           <Route path="/teklif-al" element={<TeklifAl />} />
           <Route path="/cad-dashboard" element={<CADDashboard />} />
