@@ -15,7 +15,7 @@ export const TextReveal = ({
     className={className}
     initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
     whileInView={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-    viewport={{ once: true, margin: "-50px" }}
+    viewport={{ once: true, margin: "0px" }}
     transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1], delay }}
   >
     {children}
@@ -109,7 +109,7 @@ export const StaggerContainer = ({
     className={className}
     initial="hidden"
     whileInView="visible"
-    viewport={{ once: true, margin: "-60px" }}
+    viewport={{ once: true, margin: "0px" }}
     variants={{
       hidden: {},
       visible: { transition: { staggerChildren: staggerDelay } },
