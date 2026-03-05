@@ -98,18 +98,18 @@ const TestimonialsSection = () => {
                   }}
                 >
                   <div
-                    className="text-5xl leading-none mb-4 opacity-30"
+                    className="text-5xl leading-none mb-4 opacity-30 text-center md:text-left"
                     style={{ color: "hsl(var(--primary))", fontFamily: "Georgia, serif" }}
                   >
                     "
                   </div>
                   <p
-                    className="text-sm leading-relaxed mb-6"
+                    className="text-sm leading-relaxed mb-6 text-center md:text-left"
                     style={{ color: "rgba(255, 255, 255, 0.8)", fontStyle: "italic" }}
                   >
                     {t.quote}
                   </p>
-                  <div className="pt-4" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+                  <div className="pt-4 text-center md:text-left" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
                     <div className="font-semibold text-white">{t.author}</div>
                     <div className="text-sm" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
                       {t.title}

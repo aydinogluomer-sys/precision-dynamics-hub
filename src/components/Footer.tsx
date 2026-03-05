@@ -54,13 +54,13 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
     <div className="border-b border-white/10">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-4 text-left"
+        className="w-full flex items-center justify-between py-4 text-center"
       >
-        <h4 className="font-semibold uppercase tracking-wider text-xs text-white">{group.title}</h4>
+        <h4 className="font-semibold uppercase tracking-wider text-xs text-white flex-1 text-center">{group.title}</h4>
         <ChevronDown className={`w-4 h-4 text-white/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? "max-h-96 pb-4" : "max-h-0"}`}>
-        <ul className="space-y-2.5 pl-2">
+        <ul className="space-y-2.5 text-center">
           {group.items.map((l) => (
             <li key={l.label}>
               {l.href.startsWith("/") ? (
