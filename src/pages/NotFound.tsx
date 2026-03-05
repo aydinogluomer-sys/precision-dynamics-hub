@@ -1,18 +1,18 @@
 import { useLocation, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Home, Search, FileQuestion, HelpCircle, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Header from "@/components/Header";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [countdown, setCountdown] = useState(15);
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    console.error("404 Error:", location.pathname);
   }, [location.pathname]);
 
+  // Auto-redirect countdown
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
@@ -26,151 +26,229 @@ const NotFound = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const quickLinks = [
-    { label: "Ana Sayfa", to: "/", icon: Home },
-    { label: "Hizmetlerimiz", to: "/#hizmetler", icon: Search },
-    { label: "Teklif Al", to: "/teklif-al", icon: FileQuestion },
-    { label: "SSS", to: "/sss", icon: HelpCircle },
-  ];
+  // Ribbon canvas animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let ribbons: {
+      x: number; y: number; w: number; h: number;
+      speed: number; angle: number; opacity: number; hue: number;
+    }[] = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Create ribbons
+    for (let i = 0; i < 6; i++) {
+      ribbons.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        w: 150 + Math.random() * 250,
+        h: 1 + Math.random() * 2,
+        speed: 0.15 + Math.random() * 0.3,
+        angle: -20 + Math.random() * 40,
+        opacity: 0.03 + Math.random() * 0.06,
+        hue: 190 + Math.random() * 20,
+      });
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ribbons.forEach((r) => {
+        ctx.save();
+        ctx.translate(r.x, r.y);
+        ctx.rotate((r.angle * Math.PI) / 180);
+        ctx.fillStyle = `hsla(${r.hue}, 80%, 45%, ${r.opacity})`;
+        ctx.fillRect(-r.w / 2, -r.h / 2, r.w, r.h);
+
+        // Glow
+        ctx.shadowColor = `hsla(${r.hue}, 80%, 50%, ${r.opacity * 2})`;
+        ctx.shadowBlur = 30;
+        ctx.fillRect(-r.w / 2, -r.h / 2, r.w, r.h);
+        ctx.restore();
+
+        r.y += r.speed;
+        r.x += Math.sin(r.y * 0.005) * 0.3;
+        if (r.y > canvas.height + 50) {
+          r.y = -50;
+          r.x = Math.random() * canvas.width;
+        }
+      });
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-6 pt-20 pb-12">
-        {/* Animated background grid */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+    <div
+      className="relative w-full h-screen overflow-hidden"
+      style={{
+        fontFamily: "'Exo 2', system-ui, sans-serif",
+        background: "hsl(var(--background))",
+      }}
+    >
+      {/* Canvas ribbons */}
+      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-[1]" />
+
+      {/* Grid overlay */}
+      <div
+        className="fixed inset-0 z-[2] pointer-events-none opacity-50"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(var(--primary) / 0.07) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.07) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Scanlines */}
+      <div
+        className="fixed inset-0 z-[3] pointer-events-none"
+        style={{
+          background:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)",
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        className="fixed inset-0 z-[4] pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)",
+        }}
+      />
+
+      {/* Logo top-left */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 0.7, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.6 }}
+        className="fixed top-8 left-8 z-10"
+      >
+        <Link
+          to="/"
+          className="text-sm font-extrabold tracking-[0.15em] uppercase text-foreground/70 hover:text-foreground/100 transition-opacity no-underline"
+        >
+          MAS<span className="text-primary">TECHNIC</span>
+        </Link>
+      </motion.div>
+
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-8">
+        {/* 404 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.95, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative select-none leading-[0.85]"
           style={{
-            backgroundImage:
-              "linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "clamp(8rem, 18vw, 16rem)",
+            fontWeight: 500,
+            letterSpacing: "-0.04em",
+            color: "transparent",
+            background: "linear-gradient(180deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.04) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextStroke: "1.5px hsl(var(--primary) / 0.35)",
+          }}
+        >
+          404
+        </motion.div>
+
+        {/* Divider */}
+        <motion.div
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: 80 }}
+          transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="h-px my-6"
+          style={{
+            background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)",
           }}
         />
-        {/* Radial glow */}
+
+        {/* Message */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-muted-foreground font-light uppercase tracking-[0.06em] max-w-[500px]"
+          style={{ fontSize: "clamp(1rem, 2.5vw, 1.35rem)" }}
+        >
+          Aradığınız sayfa <strong className="text-primary font-semibold">bulunamadı</strong>
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-muted-foreground/50 text-sm font-light tracking-wider mt-2"
+        >
+          Bu koordinatlarda işlenecek parça yok.
+        </motion.p>
+
+        {/* CTA Buttons */}
         <motion.div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%)" }}
-          animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <div className="relative z-10 text-center max-w-lg">
-          {/* Giant 404 */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5, filter: "blur(20px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex gap-4 mt-10 flex-col sm:flex-row w-full max-w-xs sm:max-w-none sm:w-auto"
+        >
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-[0.12em] no-underline transition-all duration-300 hover:-translate-y-0.5"
+            style={{ boxShadow: "0 8px 30px hsl(var(--primary) / 0.2)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = "0 8px 30px hsl(var(--primary) / 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "0 8px 30px hsl(var(--primary) / 0.2)";
+            }}
           >
-            <span className="text-[140px] sm:text-[180px] font-black leading-none text-primary/[0.07] select-none block">
-              404
-            </span>
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
-            >
-              <span className="text-6xl sm:text-7xl font-black text-primary drop-shadow-[0_0_40px_hsl(var(--primary)/0.3)]">
-                404
-              </span>
-            </motion.div>
-          </motion.div>
-
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
+            <ArrowLeft size={14} />
+            Ana Sayfa
+          </Link>
+          <Link
+            to="/iletisim"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-muted-foreground border border-border/30 font-semibold text-xs uppercase tracking-[0.12em] no-underline transition-all duration-300 hover:text-foreground hover:border-primary hover:-translate-y-0.5"
           >
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3 text-foreground">
-              Sayfa Bulunamadı
-            </h1>
-            <p className="text-muted-foreground leading-relaxed mb-2">
-              Aradığınız sayfa taşınmış, silinmiş veya hiç var olmamış olabilir.
-            </p>
-            <p className="text-xs text-muted-foreground/50 mb-10">
-              <code className="bg-muted px-2 py-1 rounded text-[11px] font-mono">{location.pathname}</code>
-              <span className="mx-2">·</span>
-              <AnimatePresence mode="popLayout">
-                <motion.span
-                  key={countdown}
-                  initial={{ y: -8, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 8, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="inline-block tabular-nums font-semibold text-primary"
-                >
-                  {countdown}
-                </motion.span>
-              </AnimatePresence>
-              {" "}saniye içinde yönlendirileceksiniz
-            </p>
-          </motion.div>
-
-          {/* Quick links */}
-          <motion.div
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            {quickLinks.map((link, i) => (
-              <motion.div
-                key={link.to}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45 + i * 0.08 }}
-              >
-                <Link
-                  to={link.to}
-                  className="flex flex-col items-center gap-2.5 p-4 rounded-xl border border-border/60 bg-card/50 backdrop-blur-sm hover:border-primary/40 hover:bg-accent/60 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group"
-                >
-                  <link.icon
-                    size={20}
-                    className="text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300"
-                  />
-                  <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                    {link.label}
-                  </span>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.4 }}
-          >
-            <Button asChild size="lg" className="font-semibold uppercase tracking-wider text-sm group">
-              <Link to="/">
-                Ana Sayfaya Dön
-                <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </motion.div>
-
-          {/* Progress bar */}
-          <motion.div
-            className="mt-10 mx-auto max-w-xs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-          >
-            <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-              <motion.div
-                className="h-full bg-primary/60 rounded-full"
-                initial={{ width: "100%" }}
-                animate={{ width: "0%" }}
-                transition={{ duration: 15, ease: "linear" }}
-              />
-            </div>
-          </motion.div>
-        </div>
+            İletişim
+          </Link>
+        </motion.div>
       </div>
-    </>
+
+      {/* Coords bottom-right */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 0.3, y: 0 }}
+        transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed bottom-8 right-8 z-10 text-right hidden sm:block"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: "0.65rem",
+          color: "hsl(var(--muted-foreground))",
+          lineHeight: 1.8,
+          letterSpacing: "0.05em",
+        }}
+      >
+        <div>ERR::PAGE_NOT_FOUND</div>
+        <div>
+          STATUS: 404 · REDIRECT: {countdown}s
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
