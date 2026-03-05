@@ -55,10 +55,10 @@ const ServicesSection = () => {
     <section id="hizmetler" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14">
-          <div>
+        <div className="flex flex-col items-center md:items-start md:flex-row md:items-end md:justify-between mb-14">
+          <div className="text-center md:text-left">
             <SlideIn direction="left">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
                 <div className="w-8 h-px bg-border" />
                 <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
                   Kabiliyetler

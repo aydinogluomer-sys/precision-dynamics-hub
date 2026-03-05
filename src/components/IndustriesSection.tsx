@@ -71,8 +71,8 @@ const IndustriesSection = () => {
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">Sektörler</span>
             <div className="w-8 h-px bg-border" />
           </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
-          <p className="subheading-industrial text-lg max-w-2xl mx-auto">Kritik sektörlerde güvenilir üretim ortağınız</p>
+          <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
+          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">Kritik sektörlerde güvenilir üretim ortağınız</p>
         </TextReveal>
 
         {/* Scroll buttons */}
@@ -88,11 +88,11 @@ const IndustriesSection = () => {
         {/* Horizontally scrollable cards */}
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent"
+          className="flex gap-4 sm:gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent"
           style={{ scrollbarWidth: "thin" }}
         >
           {industries.map((industry) => (
-            <div key={industry.modelType} className="snap-start flex-shrink-0 w-[280px] sm:w-[300px]">
+            <div key={industry.modelType} className="snap-start flex-shrink-0 w-[calc(50%-8px)] sm:w-[300px]">
               <IndustryCard
                 industry={industry}
                 isActive={activeModel === industry.modelType}

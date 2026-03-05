@@ -105,16 +105,16 @@ const HowWeWorkSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
             <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
               Metodoloji
             </span>
           </div>
-          <h2 className="heading-industrial text-3xl md:text-4xl mb-4">
+          <h2 className="heading-industrial text-3xl md:text-4xl mb-4 text-center md:text-left">
             Hassas Üretim İş Akışımız
           </h2>
-          <p className="subheading-industrial text-lg max-w-3xl">
+          <p className="subheading-industrial text-lg max-w-3xl text-center md:text-left">
             İlk konseptten son kalite doğrulamasına kadar uçtan uca endüstriyel sürecimiz
           </p>
         </motion.div>

@@ -1,6 +1,84 @@
-import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft } from "lucide-react";
+import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+
+const footerLinks = [
+  {
+    title: "Endüstriyel",
+    items: [
+      { label: "Yüksek Teknoloji", href: "#endustriler" },
+      { label: "Seri Üretim", href: "#endustriler" },
+      { label: "Endüstriyel Sistemler", href: "#endustriler" },
+      { label: "Üretim Çözümleri", href: "#endustriler" },
+    ],
+  },
+  {
+    title: "Kabiliyetler",
+    items: [
+      { label: "Üretim Altyapısı", href: "#kabiliyetler" },
+      { label: "Kalite & Standartlar", href: "#sertifikalar" },
+      { label: "Mühendislik Desteği", href: "#kabiliyetler" },
+      { label: "Prototipten Seri Üretime", href: "#nasil-calisiyoruz" },
+      { label: "Süreç & Operasyon", href: "#nasil-calisiyoruz" },
+    ],
+  },
+  {
+    title: "Hizmetler",
+    items: [
+      { label: "Talaşlı İmalat", href: "#hizmetler" },
+      { label: "Ön Üretim", href: "#hizmetler" },
+      { label: "Yüzey İşlemleri", href: "#hizmetler" },
+      { label: "İşaretleme & Tanımlama", href: "#hizmetler" },
+      { label: "Montaj & Sonlandırma", href: "#hizmetler" },
+    ],
+  },
+  {
+    title: "Kurumsal & Destek",
+    items: [
+      { label: "Ana Sayfa", href: "/" },
+      { label: "Hakkımızda", href: "/hakkimizda" },
+      { label: "Teklif & Üretim Süreci", href: "/#nasil-calisiyoruz" },
+      { label: "Kapasite", href: "/#kabiliyetler" },
+      { label: "Sevkiyat Standartları", href: "/#kabiliyetler" },
+      { label: "Kalite Güvencesi", href: "/#sertifikalar" },
+      { label: "SSS", href: "/sss" },
+      { label: "İletişim", href: "/iletisim" },
+    ],
+  },
+];
+
+const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-white/10">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between py-4 text-left"
+      >
+        <h4 className="font-semibold uppercase tracking-wider text-xs text-white">{group.title}</h4>
+        <ChevronDown className={`w-4 h-4 text-white/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+      <div className={`overflow-hidden transition-all duration-300 ${open ? "max-h-96 pb-4" : "max-h-0"}`}>
+        <ul className="space-y-2.5 pl-2">
+          {group.items.map((l) => (
+            <li key={l.label}>
+              {l.href.startsWith("/") ? (
+                <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                  {l.label}
+                </Link>
+              ) : (
+                <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                  {l.label}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -50,12 +128,10 @@ const Footer = () => {
             boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
           }}
         >
-          {/* Top shiny edge */}
           <div
             className="absolute top-0 left-0 right-0 h-px"
             style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }}
           />
-          {/* Animated sheen */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -64,14 +140,14 @@ const Footer = () => {
           />
 
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex-1">
+            <div className="flex-1 text-center md:text-left">
               <span
                 className="text-xs font-bold uppercase tracking-[0.2em] mb-3 block"
                 style={{ color: "hsl(var(--primary))" }}
               >
                 E-Bülten
               </span>
-              <p className="text-sm leading-relaxed max-w-md" style={{ color: "hsl(210 8% 60%)" }}>
+              <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0" style={{ color: "hsl(210 8% 60%)" }}>
                 Sektörel yenilikler, teknik analizler ve daha fazlası... Son gelişmelerden haberdar olmak için bültenimize abone olun.
               </p>
             </div>
@@ -100,7 +176,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Decor dots */}
           <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-1 opacity-20">
             {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} className="w-1 h-1 rounded-full bg-primary" />
@@ -108,16 +183,70 @@ const Footer = () => {
           </div>
         </motion.div>
 
-        {/* Main Links Grid */}
+        {/* Mobile: Accordion links */}
+        <div className="md:hidden mb-12">
+          {/* Brand */}
+          <div className="mb-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-primary flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-lg">MT</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-base tracking-tight text-white">MAS TECHNIC</span>
+                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "hsl(210 8% 45%)" }}>
+                  Precision CNC
+                </span>
+              </div>
+            </div>
+            <p className="text-xs leading-relaxed mb-5 max-w-xs mx-auto" style={{ color: "hsl(210 8% 50%)" }}>
+              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
+            </p>
+            <div className="flex flex-col items-center gap-2.5 mb-5">
+              {[
+                { icon: Phone, text: "+90 (536) 564 51 94" },
+                { icon: Mail, text: "info@mastechnic.com" },
+                { icon: MapPin, text: "İzmir, Türkiye" },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "hsl(210 8% 50%)" }}>
+                  <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-2">
+              {[
+                { icon: Linkedin, label: "in" },
+                { icon: null, label: "X" },
+                { icon: Instagram, label: null },
+              ].map((item, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
+                  style={{ border: "1px solid rgba(255, 255, 255, 0.1)", color: "hsl(210 8% 50%)" }}
+                >
+                  {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Accordion groups */}
+          {footerLinks.map((group) => (
+            <FooterAccordion key={group.title} group={group} />
+          ))}
+        </div>
+
+        {/* Desktop: Grid links */}
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
+          className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
         >
           {/* Brand & Contact */}
-          <motion.div variants={fadeUp} className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-1">
+          <motion.div variants={fadeUp} className="md:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
@@ -132,7 +261,6 @@ const Footer = () => {
             <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "hsl(210 8% 50%)" }}>
               CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
             </p>
-
             <div className="space-y-2.5 mb-5">
               {[
                 { icon: Phone, text: "+90 (536) 564 51 94" },
@@ -145,7 +273,6 @@ const Footer = () => {
                 </div>
               ))}
             </div>
-
             <div className="flex gap-2">
               {[
                 { icon: Linkedin, label: "in" },
@@ -164,93 +291,27 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Endüstriyel */}
-          <motion.div variants={fadeUp}>
-            <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Endüstriyel</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: "Yüksek Teknoloji", href: "#endustriler" },
-                { label: "Seri Üretim", href: "#endustriler" },
-                { label: "Endüstriyel Sistemler", href: "#endustriler" },
-                { label: "Üretim Çözümleri", href: "#endustriler" },
-              ].map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Kabiliyetler */}
-          <motion.div variants={fadeUp}>
-            <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Kabiliyetler</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: "Üretim Altyapısı", href: "#kabiliyetler" },
-                { label: "Kalite & Standartlar", href: "#sertifikalar" },
-                { label: "Mühendislik Desteği", href: "#kabiliyetler" },
-                { label: "Prototipten Seri Üretime", href: "#nasil-calisiyoruz" },
-                { label: "Süreç & Operasyon", href: "#nasil-calisiyoruz" },
-              ].map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Hizmetler */}
-          <motion.div variants={fadeUp}>
-            <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Hizmetler</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: "Talaşlı İmalat", href: "#hizmetler" },
-                { label: "Ön Üretim", href: "#hizmetler" },
-                { label: "Yüzey İşlemleri", href: "#hizmetler" },
-                { label: "İşaretleme & Tanımlama", href: "#hizmetler" },
-                { label: "Montaj & Sonlandırma", href: "#hizmetler" },
-              ].map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Kurumsal & Destek */}
-          <motion.div variants={fadeUp}>
-            <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">Kurumsal & Destek</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: "Ana Sayfa", href: "/" },
-                { label: "Hakkımızda", href: "/hakkimizda" },
-                { label: "Teklif & Üretim Süreci", href: "/#nasil-calisiyoruz" },
-                { label: "Kapasite", href: "/#kabiliyetler" },
-                { label: "Sevkiyat Standartları", href: "/#kabiliyetler" },
-                { label: "Kalite Güvencesi", href: "/#sertifikalar" },
-                { label: "SSS", href: "/sss" },
-                { label: "İletişim", href: "/iletisim" },
-              ].map((l) => (
-                <li key={l.label}>
-                  {l.href.startsWith("/") ? (
-                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                      {l.label}
-                    </Link>
-                  ) : (
-                    <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                      {l.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+          {/* Link groups */}
+          {footerLinks.map((group) => (
+            <motion.div key={group.title} variants={fadeUp}>
+              <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">{group.title}</h4>
+              <ul className="space-y-2.5">
+                {group.items.map((l) => (
+                  <li key={l.label}>
+                    {l.href.startsWith("/") ? (
+                      <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                        {l.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* CTA Glass Card */}

@@ -143,21 +143,21 @@ interface CardProps {
 const CapabilityCard = ({ cap, anim }: CardProps) => {
   return (
     <motion.div
-      className="bg-background border border-border p-8 h-[380px] md:h-[420px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+      className="bg-background border border-border p-5 sm:p-8 h-[340px] sm:h-[380px] md:h-[420px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
       style={{ opacity: anim.opacity, y: anim.y }}
     >
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
-        <div className="w-10 h-10 bg-primary flex items-center justify-center">
+        <div className="w-10 h-10 bg-primary flex items-center justify-center flex-shrink-0">
           <cap.icon className="w-5 h-5 text-primary-foreground" />
         </div>
-        <h3 className="font-bold">{cap.title}</h3>
+        <h3 className="font-bold text-sm sm:text-base">{cap.title}</h3>
       </div>
 
       <motion.div className="space-y-4" style={{ opacity: anim.specs }}>
         {cap.items.map((item) => (
-          <div key={item.label} className="flex justify-between items-start gap-2">
-            <span className="text-sm text-muted-foreground">{item.label}</span>
-            <span className="text-sm font-medium text-right font-mono">{item.value}</span>
+          <div key={item.label} className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5 sm:gap-2">
+            <span className="text-xs sm:text-sm text-muted-foreground">{item.label}</span>
+            <span className="text-xs sm:text-sm font-medium sm:text-right font-mono">{item.value}</span>
           </div>
         ))}
       </motion.div>
