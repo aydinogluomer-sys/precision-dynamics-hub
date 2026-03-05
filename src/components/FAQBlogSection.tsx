@@ -70,13 +70,13 @@ const FAQBlogSection = () => {
           {/* FAQ Column */}
           <div>
             <div className="mb-8">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
                 <div className="accent-line" />
                 <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
                   SSS
                 </span>
               </div>
-              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground">Sıkça Sorulan Sorular</h2>
+              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground text-center md:text-left">Sıkça Sorulan Sorular</h2>
             </div>
 
             <div className="space-y-2">
@@ -114,13 +114,13 @@ const FAQBlogSection = () => {
           {/* Blog Column */}
           <div>
             <div className="mb-8">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
                 <div className="accent-line" />
                 <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
                   Blog
                 </span>
               </div>
-              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground">Teknik İçerikler</h2>
+              <h2 className="heading-industrial text-2xl md:text-3xl text-foreground text-center md:text-left">Teknik İçerikler</h2>
             </div>
 
             <div className="space-y-4">
