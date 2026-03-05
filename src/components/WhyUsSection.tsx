@@ -1,6 +1,7 @@
 import { Target, RefreshCw, Clock, Wrench, Check } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const values = [
   {
@@ -32,6 +33,7 @@ const values = [
 const badges = ["ISO 9001:2015 Sertifikalı", "24 Saat Teknik Destek", "Ücretsiz DFM Analizi", "Zamanında Teslimat Garantisi"];
 
 const WhyUsSection = () => {
+  const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -67,6 +69,41 @@ const WhyUsSection = () => {
   const badgesOpacity = useTransform(scrollYProgress, [0.60, 0.70], [0, 1]);
   const badgesY = useTransform(scrollYProgress, [0.60, 0.70], [30, 0]);
 
+  if (isMobile) {
+    return (
+      <section id="neden-biz" className="py-16 px-4 bg-secondary">
+        <div className="max-w-7xl mx-auto">
+          <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
+            <h2 className="text-2xl font-bold mb-3">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {values.map((value, i) => (
+              <motion.div key={value.title} className="relative bg-background border border-border p-4 text-center overflow-hidden group" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <div className="flex flex-col items-center">
+                  <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
+                    <value.icon className="w-8 h-8" />
+                  </div>
+                  <h4 className="font-bold text-sm mb-1">{value.title}</h4>
+                  <span className="text-xs font-semibold text-primary font-mono block mb-2">{value.subtitle}</span>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{value.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            {badges.map((badge) => (
+              <span key={badge} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge}
+              </span>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
@@ -74,35 +111,20 @@ const WhyUsSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-secondary"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          {/* Header */}
           <motion.div className="text-center mb-8 md:mb-12" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">
-              Avantajlar
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Neden Mas Technic?
-            </h2>
-            <p className="text-base max-w-lg mx-auto text-muted-foreground">
-              Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz
-            </p>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Neden Mas Technic?</h2>
+            <p className="text-base max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
-
-          {/* Cards Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 md:mb-12">
             {values.map((value, i) => (
               <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             ))}
           </div>
-
-          {/* Bottom badges */}
-          <motion.div
-            className="flex flex-wrap justify-center items-center gap-6 pt-6 border-t border-border"
-            style={{ opacity: badgesOpacity, y: badgesY }}
-          >
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-6 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
               <span key={badge} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                {badge}
+                <Check className="w-4 h-4 text-primary flex-shrink-0" />{badge}
                 {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
             ))}
