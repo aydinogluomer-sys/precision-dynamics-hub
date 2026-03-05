@@ -102,11 +102,11 @@ const CapabilitiesSection = () => {
                   </div>
                   <h3 className="font-bold text-xs">{cap.title}</h3>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {cap.items.map((item) => (
-                    <div key={item.label} className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-muted-foreground">{item.label}</span>
-                      <span className="text-[10px] font-medium font-mono">{item.value}</span>
+                    <div key={item.label} className="flex justify-between items-baseline gap-1">
+                      <span className="text-[10px] text-muted-foreground leading-tight">{item.label}</span>
+                      <span className="text-[10px] font-medium font-mono text-right leading-tight whitespace-nowrap">{item.value}</span>
                     </div>
                   ))}
                 </div>
