@@ -102,13 +102,15 @@ const FAQBlogSection = () => {
               ))}
             </div>
 
-            <Link
-              to="/sss"
-              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-primary hover:text-accent transition-colors"
-            >
-              Tüm Sorular
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="text-center md:text-left mt-6">
+              <Link
+                to="/sss"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
+              >
+                Tüm Sorular
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
 
           {/* Blog Column */}
@@ -157,13 +159,15 @@ const FAQBlogSection = () => {
               ))}
             </div>
 
-            <a
-              href="#blog"
-              className="inline-flex items-center gap-2 mt-6 text-sm font-medium text-primary hover:text-accent transition-colors"
-            >
-              Tüm Yazılar
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            <div className="text-center md:text-left mt-6">
+              <a
+                href="#blog"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
+              >
+                Tüm Yazılar
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
