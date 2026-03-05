@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Wallet, FileText, Download } from "lucide-react";
+import { Wallet, FileText, Download } from "lucide-react";
+import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { Button } from "@/components/ui/button";
 
 interface FinDoc {
@@ -49,7 +50,12 @@ const FinansTab = () => {
     fetch();
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return (
+    <div className="space-y-6">
+      <SummarySkeleton />
+      <TableSkeleton rows={4} cols={6} />
+    </div>
+  );
 
   // Calculate summary
   const totalDebt = docs.filter(d => d.payment_status !== "ödendi").reduce((acc, d) => acc + (d.total_amount || 0), 0);

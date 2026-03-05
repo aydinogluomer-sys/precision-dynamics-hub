@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, Package, Clock, MessageSquare, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react";
+import { FileText, Package, Clock, MessageSquare, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { StatsSkeleton, CardListSkeleton } from "./MusteriSkeletons";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
@@ -82,7 +83,15 @@ const GenelBakisTab = () => {
     load();
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return (
+    <div className="space-y-6">
+      <StatsSkeleton />
+      <div>
+        <div className="h-4 w-28 bg-muted rounded mb-3" />
+        <CardListSkeleton count={3} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">

@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Package, Loader2, RefreshCw } from "lucide-react";
+import { Package, RefreshCw } from "lucide-react";
+import { TableSkeleton } from "./MusteriSkeletons";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -51,7 +52,7 @@ const SiparislerimTab = () => {
     window.location.href = "/teklif-al";
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <TableSkeleton rows={4} cols={6} />;
 
   if (orders.length === 0) {
     return (

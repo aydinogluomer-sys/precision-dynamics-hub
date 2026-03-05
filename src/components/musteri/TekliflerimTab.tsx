@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Loader2, Check, Upload } from "lucide-react";
+import { TableSkeleton } from "./MusteriSkeletons";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -65,7 +66,7 @@ const TekliflerimTab = () => {
   const approved = rfqs.filter(r => r.status === "Onaylandı" || r.customer_approved);
   const rejected = rfqs.filter(r => r.status === "Reddedildi");
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <TableSkeleton rows={4} cols={7} />;
 
   if (rfqs.length === 0) {
     return (

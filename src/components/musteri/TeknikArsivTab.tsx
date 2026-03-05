@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, FolderOpen, Upload, FileCode, FileText, Download } from "lucide-react";
+import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
 interface CustomerFile {
@@ -82,7 +83,7 @@ const TeknikArsivTab = () => {
     e.target.value = "";
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <CardListSkeleton count={4} />;
 
   return (
     <div className="space-y-4">

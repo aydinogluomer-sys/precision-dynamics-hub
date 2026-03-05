@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2 } from "lucide-react";
+import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
 interface Payment {
@@ -87,7 +88,12 @@ const OdemeTab = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return (
+    <div className="space-y-6">
+      <SummarySkeleton />
+      <TableSkeleton rows={4} cols={6} />
+    </div>
+  );
 
   const unpaid = payments.filter(p => p.payment_status !== "ödendi");
   const paid = payments.filter(p => p.payment_status === "ödendi");
