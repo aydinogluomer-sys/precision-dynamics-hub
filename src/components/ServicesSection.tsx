@@ -25,14 +25,6 @@ const services = [
     capabilities: ["Çift Kafa İşleme", "Otomatik KK Entegrasyonu"],
   },
   {
-    image: serviceImalat,
-    badge: "Anahtar Teslim",
-    title: "Talaşlı İmalat",
-    description:
-      "Geleneksel ve CNC destekli talaşlı imalat ile pnömatik ve hidrolik entegrasyonlar dahil tam hizmet montaj hatları.",
-    capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
-  },
-  {
     image: serviceLazer,
     badge: "İleri Teknoloji",
     title: "Lazer Kesim",
@@ -47,6 +39,14 @@ const services = [
     description:
       "Enjeksiyon kalıpları, basınçlı döküm kalıpları ve prototip kalıp imalatı ile endüstriyel çözümler.",
     capabilities: ["Enjeksiyon Kalıp", "Alüminyum Döküm"],
+  },
+  {
+    image: serviceImalat,
+    badge: "Anahtar Teslim",
+    title: "Talaşlı İmalat",
+    description:
+      "Geleneksel ve CNC destekli talaşlı imalat ile pnömatik ve hidrolik entegrasyonlar dahil tam hizmet montaj hatları.",
+    capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
   },
 ];
 
@@ -80,23 +80,32 @@ const ServicesSection = () => {
           </a>
         </div>
 
-        {/* Top row: 3 cards */}
-        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {services.slice(0, 3).map((s) => (
-            <StaggerItem key={s.title}>
+        {/* Mobile layout: 2-col grid, last item spans 2 */}
+        <StaggerContainer className="grid grid-cols-2 gap-4 mb-12 lg:hidden">
+          {services.map((s, i) => (
+            <StaggerItem key={s.title} className={i === services.length - 1 ? "col-span-2" : ""}>
               <ServiceCard service={s} />
             </StaggerItem>
           ))}
         </StaggerContainer>
 
-        {/* Bottom row: 2 cards */}
-        <StaggerContainer className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
-          {services.slice(3).map((s) => (
-            <StaggerItem key={s.title}>
-              <ServiceCard service={s} />
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {/* Desktop layout: 3+2 */}
+        <div className="hidden lg:block">
+          <StaggerContainer className="grid lg:grid-cols-3 gap-6 mb-6">
+            {services.slice(0, 3).map((s) => (
+              <StaggerItem key={s.title}>
+                <ServiceCard service={s} />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+          <StaggerContainer className="grid lg:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+            {services.slice(3).map((s) => (
+              <StaggerItem key={s.title}>
+                <ServiceCard service={s} />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
 
         {/* Bottom CTA Banner */}
         <motion.div

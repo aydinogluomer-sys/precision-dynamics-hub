@@ -114,10 +114,10 @@ const Footer = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 mb-16"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
         >
           {/* Brand & Contact */}
-          <motion.div variants={fadeUp} className="col-span-2 md:col-span-3 lg:col-span-1">
+          <motion.div variants={fadeUp} className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
