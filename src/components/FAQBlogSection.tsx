@@ -84,9 +84,9 @@ const FAQBlogSection = () => {
                 <div key={index} className="border border-border bg-background">
                   <button
                     onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-center md:text-left hover:bg-muted/50 transition-colors"
                   >
-                    <span className="font-medium pr-4">{faq.question}</span>
+                    <span className="font-medium pr-4 text-center md:text-left w-full">{faq.question}</span>
                     <ChevronDown
                       className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform ${
                         openIndex === index ? "rotate-180" : ""
@@ -94,7 +94,7 @@ const FAQBlogSection = () => {
                     />
                   </button>
                   {openIndex === index && (
-                    <div className="px-4 pb-4 text-muted-foreground text-sm leading-relaxed border-t border-border pt-4">
+                    <div className="px-4 pb-4 text-muted-foreground text-sm leading-relaxed border-t border-border pt-4 text-center md:text-left">
                       {faq.answer}
                     </div>
                   )}
@@ -130,9 +130,9 @@ const FAQBlogSection = () => {
                 <a
                   key={index}
                   href="#"
-                  className="flex gap-4 border border-border bg-background p-3 hover:border-primary transition-colors group overflow-hidden"
+                  className="flex flex-col md:flex-row gap-4 border border-border bg-background p-3 hover:border-primary transition-colors group overflow-hidden"
                 >
-                  <div className="w-28 h-24 flex-shrink-0 overflow-hidden">
+                  <div className="w-full md:w-28 h-40 md:h-24 flex-shrink-0 overflow-hidden">
                     <img
                       src={post.image}
                       alt={post.title}
@@ -140,8 +140,8 @@ const FAQBlogSection = () => {
                       loading="lazy"
                     />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5">
+                  <div className="flex-1 min-w-0 text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-2 mb-1.5">
                       <span className="text-technical text-xs text-primary">{post.category}</span>
                       <span className="text-muted-foreground">•</span>
                       <span className="text-xs text-muted-foreground">{post.date}</span>
@@ -150,7 +150,7 @@ const FAQBlogSection = () => {
                       {post.title}
                     </h3>
                     <p className="text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                    <div className="flex items-center gap-1 mt-2 text-xs text-primary">
+                    <div className="flex items-center justify-center md:justify-start gap-1 mt-2 text-xs text-primary">
                       Devamını Oku
                       <ArrowRight className="w-3 h-3" />
                     </div>
