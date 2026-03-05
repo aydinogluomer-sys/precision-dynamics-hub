@@ -251,7 +251,7 @@ const NotFound = () => {
           </Link>
           <Link
             to="/iletisim"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-muted-foreground border border-border/30 font-semibold text-xs uppercase tracking-[0.12em] no-underline transition-all duration-300 hover:text-foreground hover:border-primary hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary/10 text-primary border border-primary/30 font-semibold text-xs uppercase tracking-[0.12em] no-underline transition-all duration-300 hover:text-primary-foreground hover:bg-primary hover:-translate-y-0.5"
           >
             İletişim
           </Link>
