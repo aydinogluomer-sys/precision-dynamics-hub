@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Activity } from "lucide-react";
+import { Activity } from "lucide-react";
+import { ProductionSkeleton } from "./MusteriSkeletons";
 
 interface OrderProduction {
   id: string;
@@ -44,7 +45,7 @@ const UretimTab = () => {
     fetch();
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <ProductionSkeleton count={2} />;
 
   if (items.length === 0) {
     return (

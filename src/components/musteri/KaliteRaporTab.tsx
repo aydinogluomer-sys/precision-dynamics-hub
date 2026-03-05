@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, ClipboardCheck, Download, FileText } from "lucide-react";
+import { ClipboardCheck, Download, FileText } from "lucide-react";
+import { CardListSkeleton } from "./MusteriSkeletons";
 
 interface QualityReport {
   id: string;
@@ -48,7 +49,7 @@ const KaliteRaporTab = () => {
     fetch();
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <CardListSkeleton count={3} />;
 
   if (reports.length === 0) {
     return (

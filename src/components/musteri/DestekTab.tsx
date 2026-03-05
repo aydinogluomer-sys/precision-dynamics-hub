@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageSquare, Plus, Send, ChevronDown, ChevronUp } from "lucide-react";
+import { TicketSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
 interface Ticket {
@@ -116,7 +117,7 @@ const DestekTab = () => {
     setSendingReply(false);
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-primary" size={24} /></div>;
+  if (loading) return <TicketSkeleton count={3} />;
 
   return (
     <div className="space-y-4">
