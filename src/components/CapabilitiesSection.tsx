@@ -87,7 +87,7 @@ const CapabilitiesSection = () => {
 
   if (isMobile) {
     return (
-      <section id="kabiliyetler" className="py-16 px-4 bg-[#eceee8] dark:bg-background">
+      <section id="kabiliyetler" className="py-16 px-4 bg-[#e8edf4] dark:bg-background">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik</span>
@@ -127,7 +127,7 @@ const CapabilitiesSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="kabiliyetler"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#eceee8] dark:bg-background"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-background"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
@@ -141,13 +141,13 @@ const CapabilitiesSection = () => {
           </div>
           <motion.div className="flex items-center justify-center gap-0" style={{ opacity: ctaOpacity, y: ctaY }}>
             <div className="flex-1 h-px relative bg-border">
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#eceee8] dark:bg-background border border-primary/40" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#e8edf4] dark:bg-background border border-primary/40" />
             </div>
             <a href="#teklif" className="px-10 py-3 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-primary-foreground whitespace-nowrap">
               Teknik Kapasiteyi İncele
             </a>
             <div className="flex-1 h-px relative bg-border">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#eceee8] dark:bg-background border border-primary/40" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#e8edf4] dark:bg-background border border-primary/40" />
             </div>
           </motion.div>
         </div>
