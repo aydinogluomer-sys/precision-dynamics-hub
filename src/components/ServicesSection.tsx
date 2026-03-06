@@ -10,7 +10,7 @@ import { TextReveal, StaggerContainer, StaggerItem, SlideIn } from "./ScrollReve
 const services = [
   {
     image: serviceFrze,
-    badge: "Stratejik",
+    badge: "KOMPLEKS GEOMETRİ",
     title: "CNC Freze",
     description:
       "3,4 ve 5 eksenli CNC işleme teknolojimizle karmaşık formlarda üstün yüzey kalitesi; enerji ve havacılık standartlarında hatasız imalat ve teknik raporlama.",
@@ -18,7 +18,7 @@ const services = [
   },
   {
     image: serviceTorna,
-    badge: "Hassasiyet",
+    badge: "NİTELİKLİ İŞLEME",
     title: "CNC Torna",
     description:
       "İleri teknoloji CNC torna sistemleri ile mikron düzeyinde tolerans sınırlarını yakalayan yüksek nitelikli parça işleme.",
@@ -26,7 +26,7 @@ const services = [
   },
   {
     image: serviceLazer,
-    badge: "İleri Teknoloji",
+    badge: "HIZLI PROTOTİPLEME",
     title: "Lazer Kesim",
     description:
       "Optimize edilmiş lazer kesim operasyonları ile endüstriyel tasarımlarınızda boyutsal doğruluk ve hızlı prototipleme desteği.",
@@ -34,7 +34,7 @@ const services = [
   },
   {
     image: serviceKalip,
-    badge: "Üretim",
+    badge: "TASARIM OPTİMİZASYONU",
     title: "Kalıp & Döküm",
     description:
       "Enjeksiyon, basınçlı döküm ve prototip kalıp mühendisliği ile endüstriyel standartlarda yüksek ömürlü ve hassas seri üretim çözümleri.",
@@ -42,7 +42,7 @@ const services = [
   },
   {
     image: serviceImalat,
-    badge: "Anahtar Teslim",
+    badge: "UÇTAN UCA ENTEGRASYON",
     title: "Talaşlı İmalat",
     description:
       "Talaşlı imalat kabiliyetlerimizi hidrolik ve pnömatik sistem entegrasyonlarıyla birleştirerek tam işlevsel modüller ve üretim hatları geliştiriyoruz.",
@@ -71,7 +71,7 @@ const ServicesSection = () => {
               </h2>
             </TextReveal>
             <p className="text-sm text-muted-foreground max-w-lg">
-              Tasarımdan seri üretime, her adımda mühendislik odaklı çözümler
+              Tasarımdan seri üretime kadar her adımda mühendislik odaklı çözümler sunuyoruz
             </p>
           </div>
           <a
