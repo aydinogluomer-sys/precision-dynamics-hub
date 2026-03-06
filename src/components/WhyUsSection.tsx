@@ -5,45 +5,45 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Link } from "react-router-dom";
 
 const values = [
-  {
-    icon: Target,
-    title: "Hassasiyet & Tolerans Disiplini",
-    subtitle: "±0.01mm",
-    description: "±0.01mm hassasiyetle çalışan CNC tezgahlarımız ve CMM ölçüm sistemimiz ile tolerans garantisi sağlıyoruz.",
-  },
-  {
-    icon: RefreshCw,
-    title: "Proses Kontrollü Üretim",
-    subtitle: "100% İzlenebilirlik",
-    description: "Her üretim adımı izlenir, kaydedilir ve raporlanır. Tekrarlanabilir kalite için sistematik yaklaşım.",
-  },
-  {
-    icon: Clock,
-    title: "Zamanında Teslimat",
-    subtitle: "98% Oran",
-    description: "Söz verilen tarihte teslimat. Proje planınızı aksatmayacak güvenilir lojistik süreçleri.",
-  },
-  {
-    icon: Wrench,
-    title: "Mühendislik Desteği",
-    subtitle: "24h Yanıt",
-    description: "DFM analizi, malzeme seçimi ve tasarım optimizasyonu konularında uzman mühendislik desteği.",
-  },
-];
+{
+  icon: Target,
+  title: "Hassasiyet & Tolerans Disiplini",
+  subtitle: "±0.01mm",
+  description: "±0.01mm hassasiyetle çalışan CNC tezgahlarımız ve CMM ölçüm sistemimiz ile tolerans garantisi sağlıyoruz."
+},
+{
+  icon: RefreshCw,
+  title: "Proses Kontrollü Üretim",
+  subtitle: "100% İzlenebilirlik",
+  description: "Her üretim adımı izlenir, kaydedilir ve raporlanır. Tekrarlanabilir kalite için sistematik yaklaşım."
+},
+{
+  icon: Clock,
+  title: "Zamanında Teslimat",
+  subtitle: "98% Oran",
+  description: "Söz verilen tarihte teslimat. Proje planınızı aksatmayacak güvenilir lojistik süreçleri."
+},
+{
+  icon: Wrench,
+  title: "Mühendislik Desteği",
+  subtitle: "24h Yanıt",
+  description: "DFM analizi, malzeme seçimi ve tasarım optimizasyonu konularında uzman mühendislik desteği."
+}];
+
 
 const badges = [
-  { label: "Tekrarlanabilir Kalite Garantisi", icon: ShieldCheck },
-  { label: "24 Saat Teknik Destek", icon: Headphones },
-  { label: "Ücretsiz DFM Analizi", icon: FileSearch },
-  { label: "Zamanında Teslimat Garantisi", icon: Truck },
-];
+{ label: "Tekrarlanabilir Kalite Garantisi", icon: ShieldCheck },
+{ label: "24 Saat Teknik Destek", icon: Headphones },
+{ label: "Ücretsiz DFM Analizi", icon: FileSearch },
+{ label: "Zamanında Teslimat Garantisi", icon: Truck }];
+
 
 const WhyUsSection = () => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end start"]
   });
 
   const headerOpacity = useTransform(scrollYProgress, [0, 0.06], [0, 1]);
@@ -62,11 +62,11 @@ const WhyUsSection = () => {
   const card3Y = useTransform(scrollYProgress, [0.30, 0.38], [40, 0]);
 
   const cardAnimations = [
-    { opacity: card0Opacity, y: card0Y },
-    { opacity: card1Opacity, y: card1Y },
-    { opacity: card2Opacity, y: card2Y },
-    { opacity: card3Opacity, y: card3Y },
-  ];
+  { opacity: card0Opacity, y: card0Y },
+  { opacity: card1Opacity, y: card1Y },
+  { opacity: card2Opacity, y: card2Y },
+  { opacity: card3Opacity, y: card3Y }];
+
 
   const badgesOpacity = useTransform(scrollYProgress, [0.40, 0.48], [0, 1]);
   const badgesY = useTransform(scrollYProgress, [0.40, 0.48], [20, 0]);
@@ -81,8 +81,8 @@ const WhyUsSection = () => {
             <p className="text-sm max-w-lg mx-auto text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
-            {values.map((value, i) => (
-              <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group bg-background border border-border" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+            {values.map((value, i) =>
+            <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group bg-background border border-border" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                 <div className="flex flex-col items-center">
                   <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
                     <value.icon className="w-8 h-8" />
@@ -92,7 +92,7 @@ const WhyUsSection = () => {
                   <p className="text-xs leading-relaxed text-foreground/80">{value.description}</p>
                 </div>
               </motion.div>
-            ))}
+            )}
           </div>
           <motion.div className="mt-6 p-4 flex items-center gap-4 bg-background border border-border" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
@@ -105,33 +105,33 @@ const WhyUsSection = () => {
             </Link>
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-            {badges.map((badge) => (
-              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-foreground/80">
+            {badges.map((badge) =>
+            <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-foreground/80">
                 <badge.icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge.label}
               </span>
-            ))}
+            )}
           </motion.div>
         </div>
-      </section>
-    );
+      </section>);
+
   }
 
   return (
     <div ref={containerRef} className="relative" style={{ height: "250vh" }}>
       <section
         id="neden-biz"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]"
-      >
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]">
+        
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary px-0 py-0 mx-0 my-[10px]">Avantajlar</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
             <p className="text-sm max-w-lg mx-auto text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {values.map((value, i) => (
-              <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
-            ))}
+            {values.map((value, i) =>
+            <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
+            )}
           </div>
           <motion.div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
@@ -144,31 +144,31 @@ const WhyUsSection = () => {
             </Link>
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
-            {badges.map((badge, i) => (
-              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
+            {badges.map((badge, i) =>
+            <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
                 {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
-            ))}
+            )}
           </motion.div>
         </div>
       </section>
-    </div>
-  );
+    </div>);
+
 };
 
 interface CardProps {
   value: (typeof values)[number];
   index: number;
-  anim: { opacity: any; y: any };
+  anim: {opacity: any;y: any;};
 }
 
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
       className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors bg-background border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg"
-      style={{ opacity: anim.opacity, y: anim.y }}
-    >
+      style={{ opacity: anim.opacity, y: anim.y }}>
+      
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="flex flex-col items-center justify-center h-full">
@@ -183,8 +183,8 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
           {value.description}
         </p>
       </div>
-    </motion.div>
-  );
+    </motion.div>);
+
 };
 
 export default WhyUsSection;
