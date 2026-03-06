@@ -218,9 +218,9 @@ const TeklifAl = () => {
       ? customMaterial || "Belirtilmedi"
       : materialsData.find((m) => m.id === selectedMaterial)?.name ?? selectedMaterial;
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const [isDragging, setIsDragging] = useState(false);
+
+  const processFile = async (file: File) => {
     const ext = file.name.split(".").pop()?.toLowerCase();
     
     const validExts = ["stl", "obj", "step", "stp", "iges", "igs", "3mf"];
@@ -280,12 +280,34 @@ const TeklifAl = () => {
       setFileUrl(URL.createObjectURL(file));
       toast.success(`"${file.name}" dosyası yüklendi.`);
     } else {
-      // Other formats - just track the file, no 3D preview
       setFileType(null);
       setFileUrl(null);
       toast.success(`"${file.name}" dosyası yüklendi.`);
     }
   };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await processFile(file);
+    e.target.value = "";
+  };
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragging(false);
+  }, []);
 
   const handleDimensions = useCallback((d: Dimensions) => {
     setDimensions(d);
@@ -391,9 +413,12 @@ const TeklifAl = () => {
         />
 
         {!uploadedFile ? (
-          <button
+          <div
             onClick={() => fileInputRef.current?.click()}
-            className="w-full min-h-[280px] border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-5 transition-colors group"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`w-full min-h-[280px] border-2 border-dashed ${isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"} flex flex-col items-center justify-center gap-5 transition-colors group cursor-pointer`}
           >
             <div className="w-20 h-20 flex items-center justify-center bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
               <FileUp size={36} />
@@ -409,7 +434,7 @@ const TeklifAl = () => {
                 </span>
               ))}
             </div>
-          </button>
+          </div>
         ) : (
           /* 3D Viewer */
           <div className="border border-border overflow-hidden">

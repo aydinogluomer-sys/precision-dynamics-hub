@@ -13,7 +13,7 @@ const headlines = [
   "Stabil Kalite &\nGüvenilir Teslimat",
 ];
 
-const ACCEPTED_EXTENSIONS = [".step", ".stp", ".iges", ".igs", ".dxf", ".sldprt", ".sldasm", ".pdf"];
+const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const containerVariants = {
@@ -279,7 +279,7 @@ const HeroSection = () => {
                   ref={fileInputRef}
                   type="file"
                   className="hidden"
-                  accept={ACCEPTED_EXTENSIONS.join(",")}
+                  accept=".step,.stp,.stl,.obj,.iges,.igs,.3mf"
                   onChange={handleFileSelect}
                 />
 
