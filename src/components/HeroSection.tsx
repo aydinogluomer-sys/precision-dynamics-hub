@@ -381,7 +381,7 @@ const HeroSection = () => {
               
               {[
               { value: "±0.005", label: "mm Tolerans" },
-              { value: "24h", label: "Teklif Süresi" },
+              { value: "48h", label: "Teklif Süresi" },
               { value: "50+", label: "Malzeme" }].
               map((stat) =>
               <motion.div

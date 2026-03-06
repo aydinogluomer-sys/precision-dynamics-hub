@@ -13,7 +13,7 @@ const services = [
     badge: "Stratejik",
     title: "CNC Freze",
     description:
-      "3, 4 ve 5 eksenli CNC freze işleme ile karmaşık geometrilerde yüksek hassasiyetli üretim. Havacılık, enerji ve altyapı projelerinde eksiksiz tolerans.",
+      "3,4 ve 5 eksenli CNC işleme teknolojimizle karmaşık formlarda üstün yüzey kalitesi; enerji ve havacılık standartlarında hatasız imalat ve teknik raporlama.",
     capabilities: ["5 Eksen İşleme", "Yüzey Kalitesi Ra 0.8"],
   },
   {
@@ -21,7 +21,7 @@ const services = [
     badge: "Hassasiyet",
     title: "CNC Torna",
     description:
-      "Yüksek hızlı CNC torna operasyonları ile mikron seviyesinde doğruluk sağlayan karmaşık bileşen üretimi.",
+      "İleri teknoloji CNC torna sistemleri ile mikron düzeyinde tolerans sınırlarını yakalayan yüksek nitelikli parça işleme.",
     capabilities: ["Çift Kafa İşleme", "Otomatik KK Entegrasyonu"],
   },
   {
@@ -29,7 +29,7 @@ const services = [
     badge: "İleri Teknoloji",
     title: "Lazer Kesim",
     description:
-      "6kW fiber lazer teknolojisi ile 25mm çelik kapasitesinde hızlı ve hassas sac metal kesim operasyonları.",
+      "Optimize edilmiş lazer kesim operasyonları ile endüstriyel tasarımlarınızda boyutsal doğruluk ve hızlı prototipleme desteği.",
     capabilities: ["Fiber Lazer 6kW", "Otomatik Yükleme"],
   },
   {
@@ -37,7 +37,7 @@ const services = [
     badge: "Üretim",
     title: "Kalıp & Döküm",
     description:
-      "Enjeksiyon kalıpları, basınçlı döküm kalıpları ve prototip kalıp imalatı ile endüstriyel çözümler.",
+      "Enjeksiyon, basınçlı döküm ve prototip kalıp mühendisliği ile endüstriyel standartlarda yüksek ömürlü ve hassas seri üretim çözümleri.",
     capabilities: ["Enjeksiyon Kalıp", "Alüminyum Döküm"],
   },
   {
@@ -45,7 +45,7 @@ const services = [
     badge: "Anahtar Teslim",
     title: "Talaşlı İmalat",
     description:
-      "Geleneksel ve CNC destekli talaşlı imalat ile pnömatik ve hidrolik entegrasyonlar dahil tam hizmet montaj hatları.",
+      "Talaşlı imalat kabiliyetlerimizi hidrolik ve pnömatik sistem entegrasyonlarıyla birleştirerek tam işlevsel modüller ve üretim hatları geliştiriyoruz.",
     capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
   },
 ];
@@ -78,7 +78,7 @@ const ServicesSection = () => {
             href="#kabiliyetler"
             className="mt-4 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
           >
-            Tüm kabiliyetleri görüntüle
+            Tüm Kabiliyetleri Görüntüle
             <ArrowUpRight className="w-4 h-4" />
           </a>
         </div>
