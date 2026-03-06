@@ -29,15 +29,19 @@ const testimonials = [
 ];
 
 const clients = [
-  "TAI", "Ford Otosan", "Arçelik", "Vestel",
-  "Aselsan", "Roketsan", "MAN Türkiye", "Bosch",
+  "XOMETRY", "Akbaşlar", "Aydın Trafo", "Ege Güneş",
+  "İzmir Laser", "Yılmaz Eloksal", "İzada", "Totomak",
+  "Meka78", "Ni-Ka Makina", "Teknik Balans", "HPT",
+  "Akon", "Metsan", "Bilge Profil", "ACLASS",
+  "Mert Çelik", "Elit Metalurji", "Arya Metal", "İnfa Kalıp",
+  "Maldaner",
 ];
 
 const stats = [
-  { value: "120+", label: "Tamamlanan Proje" },
-  { value: "±0.01", label: "mm Tolerans" },
-  { value: "15+", label: "Yıllık Deneyim" },
-  { value: "%99.8", label: "Zamanında Teslimat" },
+  { value: "1000+", label: "Tamamlanan Proje" },
+  { value: "15+", label: "YILLIK UZMANLIK" },
+  { value: "24/7", label: "Kesintisiz Üretim" },
+  { value: "%100", label: "Zamanında Teslimat" },
 ];
 
 const TestimonialsSection = () => {
