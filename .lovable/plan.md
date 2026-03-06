@@ -1,25 +1,71 @@
 
 
-## Root Cause Analysis: Blurry Text in "Neden Mas Technic?" and "Kabiliyetler" Sections
+# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
 
-The blur is caused by **Framer Motion's scroll-linked `y` transforms** applied to elements inside `sticky` containers. When `useTransform` produces sub-pixel values (e.g., `y: 12.7px`), the browser's GPU compositor renders text on fractional pixel boundaries, causing anti-aliasing artifacts that appear as blur. This affects both sections because they share the same sticky + scroll-driven animation pattern.
+## Mevcut Durum
 
-Other sections without this sticky scroll-animation pattern don't have the issue, even with identical colors/fonts.
+- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
+- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
 
-## Fix
+## Birleştirme Fikri
 
-Add `transform: translateZ(0)` and `backfaceVisibility: 'hidden'` to all `motion.div` elements that use scroll-linked `style={{ y, opacity }}` in both components. This forces proper GPU layer isolation and pixel-snapping.
+**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
 
-### Files to edit:
+### Yapı: Adım 1'de CAD Dashboard'u Göm
 
-1. **`src/components/WhyUsSection.tsx`**
-   - On header `motion.div` (line 126): add `backfaceVisibility: 'hidden', translateZ: 0` to style
-   - On each `WhyUsCard` `motion.div` (line 173): same treatment
-   - On badges `motion.div` elements (lines 141, 151): same treatment
+```text
+┌─────────────────────────────────────────────────────┐
+│  Header + Stepper (4 adım)                          │
+├────────────────────────────┬────────────────────────┤
+│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
+│  ┌──────────────────────┐  │  ┌──────────────────┐  │
+│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
+│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
+│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
+│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
+│  │ (toolbar, grid,      │  │  └──────────────────┘  │
+│  │  wireframe, renk,    │  │                        │
+│  │  fullscreen, gizmo)  │  │                        │
+│  └──────────────────────┘  │                        │
+│  ┌──────────────────────┐  │                        │
+│  │ Parça Tablosu        │  │                        │
+│  │ (çoklu dosya/parça)  │  │                        │
+│  └──────────────────────┘  │                        │
+├────────────────────────────┴────────────────────────┤
+│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
+└─────────────────────────────────────────────────────┘
+```
 
-2. **`src/components/CapabilitiesSection.tsx`**
-   - On header `motion.div` (line 134): add `backfaceVisibility: 'hidden', translateZ: 0` to style
-   - On each `CapabilityCard` `motion.div` (line 162): same treatment
+### Detaylar
 
-This is the same class of issue previously fixed by removing the global `will-change: transform` rule, but these components re-introduce GPU compositing through Framer Motion's inline transforms.
+1. **Adım 1 — Gelişmiş CAD Yükleme**:
+   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
+   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
+   - Dosya yüklenmeden önce: drag-drop alanı göster
+   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
+   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
+
+2. **Adım 2-4 — Mevcut akış korunur**:
+   - Özellikler, İnceleme, Gönderim adımları aynen kalır
+   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+
+3. **Sağ panel adaptasyonu**:
+   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
+   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
+
+4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
+   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
+
+### Teknik Değişiklikler
+
+| Dosya | İşlem |
+|-------|-------|
+| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
+| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
+| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
+
+### Avantajlar
+- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
+- Gereksiz sayfa duplikasyonu ortadan kalkar
+- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
 

@@ -131,7 +131,7 @@ const CapabilitiesSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-[#0d1929]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY, backfaceVisibility: 'hidden', translateZ: 0 }}>
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik Yetkinlik</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">ÜRETİM KAPASİTESİ</h2>
@@ -161,7 +161,7 @@ const CapabilityCard = ({ cap, anim }: CardProps) => {
   return (
     <motion.div
       className="bg-background border border-border p-5 h-[280px] sm:h-[300px] md:h-[320px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-      style={{ opacity: anim.opacity, y: anim.y }}>
+      style={{ opacity: anim.opacity, y: anim.y, backfaceVisibility: 'hidden', translateZ: 0 }}>
       
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border">
         <div className="w-9 h-9 bg-primary flex items-center justify-center flex-shrink-0">
