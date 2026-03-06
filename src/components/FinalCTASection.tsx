@@ -95,7 +95,7 @@ const FinalCTASection = () => {
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             <MagneticButton
-              href="/iletisim"
+              href="/teklif-al"
               className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all bg-white text-primary hover:bg-white/90 border-2 border-white"
               strength={0.25}
             >
@@ -103,11 +103,11 @@ const FinalCTASection = () => {
               <ArrowRight className="w-4 h-4" />
             </MagneticButton>
             <MagneticButton
-              href="#kabiliyetler"
+              href="/iletisim"
               className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all bg-white text-black hover:bg-black hover:text-white border-2 border-transparent"
               strength={0.25}
             >
-              Portföyümüz
+              Bize Ulaşın
             </MagneticButton>
           </motion.div>
         </div>

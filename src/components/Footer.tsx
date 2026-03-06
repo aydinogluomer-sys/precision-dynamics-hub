@@ -350,14 +350,14 @@ const Footer = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <a
-                href="#teklif"
+                href="/teklif-al"
                 className="px-8 py-3.5 bg-primary text-primary-foreground font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
               >
                 Hemen Teklif Al
                 <ArrowRight className="w-4 h-4" />
               </a>
               <a
-                href="#iletisim"
+                href="/iletisim"
                 className="px-8 py-3.5 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center text-white transition-all hover:bg-white/5"
                 style={{ border: "1px solid rgba(255, 255, 255, 0.15)" }}
               >

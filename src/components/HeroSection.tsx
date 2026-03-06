@@ -219,7 +219,7 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4">
-              <MagneticButton href="/iletisim" className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all">
+              <MagneticButton href="/teklif-al" className="bg-primary text-primary-foreground font-bold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all">
                 Teklif Al <ArrowRight className="w-4 h-4" />
               </MagneticButton>
               <MagneticButton href="#kabiliyetler" className="font-semibold px-8 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10 border-2 border-white text-white" strength={0.2}>

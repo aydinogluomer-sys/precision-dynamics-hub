@@ -31,6 +31,7 @@ const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori"));
 const TeklifAl = lazy(() => import("./pages/TeklifAl"));
 const CADDashboard = lazy(() => import("./pages/CADDashboard"));
 const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli"));
+const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 import ProtectedRoute from "./components/ProtectedRoute";
 import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
 
@@ -67,6 +68,9 @@ const AnimatedRoutes = () => {
             <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
+            <Route path="/hizmetler/kategori/:slug" element={<CategoryPage />} />
+            <Route path="/kabiliyetler/kategori/:slug" element={<CategoryPage />} />
+            <Route path="/endustriyel/kategori/:slug" element={<CategoryPage />} />
             <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
             <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
             <Route path="/endustriyel/:slug" element={<ServiceDetail />} />

@@ -124,11 +124,11 @@ const ServicesSection = () => {
             </p>
           </div>
           <div className="flex gap-4 shrink-0">
-            <a href="#teklif" className="btn-industrial-primary whitespace-nowrap">
+            <a href="/teklif-al" className="btn-industrial-primary whitespace-nowrap">
               Danışmanlık Al
             </a>
-            <a href="#kabiliyetler" className="btn-industrial-secondary whitespace-nowrap">
-              Portföyümüz
+            <a href="/iletisim" className="btn-industrial-secondary whitespace-nowrap">
+              Bize Ulaşın
             </a>
           </div>
         </motion.div>
