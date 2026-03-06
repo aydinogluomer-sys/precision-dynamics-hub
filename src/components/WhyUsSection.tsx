@@ -126,7 +126,7 @@ const WhyUsSection = () => {
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary px-0 py-0 mx-0 my-[10px]">Avantajlar</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <p className="text-sm max-w-lg mx-auto text-foreground/80">Mikron düzeyinde hassasiyeti, uçtan uca dijital şeffaflıkla yönetiyoruz.</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) =>
@@ -147,7 +147,7 @@ const WhyUsSection = () => {
             {badges.map((badge, i) =>
             <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
-                {i < 3 && <span className="ml-4 text-border">·</span>}
+                {i < 3 && <span className="ml-4 text-border"></span>}
               </span>
             )}
           </motion.div>
