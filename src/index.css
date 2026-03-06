@@ -109,10 +109,6 @@
     scroll-behavior: smooth;
   }
 
-  /* Smooth scroll sections */
-  section {
-    will-change: transform;
-  }
 
   /* Custom cursor for interactive elements */
   a, button, [role="button"] {
