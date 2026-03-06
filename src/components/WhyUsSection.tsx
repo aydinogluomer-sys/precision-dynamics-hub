@@ -126,7 +126,7 @@ const WhyUsSection = () => {
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <p className="text-sm max-w-lg mx-auto text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) => (
@@ -137,7 +137,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
@@ -145,7 +145,7 @@ const WhyUsSection = () => {
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
-              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/70">
+              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
                 {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
@@ -179,7 +179,7 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
         <h4 className="font-bold text-base mb-1 text-foreground">{value.title}</h4>
         <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
-        <p className="text-xs leading-relaxed text-foreground/70">
+        <p className="text-xs leading-relaxed text-foreground/80">
           {value.description}
         </p>
       </div>
