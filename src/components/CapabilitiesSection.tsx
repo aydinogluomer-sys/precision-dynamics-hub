@@ -113,7 +113,7 @@ const CapabilitiesSection = () => {
               </motion.div>
             ))}
           </div>
-          <motion.div className="flex items-center justify-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <motion.div className="flex items-center justify-center mb-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             <a href="#teklif" className="px-8 py-3 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-white">
               Teknik Kapasiteyi İncele
             </a>
@@ -139,7 +139,7 @@ const CapabilitiesSection = () => {
               <CapabilityCard key={cap.title} cap={cap} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="flex items-center justify-center gap-0" style={{ opacity: ctaOpacity, y: ctaY }}>
+          <motion.div className="flex items-center justify-center gap-0 mb-8" style={{ opacity: ctaOpacity, y: ctaY }}>
             <div className="flex-1 h-px relative bg-border">
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-background border border-primary/40" />
             </div>

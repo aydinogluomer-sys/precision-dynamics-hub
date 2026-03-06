@@ -228,7 +228,7 @@ const HeroSection = () => {
             </motion.div>
           </motion.div>
 
-          {/* Right Content - CAD Drop Zone + Stats */}
+          {/* Right Content - CAD Drop Zone (Upload Interface) */}
           <motion.div
             className="relative"
             initial={{ opacity: 0, x: 60 }}
@@ -237,20 +237,31 @@ const HeroSection = () => {
             transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.3 }}
           >
             <div
-              className="relative transition-all duration-300 overflow-hidden"
+              className="relative overflow-hidden"
               style={{
-                background: "rgba(15,23,42,0.4)",
+                background: "rgba(15,23,42,0.6)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255,255,255,0.05)",
-                boxShadow: "0 0 40px rgba(0,0,0,0.5)",
+                border: "1px solid rgba(6,136,172,0.15)",
+                boxShadow: "0 0 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(6,136,172,0.1)",
               }}
             >
-              {/* CAD Drop Zone - main area */}
+              {/* Header bar */}
+              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.03)" }}>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  Upload Interface V2.4.0
+                </span>
+                <motion.div
+                  className="w-2 h-2 rounded-full bg-primary"
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                />
+              </div>
+
+              {/* CAD Drop Zone */}
               <div
-                className={`p-8 sm:p-10 border-b transition-all duration-300 cursor-pointer group ${
-                  isDragging ? "bg-primary/10" : uploadState === "success" ? "bg-green-500/5" : uploadState === "error" ? "bg-red-500/5" : "hover:bg-white/[0.03]"
+                className={`relative p-6 sm:p-10 cursor-pointer group ${
+                  isDragging ? "bg-primary/10" : uploadState === "success" ? "bg-green-500/5" : uploadState === "error" ? "bg-red-500/5" : ""
                 }`}
-                style={{ borderColor: "rgba(255,255,255,0.1)" }}
                 onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
@@ -264,21 +275,45 @@ const HeroSection = () => {
                   onChange={handleFileSelect}
                 />
 
-                <div className="flex flex-col items-center text-center gap-5">
+                {/* Animated dashed border */}
+                <motion.div
+                  className="absolute inset-4 sm:inset-6 pointer-events-none"
+                  style={{
+                    border: `2px dashed ${isDragging ? "hsl(var(--primary))" : "rgba(255,255,255,0.12)"}`,
+                    transition: "border-color 0.3s",
+                  }}
+                  animate={isDragging ? { scale: [1, 1.02, 1] } : {}}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                />
+
+                {/* Scanning line animation */}
+                <motion.div
+                  className="absolute left-4 right-4 sm:left-6 sm:right-6 h-px pointer-events-none"
+                  style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)", opacity: 0.4 }}
+                  animate={{ top: ["15%", "85%", "15%"] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                />
+
+                <div className="relative flex flex-col items-center text-center gap-5 py-6 sm:py-10">
                   {/* Icon */}
-                  <div className={`w-20 h-20 flex items-center justify-center transition-all duration-300 ${
-                    isDragging ? "border-primary bg-primary/20 scale-110" : "border-white/20 group-hover:border-primary/50"
-                  }`} style={{ border: "2px dashed" }}>
+                  <motion.div
+                    className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                      isDragging ? "bg-primary/20" : "bg-white/5"
+                    }`}
+                    style={{ border: `1px solid ${isDragging ? "hsl(var(--primary))" : "rgba(6,136,172,0.2)"}` }}
+                    animate={uploadState === "idle" ? { y: [0, -6, 0] } : {}}
+                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                  >
                     {uploadState === "uploading" ? (
-                      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                      <Loader2 className="w-7 h-7 text-primary animate-spin" />
                     ) : uploadState === "success" ? (
-                      <CheckCircle className="w-8 h-8 text-green-400" />
+                      <CheckCircle className="w-7 h-7 text-green-400" />
                     ) : uploadState === "error" ? (
-                      <AlertCircle className="w-8 h-8 text-red-400" />
+                      <AlertCircle className="w-7 h-7 text-red-400" />
                     ) : (
-                      <Upload className="w-8 h-8 text-white/40 group-hover:text-primary transition-colors" />
+                      <Upload className="w-7 h-7 text-primary" />
                     )}
-                  </div>
+                  </motion.div>
 
                   {/* Text */}
                   {uploadState === "uploading" ? (
@@ -294,8 +329,8 @@ const HeroSection = () => {
                   ) : (
                     <>
                       <div>
-                        <p className="text-lg font-semibold text-white/90 group-hover:text-white transition-colors mb-1">
-                          CAD Dosyanızı Sürükleyin
+                        <p className="text-base sm:text-lg font-bold uppercase tracking-wider text-white/90 group-hover:text-white transition-colors mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                          Drag CAD File Here
                         </p>
                         <p className="text-xs text-white/40">
                           veya tıklayarak dosya seçin
@@ -303,43 +338,64 @@ const HeroSection = () => {
                       </div>
                       <div className="flex flex-wrap justify-center gap-2">
                         {["STEP", "IGES", "DXF", "SOLIDWORKS", "PDF"].map((fmt) => (
-                          <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/30 px-2 py-1" style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
+                          <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.05)" }}>
                             {fmt}
                           </span>
                         ))}
                       </div>
-                      <p className="text-xs text-primary/80" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                        Hızlı teklif için dosyanızı yükleyin
-                      </p>
                     </>
                   )}
                 </div>
               </div>
 
-              {/* Quick Stats */}
-              <motion.div
-                className="grid grid-cols-3 gap-4 p-6"
-                variants={statVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-              >
-                {[
-                  { value: "±0.01", label: "mm Tolerans" },
-                  { value: "24h", label: "Teklif Süresi" },
-                  { value: "50+", label: "Malzeme" },
-                ].map((stat) => (
-                  <motion.div key={stat.label} variants={statItem} className="text-center">
-                    <div className="text-xl sm:text-2xl font-bold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      {stat.value}
-                    </div>
-                    <div className="text-[10px] uppercase tracking-wider mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
+              {/* Footer bar */}
+              <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.03)" }}>
+                <span className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  <motion.span
+                    className="w-1.5 h-1.5 rounded-full bg-green-400"
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  />
+                  Encryption Active
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.15em] font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  100% IP Protection
+                </span>
+              </div>
             </div>
+
+            {/* Quick Stats */}
+            <motion.div
+              className="grid grid-cols-3 gap-3 mt-3"
+              variants={statVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              {[
+                { value: "±0.01", label: "mm Tolerans" },
+                { value: "24h", label: "Teklif Süresi" },
+                { value: "50+", label: "Malzeme" },
+              ].map((stat) => (
+                <motion.div
+                  key={stat.label}
+                  variants={statItem}
+                  className="text-center py-3"
+                  style={{
+                    background: "rgba(15,23,42,0.4)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(6,136,172,0.1)",
+                  }}
+                >
+                  <div className="text-lg sm:text-xl font-bold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    {stat.value}
+                  </div>
+                  <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </div>
