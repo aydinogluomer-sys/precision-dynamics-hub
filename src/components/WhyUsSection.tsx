@@ -33,9 +33,9 @@ const values = [
 
 const badges = [
 { label: "Proses Kontrollü Üretim", icon: ShieldCheck },
-{ label: "Teknik Güvence Protokolü", icon: Headphones },
-{ label: "DFM Analizi Desteği", icon: FileSearch },
-{ label: "Zamanında Teslimat Garantisi", icon: Truck }];
+{ label: "Teknik Güvence Protokolü", icon: FileSearch },
+{ label: "DFM Analizi Desteği", icon: Wrench },
+{ label: "Zamanında Teslimat Garantisi", icon: Clock }];
 
 
 const WhyUsSection = () => {

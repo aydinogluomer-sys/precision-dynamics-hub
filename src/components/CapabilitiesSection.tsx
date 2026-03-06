@@ -1,4 +1,4 @@
-import { Monitor, Ruler, CheckCircle, TrendingUp } from "lucide-react";
+import { Monitor, Ruler, CheckCircle, TrendingUp, ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -130,27 +130,21 @@ const CapabilitiesSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-[#0d1929]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">ÜRETİM KAPASİTESİ</h2>
-            <p className="text-sm max-w-lg mx-auto text-foreground/80">Endüstriyel standartlara uygun modern makine parkuru ve güçlü üretim altyapısı.</p>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik Yetkinlik</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-2">ÜRETİM KAPASİTESİ</h2>
+              <p className="text-sm max-w-lg text-foreground/80">Endüstriyel standartlara uygun modern makine parkuru ve güçlü üretim altyapısı.</p>
+            </div>
+            <a href="#teklif" className="mt-3 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors whitespace-nowrap">
+              Teknik Kapasiteyi İncele <ArrowUpRight className="w-4 h-4" />
+            </a>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {capabilities.map((cap, i) =>
             <CapabilityCard key={cap.title} cap={cap} anim={cardAnimations[i]} />
             )}
           </div>
-          <motion.div className="flex items-center justify-center gap-0" style={{ opacity: ctaOpacity, y: ctaY }}>
-            <div className="flex-1 h-px relative bg-border">
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#e8edf4] dark:bg-background border border-primary/40" />
-            </div>
-            <a href="#teklif" className="px-10 py-3 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-primary-foreground whitespace-nowrap mx-[40px] my-[12px]">
-              Teknik Kapasiteyi İncele
-            </a>
-            <div className="flex-1 h-px relative bg-border">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#e8edf4] dark:bg-background border border-primary/40" />
-            </div>
-          </motion.div>
         </div>
       </section>
     </div>);
