@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 
 // ── Part Table Data ──
 const partData = [
@@ -801,7 +801,6 @@ const CADDashboard = () => {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 };

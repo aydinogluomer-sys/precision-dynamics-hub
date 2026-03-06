@@ -6,35 +6,40 @@ import { useState } from "react";
 const footerLinks = [
   {
     title: "Endüstriyel",
+    titleHref: null as string | null,
     items: [
-      { label: "Yüksek Teknoloji", href: "#endustriler" },
-      { label: "Seri Üretim", href: "#endustriler" },
-      { label: "Endüstriyel Sistemler", href: "#endustriler" },
-      { label: "Üretim Çözümleri", href: "#endustriler" },
+      { label: "Yüksek Teknoloji", href: "/endustriyel/kategori/yuksek-teknoloji" },
+      { label: "Seri Üretim", href: "/endustriyel/kategori/seri-uretim" },
+      { label: "Endüstriyel Sistemler", href: "/endustriyel/kategori/endustriyel-sistemler" },
+      { label: "Üretim Çözümleri", href: "/endustriyel/kategori/uretim-cozumleri" },
+      { label: "Enerji & Altyapı", href: "/endustriyel/kategori/enerji-altyapi" },
     ],
   },
   {
     title: "Kabiliyetler",
+    titleHref: null as string | null,
     items: [
-      { label: "Üretim Altyapısı", href: "#kabiliyetler" },
-      { label: "Kalite & Standartlar", href: "#sertifikalar" },
-      { label: "Mühendislik Desteği", href: "#kabiliyetler" },
-      { label: "Prototipten Seri Üretime", href: "#nasil-calisiyoruz" },
-      { label: "Süreç & Operasyon", href: "#nasil-calisiyoruz" },
+      { label: "Üretim Altyapısı", href: "/kabiliyetler/kategori/uretim-altyapisi" },
+      { label: "Kalite & Standartlar", href: "/kabiliyetler/kategori/kalite-standartlar" },
+      { label: "Mühendislik Desteği", href: "/kabiliyetler/kategori/muhendislik-destegi" },
+      { label: "Prototipten Seri Üretime", href: "/kabiliyetler/kategori/prototipten-seri-uretime" },
+      { label: "Süreç & Operasyon", href: "/kabiliyetler/kategori/surec-operasyon" },
     ],
   },
   {
     title: "Hizmetler",
+    titleHref: null as string | null,
     items: [
-      { label: "Talaşlı İmalat", href: "#hizmetler" },
-      { label: "Ön Üretim", href: "#hizmetler" },
-      { label: "Yüzey İşlemleri", href: "#hizmetler" },
-      { label: "İşaretleme & Tanımlama", href: "#hizmetler" },
-      { label: "Montaj & Sonlandırma", href: "#hizmetler" },
+      { label: "Talaşlı İmalat", href: "/hizmetler/kategori/talasli-imalat" },
+      { label: "Ön Üretim", href: "/hizmetler/kategori/on-uretim" },
+      { label: "Yüzey İşlemleri", href: "/hizmetler/kategori/yuzey-islemleri" },
+      { label: "İşaretleme & Tanımlama", href: "/hizmetler/kategori/isaretleme-tanimlama" },
+      { label: "Montaj & Birleştirme", href: "/hizmetler/kategori/montaj-birlestirme" },
     ],
   },
   {
     title: "Kurumsal & Destek",
+    titleHref: null as string | null,
     items: [
       { label: "Ana Sayfa", href: "/" },
       { label: "Hakkımızda", href: "/hakkimizda" },
@@ -63,15 +68,9 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
         <ul className="space-y-2.5 text-center">
           {group.items.map((l) => (
             <li key={l.label}>
-              {l.href.startsWith("/") ? (
-                <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                  {l.label}
-                </Link>
-              ) : (
-                <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                  {l.label}
-                </a>
-              )}
+              <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                {l.label}
+              </Link>
             </li>
           ))}
         </ul>
@@ -298,15 +297,9 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {group.items.map((l) => (
                   <li key={l.label}>
-                    {l.href.startsWith("/") ? (
-                      <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                        {l.label}
-                      </Link>
-                    ) : (
-                      <a href={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
-                        {l.label}
-                      </a>
-                    )}
+                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
