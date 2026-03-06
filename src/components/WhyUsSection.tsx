@@ -142,7 +142,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/80">Hassas üretim, güvenilir süreçler ve mühendislik odaklı yaklaşımımızla endüstriyel çözümler sunuyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
