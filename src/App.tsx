@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -29,7 +29,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Malzemeler = lazy(() => import("./pages/Malzemeler"));
 const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori"));
 const TeklifAl = lazy(() => import("./pages/TeklifAl"));
-const CADDashboard = lazy(() => import("./pages/CADDashboard"));
+
 const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -79,7 +79,7 @@ const AnimatedRoutes = () => {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
             <Route path="/teklif-al" element={<TeklifAl />} />
-            <Route path="/cad-dashboard" element={<CADDashboard />} />
+            <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
