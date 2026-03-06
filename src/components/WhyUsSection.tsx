@@ -82,7 +82,7 @@ const WhyUsSection = () => {
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
             <h2 className="text-2xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <p className="text-sm max-w-lg mx-auto text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
             {values.map((value, i) => (
@@ -93,7 +93,7 @@ const WhyUsSection = () => {
                   </div>
                   <h4 className="font-bold text-sm mb-1 text-foreground">{value.title}</h4>
                   <span className="text-xs font-semibold text-primary font-mono block mb-2">{value.subtitle}</span>
-                  <p className="text-xs leading-relaxed text-muted-foreground">{value.description}</p>
+                  <p className="text-xs leading-relaxed text-foreground/70">{value.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -102,7 +102,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
@@ -110,7 +110,7 @@ const WhyUsSection = () => {
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             {badges.map((badge) => (
-              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-foreground/70">
                 <badge.icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge.label}
               </span>
             ))}
@@ -130,7 +130,7 @@ const WhyUsSection = () => {
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <p className="text-sm max-w-lg mx-auto text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) => (
@@ -141,7 +141,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/70">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
@@ -149,7 +149,7 @@ const WhyUsSection = () => {
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
-              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/70">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
                 {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
@@ -187,7 +187,7 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
         <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
         <motion.p
-          className="text-xs leading-relaxed text-muted-foreground"
+          className="text-xs leading-relaxed text-foreground/70"
           style={{ opacity: anim.detail }}
         >
           {value.description}
