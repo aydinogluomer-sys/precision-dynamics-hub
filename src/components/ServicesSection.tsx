@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
@@ -55,10 +55,9 @@ const ServicesSection = () => {
     <section id="hizmetler" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
-        <div className="flex flex-col items-center md:items-start md:flex-row md:items-end md:justify-between mb-14">
-          <div className="text-center md:text-left">
+        <div className="text-center mb-14">
             <SlideIn direction="left">
-              <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
+              <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="w-8 h-px bg-border" />
                 <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
                   Kabiliyetler
@@ -70,17 +69,9 @@ const ServicesSection = () => {
                 Mühendislik Hizmetlerimiz
               </h2>
             </TextReveal>
-            <p className="text-sm text-muted-foreground max-w-lg">
+            <p className="text-sm text-muted-foreground max-w-lg mx-auto">
               Tasarımdan seri üretime kadar her adımda mühendislik odaklı çözümler sunuyoruz
             </p>
-          </div>
-          <a
-            href="#kabiliyetler"
-            className="mt-4 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors"
-          >
-            Tüm Kabiliyetleri Görüntüle
-            <ArrowUpRight className="w-4 h-4" />
-          </a>
         </div>
 
         {/* Mobile layout: 2-col grid, last item spans 2 */}

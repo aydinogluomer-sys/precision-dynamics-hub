@@ -1,4 +1,4 @@
-import { Target, RefreshCw, Clock, Wrench, ShieldCheck, Headphones, FileSearch, Truck, Building2, ArrowUpRight } from "lucide-react";
+import { Target, RefreshCw, Clock, Wrench, ShieldCheck, FileSearch, Building2, ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,9 +33,9 @@ const values = [
 
 const badges = [
 { label: "Proses Kontrollü Üretim", icon: ShieldCheck },
-{ label: "Teknik Güvence Protokolü", icon: Headphones },
-{ label: "DFM Analizi Desteği", icon: FileSearch },
-{ label: "Zamanında Teslimat Garantisi", icon: Truck }];
+{ label: "Teknik Güvence Protokolü", icon: FileSearch },
+{ label: "DFM Analizi Desteği", icon: Wrench },
+{ label: "Zamanında Teslimat Garantisi", icon: Clock }];
 
 
 const WhyUsSection = () => {
