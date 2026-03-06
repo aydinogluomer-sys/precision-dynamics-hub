@@ -1,4 +1,4 @@
-import { Monitor, Ruler, CheckCircle, TrendingUp } from "lucide-react";
+import { Monitor, Ruler, CheckCircle, TrendingUp, ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";

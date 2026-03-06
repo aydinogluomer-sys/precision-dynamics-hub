@@ -1,4 +1,4 @@
-import { Target, RefreshCw, Clock, Wrench, ShieldCheck, Headphones, FileSearch, Truck, Building2 } from "lucide-react";
+import { Target, RefreshCw, Clock, Wrench, ShieldCheck, Headphones, FileSearch, Truck, Building2, ArrowUpRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
