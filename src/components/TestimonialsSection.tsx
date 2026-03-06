@@ -33,7 +33,7 @@ const clients = [
   "EMOR", "Batı Isıl İşlem", "Yaka Döküm", "Değer Galvano",
   "Çağdaş Teknik", "C.T.M", "Ege Teknik", "Maktest",
   "Eksen Hassas Döküm", "Era Metalurji", "Xtremex Kimya", "DPM Boya",
-  "Ahmet Tezcan", "Ali galip", "Mikrosan Makina", "Dösan Isıl İşlem",
+  "Ahmet Tezcan", "Ali Galip", "Mikrosan Makina", "Dösan Isıl İşlem",
   "Asil Oltulu", "Akon Hidrolik", "ENTEA", "Amade Metal", "De-Taş",
 ];
 
