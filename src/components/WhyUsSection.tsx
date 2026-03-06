@@ -176,22 +176,16 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="flex flex-col items-center justify-center h-full">
-        <motion.div
-          className="w-10 h-10 mb-3 flex items-center justify-center text-primary"
-          style={{ opacity: anim.detail }}
-        >
+        <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
           <value.icon className="w-10 h-10" />
-        </motion.div>
+        </div>
 
         <h4 className="font-bold text-base mb-1 text-foreground">{value.title}</h4>
         <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
-        <motion.p
-          className="text-xs leading-relaxed text-foreground/70"
-          style={{ opacity: anim.detail }}
-        >
+        <p className="text-xs leading-relaxed text-foreground/70">
           {value.description}
-        </motion.p>
+        </p>
       </div>
     </motion.div>
   );
