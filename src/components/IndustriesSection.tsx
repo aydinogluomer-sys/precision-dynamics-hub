@@ -30,20 +30,20 @@ interface Industry {
 }
 
 const industries: Industry[] = [
-  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları", highlight: "±0.005mm tolerans", modelType: "aerospace", image: imgAerospace },
-  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler", highlight: "Yüksek güvenilirlik", modelType: "defense", image: imgDefense },
-  { name: "Robotik", description: "Hassas hareket sistemleri ve aktüatörler", highlight: "Yüksek tekrarlanabilirlik", modelType: "robotics", image: imgRobotics },
-  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında üretim", highlight: "Seri üretim kapasitesi", modelType: "automotive", image: imgAutomotive },
-  { name: "Medikal", description: "ISO 13485 uyumlu medikal bileşenler", highlight: "Biyouyumlu malzemeler", modelType: "medical", image: imgMedical },
-  { name: "Yelken & Yat Sistemleri", description: "Deniz koşullarına dayanıklı parçalar", highlight: "Korozyon direnci", modelType: "marine", image: imgMarine },
-  { name: "Hidrolik & Pnömatik", description: "Yüksek basınç sistemleri bileşenleri", highlight: "350+ bar dayanım", modelType: "hydraulic", image: imgHydraulic },
-  { name: "Boru & Bağlantı Parçaları", description: "Endüstriyel boru sistemleri ve fittings", highlight: "Sızdırmazlık garantisi", modelType: "piping", image: imgPiping },
-  { name: "İklim Teknolojileri", description: "HVAC sistem komponentleri üretimi", highlight: "Enerji verimli tasarım", modelType: "hvac", image: imgHvac },
-  { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistem parçaları", highlight: "Sürdürülebilir üretim", modelType: "renewable", image: imgRenewable },
-  { name: "Petrol & Gaz", description: "Rafineri ve boru hattı ekipmanları", highlight: "API standartları", modelType: "oilgas", image: imgOilgas },
-  { name: "Güç Dağıtım Sistemleri", description: "Enerji iletim ve dağıtım bileşenleri", highlight: "Yüksek iletkenlik", modelType: "power", image: imgPower },
-  { name: "Madencilik Ekipmanları", description: "Ağır hizmet madencilik komponentleri", highlight: "Aşınma direnci", modelType: "mining", image: imgMining },
-];
+{ name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları", highlight: "±0.005mm tolerans", modelType: "aerospace", image: imgAerospace },
+{ name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler", highlight: "Yüksek güvenilirlik", modelType: "defense", image: imgDefense },
+{ name: "Robotik", description: "Hassas hareket sistemleri ve aktüatörler", highlight: "Yüksek tekrarlanabilirlik", modelType: "robotics", image: imgRobotics },
+{ name: "Otomotiv", description: "IATF 16949 kalite standartlarında üretim", highlight: "Seri üretim kapasitesi", modelType: "automotive", image: imgAutomotive },
+{ name: "Medikal", description: "ISO 13485 uyumlu medikal bileşenler", highlight: "Biyouyumlu malzemeler", modelType: "medical", image: imgMedical },
+{ name: "Yelken & Yat Sistemleri", description: "Deniz koşullarına dayanıklı parçalar", highlight: "Korozyon direnci", modelType: "marine", image: imgMarine },
+{ name: "Hidrolik & Pnömatik", description: "Yüksek basınç sistemleri bileşenleri", highlight: "350+ bar dayanım", modelType: "hydraulic", image: imgHydraulic },
+{ name: "Boru & Bağlantı Parçaları", description: "Endüstriyel boru sistemleri ve fittings", highlight: "Sızdırmazlık garantisi", modelType: "piping", image: imgPiping },
+{ name: "İklim Teknolojileri", description: "HVAC sistem komponentleri üretimi", highlight: "Enerji verimli tasarım", modelType: "hvac", image: imgHvac },
+{ name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistem parçaları", highlight: "Sürdürülebilir üretim", modelType: "renewable", image: imgRenewable },
+{ name: "Petrol & Gaz", description: "Rafineri ve boru hattı ekipmanları", highlight: "API standartları", modelType: "oilgas", image: imgOilgas },
+{ name: "Güç Dağıtım Sistemleri", description: "Enerji iletim ve dağıtım bileşenleri", highlight: "Yüksek iletkenlik", modelType: "power", image: imgPower },
+{ name: "Madencilik Ekipmanları", description: "Ağır hizmet madencilik komponentleri", highlight: "Aşınma direnci", modelType: "mining", image: imgMining }];
+
 
 const IndustriesSection = () => {
   const [activeModel, setActiveModel] = useState<IndustryType | null>(null);
@@ -51,7 +51,7 @@ const IndustriesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleActivate = useCallback((type: IndustryType) => {
-    setActiveModel((prev) => (prev === type ? null : type));
+    setActiveModel((prev) => prev === type ? null : type);
   }, []);
 
   const handleDeactivate = useCallback(() => {
@@ -72,7 +72,7 @@ const IndustriesSection = () => {
             <div className="w-8 h-px bg-border" />
           </div>
           <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
-          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">Kritik sektörlerde güvenilir üretim ortağınız</p>
+          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">Talaşlı imalatın öncelikli olduğu sektörlerde kanıtlanmış operasyonel yetkinlik.</p>
         </TextReveal>
 
         {/* Scroll buttons */}
@@ -89,23 +89,23 @@ const IndustriesSection = () => {
         <div
           ref={scrollRef}
           className="flex gap-4 sm:gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent"
-          style={{ scrollbarWidth: "thin" }}
-        >
-          {industries.map((industry) => (
-            <div key={industry.modelType} className="snap-start flex-shrink-0 w-[calc(50%-8px)] sm:w-[300px]">
+          style={{ scrollbarWidth: "thin" }}>
+          
+          {industries.map((industry) =>
+          <div key={industry.modelType} className="snap-start flex-shrink-0 w-[calc(50%-8px)] sm:w-[300px]">
               <IndustryCard
-                industry={industry}
-                isActive={activeModel === industry.modelType}
-                isMobile={isMobile}
-                onActivate={handleActivate}
-                onDeactivate={handleDeactivate}
-              />
+              industry={industry}
+              isActive={activeModel === industry.modelType}
+              isMobile={isMobile}
+              onActivate={handleActivate}
+              onDeactivate={handleDeactivate} />
+            
             </div>
-          ))}
+          )}
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 const IndustryCard = ({
@@ -113,14 +113,14 @@ const IndustryCard = ({
   isActive,
   isMobile,
   onActivate,
-  onDeactivate,
-}: {
-  industry: Industry;
-  isActive: boolean;
-  isMobile: boolean;
-  onActivate: (type: IndustryType) => void;
-  onDeactivate: () => void;
-}) => {
+  onDeactivate
+
+
+
+
+
+
+}: {industry: Industry;isActive: boolean;isMobile: boolean;onActivate: (type: IndustryType) => void;onDeactivate: () => void;}) => {
   return (
     <motion.div
       className="group bg-background border border-border overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-xl flex flex-col h-full rounded-sm cursor-pointer"
@@ -128,54 +128,54 @@ const IndustryCard = ({
       transition={{ type: "spring", stiffness: 300 }}
       onMouseEnter={() => !isMobile && onActivate(industry.modelType)}
       onMouseLeave={() => !isMobile && onDeactivate()}
-      onClick={() => isMobile && onActivate(industry.modelType)}
-    >
+      onClick={() => isMobile && onActivate(industry.modelType)}>
+      
       {/* 3D model area */}
       <div className="relative h-48 overflow-hidden bg-[hsl(var(--card))]">
         <AnimatePresence mode="wait">
-          {isActive ? (
-            <motion.div
-              key="canvas"
-              className="absolute inset-0 z-10"
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-            >
+          {isActive ?
+          <motion.div
+            key="canvas"
+            className="absolute inset-0 z-10"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}>
+            
               {/* Radial glow background behind 3D model */}
               <div className="absolute inset-0" style={{
-                background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.08) 0%, transparent 70%)"
-              }} />
+              background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.08) 0%, transparent 70%)"
+            }} />
               <Suspense fallback={
-                <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
-              }>
+            }>
                 <IndustryCanvas type={industry.modelType} />
               </Suspense>
               {/* Subtle grid pattern overlay */}
               <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-                backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-                backgroundSize: "20px 20px"
-              }} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="placeholder"
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
+              backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
+              backgroundSize: "20px 20px"
+            }} />
+            </motion.div> :
+
+          <motion.div
+            key="placeholder"
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}>
+            
               <img
-                src={industry.image}
-                alt={industry.name}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+              src={industry.image}
+              alt={industry.name}
+              className="w-full h-full object-cover"
+              loading="lazy" />
+            
             </motion.div>
-          )}
+          }
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none z-20" />
       </div>
@@ -193,8 +193,8 @@ const IndustryCard = ({
       <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "hsl(var(--primary) / 0.06)" }}>
         <span className="text-technical text-xs text-primary font-semibold">{industry.highlight}</span>
       </div>
-    </motion.div>
-  );
+    </motion.div>);
+
 };
 
 export default IndustriesSection;
