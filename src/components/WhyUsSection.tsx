@@ -170,8 +170,8 @@ interface CardProps {
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
-      className="relative bg-background border border-border p-6 text-center h-[300px] md:h-[320px] overflow-hidden group hover:border-primary transition-colors"
-      style={{ opacity: anim.opacity, y: anim.y }}
+      className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors"
+      style={{ opacity: anim.opacity, y: anim.y, background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -183,12 +183,12 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
           <value.icon className="w-10 h-10" />
         </motion.div>
 
-        <h4 className="font-bold text-base mb-1">{value.title}</h4>
+        <h4 className="font-bold text-base mb-1 text-white">{value.title}</h4>
         <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
         <motion.p
-          className="text-xs text-muted-foreground leading-relaxed"
-          style={{ opacity: anim.detail }}
+          className="text-xs leading-relaxed"
+          style={{ opacity: anim.detail, color: "rgba(255,255,255,0.6)" }}
         >
           {value.description}
         </motion.p>
