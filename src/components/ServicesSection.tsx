@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
