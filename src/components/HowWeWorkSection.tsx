@@ -96,7 +96,7 @@ const HowWeWorkSection = () => {
   }, []);
 
   return (
-    <section id="nasil-calisiyoruz" className="border-y border-border" style={{ background: "#FAFAF9" }}>
+    <section id="nasil-calisiyoruz" className="border-y border-border bg-[#FAFAF9] dark:bg-muted/50">
       {/* Section Header */}
       <div className="container-industrial py-16 pb-8">
         <motion.div
