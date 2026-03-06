@@ -74,7 +74,7 @@ const StickyIntroReveal = () => {
             
             <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span><span>, CNC Freze,</span>
             Torna ve Talaşlı İmalat alanlarında{" "}
-            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>geleneksel imalat disiplinini CNC işleme kabiliyetleri ve </span>
+            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>geleneksel imalat disiplinini yüksek hassasiyetli CNC işleme kabiliyetleriyle birleştirerek </span>
             , yüksek doğruluk ve{" "}
             <span style={{ color: "hsl(var(--primary))" }}></span>{" "}
             anlayışıyla en zorlu mühendislik problemlerine çözüm sunar.

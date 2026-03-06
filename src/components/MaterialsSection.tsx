@@ -152,7 +152,7 @@ const MaterialsSection = () => {
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 70%, rgba(6, 136, 173, 0.12) 0%, transparent 50%)" }} />
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-8 md:mb-12" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block" style={{ color: "hsl(var(--primary))" }}>Malzeme</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block" style={{ color: "hsl(var(--primary))" }}>İŞLENEN MALZEMELER</span>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Çalıştığımız Malzemeler</h2>
             <p className="text-base max-w-lg mx-auto" style={{ color: "rgba(255, 255, 255, 0.6)" }}>50'den fazla materyal seçeneği ile projelerinizin teknik gereksinimlerine ve sektör standartlarına yanıt veren geniş hammadde kütüphanesi</p>
           </motion.div>
