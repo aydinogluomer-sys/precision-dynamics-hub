@@ -345,7 +345,7 @@ const HeroSection = () => {
                         </p>
                       </div>
                       <div className="flex flex-wrap justify-center gap-2">
-                        {["STEP", "IGES", "DXF", "SOLIDWORKS", "PDF"].map((fmt) => (
+                        {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
                           <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.05)" }}>
                             {fmt}
                           </span>
