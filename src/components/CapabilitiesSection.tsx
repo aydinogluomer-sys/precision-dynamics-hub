@@ -174,14 +174,14 @@ const CapabilityCard = ({ cap, anim }: CardProps) => {
         <h3 className="font-bold text-sm">{cap.title}</h3>
       </div>
 
-      <motion.div className="space-y-3" style={{ opacity: anim.specs }}>
+      <div className="space-y-3">
         {cap.items.map((item) => (
           <div key={item.label} className="flex justify-between items-baseline gap-2">
             <span className="text-xs text-muted-foreground">{item.label}</span>
             <span className="text-xs font-medium text-right font-mono">{item.value}</span>
           </div>
         ))}
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
