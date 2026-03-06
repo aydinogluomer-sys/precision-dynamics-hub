@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,29 +6,39 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollToTop from "@/components/ScrollToTop";
+
+// Eager load: Index (landing page)
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import SSS from "./pages/SSS";
-import GizlilikPolitikasi from "./pages/GizlilikPolitikasi";
-import KVKK from "./pages/KVKK";
-import CerezPolitikasi from "./pages/CerezPolitikasi";
-import Hakkimizda from "./pages/Hakkimizda";
-import Iletisim from "./pages/Iletisim";
-import ServiceDetail from "./pages/ServiceDetail";
-import Blog from "./pages/Blog";
-import BlogDetail from "./pages/BlogDetail";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
-import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Malzemeler from "./pages/Malzemeler";
-import MalzemeKategori from "./pages/MalzemeKategori";
-import TeklifAl from "./pages/TeklifAl";
-import CADDashboard from "./pages/CADDashboard";
-import MusteriPaneli from "./pages/MusteriPaneli";
+
+// Lazy load: all other pages
+const SSS = lazy(() => import("./pages/SSS"));
+const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi"));
+const KVKK = lazy(() => import("./pages/KVKK"));
+const CerezPolitikasi = lazy(() => import("./pages/CerezPolitikasi"));
+const Hakkimizda = lazy(() => import("./pages/Hakkimizda"));
+const Iletisim = lazy(() => import("./pages/Iletisim"));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogDetail = lazy(() => import("./pages/BlogDetail"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const Login = lazy(() => import("./pages/Login"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Malzemeler = lazy(() => import("./pages/Malzemeler"));
+const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori"));
+const TeklifAl = lazy(() => import("./pages/TeklifAl"));
+const CADDashboard = lazy(() => import("./pages/CADDashboard"));
+const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli"));
 import ProtectedRoute from "./components/ProtectedRoute";
 import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -43,31 +54,33 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location.pathname} {...pageTransition}>
-        <Routes location={location}>
-          <Route path="/" element={<Index />} />
-          <Route path="/sss" element={<SSS />} />
-          <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
-          <Route path="/kvkk" element={<KVKK />} />
-          <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
-          <Route path="/hakkimizda" element={<Hakkimizda />} />
-          <Route path="/iletisim" element={<Iletisim />} />
-          <Route path="/malzemeler" element={<Malzemeler />} />
-          <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogDetail />} />
-          <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
-          <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
-          <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
-          <Route path="/giris" element={<Login />} />
-          <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
-          <Route path="/teklif-al" element={<TeklifAl />} />
-          <Route path="/cad-dashboard" element={<CADDashboard />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location}>
+            <Route path="/" element={<Index />} />
+            <Route path="/sss" element={<SSS />} />
+            <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
+            <Route path="/kvkk" element={<KVKK />} />
+            <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
+            <Route path="/hakkimizda" element={<Hakkimizda />} />
+            <Route path="/iletisim" element={<Iletisim />} />
+            <Route path="/malzemeler" element={<Malzemeler />} />
+            <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogDetail />} />
+            <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
+            <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
+            <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
+            <Route path="/giris" element={<Login />} />
+            <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
+            <Route path="/teklif-al" element={<TeklifAl />} />
+            <Route path="/cad-dashboard" element={<CADDashboard />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );

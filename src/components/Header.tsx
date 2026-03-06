@@ -19,6 +19,7 @@ import {
   Cog,
   Flame,
 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 // ── Mega menu data ──────────────────────────────────────────────
 
@@ -427,6 +428,7 @@ const Header = () => {
 
             {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-3 shrink-0">
+              <ThemeToggle />
               <Link
                 to="/giris"
                 className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
@@ -439,7 +441,9 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Hamburger */}
+            {/* Mobile Theme Toggle + Hamburger */}
+            <div className="lg:hidden flex items-center gap-2">
+              <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 hover:bg-muted transition-colors relative w-10 h-10 flex items-center justify-center"
@@ -463,6 +467,7 @@ const Header = () => {
                 />
               </div>
             </button>
+            </div>
           </motion.div>
         </div>
 
