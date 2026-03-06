@@ -89,9 +89,15 @@ const CapabilitiesSection = () => {
     return (
       <section id="kabiliyetler" className="py-16 px-4 bg-[#e8edf4] dark:bg-[#0d1929]">
         <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik</span>
-            <h2 className="text-2xl font-bold mb-4">Kabiliyetlerimiz</h2>
+          <motion.div className="flex items-start justify-between mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik Yetkinlik</span>
+              <h2 className="text-2xl font-bold mb-2">ÜRETİM KAPASİTESİ</h2>
+              <p className="text-xs text-foreground/80">Endüstriyel standartlara uygun modern makine parkuru ve güçlü üretim altyapısı.</p>
+            </div>
+            <a href="#teklif" className="text-xs font-medium text-primary flex items-center gap-1 whitespace-nowrap mt-1">
+              Teknik Kapasiteyi İncele <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
             {capabilities.map((cap, i) =>
@@ -113,11 +119,6 @@ const CapabilitiesSection = () => {
               </motion.div>
             )}
           </div>
-          <motion.div className="flex items-center justify-center mb-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-            <a href="#teklif" className="px-8 py-3 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-white">
-              Teknik Kapasiteyi İncele
-            </a>
-          </motion.div>
         </div>
       </section>);
 
