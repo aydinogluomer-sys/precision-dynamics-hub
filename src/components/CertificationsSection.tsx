@@ -23,8 +23,7 @@ const CertificationsSection = () => {
   return (
     <section
       id="sertifikalar"
-      className="py-16"
-      style={{ background: "#f8fafc", borderTop: "1px solid hsl(var(--border))" }}
+      className="py-16 bg-[#f8fafc] dark:bg-[#0a1628] border-t border-border"
     >
       <div className="container-industrial">
         <motion.div
