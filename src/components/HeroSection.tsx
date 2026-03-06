@@ -381,8 +381,8 @@ const HeroSection = () => {
               viewport={{ once: true }}>
               
               {[
-              { value: "±0.01", label: "mm Tolerans" },
-              { value: "24h", label: "Teklif Süresi" },
+              { value: "±0.05", label: "mm Tolerans" },
+              { value: "48h", label: "Teklif Süresi" },
               { value: "50+", label: "Malzeme" }].
               map((stat) =>
               <motion.div

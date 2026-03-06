@@ -7,34 +7,34 @@ import { Link } from "react-router-dom";
 const values = [
 {
   icon: Target,
-  title: "Hassasiyet & Tolerans Disiplini",
-  subtitle: "±0.01mm",
-  description: "±0.01mm hassasiyetle çalışan CNC tezgahlarımız ve CMM ölçüm sistemimiz ile tolerans garantisi sağlıyoruz."
+  title: "Dijital Şeffaflık",
+  subtitle: "100%",
+  description: "Süreci, müşteriye özel kontrol panelinden gerçek zamanlı ve şeffaf şekilde izleme"
 },
 {
   icon: RefreshCw,
-  title: "Proses Kontrollü Üretim",
-  subtitle: "100% İzlenebilirlik",
-  description: "Her üretim adımı izlenir, kaydedilir ve raporlanır. Tekrarlanabilir kalite için sistematik yaklaşım."
+  title: "Dijital RFQ Süreci",
+  subtitle: "4 Adım",
+  description: "CAD dosyası yükleme, üretim parametrelerini belirleme, inceleme ve gönderimden oluşan 4 adımlı teklif süreci"
 },
 {
   icon: Clock,
-  title: "Zamanında Teslimat",
-  subtitle: "98% Oran",
-  description: "Söz verilen tarihte teslimat. Proje planınızı aksatmayacak güvenilir lojistik süreçleri."
+  title: "Anlık Model İzleme",
+  subtitle: "3D",
+  description: "Parçalarınızı sistem üzerinde 3 boyutlu görüntüleme ve kontrol"
 },
 {
   icon: Wrench,
-  title: "Mühendislik Desteği",
-  subtitle: "24h Yanıt",
-  description: "DFM analizi, malzeme seçimi ve tasarım optimizasyonu konularında uzman mühendislik desteği."
+  title: "Bütünsel Yönetim",
+  subtitle: "360°",
+  description: "Tekliften kalite raporlarına, üretim takibinden finansal sürece kadar tüm operasyonu 360° bütünsel bir dijital panelden yönetin"
 }];
 
 
 const badges = [
-{ label: "Tekrarlanabilir Kalite Garantisi", icon: ShieldCheck },
-{ label: "24 Saat Teknik Destek", icon: Headphones },
-{ label: "Ücretsiz DFM Analizi", icon: FileSearch },
+{ label: "Proses Kontrollü Üretim", icon: ShieldCheck },
+{ label: "Teknik Güvence Protokolü", icon: Headphones },
+{ label: "DFM Analizi Desteği", icon: FileSearch },
 { label: "Zamanında Teslimat Garantisi", icon: Truck }];
 
 

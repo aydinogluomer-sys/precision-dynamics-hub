@@ -54,14 +54,14 @@ const steps = [
     label: "KK & Teslimat",
     title: "Kalite Kontrol & Sevkiyat",
     description:
-      "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ve zamanında teslimat.",
+      "CMM ölçüm cihazları ile kalite kontrol sonrası güvenli paketleme ve zamanında teslimat.",
     checklist: [
       { title: "CMM Ölçüm", desc: "3 boyutlu koordinat ölçümü" },
       { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
       { title: "Paketleme", desc: "Özel koruyucu ambalaj" },
       { title: "Lojistik", desc: "Uluslararası sevkiyat desteği" },
     ],
-    stat: { value: "%100", label: "Kalite Kontrol" },
+    stat: { value: "%99,7", label: "Kalite Kontrol" },
   },
 ];
 
