@@ -72,14 +72,11 @@ const StickyIntroReveal = () => {
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.25] tracking-tight text-white"
             style={{ opacity: textOpacity, y: textY }}>
             
-            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span>, CNC Freze,
-            Torna ve Talaşlı İmalat alanlarında{" "}
-            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>CNC işleme kabiliyetleri ve dijital kullanıcı deneyimi ile
-
-            </span>
-            , yüksek doğruluk ve{" "}
-            <span style={{ color: "hsl(var(--primary))" }}></span>{" "}
-            anlayışıyla en zorlu mühendislik problemlerine çözüm sunar.
+            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span>; geleneksel imalat disiplinini CNC işleme kabiliyetleri ve{" "}
+            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>dijital bir kullanıcı deneyimi</span>{" "}
+            ile harmanlayan; tasarımdan sevkiyata kadar uzanan süreci{" "}
+            <span style={{ color: "hsl(var(--primary))" }}>tam şeffaflıkla yöneten</span>{" "}
+            bir stratejik çözüm ortağıdır.
           </motion.p>
 
           {/* Badge */}

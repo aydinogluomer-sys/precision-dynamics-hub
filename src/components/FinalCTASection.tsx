@@ -85,7 +85,7 @@ const FinalCTASection = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            CAD dosyanızı gönderin, 24 saat içinde detaylı teknik analiz ve fiyat teklifi alın.
+            CAD dosyanızı gönderin, 48 saat içinde detaylı teknik analiz ve fiyat teklifi alın.
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row justify-center gap-4"

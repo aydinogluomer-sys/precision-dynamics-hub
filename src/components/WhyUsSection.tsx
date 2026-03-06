@@ -9,25 +9,25 @@ const values = [
   icon: Target,
   title: "Dijital Şeffaflık",
   subtitle: "100%",
-  description: "Süreci, müşteriye özel kontrol panelinden gerçek zamanlı ve şeffaf şekilde izleme"
+  description: "Üretim sürecini müşteriye özel kontrol panelinden gerçek zamanlı ve şeffaf izleme"
 },
 {
   icon: RefreshCw,
-  title: "Dijital RFQ Süreci",
+  title: "RFQ Süreci",
   subtitle: "4 Adım",
-  description: "CAD dosyası yükleme, üretim parametrelerini belirleme, inceleme ve gönderimden oluşan 4 adımlı teklif süreci"
+  description: "Dosya yükleme, parametreleri belirleme, inceleme ve gönderimden oluşan teklif fazı"
 },
 {
   icon: Clock,
   title: "Anlık Model İzleme",
   subtitle: "3D",
-  description: "Parçalarınızı sistem üzerinde 3 boyutlu görüntüleme ve kontrol"
+  description: "Projelerinizi sistem üzerinde 3 boyutlu olarak görüntüleme ve analiz etme imkânı."
 },
 {
   icon: Wrench,
   title: "Bütünsel Yönetim",
   subtitle: "360°",
-  description: "Tekliften kalite raporlarına, üretim takibinden finansal sürece kadar tüm operasyonu 360° bütünsel bir dijital panelden yönetin"
+  description: "Tekliften kalite raporlarına, üretim takibinden finansal sürece kadar 360° bütünsel yönetim"
 }];
 
 

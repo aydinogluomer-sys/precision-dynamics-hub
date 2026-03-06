@@ -29,12 +29,12 @@ const testimonials = [
 ];
 
 const clients = [
-  "XOMETRY", "Akbaşlar", "Aydın Trafo", "Ege Güneş",
-  "İzmir Laser", "Yılmaz Eloksal", "İzada", "Totomak",
-  "Meka78", "Ni-Ka Makina", "Teknik Balans", "HPT",
-  "Akon", "Metsan", "Bilge Profil", "ACLASS",
-  "Mert Çelik", "Elit Metalurji", "Arya Metal", "İnfa Kalıp",
-  "Maldaner",
+  "Emir Alüminyum", "Mert Teknik", "BDM", "Akbaşlar",
+  "EMOR", "Batı Isıl İşlem", "Yaka Döküm", "Değer Galvano",
+  "Çağdaş Teknik", "C.T.M", "Ege Teknik", "Maktest",
+  "Eksen Hassas Döküm", "Era Metalurji", "Xtremex Kimya", "DPM Boya",
+  "Ahmet Tezcan", "Ali galip", "Mikrosan Makina", "Dösan Isıl İşlem",
+  "Asil Oltulu", "Akon Hidrolik", "ENTEA", "Amade Metal", "De-Taş",
 ];
 
 const stats = [
