@@ -81,36 +81,36 @@ const WhyUsSection = () => {
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
-            <h2 className="text-2xl font-bold mb-3">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <h2 className="text-2xl font-bold mb-3 text-white">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
             {values.map((value, i) => (
-              <motion.div key={value.title} className="relative bg-background border border-border p-4 text-center overflow-hidden group" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                 <div className="flex flex-col items-center">
                   <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
                     <value.icon className="w-8 h-8" />
                   </div>
-                  <h4 className="font-bold text-sm mb-1">{value.title}</h4>
+                  <h4 className="font-bold text-sm mb-1 text-white">{value.title}</h4>
                   <span className="text-xs font-semibold text-primary font-mono block mb-2">{value.subtitle}</span>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{value.description}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{value.description}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-          <motion.div className="mt-6 p-4 bg-background border border-border flex items-center gap-4" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <motion.div className="mt-6 p-4 flex items-center gap-4" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="font-bold text-sm mb-0.5">Hakkımızda</h4>
-              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <h4 className="font-bold text-sm mb-0.5 text-white">Hakkımızda</h4>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             {badges.map((badge) => (
-              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.7)" }}>
                 <badge.icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge.label}
               </span>
             ))}
