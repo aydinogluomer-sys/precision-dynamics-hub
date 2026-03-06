@@ -236,13 +236,21 @@ const HeroSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.3 }}
           >
+            {/* Blue glow behind the card */}
             <div
-              className="relative overflow-hidden"
+              className="absolute -inset-4 sm:-inset-6 pointer-events-none z-0"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(6,136,172,0.25) 0%, rgba(6,136,172,0.08) 40%, transparent 70%)",
+                filter: "blur(30px)",
+              }}
+            />
+            <div
+              className="relative overflow-hidden z-10"
               style={{
                 background: "rgba(15,23,42,0.6)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(6,136,172,0.15)",
-                boxShadow: "0 0 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(6,136,172,0.1)",
+                boxShadow: "0 0 60px rgba(6,136,172,0.15), 0 0 120px rgba(6,136,172,0.05), inset 0 1px 0 rgba(6,136,172,0.1)",
               }}
             >
               {/* Header bar */}
