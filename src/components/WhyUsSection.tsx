@@ -1,4 +1,4 @@
-import { Target, RefreshCw, Clock, Wrench, Check, Building2 } from "lucide-react";
+import { Target, RefreshCw, Clock, Wrench, ShieldCheck, Headphones, FileSearch, Truck, Building2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -31,7 +31,12 @@ const values = [
   },
 ];
 
-const badges = ["ISO 9001:2015 Sertifikalı", "24 Saat Teknik Destek", "Ücretsiz DFM Analizi", "Zamanında Teslimat Garantisi"];
+const badges = [
+  { label: "Tekrarlanabilir Kalite Garantisi", icon: ShieldCheck },
+  { label: "24 Saat Teknik Destek", icon: Headphones },
+  { label: "Ücretsiz DFM Analizi", icon: FileSearch },
+  { label: "Zamanında Teslimat Garantisi", icon: Truck },
+];
 
 const WhyUsSection = () => {
   const isMobile = useIsMobile();
@@ -72,7 +77,7 @@ const WhyUsSection = () => {
 
   if (isMobile) {
     return (
-      <section id="neden-biz" className="py-16 px-4 bg-[#f4f5f0] dark:bg-secondary">
+      <section id="neden-biz" className="py-16 px-4 bg-[#f0f4f8] dark:bg-secondary">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
@@ -105,8 +110,8 @@ const WhyUsSection = () => {
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             {badges.map((badge) => (
-              <span key={badge} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge}
+              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <badge.icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge.label}
               </span>
             ))}
           </motion.div>
@@ -119,7 +124,7 @@ const WhyUsSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="neden-biz"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f4f5f0] dark:bg-secondary"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-secondary"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
@@ -144,8 +149,8 @@ const WhyUsSection = () => {
           </motion.div>
           <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
-              <span key={badge} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary flex-shrink-0" />{badge}
+              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
                 {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
             ))}
