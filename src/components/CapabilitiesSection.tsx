@@ -87,7 +87,7 @@ const CapabilitiesSection = () => {
 
   if (isMobile) {
     return (
-      <section id="kabiliyetler" className="py-16 px-4 bg-background">
+      <section id="kabiliyetler" className="py-16 px-4 bg-[#eceee8] dark:bg-background">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik</span>
@@ -127,27 +127,27 @@ const CapabilitiesSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="kabiliyetler"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-background"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#eceee8] dark:bg-background"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="text-center mb-8 md:mb-12" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Kabiliyetlerimiz</h2>
+          <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Kabiliyetlerimiz</h2>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 md:mb-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {capabilities.map((cap, i) => (
               <CapabilityCard key={cap.title} cap={cap} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="flex items-center justify-center gap-0 mb-8" style={{ opacity: ctaOpacity, y: ctaY }}>
+          <motion.div className="flex items-center justify-center gap-0" style={{ opacity: ctaOpacity, y: ctaY }}>
             <div className="flex-1 h-px relative bg-border">
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-background border border-primary/40" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#eceee8] dark:bg-background border border-primary/40" />
             </div>
-            <a href="#teklif" className="px-10 py-3.5 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-white whitespace-nowrap">
+            <a href="#teklif" className="px-10 py-3 text-xs font-bold uppercase tracking-[0.08em] text-primary border border-primary/40 transition-all duration-300 hover:bg-primary hover:text-primary-foreground whitespace-nowrap">
               Teknik Kapasiteyi İncele
             </a>
             <div className="flex-1 h-px relative bg-border">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-background border border-primary/40" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-[#eceee8] dark:bg-background border border-primary/40" />
             </div>
           </motion.div>
         </div>
@@ -164,21 +164,21 @@ interface CardProps {
 const CapabilityCard = ({ cap, anim }: CardProps) => {
   return (
     <motion.div
-      className="bg-background border border-border p-5 sm:p-8 h-[340px] sm:h-[380px] md:h-[420px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+      className="bg-background border border-border p-5 h-[280px] sm:h-[300px] md:h-[320px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
       style={{ opacity: anim.opacity, y: anim.y }}
     >
-      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
-        <div className="w-10 h-10 bg-primary flex items-center justify-center flex-shrink-0">
-          <cap.icon className="w-5 h-5 text-primary-foreground" />
+      <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border">
+        <div className="w-9 h-9 bg-primary flex items-center justify-center flex-shrink-0">
+          <cap.icon className="w-4 h-4 text-primary-foreground" />
         </div>
-        <h3 className="font-bold text-sm sm:text-base">{cap.title}</h3>
+        <h3 className="font-bold text-sm">{cap.title}</h3>
       </div>
 
-      <motion.div className="space-y-4" style={{ opacity: anim.specs }}>
+      <motion.div className="space-y-3" style={{ opacity: anim.specs }}>
         {cap.items.map((item) => (
-          <div key={item.label} className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-0.5 sm:gap-2">
-            <span className="text-xs sm:text-sm text-muted-foreground">{item.label}</span>
-            <span className="text-xs sm:text-sm font-medium sm:text-right font-mono">{item.value}</span>
+          <div key={item.label} className="flex justify-between items-baseline gap-2">
+            <span className="text-xs text-muted-foreground">{item.label}</span>
+            <span className="text-xs font-medium text-right font-mono">{item.value}</span>
           </div>
         ))}
       </motion.div>

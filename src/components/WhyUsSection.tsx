@@ -71,7 +71,7 @@ const WhyUsSection = () => {
 
   if (isMobile) {
     return (
-      <section id="neden-biz" className="py-16 px-4 bg-secondary">
+      <section id="neden-biz" className="py-16 px-4 bg-[#f4f5f0] dark:bg-secondary">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
@@ -108,20 +108,20 @@ const WhyUsSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="neden-biz"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20 bg-secondary"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f4f5f0] dark:bg-secondary"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="text-center mb-8 md:mb-12" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Neden Mas Technic?</h2>
-            <p className="text-base max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+          <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 md:mb-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) => (
               <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-6 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
               <span key={badge} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />{badge}
@@ -144,24 +144,24 @@ interface CardProps {
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
-      className="relative bg-background border border-border p-8 text-center h-[380px] md:h-[420px] overflow-hidden group hover:border-primary transition-colors"
+      className="relative bg-background border border-border p-6 text-center h-[300px] md:h-[320px] overflow-hidden group hover:border-primary transition-colors"
       style={{ opacity: anim.opacity, y: anim.y }}
     >
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="flex flex-col items-center justify-center h-full">
         <motion.div
-          className="w-12 h-12 mb-4 flex items-center justify-center text-primary"
+          className="w-10 h-10 mb-3 flex items-center justify-center text-primary"
           style={{ opacity: anim.detail }}
         >
-          <value.icon className="w-12 h-12" />
+          <value.icon className="w-10 h-10" />
         </motion.div>
 
-        <h4 className="font-bold text-lg mb-1">{value.title}</h4>
-        <span className="text-sm font-semibold text-primary font-mono block mb-4">{value.subtitle}</span>
+        <h4 className="font-bold text-base mb-1">{value.title}</h4>
+        <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
         <motion.p
-          className="text-sm text-muted-foreground leading-relaxed"
+          className="text-xs text-muted-foreground leading-relaxed"
           style={{ opacity: anim.detail }}
         >
           {value.description}
