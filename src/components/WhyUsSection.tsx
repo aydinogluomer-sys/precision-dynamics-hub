@@ -123,10 +123,15 @@ const WhyUsSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary px-0 py-0 mx-0 my-[10px]">Avantajlar</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-foreground/80">Mikron düzeyinde hassasiyeti, uçtan uca dijital şeffaflıkla yönetiyoruz.</p>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Neden Mas Technic?</h2>
+              <p className="text-sm max-w-lg text-foreground/80">Mikron düzeyinde hassasiyeti, uçtan uca dijital şeffaflıkla yönetiyoruz.</p>
+            </div>
+            <a href="#teklif" className="mt-3 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors whitespace-nowrap">
+              Tüm avantajları gör <ArrowUpRight className="w-4 h-4" />
+            </a>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) =>

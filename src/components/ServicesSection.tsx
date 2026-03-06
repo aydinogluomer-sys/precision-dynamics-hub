@@ -70,6 +70,9 @@ const ServicesSection = () => {
                 Mühendislik Hizmetlerimiz
               </h2>
             </TextReveal>
+            <p className="text-sm text-muted-foreground max-w-lg">
+              Tasarımdan seri üretime, her adımda mühendislik odaklı çözümler
+            </p>
           </div>
           <a
             href="#kabiliyetler"

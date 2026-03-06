@@ -188,19 +188,18 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            <motion.div variants={fadeUpVariants} className="relative h-40 md:h-52 overflow-hidden mb-6">
+            <motion.div variants={fadeUpVariants} className="relative h-28 sm:h-36 md:h-48 overflow-hidden mb-6">
               {headlines.map((headline, index) =>
               <h1
                 key={index}
-                className={`absolute inset-0 font-extrabold uppercase leading-[0.9] tracking-tight transition-all duration-700 whitespace-pre-line ${index === currentHeadline ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`absolute inset-0 font-extrabold uppercase leading-[1] tracking-tight transition-all duration-700 whitespace-pre-line flex items-start ${index === currentHeadline ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{
-                  fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+                  fontSize: "clamp(1.75rem, 4.5vw, 4rem)",
                   color: "white",
                   letterSpacing: "-0.03em",
                   clipPath: index === currentHeadline ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)",
                   transition: "clip-path 0.7s cubic-bezier(0.77,0,0.175,1), opacity 0.5s, transform 0.5s"
                 }}>
-                
                   {headline}
                 </h1>
               )}

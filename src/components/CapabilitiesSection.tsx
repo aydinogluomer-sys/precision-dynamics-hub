@@ -130,9 +130,15 @@ const CapabilitiesSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-[#0d1929]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Kabiliyetlerimiz</h2>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-2">Kabiliyetlerimiz</h2>
+              <p className="text-sm text-foreground/80 max-w-lg">Endüstriyel standartlarda makine parkuru ve teknik altyapı</p>
+            </div>
+            <a href="#teklif" className="mt-3 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors whitespace-nowrap">
+              Teknik detaylar <ArrowUpRight className="w-4 h-4" />
+            </a>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {capabilities.map((cap, i) =>

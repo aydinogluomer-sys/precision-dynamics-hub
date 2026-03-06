@@ -39,6 +39,9 @@ const CertificationsSection = () => {
           >
             Sertifikalar
           </span>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">
+            Kalite Standartlarımız
+          </h2>
           <p className="text-sm text-muted-foreground">
             Uluslararası standartlarda sertifikalı üretim
           </p>
