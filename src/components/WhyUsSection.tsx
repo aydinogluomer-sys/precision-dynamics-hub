@@ -129,29 +129,29 @@ const WhyUsSection = () => {
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) => (
               <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="mt-4 p-4 bg-background border border-border flex items-center gap-4" style={{ opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="mt-4 p-4 flex items-center gap-4" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)", opacity: badgesOpacity, y: badgesY }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="font-bold text-sm mb-0.5">Hakkımızda</h4>
-              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <h4 className="font-bold text-sm mb-0.5 text-white">Hakkımızda</h4>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
-              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <span key={badge.label} className="inline-flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
-                {i < 3 && <span className="ml-4 text-border">·</span>}
+                {i < 3 && <span className="ml-4" style={{ color: "rgba(255,255,255,0.2)" }}>·</span>}
               </span>
             ))}
           </motion.div>
