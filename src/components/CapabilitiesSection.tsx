@@ -87,7 +87,7 @@ const CapabilitiesSection = () => {
 
   if (isMobile) {
     return (
-      <section id="kabiliyetler" className="py-16 px-4 bg-[#e8edf4] dark:bg-background">
+      <section id="kabiliyetler" className="py-16 px-4 bg-[#e8edf4] dark:bg-[#0d1929]">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Teknik</span>
@@ -127,7 +127,7 @@ const CapabilitiesSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="kabiliyetler"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-background"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-[#0d1929]"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
