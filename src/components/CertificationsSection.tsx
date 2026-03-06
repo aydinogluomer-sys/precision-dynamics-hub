@@ -55,7 +55,7 @@ const CertificationsSection = () => {
             <motion.div
               key={cert.name}
               variants={itemVariants}
-              className="inline-flex items-center gap-3 px-6 py-4 bg-white shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+              className="inline-flex items-center gap-3 px-6 py-4 bg-[#FAFAF9] dark:bg-muted/50 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
               style={{
                 border: "1px solid hsl(var(--border))",
                 minWidth: "220px",
