@@ -71,11 +71,10 @@ const StickyIntroReveal = () => {
           <motion.p
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.25] tracking-tight text-white"
             style={{ opacity: textOpacity, y: textY }}>
-            
-            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span>; CNC Freze,
-            Torna ve Talaşlı İmalat alanlarında{" "}
-            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>geleneksel imalat disiplinini yüksek hassasiyetli CNC işleme kabiliyetleriyle birleştirerek</span>{" "}
-            en zorlu mühendislik ihtiyaçlarına çözüm sunar.
+            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span>
+            <span>{"; CNC Freze, Torna ve Talaşlı İmalat alanlarında "}</span>
+            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>{"geleneksel imalat disiplinini yüksek hassasiyetli CNC işleme kabiliyetleriyle birleştirerek "}</span>
+            <span>{"en zorlu mühendislik ihtiyaçlarına çözüm sunar."}</span>
           </motion.p>
 
           {/* Badge */}
