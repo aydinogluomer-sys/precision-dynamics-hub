@@ -46,34 +46,30 @@ const WhyUsSection = () => {
     offset: ["start start", "end start"],
   });
 
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.08], [40, 0]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.06], [0, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.06], [30, 0]);
 
-  const card0Opacity = useTransform(scrollYProgress, [0.08, 0.18], [0, 1]);
-  const card0Y = useTransform(scrollYProgress, [0.08, 0.18], [60, 0]);
-  const card0Detail = useTransform(scrollYProgress, [0.16, 0.22], [0, 1]);
+  const card0Opacity = useTransform(scrollYProgress, [0.06, 0.14], [0, 1]);
+  const card0Y = useTransform(scrollYProgress, [0.06, 0.14], [40, 0]);
 
-  const card1Opacity = useTransform(scrollYProgress, [0.20, 0.30], [0, 1]);
-  const card1Y = useTransform(scrollYProgress, [0.20, 0.30], [60, 0]);
-  const card1Detail = useTransform(scrollYProgress, [0.28, 0.34], [0, 1]);
+  const card1Opacity = useTransform(scrollYProgress, [0.14, 0.22], [0, 1]);
+  const card1Y = useTransform(scrollYProgress, [0.14, 0.22], [40, 0]);
 
-  const card2Opacity = useTransform(scrollYProgress, [0.32, 0.42], [0, 1]);
-  const card2Y = useTransform(scrollYProgress, [0.32, 0.42], [60, 0]);
-  const card2Detail = useTransform(scrollYProgress, [0.40, 0.46], [0, 1]);
+  const card2Opacity = useTransform(scrollYProgress, [0.22, 0.30], [0, 1]);
+  const card2Y = useTransform(scrollYProgress, [0.22, 0.30], [40, 0]);
 
-  const card3Opacity = useTransform(scrollYProgress, [0.44, 0.54], [0, 1]);
-  const card3Y = useTransform(scrollYProgress, [0.44, 0.54], [60, 0]);
-  const card3Detail = useTransform(scrollYProgress, [0.52, 0.58], [0, 1]);
+  const card3Opacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
+  const card3Y = useTransform(scrollYProgress, [0.30, 0.38], [40, 0]);
 
   const cardAnimations = [
-    { opacity: card0Opacity, y: card0Y, detail: card0Detail },
-    { opacity: card1Opacity, y: card1Y, detail: card1Detail },
-    { opacity: card2Opacity, y: card2Y, detail: card2Detail },
-    { opacity: card3Opacity, y: card3Y, detail: card3Detail },
+    { opacity: card0Opacity, y: card0Y },
+    { opacity: card1Opacity, y: card1Y },
+    { opacity: card2Opacity, y: card2Y },
+    { opacity: card3Opacity, y: card3Y },
   ];
 
-  const badgesOpacity = useTransform(scrollYProgress, [0.60, 0.70], [0, 1]);
-  const badgesY = useTransform(scrollYProgress, [0.60, 0.70], [30, 0]);
+  const badgesOpacity = useTransform(scrollYProgress, [0.40, 0.48], [0, 1]);
+  const badgesY = useTransform(scrollYProgress, [0.40, 0.48], [20, 0]);
 
   if (isMobile) {
     return (
@@ -121,7 +117,7 @@ const WhyUsSection = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "250vh" }}>
       <section
         id="neden-biz"
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]"
@@ -164,7 +160,7 @@ const WhyUsSection = () => {
 interface CardProps {
   value: (typeof values)[number];
   index: number;
-  anim: { opacity: any; y: any; detail: any };
+  anim: { opacity: any; y: any };
 }
 
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
