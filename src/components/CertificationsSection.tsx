@@ -34,7 +34,7 @@ const CertificationsSection = () => {
           transition={{ duration: 0.5 }}
         >
           <span
-            className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block"
+            className="text-xs font-bold uppercase tracking-[0.4em] mb-3 block"
             style={{ color: "hsl(var(--primary))" }}
           >
             Sertifikalar

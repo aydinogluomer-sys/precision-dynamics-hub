@@ -53,7 +53,7 @@ const navItems: NavItem[] = [
     children: [
       {
         label: "Talaşlı İmalat",
-        path: "/hizmetler/cnc-frezeleme",
+        path: "/hizmetler/kategori/talasli-imalat",
         icon: <Wrench size={18} />,
         links: [
           { label: "CNC Frezeleme", path: "/hizmetler/cnc-frezeleme" },
@@ -64,7 +64,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Ön Üretim",
-        path: "/hizmetler/enjeksiyon-kalibi",
+        path: "/hizmetler/kategori/on-uretim",
         icon: <Layers size={18} />,
         links: [
           { label: "Enjeksiyon Kalıbı", path: "/hizmetler/enjeksiyon-kalibi" },
@@ -75,7 +75,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Yüzey İşlemleri",
-        path: "/hizmetler/mekanik-yuzey-islemleri",
+        path: "/hizmetler/kategori/yuzey-islemleri",
         icon: <Sparkles size={18} />,
         links: [
           { label: "Mekanik Yüzey İşlemleri", path: "/hizmetler/mekanik-yuzey-islemleri" },
@@ -86,7 +86,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "İşaretleme & Tanımlama",
-        path: "/hizmetler/lazer-kazima",
+        path: "/hizmetler/kategori/isaretleme-tanimlama",
         icon: <Tag size={18} />,
         links: [
           { label: "Lazer Kazıma", path: "/hizmetler/lazer-kazima" },
@@ -97,7 +97,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Montaj & Birleştirme",
-        path: "/hizmetler/insert-uygulama",
+        path: "/hizmetler/kategori/montaj-birlestirme",
         icon: <Package size={18} />,
         links: [
           { label: "Insert Uygulama", path: "/hizmetler/insert-uygulama" },
@@ -115,7 +115,7 @@ const navItems: NavItem[] = [
     children: [
       {
         label: "Üretim Altyapısı",
-        path: "/kabiliyetler/makine-parkuru",
+        path: "/kabiliyetler/kategori/uretim-altyapisi",
         icon: <Factory size={18} />,
         links: [
           { label: "Makine Parkuru", path: "/kabiliyetler/makine-parkuru" },
@@ -124,7 +124,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Kalite & Standartlar",
-        path: "/kabiliyetler/kalite-kontrol",
+        path: "/kabiliyetler/kategori/kalite-standartlar",
         icon: <Shield size={18} />,
         links: [
           { label: "Kalite Kontrol", path: "/kabiliyetler/kalite-kontrol" },
@@ -133,7 +133,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Mühendislik Desteği",
-        path: "/kabiliyetler/tasarim-rehberi-dfm",
+        path: "/kabiliyetler/kategori/muhendislik-destegi",
         icon: <Settings size={18} />,
         links: [
           { label: "Tasarım Rehberi (DFM)", path: "/kabiliyetler/tasarim-rehberi-dfm" },
@@ -142,7 +142,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Prototipten Seri Üretime",
-        path: "/kabiliyetler/dusuk-hacimli-uretim",
+        path: "/kabiliyetler/kategori/prototipten-seri-uretime",
         icon: <Target size={18} />,
         links: [
           { label: "Düşük Hacimli Üretim", path: "/kabiliyetler/dusuk-hacimli-uretim" },
@@ -151,7 +151,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Süreç & Operasyon",
-        path: "/kabiliyetler/proje-yonetimi",
+        path: "/kabiliyetler/kategori/surec-operasyon",
         icon: <Cog size={18} />,
         links: [
           { label: "Proje Yönetimi", path: "/kabiliyetler/proje-yonetimi" },
@@ -168,7 +168,7 @@ const navItems: NavItem[] = [
     children: [
       {
         label: "Yüksek Teknoloji",
-        path: "/endustriyel/havacilik-uzay",
+        path: "/endustriyel/kategori/yuksek-teknoloji",
         icon: <Rocket size={18} />,
         links: [
           { label: "Havacılık & Uzay", path: "/endustriyel/havacilik-uzay" },
@@ -178,7 +178,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Seri Üretim",
-        path: "/endustriyel/otomotiv",
+        path: "/endustriyel/kategori/seri-uretim-endustriyel",
         icon: <Car size={18} />,
         links: [
           { label: "Otomotiv", path: "/endustriyel/otomotiv" },
@@ -188,7 +188,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Endüstriyel Sistemler",
-        path: "/endustriyel/hidrolik-pnomatik",
+        path: "/endustriyel/kategori/endustriyel-sistemler",
         icon: <Cpu size={18} />,
         links: [
           { label: "Hidrolik & Pnömatik", path: "/endustriyel/hidrolik-pnomatik" },
@@ -198,7 +198,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Üretim Çözümleri",
-        path: "/endustriyel/prototip-uretim",
+        path: "/endustriyel/kategori/uretim-cozumleri",
         icon: <Cog size={18} />,
         links: [
           { label: "Prototip Üretim", path: "/endustriyel/prototip-uretim" },
@@ -209,7 +209,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "Enerji & Altyapı",
-        path: "/endustriyel/yenilenebilir-enerji",
+        path: "/endustriyel/kategori/enerji-altyapi",
         icon: <Zap size={18} />,
         links: [
           { label: "Yenilenebilir Enerji", path: "/endustriyel/yenilenebilir-enerji" },

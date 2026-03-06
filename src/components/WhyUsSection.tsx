@@ -1,7 +1,8 @@
-import { Target, RefreshCw, Clock, Wrench, Check } from "lucide-react";
+import { Target, RefreshCw, Clock, Wrench, Check, Building2 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Link } from "react-router-dom";
 
 const values = [
   {
@@ -92,7 +93,17 @@ const WhyUsSection = () => {
               </motion.div>
             ))}
           </div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <motion.div className="mt-6 p-4 bg-background border border-border flex items-center gap-4" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-0.5">Hakkımızda</h4>
+              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+            </div>
+            <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
+              Daha Fazla →
+            </Link>
+          </motion.div>
+          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             {badges.map((badge) => (
               <span key={badge} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge}
@@ -121,7 +132,17 @@ const WhyUsSection = () => {
               <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="mt-4 p-4 bg-background border border-border flex items-center gap-4" style={{ opacity: badgesOpacity, y: badgesY }}>
+            <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-0.5">Hakkımızda</h4>
+              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+            </div>
+            <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
+              Daha Fazla →
+            </Link>
+          </motion.div>
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
               <span key={badge} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />{badge}

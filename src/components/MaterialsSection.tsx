@@ -132,6 +132,9 @@ const MaterialsSection = () => {
                 <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge}
               </span>
             ))}
+            <a href="/malzemeler" className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline transition-colors">
+              Malzeme Kütüphanesi →
+            </a>
           </motion.div>
         </div>
       </section>
@@ -165,6 +168,9 @@ const MaterialsSection = () => {
                 {i < 2 && <span className="ml-4" style={{ color: "rgba(255, 255, 255, 0.3)" }}>·</span>}
               </span>
             ))}
+            <a href="/malzemeler" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline transition-colors ml-2">
+              Malzeme Kütüphanesi →
+            </a>
           </motion.div>
         </div>
       </section>
