@@ -72,12 +72,10 @@ const StickyIntroReveal = () => {
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.25] tracking-tight text-white"
             style={{ opacity: textOpacity, y: textY }}>
             
-            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span><span>, CNC Freze,</span>
+            <span style={{ color: "hsl(var(--primary))" }}>Mas Technic</span>; CNC Freze,
             Torna ve Talaşlı İmalat alanlarında{" "}
-            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>geleneksel imalat disiplinini yüksek hassasiyetli CNC işleme kabiliyetleriyle birleştirerek </span>
-            , yüksek doğruluk ve{" "}
-            <span style={{ color: "hsl(var(--primary))" }}></span>{" "}
-            anlayışıyla en zorlu mühendislik problemlerine çözüm sunar.
+            <span className="italic" style={{ color: "rgba(255, 255, 255, 0.5)" }}>geleneksel imalat disiplinini yüksek hassasiyetli CNC işleme kabiliyetleriyle birleştirerek</span>{" "}
+            en zorlu mühendislik ihtiyaçlarına çözüm sunar.
           </motion.p>
 
           {/* Badge */}
