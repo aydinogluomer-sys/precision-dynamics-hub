@@ -1,71 +1,40 @@
 
 
-# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
+# Kök Neden Analizi: Mobilde Soluk Yazılar
 
-## Mevcut Durum
+## Tespit
 
-- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
-- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
+Sorun **renk değişikliğiyle** değil, **CSS renk token'larının mobilde küçük yazılarda yetersiz kontrast üretmesiyle** ilgili.
 
-## Birleştirme Fikri
+Üç bölümde de ortak sorun: `text-muted-foreground` CSS değişkeni light modda `hsl(220, 8%, 46%)` — bu orta gri renk, 10-12px yazılarda okunması zor bir solukluğa yol açıyor. Ayrıca `text-foreground/70` (yani foreground renginin %70 opaklığı) de küçük yazılarda yeterli kontrast sağlamıyor.
 
-**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
+### Bölüm bazında sorunlar:
 
-### Yapı: Adım 1'de CAD Dashboard'u Göm
+**IndustriesSection (Endüstriler):**
+- Başlık altı açıklama: `subheading-industrial` sınıfı → `text-muted-foreground` (soluk gri)
+- Kart açıklamaları: `text-muted-foreground` (satır 185)
+- Kart üst bölüm "Sektörler" etiketi: `text-muted-foreground` (satır 71)
 
-```text
-┌─────────────────────────────────────────────────────┐
-│  Header + Stepper (4 adım)                          │
-├────────────────────────────┬────────────────────────┤
-│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
-│  ┌──────────────────────┐  │  ┌──────────────────┐  │
-│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
-│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
-│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
-│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
-│  │ (toolbar, grid,      │  │  └──────────────────┘  │
-│  │  wireframe, renk,    │  │                        │
-│  │  fullscreen, gizmo)  │  │                        │
-│  └──────────────────────┘  │                        │
-│  ┌──────────────────────┐  │                        │
-│  │ Parça Tablosu        │  │                        │
-│  │ (çoklu dosya/parça)  │  │                        │
-│  └──────────────────────┘  │                        │
-├────────────────────────────┴────────────────────────┤
-│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
-└─────────────────────────────────────────────────────┘
-```
+**CapabilitiesSection (Kabiliyetler) — Mobil:**
+- Kart etiketleri: `text-muted-foreground` + `text-[10px]` → çok küçük + soluk renk (satır 108)
 
-### Detaylar
+**WhyUsSection (Neden Mas Technic) — Mobil:**
+- Açıklamalar: `text-foreground/70` → %70 opaklık küçük yazıda yetersiz (satır 81, 92, 101)
+- Badge'ler: `text-foreground/70` (satır 109)
 
-1. **Adım 1 — Gelişmiş CAD Yükleme**:
-   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
-   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
-   - Dosya yüklenmeden önce: drag-drop alanı göster
-   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
-   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
+## Çözüm Planı
 
-2. **Adım 2-4 — Mevcut akış korunur**:
-   - Özellikler, İnceleme, Gönderim adımları aynen kalır
-   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+Her üç bölümde `text-muted-foreground` kullanımlarını `text-foreground/80` ile değiştirmek ve mevcut `text-foreground/70` kullanımlarını `text-foreground/80`'e yükseltmek. Bu, opaklığı %70→%80'e çıkarır ve küçük yazılarda okunurluk sorununu giderir.
 
-3. **Sağ panel adaptasyonu**:
-   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
-   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
+### Dosya değişiklikleri:
 
-4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
-   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
+1. **`src/components/IndustriesSection.tsx`**: Satır 71 (`text-muted-foreground` → `text-foreground/70`), satır 185 (`text-muted-foreground` → `text-foreground/70`)
 
-### Teknik Değişiklikler
+2. **`src/components/CapabilitiesSection.tsx`**: Mobil bölümdeki satır 108 (`text-muted-foreground` → `text-foreground/70`), desktop satır 180 (`text-muted-foreground` → `text-foreground/70`)
 
-| Dosya | İşlem |
-|-------|-------|
-| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
-| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
-| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
+3. **`src/components/WhyUsSection.tsx`**: Mobil bölümdeki satır 81, 92, 101, 109'daki `text-foreground/70` → `text-foreground/80`
 
-### Avantajlar
-- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
-- Gereksiz sayfa duplikasyonu ortadan kalkar
-- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
+4. **`src/index.css`**: `subheading-industrial` sınıfının tanımını `text-muted-foreground`'dan `text-foreground/70`'e değiştirmek (satır 166-167) — bu tüm alt başlıkları etkiler.
+
+Bu değişiklikler renk temasını bozmadan, sadece metin opaklığını artırarak mobilde okunurluğu iyileştirecektir.
 
