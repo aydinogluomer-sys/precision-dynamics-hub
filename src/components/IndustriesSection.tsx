@@ -68,7 +68,7 @@ const IndustriesSection = () => {
         <TextReveal className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
-            <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">Sektörler</span>
+            <span className="text-technical text-foreground/70 uppercase tracking-widest text-sm">Sektörler</span>
             <div className="w-8 h-px bg-border" />
           </div>
           <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
@@ -182,7 +182,7 @@ const IndustryCard = ({
 
       <div className="p-6 flex-1 flex flex-col">
         <h3 className="font-semibold text-base mb-1.5">{industry.name}</h3>
-        <p className="text-sm text-muted-foreground mb-4 flex-1 leading-relaxed">{industry.description}</p>
+        <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
         <div className="pt-3 border-t border-border">
           <a href="#teklif" className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors">
             Detaylı Bilgi <ArrowRight className="w-3.5 h-3.5" />
