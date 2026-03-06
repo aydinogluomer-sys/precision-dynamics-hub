@@ -9,25 +9,25 @@ const values = [
   icon: Target,
   title: "Dijital Şeffaflık",
   subtitle: "100%",
-  description: "Üretim sürecini müşteriye özel kontrol panelinden gerçek zamanlı ve şeffaf izleme"
+  description: "Üretim sürecinizi, size özel kontrol paneli üzerinden gerçek zamanlı olarak izleyin ve tüm aşamalara tam şeffaflıkla erişin."
 },
 {
   icon: RefreshCw,
   title: "RFQ Süreci",
   subtitle: "4 Adım",
-  description: "Dosya yükleme, parametreleri belirleme, inceleme ve gönderimden oluşan teklif fazı"
+  description: "CAD Yükleme, teknik özellik belirleme, önizleme ve teklif gönderme adımlarından oluşan 4 aşamalı hızlı RFQ sistemi."
 },
 {
   icon: Clock,
   title: "Anlık Model İzleme",
   subtitle: "3D",
-  description: "Projelerinizi sistem üzerinde 3 boyutlu olarak görüntüleme ve analiz etme imkânı."
+  description: "Projelerinizi sistem üzerinden 3D ortamda görüntüleyin, teknik detayları analiz edin ve üretim öncesi doğrulama yapın."
 },
 {
   icon: Wrench,
   title: "Bütünsel Yönetim",
   subtitle: "360°",
-  description: "Tekliften kalite raporlarına, üretim takibinden finansal sürece kadar 360° bütünsel yönetim"
+  description: "Teklif aşamasından kalite raporlarına, cari takipten teslimat sürecine kadar tüm operasyonları tek platform üzerinden yönetin."
 }];
 
 
@@ -98,7 +98,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/80">Hassas üretim, güvenilir süreçler ve mühendislik odaklı yaklaşımımızla endüstriyel çözümler sunuyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
@@ -127,10 +127,10 @@ const WhyUsSection = () => {
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Neden Mas Technic?</h2>
-              <p className="text-sm max-w-lg text-foreground/80">Mikron düzeyinde hassasiyeti, uçtan uca dijital şeffaflıkla yönetiyoruz.</p>
+              <p className="text-sm max-w-lg text-foreground/80">Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz</p>
             </div>
             <a href="#teklif" className="mt-3 md:mt-0 text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors whitespace-nowrap">
-              Tüm avantajları gör <ArrowUpRight className="w-4 h-4" />
+              Kontrol Paneline Git <ArrowUpRight className="w-4 h-4" />
             </a>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -142,7 +142,7 @@ const WhyUsSection = () => {
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-              <p className="text-xs text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <p className="text-xs text-foreground/80">Hassas üretim, güvenilir süreçler ve mühendislik odaklı yaklaşımımızla endüstriyel çözümler sunuyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →

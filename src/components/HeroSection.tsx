@@ -358,12 +358,9 @@ const HeroSection = () => {
               {/* Footer bar */}
               <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.03)" }}>
                 <span className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>UÇTAN UCA ŞİFRELEME AKTİF
-
-<motion.span className="w-1.5 h-1.5 rounded-full bg-green-400"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }} />
-                  
-                  Encryption Active
+                  <motion.span className="w-1.5 h-1.5 rounded-full bg-green-400"
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }} />
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.15em] font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>100% IP KORUMASI
 
@@ -381,7 +378,7 @@ const HeroSection = () => {
               
               {[
               { value: "±0.005", label: "mm Tolerans" },
-              { value: "24h", label: "Teklif Süresi" },
+              { value: "48h", label: "Teklif Süresi" },
               { value: "50+", label: "Malzeme" }].
               map((stat) =>
               <motion.div

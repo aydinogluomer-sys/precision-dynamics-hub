@@ -133,6 +133,7 @@ const CapabilitiesSection = () => {
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik</span>
             <h2 className="text-3xl md:text-4xl font-bold mb-3">ÜRETİM KAPASİTESİ</h2>
+            <p className="text-sm max-w-lg mx-auto text-foreground/80">Endüstriyel standartlara uygun modern makine parkuru ve güçlü üretim altyapısı.</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {capabilities.map((cap, i) =>
