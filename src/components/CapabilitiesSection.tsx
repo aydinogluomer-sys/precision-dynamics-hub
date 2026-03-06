@@ -177,7 +177,7 @@ const CapabilityCard = ({ cap, anim }: CardProps) => {
       <div className="space-y-3">
         {cap.items.map((item) => (
           <div key={item.label} className="flex justify-between items-baseline gap-2">
-            <span className="text-xs text-foreground/70">{item.label}</span>
+            <span className="text-xs text-foreground/80">{item.label}</span>
             <span className="text-xs font-medium text-right font-mono">{item.value}</span>
           </div>
         ))}
