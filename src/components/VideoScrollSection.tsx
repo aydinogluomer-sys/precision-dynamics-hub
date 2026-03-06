@@ -18,7 +18,7 @@ const features = [
 {
   icon: Layers,
   title: "Geniş Malzeme Yelpazesi",
-  desc: "Alüminyum, paslanmaz çelik, titanyum ve daha fazlası."
+  desc: "Alüminyum, paslanmaz çelik, titanyum ve daha fazlası..."
 },
 {
   icon: Zap,
