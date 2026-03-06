@@ -117,7 +117,7 @@ const WhyUsSection = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "250vh" }}>
       <section
         id="neden-biz"
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]"
