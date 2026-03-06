@@ -163,7 +163,7 @@
   }
 
   .subheading-industrial {
-    @apply text-muted-foreground font-normal;
+    @apply text-foreground/70 font-normal;
   }
 
   /* Grid lines decorative */

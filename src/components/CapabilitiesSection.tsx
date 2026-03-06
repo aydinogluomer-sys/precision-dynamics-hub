@@ -105,7 +105,7 @@ const CapabilitiesSection = () => {
                 <div className="space-y-2.5">
                   {cap.items.map((item) => (
                     <div key={item.label} className="flex justify-between items-baseline gap-1">
-                      <span className="text-[10px] text-muted-foreground leading-tight">{item.label}</span>
+                      <span className="text-[10px] text-foreground/70 leading-tight">{item.label}</span>
                       <span className="text-[10px] font-medium font-mono text-right leading-tight whitespace-nowrap">{item.value}</span>
                     </div>
                   ))}
@@ -177,7 +177,7 @@ const CapabilityCard = ({ cap, anim }: CardProps) => {
       <div className="space-y-3">
         {cap.items.map((item) => (
           <div key={item.label} className="flex justify-between items-baseline gap-2">
-            <span className="text-xs text-muted-foreground">{item.label}</span>
+            <span className="text-xs text-foreground/70">{item.label}</span>
             <span className="text-xs font-medium text-right font-mono">{item.value}</span>
           </div>
         ))}
