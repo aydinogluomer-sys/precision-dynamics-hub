@@ -77,40 +77,40 @@ const WhyUsSection = () => {
 
   if (isMobile) {
     return (
-      <section id="neden-biz" className="py-16 px-4 bg-[#0d1f2d] dark:bg-secondary">
+      <section id="neden-biz" className="py-16 px-4 bg-[#f0f4f8] dark:bg-[#0f1a2a]">
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
-            <h2 className="text-2xl font-bold mb-3 text-white">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <h2 className="text-2xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
             {values.map((value, i) => (
-              <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+              <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group bg-background border border-border" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                 <div className="flex flex-col items-center">
                   <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
                     <value.icon className="w-8 h-8" />
                   </div>
-                  <h4 className="font-bold text-sm mb-1 text-white">{value.title}</h4>
+                  <h4 className="font-bold text-sm mb-1 text-foreground">{value.title}</h4>
                   <span className="text-xs font-semibold text-primary font-mono block mb-2">{value.subtitle}</span>
-                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>{value.description}</p>
+                  <p className="text-xs leading-relaxed text-muted-foreground">{value.description}</p>
                 </div>
               </motion.div>
             ))}
           </div>
-          <motion.div className="mt-6 p-4 flex items-center gap-4" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <motion.div className="mt-6 p-4 flex items-center gap-4 bg-background border border-border" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="font-bold text-sm mb-0.5 text-white">Hakkımızda</h4>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
+              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-3 pt-4 mt-4 border-t border-border" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             {badges.map((badge) => (
-              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.7)" }}>
+              <span key={badge.label} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <badge.icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />{badge.label}
               </span>
             ))}
@@ -124,34 +124,34 @@ const WhyUsSection = () => {
     <div ref={containerRef} className="relative" style={{ height: "400vh" }}>
       <section
         id="neden-biz"
-        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#0d1f2d] dark:bg-secondary"
+        className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]"
       >
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <motion.div className="text-center mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
+            <p className="text-sm max-w-lg mx-auto text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {values.map((value, i) => (
               <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             ))}
           </div>
-          <motion.div className="mt-4 p-4 flex items-center gap-4" style={{ background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)", opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="font-bold text-sm mb-0.5 text-white">Hakkımızda</h4>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
+              <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
+              <p className="text-xs text-muted-foreground">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile endüstriye hizmet veriyoruz.</p>
             </div>
             <Link to="/hakkimizda" className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.1)", opacity: badgesOpacity, y: badgesY }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY }}>
             {badges.map((badge, i) => (
-              <span key={badge.label} className="inline-flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
+              <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
-                {i < 3 && <span className="ml-4" style={{ color: "rgba(255,255,255,0.2)" }}>·</span>}
+                {i < 3 && <span className="ml-4 text-border">·</span>}
               </span>
             ))}
           </motion.div>
@@ -170,8 +170,8 @@ interface CardProps {
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
-      className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors"
-      style={{ opacity: anim.opacity, y: anim.y, background: "rgba(15, 23, 42, 0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
+      className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors bg-background border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg"
+      style={{ opacity: anim.opacity, y: anim.y }}
     >
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -183,12 +183,12 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
           <value.icon className="w-10 h-10" />
         </motion.div>
 
-        <h4 className="font-bold text-base mb-1 text-white">{value.title}</h4>
+        <h4 className="font-bold text-base mb-1 text-foreground">{value.title}</h4>
         <span className="text-sm font-semibold text-primary font-mono block mb-3">{value.subtitle}</span>
 
         <motion.p
-          className="text-xs leading-relaxed"
-          style={{ opacity: anim.detail, color: "rgba(255,255,255,0.6)" }}
+          className="text-xs leading-relaxed text-muted-foreground"
+          style={{ opacity: anim.detail }}
         >
           {value.description}
         </motion.p>
