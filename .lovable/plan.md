@@ -1,60 +1,71 @@
 
 
-## Plan: RFQ Onayından Üretim Günlüğüne Otomatik Akış ve İlerleme Takibi
+# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
 
-### Mevcut Durum
-- `orders` tablosunda `progress` (0-100), `status`, `quantity`, `part_name`, `customer`, `rfq_ref`, `user_id` sütunları var.
-- RFQ onaylandığında (`handleApprove`) sadece fatura oluşturuluyor, `orders` tablosuna kayıt düşmüyor.
-- `OrdersView` sadece listeliyor, güncelleme yapılamıyor.
-- Müşteri panelindeki `UretimTab` zaten 5 aşamalı progress bar ile `orders` tablosunu okuyor.
+## Mevcut Durum
 
-### Yapılacaklar
+- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
+- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
 
-#### 1. DB Migration: `orders` tablosuna üretim parametreleri ekle
-Yeni sütunlar:
-- `completed_qty` (integer, default 0) — o ana kadar tamamlanan adet
-- `qc_passed_qty` (integer, default 0) — kalite kontrolden geçen adet
-- `packed_qty` (integer, default 0) — paketlenen adet
-- `machine` (text, nullable) — atanan tezgah
-- `notes` (text, nullable) — üretim notları
+## Birleştirme Fikri
 
-Progress otomatik hesaplanacak: üretim ağırlığı %50, kalite %30, paketleme %20 formülüyle.
+**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
 
-#### 2. RFQManager: Onay sırasında `orders` tablosuna kayıt oluştur
-`handleApprove` fonksiyonuna, fatura oluşturma bloğunun yanına `orders` insert ekle:
-- `id`: `ORD-{rfq.id.slice(0,6)}` formatında
-- `rfq_ref`: rfq.id
-- `customer`: rfq.customer
-- `part_name`: rfq.service + rfq.material
-- `quantity`: rfq.quantity
-- `user_id`: rfq.user_id
-- `status`: "Hazırlık"
-- `progress`: 0
-- `order_date`: bugün
+### Yapı: Adım 1'de CAD Dashboard'u Göm
 
-#### 3. OrdersView: Satıra tıklayınca üretim parametrelerini güncelleme paneli
-Her satıra tıklanınca açılan bir modal/dialog:
-- `completed_qty` input (örn: 100 adetten 35'i yapıldı)
-- `qc_passed_qty` input
-- `packed_qty` input
-- `status` dropdown (Hazırlık / Üretimde / Kalite Kontrol / Paketleme / Tamamlandı)
-- `machine` input
-- `notes` textarea
-- Kaydet butonu → Supabase update + progress otomatik hesaplama
-
-Progress hesaplama formülü (client-side, kayıt sırasında):
-```
-progress = Math.round(
-  (completed_qty / quantity) * 50 +
-  (qc_passed_qty / quantity) * 30 +
-  (packed_qty / quantity) * 20
-)
+```text
+┌─────────────────────────────────────────────────────┐
+│  Header + Stepper (4 adım)                          │
+├────────────────────────────┬────────────────────────┤
+│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
+│  ┌──────────────────────┐  │  ┌──────────────────┐  │
+│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
+│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
+│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
+│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
+│  │ (toolbar, grid,      │  │  └──────────────────┘  │
+│  │  wireframe, renk,    │  │                        │
+│  │  fullscreen, gizmo)  │  │                        │
+│  └──────────────────────┘  │                        │
+│  ┌──────────────────────┐  │                        │
+│  │ Parça Tablosu        │  │                        │
+│  │ (çoklu dosya/parça)  │  │                        │
+│  └──────────────────────┘  │                        │
+├────────────────────────────┴────────────────────────┤
+│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
+└─────────────────────────────────────────────────────┘
 ```
 
-Bu sayede admin parametreleri günceldikçe progress %0→%100 arasında değişir ve müşteri panelindeki `UretimTab` bunu gerçek zamanlı görür.
+### Detaylar
 
-### Dosya Değişiklikleri
-1. **DB Migration**: `orders` tablosuna 5 yeni sütun
-2. **`src/components/admin/RFQManager.tsx`**: `handleApprove` içine orders insert
-3. **`src/components/admin/OrdersView.tsx`**: Satır tıklama → güncelleme dialog'u ekle
+1. **Adım 1 — Gelişmiş CAD Yükleme**:
+   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
+   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
+   - Dosya yüklenmeden önce: drag-drop alanı göster
+   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
+   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
+
+2. **Adım 2-4 — Mevcut akış korunur**:
+   - Özellikler, İnceleme, Gönderim adımları aynen kalır
+   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+
+3. **Sağ panel adaptasyonu**:
+   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
+   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
+
+4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
+   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
+
+### Teknik Değişiklikler
+
+| Dosya | İşlem |
+|-------|-------|
+| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
+| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
+| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
+
+### Avantajlar
+- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
+- Gereksiz sayfa duplikasyonu ortadan kalkar
+- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
 
