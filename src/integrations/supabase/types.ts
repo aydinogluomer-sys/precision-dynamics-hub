@@ -55,37 +55,49 @@ export type Database = {
       }
       customers: {
         Row: {
+          address: string | null
           balance: number | null
           city: string | null
           company: string | null
           created_at: string
           email: string | null
+          iban: string | null
           id: number
           last_order: string | null
           name: string | null
           phone: string | null
+          short_name: string | null
+          tax_info: string | null
         }
         Insert: {
+          address?: string | null
           balance?: number | null
           city?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
+          iban?: string | null
           id?: number
           last_order?: string | null
           name?: string | null
           phone?: string | null
+          short_name?: string | null
+          tax_info?: string | null
         }
         Update: {
+          address?: string | null
           balance?: number | null
           city?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
+          iban?: string | null
           id?: number
           last_order?: string | null
           name?: string | null
           phone?: string | null
+          short_name?: string | null
+          tax_info?: string | null
         }
         Relationships: []
       }
@@ -293,6 +305,42 @@ export type Database = {
         }
         Relationships: []
       }
+      machine_schedule: {
+        Row: {
+          created_at: string | null
+          day: string
+          hours: number | null
+          id: string
+          job_name: string | null
+          machine: string
+          notes: string | null
+          order_id: string | null
+          week_start: string
+        }
+        Insert: {
+          created_at?: string | null
+          day: string
+          hours?: number | null
+          id?: string
+          job_name?: string | null
+          machine: string
+          notes?: string | null
+          order_id?: string | null
+          week_start: string
+        }
+        Update: {
+          created_at?: string | null
+          day?: string
+          hours?: number | null
+          id?: string
+          job_name?: string | null
+          machine?: string
+          notes?: string | null
+          order_id?: string | null
+          week_start?: string
+        }
+        Relationships: []
+      }
       maintenance_logs: {
         Row: {
           cost: number | null
@@ -441,6 +489,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pipeline_leads: {
+        Row: {
+          company: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string | null
+          id: string
+          last_action: string | null
+          notes: string | null
+          probability: number | null
+          stage: string | null
+          updated_at: string | null
+          value: number | null
+        }
+        Insert: {
+          company?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id?: string
+          last_action?: string | null
+          notes?: string | null
+          probability?: number | null
+          stage?: string | null
+          updated_at?: string | null
+          value?: number | null
+        }
+        Update: {
+          company?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id?: string
+          last_action?: string | null
+          notes?: string | null
+          probability?: number | null
+          stage?: string | null
+          updated_at?: string | null
+          value?: number | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -740,9 +830,11 @@ export type Database = {
           deadline: string | null
           id: string
           machine: string | null
+          order_id: string | null
           part_name: string | null
           status: string | null
           total_qty: number | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -751,9 +843,11 @@ export type Database = {
           deadline?: string | null
           id: string
           machine?: string | null
+          order_id?: string | null
           part_name?: string | null
           status?: string | null
           total_qty?: number | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -762,9 +856,11 @@ export type Database = {
           deadline?: string | null
           id?: string
           machine?: string | null
+          order_id?: string | null
           part_name?: string | null
           status?: string | null
           total_qty?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }
