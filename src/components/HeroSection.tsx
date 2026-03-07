@@ -224,9 +224,9 @@ const HeroSection = () => {
               {/* CAD Drop Zone */}
               <div
                 className={`relative p-6 sm:p-10 cursor-pointer group ${
-                isDragging ? "bg-primary/10" : uploadState === "success" ? "bg-green-500/5" : uploadState === "error" ? "bg-red-500/5" : ""}`
+                isDragging ? "bg-primary/10" : ""}`
                 }
-                onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
+                onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => {e.preventDefault();setIsDragging(true);}}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}>
@@ -265,50 +265,26 @@ const HeroSection = () => {
                     isDragging ? "bg-primary/20" : "bg-white/5"}`
                     }
                     style={{ border: `1px solid ${isDragging ? "hsl(var(--primary))" : "rgba(6,136,172,0.2)"}` }}
-                    animate={uploadState === "idle" ? { y: [0, -6, 0] } : {}}
+                    animate={{ y: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>
-                    
-                    {uploadState === "uploading" ?
-                    <Loader2 className="w-7 h-7 text-primary animate-spin" /> :
-                    uploadState === "success" ?
-                    <CheckCircle className="w-7 h-7 text-green-400" /> :
-                    uploadState === "error" ?
-                    <AlertCircle className="w-7 h-7 text-red-400" /> :
-
                     <Upload className="w-7 h-7 text-primary" />
-                    }
                   </motion.div>
 
                   {/* Text */}
-                  {uploadState === "uploading" ?
-                  <>
-                      <p className="text-sm font-medium text-white/80 truncate max-w-full">Yükleniyor: {uploadedFileName}</p>
-                      <p className="text-xs text-white/40">Lütfen bekleyin...</p>
-                    </> :
-                  uploadState === "success" ?
-                  <>
-                      <p className="text-sm font-medium text-green-400">Dosya başarıyla yüklendi!</p>
-                      <p className="text-xs text-white/40 truncate max-w-full">{uploadedFileName}</p>
-                    </> :
-
-                  <>
-                      <div>
-                        <p className="text-base sm:text-lg font-bold uppercase tracking-wider text-white/90 group-hover:text-white transition-colors mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>DOSYAYI BURAYA SÜRÜKLE
-
-                      </p>
-                        <p className="text-xs text-white/40">
-                          veya tıklayarak dosya seçin
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap justify-center gap-2">
-                        {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) =>
+                  <div>
+                    <p className="text-base sm:text-lg font-bold uppercase tracking-wider text-white/90 group-hover:text-white transition-colors mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>DOSYAYI BURAYA SÜRÜKLE
+                    </p>
+                    <p className="text-xs text-white/40">
+                      veya tıklayarak dosya seçin
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) =>
                       <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.05)" }}>
-                            {fmt}
-                          </span>
-                      )}
-                      </div>
-                    </>
-                  }
+                        {fmt}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 

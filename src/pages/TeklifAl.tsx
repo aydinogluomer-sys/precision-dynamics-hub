@@ -220,7 +220,14 @@ const TeklifAl = () => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const processFile = async (file: File) => {
+  // Pick up file from Hero section drop zone
+  useEffect(() => {
+    const heroFile = (window as any).__heroUploadFile as File | undefined;
+    if (heroFile) {
+      delete (window as any).__heroUploadFile;
+      processFile(heroFile);
+    }
+  }, []);
     const ext = file.name.split(".").pop()?.toLowerCase();
     
     const validExts = ["stl", "obj", "step", "stp", "iges", "igs", "3mf"];
