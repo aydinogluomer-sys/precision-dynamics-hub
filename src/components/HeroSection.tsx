@@ -49,12 +49,10 @@ const HeroSection = () => {
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 800], [0, 200]);
   const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
+  const navigate = useNavigate();
 
   const [isDragging, setIsDragging] = useState(false);
-  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success" | "error">("idle");
-  const [uploadedFileName, setUploadedFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const uploadAttemptsRef = useRef<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,68 +72,27 @@ const HeroSection = () => {
     return null;
   };
 
-  const uploadFile = async (file: File) => {
+  const navigateWithFile = (file: File) => {
     const error = validateFile(file);
     if (error) {
       toast.error(error);
-      setUploadState("error");
       return;
     }
-
-    // Client-side rate limiting: max 3 uploads per 60 seconds
-    const now = Date.now();
-    uploadAttemptsRef.current = uploadAttemptsRef.current.filter((t) => now - t < 60000);
-    if (uploadAttemptsRef.current.length >= 3) {
-      toast.error("Çok fazla deneme. Lütfen 1 dakika bekleyin.");
-      setUploadState("error");
-      return;
-    }
-    uploadAttemptsRef.current.push(now);
-
-    setUploadState("uploading");
-    setUploadedFileName(file.name);
-
-    const fileName = `${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabase.storage.
-    from("cad-uploads").
-    upload(fileName, file);
-
-    if (uploadError) {
-      toast.error("Dosya yüklenirken hata oluştu: " + uploadError.message);
-      setUploadState("error");
-      return;
-    }
-
-    const rfqId = `RFQ-${Date.now()}`;
-    const { error: dbError } = await supabase.from("rfqs").insert({
-      id: rfqId,
-      files: [fileName],
-      status: "Yeni",
-      date: new Date().toISOString().split("T")[0],
-      notes: `CAD dosyası yüklendi: ${file.name}`
-    });
-
-    if (dbError) {
-      if (import.meta.env.DEV) {
-        console.error("RFQ kaydı oluşturulamadı:", dbError);
-      }
-    }
-
-    setUploadState("success");
-    toast.success("Dosya başarıyla yüklendi! En kısa sürede sizinle iletişime geçeceğiz.");
-    setTimeout(() => setUploadState("idle"), 4000);
+    // Store file temporarily for TeklifAl to pick up
+    (window as any).__heroUploadFile = file;
+    navigate("/teklif-al");
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) uploadFile(file);
-  }, []);
+    if (file) navigateWithFile(file);
+  }, [navigate]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) uploadFile(file);
+    if (file) navigateWithFile(file);
     e.target.value = "";
   };
 
