@@ -47,29 +47,20 @@ const WhyUsSection = () => {
   });
 
   const headerOpacity = useTransform(scrollYProgress, [0, 0.06], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.06], [30, 0]);
 
   const card0Opacity = useTransform(scrollYProgress, [0.06, 0.14], [0, 1]);
-  const card0Y = useTransform(scrollYProgress, [0.06, 0.14], [40, 0]);
-
   const card1Opacity = useTransform(scrollYProgress, [0.14, 0.22], [0, 1]);
-  const card1Y = useTransform(scrollYProgress, [0.14, 0.22], [40, 0]);
-
   const card2Opacity = useTransform(scrollYProgress, [0.22, 0.30], [0, 1]);
-  const card2Y = useTransform(scrollYProgress, [0.22, 0.30], [40, 0]);
-
   const card3Opacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
-  const card3Y = useTransform(scrollYProgress, [0.30, 0.38], [40, 0]);
 
   const cardAnimations = [
-  { opacity: card0Opacity, y: card0Y },
-  { opacity: card1Opacity, y: card1Y },
-  { opacity: card2Opacity, y: card2Y },
-  { opacity: card3Opacity, y: card3Y }];
+  { opacity: card0Opacity },
+  { opacity: card1Opacity },
+  { opacity: card2Opacity },
+  { opacity: card3Opacity }];
 
 
   const badgesOpacity = useTransform(scrollYProgress, [0.40, 0.48], [0, 1]);
-  const badgesY = useTransform(scrollYProgress, [0.40, 0.48], [20, 0]);
 
   if (isMobile) {
     return (
@@ -123,7 +114,7 @@ const WhyUsSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY, backfaceVisibility: 'hidden', translateZ: 0 }}>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity }}>
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Neden Mas Technic?</h2>
@@ -138,7 +129,7 @@ const WhyUsSection = () => {
             <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             )}
           </div>
-          <motion.div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border" style={{ opacity: badgesOpacity, y: badgesY, backfaceVisibility: 'hidden', translateZ: 0 }}>
+          <motion.div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border" style={{ opacity: badgesOpacity }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
@@ -148,7 +139,7 @@ const WhyUsSection = () => {
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity, y: badgesY, backfaceVisibility: 'hidden', translateZ: 0 }}>
+          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity }}>
             {badges.map((badge, i) =>
             <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
@@ -165,14 +156,14 @@ const WhyUsSection = () => {
 interface CardProps {
   value: (typeof values)[number];
   index: number;
-  anim: {opacity: any;y: any;};
+  anim: {opacity: any;};
 }
 
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
       className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors bg-background border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg"
-      style={{ opacity: anim.opacity, y: anim.y, backfaceVisibility: 'hidden', translateZ: 0 }}>
+      style={{ opacity: anim.opacity }}>
       
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
