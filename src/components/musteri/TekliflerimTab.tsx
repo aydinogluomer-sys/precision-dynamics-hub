@@ -19,13 +19,27 @@ interface RFQ {
   price_valid_until: string | null;
   customer_approved: boolean | null;
   rejection_reason: string | null;
+  created_at: string;
 }
 
-const statusColor = (s: string | null) => {
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+const getDisplayStatus = (r: RFQ): string => {
+  const s = r.status;
+  if (!s || s === "Yeni" || s === "pending") {
+    const age = Date.now() - new Date(r.created_at).getTime();
+    return age > SEVEN_DAYS_MS ? "Beklemede" : "Yeni";
+  }
+  return s;
+};
+
+const statusColor = (s: string) => {
   switch (s) {
     case "Onaylandı": return "bg-green-500/10 text-green-600 border-green-200";
     case "Değerlendiriliyor": return "bg-blue-500/10 text-blue-600 border-blue-200";
+    case "Fiyat Verildi": return "bg-cyan-500/10 text-cyan-600 border-cyan-200";
     case "Reddedildi": return "bg-red-500/10 text-red-600 border-red-200";
+    case "Yeni": return "bg-indigo-500/10 text-indigo-600 border-indigo-200";
     default: return "bg-amber-500/10 text-amber-600 border-amber-200";
   }
 };
@@ -38,7 +52,7 @@ const TekliflerimTab = () => {
   const fetchRfqs = async () => {
     const { data } = await supabase
       .from("rfqs")
-      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason")
+      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at")
       .order("created_at", { ascending: false });
     setRfqs((data as RFQ[]) || []);
     setLoading(false);
@@ -62,7 +76,11 @@ const TekliflerimTab = () => {
     setApproving(null);
   };
 
-  const pending = rfqs.filter(r => !r.status || r.status === "Beklemede" || r.status === "Değerlendiriliyor" || r.status === "Yeni" || r.status === "Fiyat Verildi" || r.status === "pending");
+  const pending = rfqs.filter(r => {
+    const ds = getDisplayStatus(r);
+    return ds === "Yeni" || ds === "Beklemede" || ds === "Değerlendiriliyor";
+  });
+  const priced = rfqs.filter(r => r.status === "Fiyat Verildi" && !r.customer_approved);
   const approved = rfqs.filter(r => r.status === "Onaylandı" || r.customer_approved);
   const rejected = rfqs.filter(r => r.status === "Reddedildi");
 
@@ -98,38 +116,41 @@ const TekliflerimTab = () => {
             </tr>
           </thead>
           <tbody>
-              {items.map((r) => (
-                <tr key={r.id} className="border-b border-border/50 last:border-0">
-                  <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
-                  <td className="py-3 pr-4">{r.service || "—"}</td>
-                  <td className="py-3 pr-4">{r.material || "—"}</td>
-                  <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
-                  <td className="py-3 pr-4 font-mono font-semibold">
-                    {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
-                  </td>
-                  <td className="py-3 pr-4">
-                    <Badge variant="outline" className={statusColor(r.status)}>{r.status || "Beklemede"}</Badge>
-                    {r.status === "Reddedildi" && r.rejection_reason && (
-                      <p className="text-[10px] text-destructive mt-1 max-w-[200px]">Sebep: {r.rejection_reason}</p>
-                    )}
-                  </td>
-                  <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
-                  <td className="py-3">
-                    {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
-                      <Button
-                        size="sm"
-                        variant="default"
-                        className="gap-1.5 text-xs h-8"
-                        disabled={approving === r.id}
-                        onClick={() => handleApprove(r.id)}
-                      >
-                        {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-                        Onayla
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {items.map((r) => {
+                const displayStatus = getDisplayStatus(r);
+                return (
+                  <tr key={r.id} className="border-b border-border/50 last:border-0">
+                    <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
+                    <td className="py-3 pr-4">{r.service || "—"}</td>
+                    <td className="py-3 pr-4">{r.material || "—"}</td>
+                    <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
+                    <td className="py-3 pr-4 font-mono font-semibold">
+                      {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
+                    </td>
+                    <td className="py-3 pr-4">
+                      <Badge variant="outline" className={statusColor(displayStatus)}>{displayStatus}</Badge>
+                      {r.status === "Reddedildi" && r.rejection_reason && (
+                        <p className="text-[10px] text-destructive mt-1 max-w-[200px]">Sebep: {r.rejection_reason}</p>
+                      )}
+                    </td>
+                    <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
+                    <td className="py-3">
+                      {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="gap-1.5 text-xs h-8"
+                          disabled={approving === r.id}
+                          onClick={() => handleApprove(r.id)}
+                        >
+                          {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                          Onayla
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
@@ -148,10 +169,12 @@ const TekliflerimTab = () => {
       <Tabs defaultValue="bekleyen" className="w-full">
         <TabsList className="bg-muted/50 h-auto p-1">
           <TabsTrigger value="bekleyen" className="text-xs">Fiyat Bekleyenler ({pending.length})</TabsTrigger>
+          <TabsTrigger value="fiyatVerildi" className="text-xs">Fiyat Verildi ({priced.length})</TabsTrigger>
           <TabsTrigger value="onaylanan" className="text-xs">Onaylananlar ({approved.length})</TabsTrigger>
           <TabsTrigger value="reddedilen" className="text-xs">Reddedilenler ({rejected.length})</TabsTrigger>
         </TabsList>
         <TabsContent value="bekleyen"><RfqTable items={pending} /></TabsContent>
+        <TabsContent value="fiyatVerildi"><RfqTable items={priced} /></TabsContent>
         <TabsContent value="onaylanan"><RfqTable items={approved} /></TabsContent>
         <TabsContent value="reddedilen"><RfqTable items={rejected} /></TabsContent>
       </Tabs>
