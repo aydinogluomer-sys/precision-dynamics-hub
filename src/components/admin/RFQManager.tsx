@@ -65,7 +65,6 @@ const RFQManager = () => {
   };
 
   const handleApprove = async (rfq: RFQ) => {
-    // Update RFQ status
     const { error } = await supabase.from("rfqs").update({ status: "Onaylandı" }).eq("id", rfq.id);
     if (error) { toast.error("Onaylama hatası"); return; }
 
@@ -89,7 +88,21 @@ const RFQManager = () => {
       });
     }
 
-    toast.success("Teklif onaylandı ve fatura oluşturuldu!");
+    // Create order in orders table
+    const orderId = `ORD-${rfq.id.slice(0, 6).toUpperCase()}`;
+    await supabase.from("orders").insert({
+      id: orderId,
+      rfq_ref: rfq.id,
+      customer: rfq.customer,
+      part_name: `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş",
+      quantity: rfq.quantity || 1,
+      user_id: rfq.user_id,
+      status: "Hazırlık",
+      progress: 0,
+      order_date: new Date().toISOString().split("T")[0],
+    });
+
+    toast.success("Teklif onaylandı, fatura ve sipariş oluşturuldu!");
     fetchRFQs();
     setSelectedRFQ(null);
   };
