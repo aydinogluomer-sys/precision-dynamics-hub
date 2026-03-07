@@ -379,39 +379,54 @@ export type Database = {
       }
       orders: {
         Row: {
+          completed_qty: number
           created_at: string
           customer: string | null
           deadline: string | null
           id: string
+          machine: string | null
+          notes: string | null
           order_date: string | null
+          packed_qty: number
           part_name: string | null
           progress: number | null
+          qc_passed_qty: number
           quantity: number | null
           rfq_ref: string | null
           status: string | null
           user_id: string | null
         }
         Insert: {
+          completed_qty?: number
           created_at?: string
           customer?: string | null
           deadline?: string | null
           id: string
+          machine?: string | null
+          notes?: string | null
           order_date?: string | null
+          packed_qty?: number
           part_name?: string | null
           progress?: number | null
+          qc_passed_qty?: number
           quantity?: number | null
           rfq_ref?: string | null
           status?: string | null
           user_id?: string | null
         }
         Update: {
+          completed_qty?: number
           created_at?: string
           customer?: string | null
           deadline?: string | null
           id?: string
+          machine?: string | null
+          notes?: string | null
           order_date?: string | null
+          packed_qty?: number
           part_name?: string | null
           progress?: number | null
+          qc_passed_qty?: number
           quantity?: number | null
           rfq_ref?: string | null
           status?: string | null
