@@ -12,9 +12,20 @@ interface WBS {
   status: string | null;
   deadline: string | null;
   total_qty: number | null;
+  order_id: string | null;
+  user_id: string | null;
 }
 
 const steps = ["Hammadde", "Hazırlık", "İşleme", "Final", "K. Kontrol", "Tamamlandı"];
+
+const stepToOrderStatus: Record<number, string> = {
+  0: "Hazırlık",
+  1: "Hazırlık",
+  2: "Üretimde",
+  3: "Üretimde",
+  4: "Kalite Kontrol",
+  5: "Tamamlandı",
+};
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500",
@@ -54,6 +65,17 @@ const WBSView = () => {
     const update: Record<string, unknown> = { current_step: next };
     if (next === 5) update.status = "active";
     await supabase.from("wbs").update(update).eq("id", w.id);
+
+    // Sync order status based on WBS step
+    if (w.order_id) {
+      const orderStatus = stepToOrderStatus[next] || "Üretimde";
+      const progressMap: Record<number, number> = { 0: 0, 1: 10, 2: 30, 3: 50, 4: 75, 5: 100 };
+      await supabase.from("orders").update({
+        status: orderStatus,
+        progress: progressMap[next] || 0,
+      }).eq("id", w.order_id);
+    }
+
     toast.success(`Adım ${next + 1}: ${steps[next]}`);
     fetchData();
   };
@@ -85,6 +107,11 @@ const WBSView = () => {
                     <span className={`text-[9px] px-2 py-0.5 rounded-full font-black text-white ${statusColors[st]}`}>
                       {statusLabels[st] || st}
                     </span>
+                    {w.order_id && (
+                      <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-slate-500/20 dark:text-slate-300 text-slate-600">
+                        {w.order_id}
+                      </span>
+                    )}
                   </div>
                   <h3 className="font-bold dark:text-white text-slate-800">{w.part_name || "—"}</h3>
                   <p className="text-xs dark:text-slate-400 text-slate-500">{w.customer} • Makine: {w.machine || "Atanmadı"} • Termin: {w.deadline || "—"}</p>
