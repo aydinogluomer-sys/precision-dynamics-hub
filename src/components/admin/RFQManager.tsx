@@ -140,8 +140,9 @@ const RFQManager = () => {
     fetchRFQs();
   };
 
+  const isNewStatus = (s: string | null) => !s || s === "Yeni" || s === "pending";
   const filters = ["Tümü", "Yeni", "Fiyat Verildi", "Onaylandı", "Reddedildi"];
-  const filtered = filter === "Tümü" ? rfqs : rfqs.filter((r) => r.status === filter);
+  const filtered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
@@ -154,7 +155,7 @@ const RFQManager = () => {
               filter === f ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"
             }`}
           >
-            {f} {f !== "Tümü" && `(${rfqs.filter((r) => r.status === f).length})`}
+            {f} {f !== "Tümü" && `(${f === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)).length : rfqs.filter((r) => r.status === f).length})`}
           </button>
         ))}
       </div>

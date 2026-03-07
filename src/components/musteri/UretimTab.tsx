@@ -28,21 +28,44 @@ const getActiveStep = (progress: number) => {
   return 0;
 };
 
+const statusBadgeClass = (s: string | null) => {
+  switch (s) {
+    case "Üretimde": return "bg-blue-500/10 text-blue-600 border-blue-200";
+    case "Kalite Kontrol": return "bg-violet-500/10 text-violet-600 border-violet-200";
+    case "Paketleme": return "bg-emerald-500/10 text-emerald-600 border-emerald-200";
+    default: return "bg-amber-500/10 text-amber-600 border-amber-200";
+  }
+};
+
+const ACTIVE_STATUSES = ["Hazırlık", "Üretimde", "Kalite Kontrol", "Paketleme"];
+
 const UretimTab = () => {
   const [items, setItems] = useState<OrderProduction[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchOrders = async () => {
+    const { data } = await supabase
+      .from("orders")
+      .select("id, part_name, status, progress, quantity, deadline")
+      .in("status", ACTIVE_STATUSES)
+      .order("created_at", { ascending: false });
+    setItems((data as OrderProduction[]) || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("orders")
-        .select("id, part_name, status, progress, quantity, deadline")
-        .in("status", ["Beklemede", "Üretimde", "Sevkiyata Hazır"])
-        .order("created_at", { ascending: false });
-      setItems((data as OrderProduction[]) || []);
-      setLoading(false);
+    fetchOrders();
+
+    const channel = supabase
+      .channel("customer-orders-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+        fetchOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
     };
-    fetch();
   }, []);
 
   if (loading) return <ProductionSkeleton count={2} />;
@@ -73,11 +96,7 @@ const UretimTab = () => {
                   {item.deadline && ` · Termin: ${item.deadline}`}
                 </p>
               </div>
-              <Badge variant="outline" className={
-                item.status === "Üretimde" ? "bg-blue-500/10 text-blue-600 border-blue-200" :
-                item.status === "Sevkiyata Hazır" ? "bg-emerald-500/10 text-emerald-600 border-emerald-200" :
-                "bg-amber-500/10 text-amber-600 border-amber-200"
-              }>
+              <Badge variant="outline" className={statusBadgeClass(item.status)}>
                 {item.status}
               </Badge>
             </div>
@@ -87,7 +106,6 @@ const UretimTab = () => {
               {STEPS.map((step, i) => {
                 const isActive = i === activeStep;
                 const isCompleted = i < activeStep;
-                const isPending = i > activeStep;
 
                 return (
                   <div key={step.key} className="flex items-center flex-1">
