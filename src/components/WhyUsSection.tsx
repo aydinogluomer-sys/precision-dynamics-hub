@@ -47,29 +47,20 @@ const WhyUsSection = () => {
   });
 
   const headerOpacity = useTransform(scrollYProgress, [0, 0.06], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.06], [30, 0]);
 
   const card0Opacity = useTransform(scrollYProgress, [0.06, 0.14], [0, 1]);
-  const card0Y = useTransform(scrollYProgress, [0.06, 0.14], [40, 0]);
-
   const card1Opacity = useTransform(scrollYProgress, [0.14, 0.22], [0, 1]);
-  const card1Y = useTransform(scrollYProgress, [0.14, 0.22], [40, 0]);
-
   const card2Opacity = useTransform(scrollYProgress, [0.22, 0.30], [0, 1]);
-  const card2Y = useTransform(scrollYProgress, [0.22, 0.30], [40, 0]);
-
   const card3Opacity = useTransform(scrollYProgress, [0.30, 0.38], [0, 1]);
-  const card3Y = useTransform(scrollYProgress, [0.30, 0.38], [40, 0]);
 
   const cardAnimations = [
-  { opacity: card0Opacity, y: card0Y },
-  { opacity: card1Opacity, y: card1Y },
-  { opacity: card2Opacity, y: card2Y },
-  { opacity: card3Opacity, y: card3Y }];
+  { opacity: card0Opacity },
+  { opacity: card1Opacity },
+  { opacity: card2Opacity },
+  { opacity: card3Opacity }];
 
 
   const badgesOpacity = useTransform(scrollYProgress, [0.40, 0.48], [0, 1]);
-  const badgesY = useTransform(scrollYProgress, [0.40, 0.48], [20, 0]);
 
   if (isMobile) {
     return (
