@@ -228,6 +228,8 @@ const TeklifAl = () => {
       processFile(heroFile);
     }
   }, []);
+
+  const processFile = async (file: File) => {
     const ext = file.name.split(".").pop()?.toLowerCase();
     
     const validExts = ["stl", "obj", "step", "stp", "iges", "igs", "3mf"];
