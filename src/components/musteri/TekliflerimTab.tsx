@@ -62,7 +62,7 @@ const TekliflerimTab = () => {
     setApproving(null);
   };
 
-  const pending = rfqs.filter(r => !r.status || r.status === "Beklemede" || r.status === "Değerlendiriliyor");
+  const pending = rfqs.filter(r => !r.status || r.status === "Beklemede" || r.status === "Değerlendiriliyor" || r.status === "Yeni" || r.status === "Fiyat Verildi" || r.status === "pending");
   const approved = rfqs.filter(r => r.status === "Onaylandı" || r.customer_approved);
   const rejected = rfqs.filter(r => r.status === "Reddedildi");
 

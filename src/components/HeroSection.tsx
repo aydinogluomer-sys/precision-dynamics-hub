@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Upload, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import MagneticButton from "./MagneticButton";
 import { TextReveal } from "./ScrollReveal";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const headlines = [
@@ -49,12 +49,10 @@ const HeroSection = () => {
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 800], [0, 200]);
   const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
+  const navigate = useNavigate();
 
   const [isDragging, setIsDragging] = useState(false);
-  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success" | "error">("idle");
-  const [uploadedFileName, setUploadedFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const uploadAttemptsRef = useRef<number[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,68 +72,27 @@ const HeroSection = () => {
     return null;
   };
 
-  const uploadFile = async (file: File) => {
+  const navigateWithFile = (file: File) => {
     const error = validateFile(file);
     if (error) {
       toast.error(error);
-      setUploadState("error");
       return;
     }
-
-    // Client-side rate limiting: max 3 uploads per 60 seconds
-    const now = Date.now();
-    uploadAttemptsRef.current = uploadAttemptsRef.current.filter((t) => now - t < 60000);
-    if (uploadAttemptsRef.current.length >= 3) {
-      toast.error("Çok fazla deneme. Lütfen 1 dakika bekleyin.");
-      setUploadState("error");
-      return;
-    }
-    uploadAttemptsRef.current.push(now);
-
-    setUploadState("uploading");
-    setUploadedFileName(file.name);
-
-    const fileName = `${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabase.storage.
-    from("cad-uploads").
-    upload(fileName, file);
-
-    if (uploadError) {
-      toast.error("Dosya yüklenirken hata oluştu: " + uploadError.message);
-      setUploadState("error");
-      return;
-    }
-
-    const rfqId = `RFQ-${Date.now()}`;
-    const { error: dbError } = await supabase.from("rfqs").insert({
-      id: rfqId,
-      files: [fileName],
-      status: "Yeni",
-      date: new Date().toISOString().split("T")[0],
-      notes: `CAD dosyası yüklendi: ${file.name}`
-    });
-
-    if (dbError) {
-      if (import.meta.env.DEV) {
-        console.error("RFQ kaydı oluşturulamadı:", dbError);
-      }
-    }
-
-    setUploadState("success");
-    toast.success("Dosya başarıyla yüklendi! En kısa sürede sizinle iletişime geçeceğiz.");
-    setTimeout(() => setUploadState("idle"), 4000);
+    // Store file temporarily for TeklifAl to pick up
+    (window as any).__heroUploadFile = file;
+    navigate("/teklif-al");
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) uploadFile(file);
-  }, []);
+    if (file) navigateWithFile(file);
+  }, [navigate]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) uploadFile(file);
+    if (file) navigateWithFile(file);
     e.target.value = "";
   };
 
@@ -267,9 +224,9 @@ const HeroSection = () => {
               {/* CAD Drop Zone */}
               <div
                 className={`relative p-6 sm:p-10 cursor-pointer group ${
-                isDragging ? "bg-primary/10" : uploadState === "success" ? "bg-green-500/5" : uploadState === "error" ? "bg-red-500/5" : ""}`
+                isDragging ? "bg-primary/10" : ""}`
                 }
-                onClick={() => uploadState === "idle" && fileInputRef.current?.click()}
+                onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => {e.preventDefault();setIsDragging(true);}}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}>
@@ -308,50 +265,26 @@ const HeroSection = () => {
                     isDragging ? "bg-primary/20" : "bg-white/5"}`
                     }
                     style={{ border: `1px solid ${isDragging ? "hsl(var(--primary))" : "rgba(6,136,172,0.2)"}` }}
-                    animate={uploadState === "idle" ? { y: [0, -6, 0] } : {}}
+                    animate={{ y: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>
-                    
-                    {uploadState === "uploading" ?
-                    <Loader2 className="w-7 h-7 text-primary animate-spin" /> :
-                    uploadState === "success" ?
-                    <CheckCircle className="w-7 h-7 text-green-400" /> :
-                    uploadState === "error" ?
-                    <AlertCircle className="w-7 h-7 text-red-400" /> :
-
                     <Upload className="w-7 h-7 text-primary" />
-                    }
                   </motion.div>
 
                   {/* Text */}
-                  {uploadState === "uploading" ?
-                  <>
-                      <p className="text-sm font-medium text-white/80 truncate max-w-full">Yükleniyor: {uploadedFileName}</p>
-                      <p className="text-xs text-white/40">Lütfen bekleyin...</p>
-                    </> :
-                  uploadState === "success" ?
-                  <>
-                      <p className="text-sm font-medium text-green-400">Dosya başarıyla yüklendi!</p>
-                      <p className="text-xs text-white/40 truncate max-w-full">{uploadedFileName}</p>
-                    </> :
-
-                  <>
-                      <div>
-                        <p className="text-base sm:text-lg font-bold uppercase tracking-wider text-white/90 group-hover:text-white transition-colors mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>DOSYAYI BURAYA SÜRÜKLE
-
-                      </p>
-                        <p className="text-xs text-white/40">
-                          veya tıklayarak dosya seçin
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap justify-center gap-2">
-                        {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) =>
+                  <div>
+                    <p className="text-base sm:text-lg font-bold uppercase tracking-wider text-white/90 group-hover:text-white transition-colors mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>DOSYAYI BURAYA SÜRÜKLE
+                    </p>
+                    <p className="text-xs text-white/40">
+                      veya tıklayarak dosya seçin
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) =>
                       <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.05)" }}>
-                            {fmt}
-                          </span>
-                      )}
-                      </div>
-                    </>
-                  }
+                        {fmt}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 

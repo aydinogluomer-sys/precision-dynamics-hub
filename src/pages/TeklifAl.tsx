@@ -220,6 +220,15 @@ const TeklifAl = () => {
 
   const [isDragging, setIsDragging] = useState(false);
 
+  // Pick up file from Hero section drop zone
+  useEffect(() => {
+    const heroFile = (window as any).__heroUploadFile as File | undefined;
+    if (heroFile) {
+      delete (window as any).__heroUploadFile;
+      processFile(heroFile);
+    }
+  }, []);
+
   const processFile = async (file: File) => {
     const ext = file.name.split(".").pop()?.toLowerCase();
     
@@ -330,11 +339,22 @@ const TeklifAl = () => {
     setIsSubmitting(true);
     const rfqId = `RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     try {
+      // Get current user info
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      let profileData: { full_name?: string; company?: string; phone?: string } = {};
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("full_name, company, phone").eq("id", user.id).single();
+        if (profile) profileData = profile;
+      }
+
       const { error } = await supabase.from("rfqs").insert({
         id: rfqId,
-        customer: "AeroBracket V2",
-        company: "Precision Client",
-        email: "client@precision.com",
+        customer: profileData.full_name || null,
+        company: profileData.company || null,
+        email: user?.email || null,
+        phone: profileData.phone || null,
+        user_id: user?.id || null,
         quantity,
         date: new Date().toISOString().split("T")[0],
         status: "Yeni",
@@ -344,7 +364,16 @@ const TeklifAl = () => {
         files: uploadedFile ? [uploadedFile.name] : [],
       });
       if (error) throw error;
-      toast.success("Teklif talebiniz başarıyla gönderildi! 24 saat içinde dönüş yapacağız.");
+      toast.success(
+        "Teklif talebiniz başarıyla gönderildi! 48 saat içinde dönüş yapacağız.",
+        {
+          duration: 8000,
+          action: user ? {
+            label: "Panelime Git",
+            onClick: () => window.location.href = "/musteri-paneli",
+          } : undefined,
+        }
+      );
     } catch (err: unknown) {
       toast.error("Gönderim hatası: " + (err instanceof Error ? err.message : "Bilinmeyen hata"));
     } finally {
