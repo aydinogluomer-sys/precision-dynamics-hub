@@ -102,7 +102,20 @@ const RFQManager = () => {
       order_date: new Date().toISOString().split("T")[0],
     });
 
-    toast.success("Teklif onaylandı, fatura ve sipariş oluşturuldu!");
+    // Create WBS entry for production tracking
+    const wbsId = `WBS-${rfq.id.slice(0, 6).toUpperCase()}`;
+    await supabase.from("wbs").insert({
+      id: wbsId,
+      customer: rfq.customer,
+      part_name: `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş",
+      total_qty: rfq.quantity || 1,
+      current_step: 0,
+      status: "active",
+      order_id: orderId,
+      user_id: rfq.user_id,
+    } as any);
+
+    toast.success("Teklif onaylandı, fatura, sipariş ve iş akışı oluşturuldu!");
     fetchRFQs();
     setSelectedRFQ(null);
   };

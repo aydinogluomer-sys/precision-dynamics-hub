@@ -28,7 +28,7 @@ interface Message {
 const statusColor = (s: string | null) => {
   switch (s) {
     case "open": return "bg-amber-500/10 text-amber-600 border-amber-200";
-    case "in_progress": return "bg-blue-500/10 text-blue-600 border-blue-200";
+    case "in_progress": case "in-progress": return "bg-blue-500/10 text-blue-600 border-blue-200";
     case "resolved": return "bg-green-500/10 text-green-600 border-green-200";
     case "closed": return "bg-muted text-muted-foreground";
     default: return "bg-muted text-muted-foreground";
@@ -38,7 +38,7 @@ const statusColor = (s: string | null) => {
 const statusLabel = (s: string | null) => {
   switch (s) {
     case "open": return "Açık";
-    case "in_progress": return "İşlemde";
+    case "in_progress": case "in-progress": return "İşlemde";
     case "resolved": return "Çözüldü";
     case "closed": return "Kapalı";
     default: return s || "—";
@@ -65,7 +65,31 @@ const DestekTab = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchTickets(); }, []);
+  useEffect(() => {
+    fetchTickets();
+
+    // Realtime subscription for tickets and messages
+    const ticketChannel = supabase
+      .channel("customer-tickets-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, () => fetchTickets())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, (payload) => {
+        const newMsg = payload.new as any;
+        if (newMsg.ticket_id) {
+          setMessages(prev => ({
+            ...prev,
+            [newMsg.ticket_id]: [...(prev[newMsg.ticket_id] || []), {
+              id: newMsg.id,
+              message: newMsg.message,
+              is_staff: newMsg.is_staff,
+              created_at: newMsg.created_at,
+            }],
+          }));
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(ticketChannel); };
+  }, []);
 
   const handleSubmit = async () => {
     if (!form.subject.trim() || !form.message.trim()) { toast.error("Konu ve mesaj zorunludur."); return; }
@@ -112,7 +136,7 @@ const DestekTab = () => {
     });
     if (error) { toast.error("Mesaj gönderilemedi."); } else {
       setReply("");
-      loadMessages(ticketId);
+      // Realtime will handle adding the message
     }
     setSendingReply(false);
   };
