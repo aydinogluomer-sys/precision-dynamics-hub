@@ -57,33 +57,18 @@ const CapabilitiesSection = () => {
   });
 
   const headerOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.08], [40, 0]);
 
   const card0Opacity = useTransform(scrollYProgress, [0.08, 0.18], [0, 1]);
-  const card0Y = useTransform(scrollYProgress, [0.08, 0.18], [60, 0]);
-  const card0Specs = useTransform(scrollYProgress, [0.16, 0.22], [0, 1]);
-
   const card1Opacity = useTransform(scrollYProgress, [0.20, 0.30], [0, 1]);
-  const card1Y = useTransform(scrollYProgress, [0.20, 0.30], [60, 0]);
-  const card1Specs = useTransform(scrollYProgress, [0.28, 0.34], [0, 1]);
-
   const card2Opacity = useTransform(scrollYProgress, [0.32, 0.42], [0, 1]);
-  const card2Y = useTransform(scrollYProgress, [0.32, 0.42], [60, 0]);
-  const card2Specs = useTransform(scrollYProgress, [0.40, 0.46], [0, 1]);
-
   const card3Opacity = useTransform(scrollYProgress, [0.44, 0.54], [0, 1]);
-  const card3Y = useTransform(scrollYProgress, [0.44, 0.54], [60, 0]);
-  const card3Specs = useTransform(scrollYProgress, [0.52, 0.58], [0, 1]);
 
   const cardAnimations = [
-  { opacity: card0Opacity, y: card0Y, specs: card0Specs },
-  { opacity: card1Opacity, y: card1Y, specs: card1Specs },
-  { opacity: card2Opacity, y: card2Y, specs: card2Specs },
-  { opacity: card3Opacity, y: card3Y, specs: card3Specs }];
+  { opacity: card0Opacity },
+  { opacity: card1Opacity },
+  { opacity: card2Opacity },
+  { opacity: card3Opacity }];
 
-
-  const ctaOpacity = useTransform(scrollYProgress, [0.60, 0.70], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.60, 0.70], [30, 0]);
 
   if (isMobile) {
     return (
@@ -131,7 +116,7 @@ const CapabilitiesSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#e8edf4] dark:bg-[#0d1929]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity, y: headerY, backfaceVisibility: 'hidden', translateZ: 0 }}>
+          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity }}>
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Teknik Yetkinlik</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">ÜRETİM KAPASİTESİ</h2>
@@ -154,14 +139,14 @@ const CapabilitiesSection = () => {
 
 interface CardProps {
   cap: (typeof capabilities)[number];
-  anim: {opacity: any;y: any;specs: any;};
+  anim: {opacity: any;};
 }
 
 const CapabilityCard = ({ cap, anim }: CardProps) => {
   return (
     <motion.div
       className="bg-background border border-border p-5 h-[280px] sm:h-[300px] md:h-[320px] transition-all duration-300 hover:border-primary hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-      style={{ opacity: anim.opacity, y: anim.y, backfaceVisibility: 'hidden', translateZ: 0 }}>
+      style={{ opacity: anim.opacity }}>
       
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-border">
         <div className="w-9 h-9 bg-primary flex items-center justify-center flex-shrink-0">
