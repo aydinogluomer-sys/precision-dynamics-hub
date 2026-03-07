@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Upload, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import MagneticButton from "./MagneticButton";
 import { TextReveal } from "./ScrollReveal";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const headlines = [
