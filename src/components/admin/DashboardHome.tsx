@@ -371,14 +371,14 @@ const DashboardHome = () => {
       {/* ── QUICK ACTIONS ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Yeni Teklif", icon: Plus, color: C.cyan, bg: "bg-[#0AA2CD]/10", tab: "rfq" },
-          { label: "Sipariş Ekle", icon: ClipboardList, color: C.orange, bg: "bg-[#F97316]/10", tab: "orders" },
-          { label: "Destek Talebi", icon: Headphones, color: C.purple, bg: "bg-purple-500/10", tab: "support" },
-          { label: "Pipeline Ekle", icon: DollarSign, color: C.emerald, bg: "bg-emerald-400/10", tab: "pipeline" },
+          { label: "Yeni Teklif", icon: Plus, color: C.cyan, bg: "bg-[#0AA2CD]/10", modal: "rfq" as ModalType },
+          { label: "Sipariş Ekle", icon: ClipboardList, color: C.orange, bg: "bg-[#F97316]/10", modal: "order" as ModalType },
+          { label: "Destek Talebi", icon: Headphones, color: C.purple, bg: "bg-purple-500/10", modal: "support" as ModalType },
+          { label: "Pipeline Ekle", icon: DollarSign, color: C.emerald, bg: "bg-emerald-400/10", modal: "pipeline" as ModalType },
         ].map((a) => (
           <button
             key={a.label}
-            onClick={() => navigateTo(a.tab)}
+            onClick={() => setActiveModal(a.modal)}
             className="flex items-center gap-3 dark:bg-[#1E293B]/80 bg-white rounded-2xl border dark:border-[#1E293B] border-slate-200 p-4 hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-200 hover:scale-[1.02] group"
           >
             <div className={`w-9 h-9 rounded-xl ${a.bg} flex items-center justify-center shrink-0`}>
