@@ -39,6 +39,7 @@ const PipelineView = () => {
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ company: "", contact_name: "", contact_email: "", value: "", probability: "50", stage: "prospect", last_action: "" });
   const fileRef = useRef<HTMLInputElement>(null);
+  const fileRefExcel = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
 
   const fetchLeads = async () => {
@@ -201,14 +202,19 @@ const PipelineView = () => {
         </button>
         <label className={`flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold cursor-pointer hover:text-[#0AA2CD] ${importing ? "opacity-50 pointer-events-none" : ""}`}>
           {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-          İçe Aktar (CSV/TSV)
-          <input ref={fileRef} type="file" accept=".csv,.txt,.tsv,.xls,.xlsx" onChange={handleFileImport} className="hidden" />
+          İçe Aktar CSV
+          <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFileImport} className="hidden" />
+        </label>
+        <label className={`flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold cursor-pointer hover:text-[#0AA2CD] ${importing ? "opacity-50 pointer-events-none" : ""}`}>
+          {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
+          İçe Aktar Excel/Sheets
+          <input ref={fileRefExcel} type="file" accept=".tsv,.xls,.xlsx,.csv" onChange={handleFileImport} className="hidden" />
         </label>
         <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
-          <Download className="w-3.5 h-3.5" /> CSV
+          <Download className="w-3.5 h-3.5" /> Dışa Aktar CSV
         </button>
         <button onClick={handleExportTSV} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
-          <FileSpreadsheet className="w-3.5 h-3.5" /> Excel/Sheets
+          <FileSpreadsheet className="w-3.5 h-3.5" /> Dışa Aktar Excel/Sheets
         </button>
       </div>
 
