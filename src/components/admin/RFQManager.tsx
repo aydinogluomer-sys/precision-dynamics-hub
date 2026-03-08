@@ -88,13 +88,16 @@ const RFQManager = () => {
       });
     }
 
-    // Create order in orders table
-    const orderId = `ORD-${rfq.id.slice(0, 6).toUpperCase()}`;
-    await supabase.from("orders").insert({
+    // Create order in orders table - use full RFQ id suffix for uniqueness
+    const rfqSuffix = rfq.id.replace(/[^a-zA-Z0-9]/g, "").slice(-8);
+    const orderId = `ORD-${rfqSuffix}`;
+    const partName = `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş";
+
+    const { error: orderErr } = await supabase.from("orders").insert({
       id: orderId,
       rfq_ref: rfq.id,
       customer: rfq.customer,
-      part_name: `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş",
+      part_name: partName,
       quantity: rfq.quantity || 1,
       user_id: rfq.user_id,
       status: "Üretimde",
@@ -102,12 +105,19 @@ const RFQManager = () => {
       order_date: new Date().toISOString().split("T")[0],
     });
 
+    if (orderErr && orderErr.code === "23505") {
+      toast.info("Bu teklif zaten onaylanmış, sipariş mevcut.");
+      fetchRFQs();
+      setSelectedRFQ(null);
+      return;
+    }
+
     // Create WBS entry for production tracking
-    const wbsId = `WBS-${rfq.id.slice(0, 6).toUpperCase()}`;
+    const wbsId = `WBS-${rfqSuffix}`;
     await supabase.from("wbs").insert({
       id: wbsId,
       customer: rfq.customer,
-      part_name: `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş",
+      part_name: partName,
       total_qty: rfq.quantity || 1,
       current_step: 0,
       status: "active",
@@ -115,7 +125,7 @@ const RFQManager = () => {
       user_id: rfq.user_id,
     } as any);
 
-    toast.success("Teklif onaylandı, fatura, sipariş ve iş akışı oluşturuldu!");
+    toast.success("Teklif onaylandı, sipariş ve iş akışı oluşturuldu!");
     fetchRFQs();
     setSelectedRFQ(null);
   };
