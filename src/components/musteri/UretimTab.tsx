@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Activity } from "lucide-react";
+import { Activity, Clock } from "lucide-react";
 import { ProductionSkeleton } from "./MusteriSkeletons";
 
 interface OrderProduction {
@@ -11,6 +11,7 @@ interface OrderProduction {
   progress: number | null;
   quantity: number | null;
   deadline: string | null;
+  created_at: string;
 }
 
 const STEPS = [
