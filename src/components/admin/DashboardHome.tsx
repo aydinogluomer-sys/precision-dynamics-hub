@@ -609,7 +609,7 @@ const DashboardHome = () => {
       </div>
 
       {/* ── ROW 4: Top Customers + Radar + RFQ Trend + Order Completion ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("customers")} onClick={() => navigateTo("customers")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">En Yüksek Bakiye</h3>
           <div className="h-48">
