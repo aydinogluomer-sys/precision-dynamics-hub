@@ -126,12 +126,14 @@ type DashData = {
   maintByType: { name: string; Adet: number; Maliyet: number }[];
   pipelineByStage: { name: string; value: number; color: string }[];
   inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
-  kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number };
+  kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number; paidAmount: number; unpaidAmount: number; overduePayments: number; profitMargin: number; vatCollected: number };
   topCustomers: { name: string; Bakiye: number }[];
   monthlyRfqs: { month: string; Talep: number; Onaylanan: number; Oran: number }[];
   ticketsByPriority: { name: string; value: number; color: string }[];
   orderCompletion: { name: string; Tamamlanan: number; Hedef: number }[];
   recentActivity: ActivityItem[];
+  expenseByCategory: { name: string; value: number; color: string }[];
+  paymentStatus: { name: string; value: number; color: string }[];
 };
 
 /* ── Animation variants ── */
