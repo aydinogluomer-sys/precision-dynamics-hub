@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2 } from "lucide-react";
+import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2, Download, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 
 const stagesDef = [
@@ -83,14 +83,18 @@ const PipelineView = () => {
     fetchLeads();
   };
 
-  const handleCSVImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setImporting(true);
+    
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    
+    // For Excel files (.xlsx, .xls), parse as CSV-like (tab or comma separated after conversion)
+    // Since we can't parse true xlsx in browser without a library, we accept CSV/TSV exported from Excel/Sheets
     const text = await file.text();
     const lines = text.split("\n").filter(l => l.trim());
-    // Skip header if it looks like one
-    const startIdx = lines[0]?.toLowerCase().includes("firma") ? 1 : 0;
+    const startIdx = lines[0]?.toLowerCase().includes("firma") || lines[0]?.toLowerCase().includes("company") ? 1 : 0;
     const rows: any[] = [];
     for (let i = startIdx; i < lines.length; i++) {
       const cols = lines[i].split(/[,;\t]/).map(c => c.trim().replace(/^"|"$/g, ""));
@@ -108,6 +112,44 @@ const PipelineView = () => {
     if (error) { toast.error("İçe aktarma hatası"); } else { toast.success(`${rows.length} lead içe aktarıldı`); fetchLeads(); }
     setImporting(false);
     if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const handleExportCSV = () => {
+    const bom = "\uFEFF";
+    const headers = ["Firma", "İlgili Kişi", "E-posta", "Değer", "Aşama", "Olasılık", "Son Eylem", "Tarih"];
+    const rows = filteredLeads.map(d => [
+      `"${d.company || ""}"`, `"${d.contact_name || ""}"`, `"${d.contact_email || ""}"`,
+      d.value || 0, d.stage || "prospect", d.probability || 0,
+      `"${d.last_action || ""}"`, d.created_at?.split("T")[0] || ""
+    ].join(","));
+    const csv = bom + headers.join(",") + "\n" + rows.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `pipeline-leads-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV dışa aktarıldı");
+  };
+
+  const handleExportTSV = () => {
+    const bom = "\uFEFF";
+    const headers = ["Firma", "İlgili Kişi", "E-posta", "Değer", "Aşama", "Olasılık", "Son Eylem", "Tarih"];
+    const rows = filteredLeads.map(d => [
+      d.company || "", d.contact_name || "", d.contact_email || "",
+      d.value || 0, d.stage || "prospect", d.probability || 0,
+      d.last_action || "", d.created_at?.split("T")[0] || ""
+    ].join("\t"));
+    const tsv = bom + headers.join("\t") + "\n" + rows.join("\n");
+    const blob = new Blob([tsv], { type: "text/tab-separated-values;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `pipeline-leads-${new Date().toISOString().split("T")[0]}.tsv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Excel/Sheets uyumlu TSV dışa aktarıldı");
   };
 
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
@@ -153,15 +195,21 @@ const PipelineView = () => {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <button onClick={() => setShowAdd(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold">
           <Plus className="w-3.5 h-3.5" /> Yeni Lead
         </button>
         <label className={`flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold cursor-pointer hover:text-[#0AA2CD] ${importing ? "opacity-50 pointer-events-none" : ""}`}>
           {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-          CSV İçe Aktar
-          <input ref={fileRef} type="file" accept=".csv,.txt,.tsv" onChange={handleCSVImport} className="hidden" />
+          İçe Aktar (CSV/TSV)
+          <input ref={fileRef} type="file" accept=".csv,.txt,.tsv,.xls,.xlsx" onChange={handleFileImport} className="hidden" />
         </label>
+        <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
+          <Download className="w-3.5 h-3.5" /> CSV
+        </button>
+        <button onClick={handleExportTSV} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
+          <FileSpreadsheet className="w-3.5 h-3.5" /> Excel/Sheets
+        </button>
       </div>
 
       {/* Deals Table */}

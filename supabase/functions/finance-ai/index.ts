@@ -10,7 +10,6 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Auth check
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -24,22 +23,20 @@ serve(async (req) => {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    const { data: { user }, error: userError } = await authClient.auth.getUser();
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const userId = claimsData.claims.sub;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", userId)
+      .eq("user_id", user.id)
       .eq("role", "admin")
       .maybeSingle();
 
@@ -52,9 +49,8 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const { documents, question } = await req.json();
+    const { documents, question, history } = await req.json();
 
-    // Build financial summary for the AI
     const docSummary = (documents || []).map((d: any) => 
       `${d.doc_type} | ${d.vendor || '-'} | ₺${d.total_amount || 0} | ${d.category || '-'} | ${d.payment_status || '-'} | ${d.doc_date || '-'}`
     ).join("\n");
@@ -63,11 +59,30 @@ serve(async (req) => {
 Türkçe yanıt ver. Kısa, öz ve aksiyona yönelik tavsiyeler ver.
 Emoji kullan ama profesyonel kal. Her maddeyi yeni satırda yaz.
 Eğer kullanıcı soru soruyorsa doğrudan cevapla.
-Eğer soru yoksa genel finansal analiz ve öneriler sun.`;
+Eğer soru yoksa genel finansal analiz ve öneriler sun.
 
+Güncel finansal veriler:
+${docSummary}`;
+
+    // Build messages array with history support
+    const messages: any[] = [
+      { role: "system", content: systemPrompt },
+    ];
+
+    // Add conversation history
+    if (history && Array.isArray(history)) {
+      for (const h of history) {
+        if (h.role && h.content) {
+          messages.push({ role: h.role, content: h.content });
+        }
+      }
+    }
+
+    // Add current user message
     const userMessage = question 
-      ? `Finansal veriler:\n${docSummary}\n\nSoru: ${question}`
-      : `Aşağıdaki finansal belgeleri analiz et ve 5-7 madde halinde aksiyon önerileri sun:\n${docSummary}`;
+      ? question
+      : `Aşağıdaki finansal belgeleri analiz et ve 5-7 madde halinde aksiyon önerileri sun.`;
+    messages.push({ role: "user", content: userMessage });
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -77,10 +92,7 @@ Eğer soru yoksa genel finansal analiz ve öneriler sun.`;
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
+        messages,
         temperature: 0.3,
       }),
     });
