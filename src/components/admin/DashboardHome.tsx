@@ -210,6 +210,27 @@ const DashboardHome = () => {
 
     const totalIncome = fins.filter((f: any) => f.doc_type === "fatura" || f.doc_type === "gelir").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
     const totalExpense = fins.filter((f: any) => f.doc_type === "gider" || f.doc_type === "masraf").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
+    const paidAmount = fins.filter((f: any) => f.payment_status === "ödendi").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
+    const unpaidAmount = fins.filter((f: any) => f.payment_status === "ödenmedi").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
+    const overduePayments = fins.filter((f: any) => f.payment_status === "ödenmedi" && f.due_date && new Date(f.due_date) < new Date()).length;
+    const vatCollected = fins.reduce((s: number, f: any) => s + (Number(f.vat_amount) || 0), 0);
+    const profitMargin = totalIncome > 0 ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : 0;
+
+    // Expense by category
+    const expCatMap: Record<string, number> = {};
+    const catColors: Record<string, string> = { "hammadde": C.orange, "işçilik": C.cyan, "bakım": C.amber, "lojistik": C.purple, "genel gider": C.pink, "Belirsiz": C.slate };
+    fins.filter((f: any) => f.doc_type === "gider" || f.doc_type === "masraf").forEach((f: any) => {
+      const cat = f.category || "Belirsiz";
+      expCatMap[cat] = (expCatMap[cat] || 0) + (Number(f.total_amount) || 0);
+    });
+    const expenseByCategory = Object.entries(expCatMap).map(([name, value]) => ({ name, value, color: catColors[name] || C.slate }));
+
+    // Payment status pie
+    const paymentStatus = [
+      { name: "Ödendi", value: paidAmount, color: C.emerald },
+      { name: "Ödenmedi", value: unpaidAmount, color: C.red },
+    ].filter((p) => p.value > 0);
+
     const openIssues = issues.filter((i: any) => i.status === "Açık").length;
     const overdueOrders = orders.filter((o: any) => o.deadline && new Date(o.deadline) < new Date() && o.status !== "Tamamlandı").length;
     const openTickets = tickets.filter((t: any) => t.status === "open").length;
@@ -278,8 +299,9 @@ const DashboardHome = () => {
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
-      kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
+      kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders, paidAmount, unpaidAmount, overduePayments, profitMargin, vatCollected },
       topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
+      expenseByCategory, paymentStatus,
     };
   }, []);
 
