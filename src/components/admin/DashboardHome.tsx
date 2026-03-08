@@ -765,7 +765,7 @@ const DashboardHome = () => {
                     const maxIncome = data.customerFinancials[0]?.income || 1;
                     const barW = maxIncome > 0 ? (c.income / maxIncome) * 100 : 0;
                     return (
-                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
+                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors cursor-pointer" onClick={(e) => { e.stopPropagation(); setSelectedCustomer(c.name); }}>
                         <td className="py-2.5 pr-3">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white shrink-0" style={{ backgroundColor: [C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple, C.orange, C.amber, C.pink, C.lime][i] || C.slate }}>
