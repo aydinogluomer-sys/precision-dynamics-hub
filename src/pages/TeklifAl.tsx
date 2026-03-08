@@ -1208,7 +1208,6 @@ const TeklifAl = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };
