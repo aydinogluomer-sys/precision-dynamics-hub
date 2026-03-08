@@ -99,6 +99,7 @@ const MusteriPaneli = () => {
       <div className="flex-1 flex flex-col min-w-0">
         <MusteriHeader
           activeTab={activeTab}
+          onTabChange={setActiveTab}
           mobileSidebar={
             <MusteriMobileSidebar
               activeTab={activeTab}

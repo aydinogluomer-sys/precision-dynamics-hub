@@ -20,9 +20,10 @@ const tabTitles: Record<string, string> = {
 interface Props {
   activeTab: string;
   mobileSidebar?: ReactNode;
+  onTabChange?: (tab: string) => void;
 }
 
-const MusteriHeader = ({ activeTab, mobileSidebar }: Props) => {
+const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const MusteriHeader = ({ activeTab, mobileSidebar }: Props) => {
         >
           {darkMode ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
         </button>
-        <MusteriNotifications />
+        <MusteriNotifications onTabChange={onTabChange} />
         <Link
           to="/"
           className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0AA2CD]/10 text-[#0AA2CD] text-xs font-bold hover:bg-[#0AA2CD]/20 transition-colors"
