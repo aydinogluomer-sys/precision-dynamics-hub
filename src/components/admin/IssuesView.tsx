@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, AlertTriangle, Wrench, Code, UserX, Package, Cog, CheckCircle2, X, Plus } from "lucide-react";
+import { Loader2, AlertTriangle, Wrench, Code, UserX, Package, Cog, CheckCircle2, X, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Issue {
@@ -115,11 +115,14 @@ const IssuesView = () => {
                 <p className="text-sm dark:text-white text-slate-800 font-bold mt-1">{issue.category} — {issue.machine}</p>
                 <p className="text-xs dark:text-slate-400 text-slate-500">İş: {issue.job} • {issue.date} {issue.cost ? `• Maliyet: ₺${Number(issue.cost).toLocaleString("tr-TR")}` : ""}</p>
               </div>
-              {issue.status !== "resolved" && (
-                <button onClick={() => setResolveModal(issue)} className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/20">
-                  Çözümle
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {issue.status !== "resolved" && (
+                  <button onClick={() => setResolveModal(issue)} className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/20">
+                    Çözümle
+                  </button>
+                )}
+                <button onClick={async () => { if (!confirm(`"${issue.id}" olayını silmek istediğinize emin misiniz?`)) return; const { error } = await supabase.from("issues").delete().eq("id", issue.id); if (error) toast.error("Silinemedi"); else { toast.success("Olay silindi"); fetchData(); } }} className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+              </div>
             </div>
             {issue.detail && <p className="text-xs dark:text-slate-300 text-slate-600 italic dark:bg-[#0F172A] bg-slate-50 rounded p-2 mt-2">"{issue.detail}"</p>}
             {issue.resolution && (

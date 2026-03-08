@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wrench, Clock, AlertTriangle, Activity, Timer, Loader2, Plus } from "lucide-react";
+import { Wrench, Clock, AlertTriangle, Activity, Timer, Loader2, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -199,9 +199,12 @@ const TPMView = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-bold dark:text-white text-slate-800">{m.name}</h3>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-black text-white ${statusColors[m.status] || "bg-slate-500"}`}>
-                      {statusLabels[m.status] || m.status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-black text-white ${statusColors[m.status] || "bg-slate-500"}`}>
+                        {statusLabels[m.status] || m.status}
+                      </span>
+                      <button onClick={async () => { if (!confirm(`"${m.name}" makinesini silmek istediğinize emin misiniz?`)) return; const { error } = await supabase.from("machine_health").delete().eq("id", m.id); if (error) toast.error("Silinemedi"); else toast.success("Makine silindi"); }} className="text-red-400 hover:text-red-300 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <div>
@@ -243,6 +246,7 @@ const TPMView = () => {
                   <th className="text-left p-4 hidden md:table-cell">Teknisyen</th>
                   <th className="text-right p-4">Maliyet</th>
                   <th className="text-left p-4 hidden lg:table-cell">Detay</th>
+                  <th className="p-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -259,6 +263,9 @@ const TPMView = () => {
                     <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{l.technician || "-"}</td>
                     <td className="p-4 dark:text-white text-slate-800 font-bold text-right font-mono tabular-nums">₺{(l.cost || 0).toLocaleString("tr-TR")}</td>
                     <td className="p-4 text-xs dark:text-slate-400 text-slate-500 hidden lg:table-cell max-w-xs truncate">{l.detail || "-"}</td>
+                    <td className="p-4">
+                      <button onClick={async () => { if (!confirm("Bu bakım kaydını silmek istediğinize emin misiniz?")) return; const { error } = await supabase.from("maintenance_logs").delete().eq("id", l.id); if (error) toast.error("Silinemedi"); else toast.success("Bakım kaydı silindi"); }} className="text-red-400 hover:text-red-300 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

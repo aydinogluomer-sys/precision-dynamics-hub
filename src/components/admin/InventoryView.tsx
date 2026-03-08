@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Package, AlertTriangle, Scissors, Wrench, Loader2, Plus, X } from "lucide-react";
+import { Package, AlertTriangle, Scissors, Wrench, Loader2, Plus, X, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -214,6 +214,7 @@ const InventoryView = () => {
                   <th className="text-right p-4">Birim ₺</th>
                   <th className="text-left p-4 hidden lg:table-cell">Tedarikçi</th>
                   <th className="text-left p-4">Durum</th>
+                  <th className="p-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -235,6 +236,9 @@ const InventoryView = () => {
                           <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400">Yeterli</span>
                         )}
                       </td>
+                      <td className="p-4">
+                        <button onClick={async () => { if (!confirm(`"${t.name}" takımını silmek istediğinize emin misiniz?`)) return; const { error } = await supabase.from("tool_inventory").delete().eq("id", t.id); if (error) toast.error("Silinemedi"); else toast.success("Takım silindi"); }} className="text-red-400 hover:text-red-300 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -255,6 +259,7 @@ const InventoryView = () => {
                   <th className="text-right p-4">Birim ₺</th>
                   <th className="text-right p-4">Fire %</th>
                   <th className="text-right p-4 hidden md:table-cell">Toplam ₺</th>
+                  <th className="p-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -269,6 +274,9 @@ const InventoryView = () => {
                       <span className={`text-xs font-bold font-mono tabular-nums ${m.waste_rate > 30 ? "text-red-400" : m.waste_rate > 20 ? "text-amber-400" : "text-emerald-400"}`}>%{m.waste_rate}</span>
                     </td>
                     <td className="p-4 text-right dark:text-white text-slate-800 font-bold font-mono tabular-nums hidden md:table-cell">₺{(m.stock * m.unit_cost).toLocaleString("tr-TR")}</td>
+                    <td className="p-4">
+                      <button onClick={async () => { if (!confirm(`"${m.name}" malzemesini silmek istediğinize emin misiniz?`)) return; const { error } = await supabase.from("raw_materials").delete().eq("id", m.id); if (error) toast.error("Silinemedi"); else toast.success("Malzeme silindi"); }} className="text-red-400 hover:text-red-300 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
