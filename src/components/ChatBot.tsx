@@ -181,11 +181,13 @@ export default function ChatBot() {
       // 1. Yerel FAQ eşleştirme
       const match = findBestFaqMatch(text);
       if (match) {
+        logChatEvent("faq_match", text.trim(), match.entry.question, "chatbot");
         addAssistantMsg(match.entry.answer);
         return;
       }
 
       // 2. Eşleşme yok → AI onayı iste
+      logChatEvent("ai_fallback", text.trim(), undefined, "chatbot");
       const remaining = AI_DAILY_LIMIT - getAiUsageToday();
       if (remaining <= 0) {
         addAssistantMsg("⚠️ Günlük AI kullanım limitine ulaştınız. Lütfen yarın tekrar deneyin veya [Teklif Al](/teklif-al) sayfamızdan bize ulaşın.");
