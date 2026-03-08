@@ -1066,6 +1066,120 @@ const DashboardHome = () => {
         )}
       </motion.div>
       <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
+
+      {/* ── CUSTOMER DETAIL MODAL ── */}
+      <Dialog open={!!selectedCustomer} onOpenChange={(open) => !open && setSelectedCustomer(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto dark:bg-[#0F172A] dark:border-[#334155]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <Users className="w-4 h-4 text-[#0AA2CD]" />
+              {selectedCustomer} — Finansal Detay
+            </DialogTitle>
+          </DialogHeader>
+
+          {customerDetail && (
+            <div className="space-y-5 mt-2">
+              {/* Summary mini cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "Sipariş", value: customerDetail.custOrders.length, icon: Package, color: C.orange },
+                  { label: "Fatura", value: customerDetail.invoices.length, icon: FileText, color: C.cyan },
+                  { label: "Ödenen", value: customerDetail.payments.length, icon: CreditCard, color: C.emerald },
+                  { label: "Bekleyen", value: customerDetail.unpaid.length, icon: Clock, color: C.red },
+                ].map((s) => (
+                  <div key={s.label} className="dark:bg-[#1E293B] bg-slate-50 rounded-xl p-3 border dark:border-[#334155] border-slate-200">
+                    <s.icon className="w-3.5 h-3.5 mb-1" style={{ color: s.color }} />
+                    <p className="text-lg font-black dark:text-white text-slate-800 font-mono">{s.value}</p>
+                    <p className="text-[9px] dark:text-slate-500 text-slate-400 font-semibold uppercase tracking-wider">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Invoices */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <FileText className="w-3 h-3" /> Fatura Listesi
+                </h4>
+                {customerDetail.invoices.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Fatura kaydı bulunamadı.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {customerDetail.invoices.map((inv: any) => (
+                      <div key={inv.id} className="flex items-center justify-between dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{inv.title || inv.doc_number || "Fatura"}</p>
+                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{inv.doc_date || "—"} • {inv.doc_number || "—"}</p>
+                        </div>
+                        <div className="text-right ml-3">
+                          <p className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</p>
+                          <Badge variant="outline" className={`text-[8px] px-1.5 py-0 ${inv.payment_status === "ödendi" ? "border-emerald-300 text-emerald-500" : "border-red-300 text-red-500"}`}>
+                            {inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Payment History */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <CreditCard className="w-3 h-3" /> Ödeme Geçmişi
+                </h4>
+                {customerDetail.payments.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Ödeme kaydı bulunamadı.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {customerDetail.payments.map((pay: any) => (
+                      <div key={pay.id} className="flex items-center gap-3 dark:bg-emerald-500/5 bg-emerald-50 rounded-lg p-2.5 border dark:border-emerald-500/20 border-emerald-200">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{pay.title || pay.doc_number || "Ödeme"}</p>
+                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{pay.doc_date || "—"}</p>
+                        </div>
+                        <span className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Order Timeline */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <Truck className="w-3 h-3" /> Sipariş Timeline
+                </h4>
+                {customerDetail.custOrders.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Sipariş bulunamadı.</p>
+                ) : (
+                  <div className="relative pl-4 border-l-2 dark:border-[#334155] border-slate-200 space-y-3">
+                    {customerDetail.custOrders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((ord: any) => {
+                      const statusColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? C.emerald : ord.status === "Üretimde" ? C.cyan : ord.status === "İptal" ? C.red : C.orange;
+                      return (
+                        <div key={ord.id} className="relative">
+                          <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 dark:border-[#0F172A] border-white" style={{ backgroundColor: statusColor }} />
+                          <div className="dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[11px] font-bold dark:text-white text-slate-800">{ord.id}</span>
+                              <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: `${statusColor}20`, color: statusColor }}>{ord.status || "—"}</span>
+                            </div>
+                            <p className="text-[10px] dark:text-slate-400 text-slate-500">{ord.part_name || "—"} • Adet: {ord.quantity || "—"}</p>
+                            <div className="flex items-center gap-3 mt-1 text-[9px] dark:text-slate-500 text-slate-400">
+                              <span>Sipariş: {ord.order_date || "—"}</span>
+                              <span>Termin: {ord.deadline || "—"}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
