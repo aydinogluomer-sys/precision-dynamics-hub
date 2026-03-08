@@ -37,6 +37,7 @@ const RFQManager = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Tümü");
+  const [cadFilter, setCadFilter] = useState(false);
   const [selectedRFQ, setSelectedRFQ] = useState<RFQ | null>(null);
   const [priceModal, setPriceModal] = useState<RFQ | null>(null);
   const [priceForm, setPriceForm] = useState({ price: "", days: "7", notes: "" });
@@ -240,8 +241,8 @@ const RFQManager = () => {
     a.click();
     a.remove();
   };
-
-  const filtered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
+  const statusFiltered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
+  const filtered = cadFilter ? statusFiltered.filter((r) => getRfqFiles(r).length > 0) : statusFiltered;
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
