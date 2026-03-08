@@ -1,71 +1,44 @@
 
 
-# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
+## Sohbet Botunu Maliyetsiz / Düşük Maliyetli Hale Getirme Planı
 
-## Mevcut Durum
+### Problem
+Her müşteri mesajı Lovable AI Gateway üzerinden token harcıyor. Yoğun kullanımda maliyet hızla artar.
 
-- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
-- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
+### Çözüm: Hibrit Yaklaşım — Önce Yerel FAQ, Gerekirse AI
 
-## Birleştirme Fikri
+Projede zaten **zengin bir FAQ veritabanı** var (`servicePages.ts` içinde 100+ soru-cevap). Chatbot'u şöyle dönüştüreceğiz:
 
-**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
+1. **Yerel FAQ Eşleştirme (Maliyet: 0)**
+   - Tüm `servicePages` ve `blogData` içindeki FAQ verilerini bir arama havuzuna topla
+   - Kullanıcının mesajını basit keyword/fuzzy matching ile FAQ'lara karşı eşleştir
+   - Eşleşme skoru yeterli yüksekse (örn. %60+), doğrudan FAQ cevabını göster — **AI çağrısı yapılmaz**
 
-### Yapı: Adım 1'de CAD Dashboard'u Göm
+2. **Hızlı Cevap Şablonları (Maliyet: 0)**
+   - "Fiyat", "teklif", "iletişim", "adres", "telefon" gibi sık sorulan konular için sabit yanıtlar
+   - Kullanıcıyı ilgili sayfaya yönlendiren linkler
 
-```text
-┌─────────────────────────────────────────────────────┐
-│  Header + Stepper (4 adım)                          │
-├────────────────────────────┬────────────────────────┤
-│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
-│  ┌──────────────────────┐  │  ┌──────────────────┐  │
-│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
-│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
-│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
-│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
-│  │ (toolbar, grid,      │  │  └──────────────────┘  │
-│  │  wireframe, renk,    │  │                        │
-│  │  fullscreen, gizmo)  │  │                        │
-│  └──────────────────────┘  │                        │
-│  ┌──────────────────────┐  │                        │
-│  │ Parça Tablosu        │  │                        │
-│  │ (çoklu dosya/parça)  │  │                        │
-│  └──────────────────────┘  │                        │
-├────────────────────────────┴────────────────────────┤
-│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
-└─────────────────────────────────────────────────────┘
-```
-
-### Detaylar
-
-1. **Adım 1 — Gelişmiş CAD Yükleme**:
-   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
-   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
-   - Dosya yüklenmeden önce: drag-drop alanı göster
-   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
-   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
-
-2. **Adım 2-4 — Mevcut akış korunur**:
-   - Özellikler, İnceleme, Gönderim adımları aynen kalır
-   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
-
-3. **Sağ panel adaptasyonu**:
-   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
-   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
-
-4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
-   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
+3. **AI Fallback — Sadece Eşleşme Yoksa (Düşük maliyet)**
+   - Yerel eşleşme bulunamazsa, kullanıcıya "Daha detaylı yanıt için AI asistanı kullanılsın mı?" diye sor
+   - Kullanıcı onaylarsa AI çağrısı yap
+   - Günlük AI çağrı limiti koy (örn. IP/session başına 5 mesaj)
 
 ### Teknik Değişiklikler
 
-| Dosya | İşlem |
-|-------|-------|
-| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
-| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
-| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
+**Yeni dosya: `src/data/chatFaqData.ts`**
+- `servicePages` ve diğer kaynaklardan tüm FAQ'ları düz bir diziye toplar
+- Sık sorulan sorular için sabit şablonlar ekler
 
-### Avantajlar
-- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
-- Gereksiz sayfa duplikasyonu ortadan kalkar
-- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
+**Güncelleme: `src/components/ChatBot.tsx`**
+- `send()` fonksiyonuna FAQ arama mantığı ekle
+- Keyword matching fonksiyonu (basit TF-IDF benzeri skor)
+- Eşleşme varsa anında yerel yanıt göster
+- Eşleşme yoksa AI fallback (kullanıcı onayıyla)
+- Session başına AI mesaj sayacı (localStorage)
+
+**Edge function değişikliği yok** — mevcut `chat` fonksiyonu aynı kalır, sadece daha az çağrılır.
+
+### Beklenen Maliyet Etkisi
+- Tahminen müşteri sorularının **%70-80'i** FAQ ile cevaplanır → AI maliyeti %70-80 düşer
+- Kalan %20-30 için de günlük limit ile kontrol altında tutulur
 
