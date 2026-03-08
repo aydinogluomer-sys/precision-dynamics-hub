@@ -513,50 +513,153 @@ const DashboardHome = () => {
         </div>
       </motion.div>
 
-      {/* ── ROW 2: Financial (Redesigned as ComposedChart) + Order Status ── */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Gelir & Gider Analizi</h3>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-[9px] dark:text-slate-500 text-slate-400">Net Kar</p>
-                <p className={`text-sm font-black font-mono ${(data.kpis.totalIncome - data.kpis.totalExpense) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                  {(data.kpis.totalIncome - data.kpis.totalExpense).toLocaleString("tr-TR")} ₺
-                </p>
+      {/* ── ROW 2: Financial KPIs + Gelir/Gider Chart + Payment & Expense Breakdown ── */}
+      <motion.div variants={itemVariants}>
+        {/* Financial mini KPIs */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+          {[
+            { label: "Toplam Gelir", val: data.kpis.totalIncome, color: C.emerald, icon: TrendingUp },
+            { label: "Toplam Gider", val: data.kpis.totalExpense, color: C.red, icon: TrendingDown },
+            { label: "Net Kar", val: data.kpis.totalIncome - data.kpis.totalExpense, color: (data.kpis.totalIncome - data.kpis.totalExpense) >= 0 ? C.emerald : C.red, icon: DollarSign },
+            { label: "Kar Marjı", val: data.kpis.profitMargin, color: data.kpis.profitMargin >= 40 ? C.emerald : C.orange, icon: Gauge, pct: true },
+            { label: "Tahsil Edilen", val: data.kpis.paidAmount, color: C.cyan, icon: CheckCircle2 },
+            { label: "KDV Toplam", val: data.kpis.vatCollected, color: C.purple, icon: FileText },
+          ].map((k) => (
+            <div key={k.label} className={`${cardBase} p-3 cursor-pointer`} onClick={() => navigateTo("financial")}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${k.color}15` }}>
+                  <k.icon className="w-3 h-3" style={{ color: k.color }} />
+                </div>
+                <span className="text-[9px] font-bold dark:text-slate-500 text-slate-400 uppercase tracking-wider">{k.label}</span>
               </div>
+              <p className="text-lg font-black dark:text-white text-slate-800 font-mono tabular-nums">
+                {k.pct ? `%${k.val}` : `${Number(k.val).toLocaleString("tr-TR")} ₺`}
+              </p>
             </div>
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="gradGelir2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={C.emerald} stopOpacity={0.15} />
-                    <stop offset="100%" stopColor={C.emerald} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" {...grd} />
-                <XAxis dataKey="name" tick={tkS} axisLine={false} tickLine={false} />
-                <YAxis tick={tkXS} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.8} />
-                <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.6} />
-                <Line type="monotone" dataKey="Net" name="Net Kar" stroke={C.cyan} strokeWidth={2.5} dot={{ r: 3, fill: C.cyan, strokeWidth: 0 }} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex gap-5 mt-3">
-            {[{ label: "Gelir", color: C.emerald, val: data.kpis.totalIncome }, { label: "Gider", color: C.red, val: data.kpis.totalExpense }].map((l) => (
-              <div key={l.label} className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: l.color }} />
-                <span className="text-[10px] dark:text-slate-500 text-slate-400">{l.label}</span>
-                <span className="text-[11px] font-bold dark:text-slate-300 text-slate-600 font-mono">{l.val.toLocaleString("tr-TR")} ₺</span>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {/* Main chart — 3 col */}
+          <div className={`lg:col-span-3 ${clickableCard("financial")}`} onClick={() => navigateTo("financial")}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Aylık Gelir & Gider Analizi</h3>
+              <div className="flex items-center gap-4">
+                {data.kpis.overduePayments > 0 && (
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 font-bold animate-pulse">
+                    {data.kpis.overduePayments} Gecikmiş Ödeme
+                  </span>
+                )}
+                <div className="text-right">
+                  <p className="text-[9px] dark:text-slate-500 text-slate-400">Net Kar</p>
+                  <p className={`text-sm font-black font-mono ${(data.kpis.totalIncome - data.kpis.totalExpense) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    {(data.kpis.totalIncome - data.kpis.totalExpense).toLocaleString("tr-TR")} ₺
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="gradGelir2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={C.emerald} stopOpacity={0.15} />
+                      <stop offset="100%" stopColor={C.emerald} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" {...grd} />
+                  <XAxis dataKey="name" tick={tkS} axisLine={false} tickLine={false} />
+                  <YAxis tick={tkXS} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.8} />
+                  <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.6} />
+                  <Line type="monotone" dataKey="Net" name="Net Kar" stroke={C.cyan} strokeWidth={2.5} dot={{ r: 3, fill: C.cyan, strokeWidth: 0 }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-4 mt-3">
+              {[{ label: "Gelir", color: C.emerald, val: data.kpis.totalIncome }, { label: "Gider", color: C.red, val: data.kpis.totalExpense }, { label: "Net", color: C.cyan, val: data.kpis.totalIncome - data.kpis.totalExpense }].map((l) => (
+                <div key={l.label} className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: l.color }} />
+                  <span className="text-[10px] dark:text-slate-500 text-slate-400">{l.label}</span>
+                  <span className="text-[11px] font-bold dark:text-slate-300 text-slate-600 font-mono">{l.val.toLocaleString("tr-TR")} ₺</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment status + Expense category — 2 col */}
+          <div className="lg:col-span-2 grid grid-rows-2 gap-4">
+            {/* Payment Status */}
+            <div className={clickableCard("financedocs")} onClick={() => navigateTo("financedocs")}>
+              <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-3 group-hover:text-[#0AA2CD] transition-colors">Ödeme Durumu</h3>
+              {data.paymentStatus.length > 0 ? (
+                <>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex-1 h-3 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden flex">
+                      {data.paymentStatus.map((p) => {
+                        const total = data.paymentStatus.reduce((s, x) => s + x.value, 0);
+                        const w = total > 0 ? (p.value / total) * 100 : 0;
+                        return <div key={p.name} className="h-full first:rounded-l-full last:rounded-r-full" style={{ width: `${w}%`, backgroundColor: p.color }} />;
+                      })}
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    {data.paymentStatus.map((p) => (
+                      <div key={p.name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+                          <span className="text-[10px] dark:text-slate-400 text-slate-500">{p.name}</span>
+                        </div>
+                        <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono">{p.value.toLocaleString("tr-TR")} ₺</span>
+                      </div>
+                    ))}
+                    {data.kpis.unpaidAmount > 0 && (
+                      <div className="flex items-center justify-between pt-1.5 border-t dark:border-[#334155] border-slate-200">
+                        <span className="text-[9px] dark:text-slate-500 text-slate-400">Tahsilat Oranı</span>
+                        <span className="text-[11px] font-black text-[#0AA2CD] font-mono">
+                          %{Math.round((data.kpis.paidAmount / (data.kpis.paidAmount + data.kpis.unpaidAmount)) * 100)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p className="text-xs dark:text-slate-500 text-slate-400 mt-2">Finansal veri bulunamadı</p>
+              )}
+            </div>
+
+            {/* Expense by Category */}
+            <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
+              <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-3 group-hover:text-[#0AA2CD] transition-colors">Gider Dağılımı</h3>
+              {data.expenseByCategory.length > 0 ? (
+                <div className="space-y-2">
+                  {data.expenseByCategory.sort((a, b) => b.value - a.value).slice(0, 5).map((item) => {
+                    const total = data.expenseByCategory.reduce((s, e) => s + e.value, 0);
+                    const pct = total > 0 ? (item.value / total) * 100 : 0;
+                    return (
+                      <div key={item.name}>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-[10px] dark:text-slate-400 text-slate-500 capitalize">{item.name}</span>
+                          <span className="text-[10px] font-bold dark:text-white text-slate-800 font-mono">{item.value.toLocaleString("tr-TR")} ₺</span>
+                        </div>
+                        <div className="h-1.5 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs dark:text-slate-500 text-slate-400 mt-2">Gider kaydı bulunamadı</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── ROW 3: Order Status ── */}
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className={clickableCard("orders")} onClick={() => navigateTo("orders")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Durum Dağılımı</h3>
           <div className="h-64">
@@ -573,7 +676,6 @@ const DashboardHome = () => {
             </ResponsiveContainer>
           </div>
         </div>
-      </motion.div>
 
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
