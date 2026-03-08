@@ -1,27 +1,39 @@
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, BarChart3 } from "lucide-react";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
+} from "recharts";
 
-const metrics = [
-  { label: "Genel OEE", value: "84.2%", icon: Gauge, color: "text-[#0AA2CD]", bg: "bg-[#0AA2CD]/10", trend: "+2.1%", up: true, bars: [60, 70, 65, 80, 75, 85, 78, 84, 82, 84] },
-  { label: "Kullanılabilirlik", value: "91.5%", icon: Power, color: "text-[#F97316]", bg: "bg-[#F97316]/10", trend: "+0.8%", up: true, bars: [85, 88, 90, 87, 91, 89, 92, 90, 91, 92] },
-  { label: "Performans", value: "94.8%", icon: Zap, color: "text-amber-400", bg: "bg-amber-400/10", trend: "+1.2%", up: true, bars: [90, 92, 91, 93, 94, 92, 95, 93, 94, 95] },
-  { label: "Kalite Oranı", value: "98.1%", icon: ShieldCheck, color: "text-emerald-400", bg: "bg-emerald-400/10", trend: "-0.2%", up: false, bars: [97, 98, 99, 98, 97, 98, 99, 98, 98, 98] },
-];
+/* ── Colors ── */
+const C = {
+  primary: "#0688AD",
+  cyan: "#0AA2CD",
+  orange: "#F97316",
+  amber: "#FBBF24",
+  emerald: "#34D399",
+  red: "#EF4444",
+  purple: "#A855F7",
+  pink: "#EC4899",
+  slate: "#64748B",
+  indigo: "#6366F1",
+  teal: "#14B8A6",
+  lime: "#84CC16",
+};
 
-const machines = [
-  { name: "CNC-01", status: "Aktif", job: "PO-9928", progress: 75 },
-  { name: "CNC-02", status: "Aktif", job: "PO-9931", progress: 40 },
-  { name: "CNC-03", status: "Boşta", job: "-", progress: 0 },
-  { name: "Lazer-01", status: "Aktif", job: "PO-9930", progress: 90 },
-  { name: "Abkant-01", status: "Bakım", job: "-", progress: 0 },
-];
+const tooltipStyle = {
+  backgroundColor: "hsl(222.2 47.4% 11.2%)",
+  border: "1px solid hsl(217.2 32.6% 17.5%)",
+  borderRadius: "8px",
+  fontSize: "12px",
+  color: "#e2e8f0",
+};
 
-const activeOrders = [
-  { id: "ORD-2025-101", product: "Motor Gövdesi", machine: "CNC-01", progress: 75, deadline: "2025-02-28" },
-  { id: "ORD-2025-102", product: "Bağlantı Plakası", machine: "CNC-02", progress: 40, deadline: "2025-03-05" },
-  { id: "ORD-2025-103", product: "Dişli Mili", machine: "Lazer-01", progress: 90, deadline: "2025-02-25" },
-];
+const RADIAN = Math.PI / 180;
 
+/* ── Static OEE data (kept from original) ── */
 const oeeHistory = [
   { month: "Eyl", oee: 76, availability: 85, performance: 90, quality: 97 },
   { month: "Eki", oee: 78, availability: 87, performance: 91, quality: 97 },
@@ -31,21 +43,232 @@ const oeeHistory = [
   { month: "Şub", oee: 84, availability: 91, performance: 95, quality: 98 },
 ];
 
-const machineUtilization = [
-  { name: "Üretimde", value: 60, color: "#0AA2CD" },
-  { name: "Kurulum", value: 15, color: "#F97316" },
-  { name: "Boşta", value: 12, color: "#64748B" },
-  { name: "Bakım", value: 8, color: "#EF4444" },
-  { name: "Plansız Duruş", value: 5, color: "#A855F7" },
+const oeeMetrics = [
+  { label: "Genel OEE", value: "84.2%", icon: Gauge, color: "text-[#0AA2CD]", bg: "bg-[#0AA2CD]/10", trend: "+2.1%", up: true, bars: [60, 70, 65, 80, 75, 85, 78, 84, 82, 84] },
+  { label: "Kullanılabilirlik", value: "91.5%", icon: Power, color: "text-[#F97316]", bg: "bg-[#F97316]/10", trend: "+0.8%", up: true, bars: [85, 88, 90, 87, 91, 89, 92, 90, 91, 92] },
+  { label: "Performans", value: "94.8%", icon: Zap, color: "text-amber-400", bg: "bg-amber-400/10", trend: "+1.2%", up: true, bars: [90, 92, 91, 93, 94, 92, 95, 93, 94, 95] },
+  { label: "Kalite Oranı", value: "98.1%", icon: ShieldCheck, color: "text-emerald-400", bg: "bg-emerald-400/10", trend: "-0.2%", up: false, bars: [97, 98, 99, 98, 97, 98, 99, 98, 98, 98] },
 ];
 
+/* ── Custom Tooltip ── */
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200 rounded-lg p-3 shadow-xl">
+      <p className="text-xs font-bold dark:text-slate-300 text-slate-600 mb-1">{label}</p>
+      {payload.map((p: any, i: number) => (
+        <div key={i} className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+          <span className="text-[11px] dark:text-slate-400 text-slate-500">{p.name}:</span>
+          <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono">
+            {typeof p.value === "number" ? p.value.toLocaleString("tr-TR") : p.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ── Custom Pie Label ── */
+const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  if (percent < 0.05) return null;
+  return (
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={11} fontWeight={700}>
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
 const DashboardHome = () => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<{
+    rfqByStatus: { name: string; value: number; color: string }[];
+    orderByStatus: { name: string; value: number; color: string }[];
+    financialSummary: { name: string; Gelir: number; Gider: number }[];
+    issuesBySeverity: { name: string; value: number; color: string }[];
+    maintByType: { name: string; Adet: number; Maliyet: number }[];
+    pipelineByStage: { name: string; value: number; color: string }[];
+    inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
+    kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number };
+    topCustomers: { name: string; Bakiye: number }[];
+    monthlyRfqs: { month: string; Talep: number; Onaylanan: number }[];
+  } | null>(null);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const [rfqR, ordR, issR, finR, custR, pipeR, maintR, rawR, toolR, ticketR] = await Promise.all([
+        supabase.from("rfqs").select("*"),
+        supabase.from("orders").select("*"),
+        supabase.from("issues").select("*"),
+        supabase.from("financial_documents").select("*"),
+        supabase.from("customers").select("*"),
+        supabase.from("pipeline_leads").select("*"),
+        supabase.from("maintenance_logs").select("*"),
+        supabase.from("raw_materials").select("*"),
+        supabase.from("tool_inventory").select("*"),
+        supabase.from("support_tickets").select("*"),
+      ]);
+
+      const rfqs = rfqR.data || [];
+      const orders = ordR.data || [];
+      const issues = issR.data || [];
+      const fins = finR.data || [];
+      const custs = custR.data || [];
+      const pipes = pipeR.data || [];
+      const maints = maintR.data || [];
+      const raws = rawR.data || [];
+      const tools = toolR.data || [];
+      const tickets = ticketR.data || [];
+
+      // Status colors
+      const statusColors: Record<string, string> = {
+        "Onaylandı": C.emerald, "Fiyat Verildi": C.cyan, "Reddedildi": C.red, "Beklemede": C.amber,
+        "Üretimde": C.cyan, "Hazırlık": C.orange, "Kalite Kontrol": C.purple, "Tamamlandı": C.emerald,
+        "Teslim Edildi": C.lime, "İptal": C.red,
+      };
+      const severityColors: Record<string, string> = { "high": C.red, "normal": C.amber, "low": C.emerald, "critical": C.pink };
+      const stageColors: Record<string, string> = { "prospect": C.slate, "qualified": C.cyan, "proposal": C.orange, "negotiation": C.purple, "closed_won": C.emerald, "closed_lost": C.red };
+
+      // Group helper
+      const group = (arr: any[], key: string, colorMap: Record<string, string>) => {
+        const map: Record<string, number> = {};
+        arr.forEach((r) => { const k = r[key] || "Belirsiz"; map[k] = (map[k] || 0) + 1; });
+        return Object.entries(map).map(([name, value]) => ({ name, value, color: colorMap[name] || C.slate }));
+      };
+
+      // RFQ by status
+      const rfqByStatus = group(rfqs, "status", statusColors);
+
+      // Orders by status
+      const orderByStatus = group(orders, "status", statusColors);
+
+      // Financial monthly
+      const finByMonth: Record<string, { Gelir: number; Gider: number }> = {};
+      fins.forEach((f) => {
+        const m = f.doc_date ? new Date(f.doc_date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
+        if (!finByMonth[m]) finByMonth[m] = { Gelir: 0, Gider: 0 };
+        if (f.doc_type === "fatura" || f.doc_type === "gelir") finByMonth[m].Gelir += Number(f.total_amount) || 0;
+        else finByMonth[m].Gider += Number(f.total_amount) || 0;
+      });
+      const financialSummary = Object.entries(finByMonth).map(([name, v]) => ({ name, ...v }));
+
+      // Issues by severity
+      const issuesBySeverity = group(issues, "severity", severityColors);
+
+      // Maintenance by type
+      const maintMap: Record<string, { count: number; cost: number }> = {};
+      maints.forEach((m) => {
+        const k = m.type || "Belirsiz";
+        if (!maintMap[k]) maintMap[k] = { count: 0, cost: 0 };
+        maintMap[k].count++;
+        maintMap[k].cost += Number(m.cost) || 0;
+      });
+      const maintByType = Object.entries(maintMap).map(([name, v]) => ({ name, Adet: v.count, Maliyet: v.cost }));
+
+      // Pipeline by stage
+      const pipelineByStage = group(pipes, "stage", stageColors);
+
+      // Inventory radar
+      const rawCategories = ["Stok", "Çeşitlilik", "Değer", "Minimum Risk"];
+      const toolCategories = rawCategories;
+      const maxRaw = Math.max(raws.reduce((s, r) => s + (r.stock || 0), 0), 1);
+      const maxTool = Math.max(tools.reduce((s, t) => s + (t.stock || 0), 0), 1);
+      const rawValue = raws.reduce((s, r) => s + (r.stock || 0) * (Number(r.unit_cost) || 0), 0);
+      const toolValue = tools.reduce((s, t) => s + (t.stock || 0) * (Number(t.unit_cost) || 0), 0);
+      const maxVal = Math.max(rawValue, toolValue, 1);
+      const lowStockTools = tools.filter((t) => (t.stock || 0) <= (t.min_stock || 5)).length;
+      const inventoryRadar = [
+        { subject: "Stok Adedi", Hammadde: Math.round((raws.reduce((s, r) => s + (r.stock || 0), 0) / maxRaw) * 100), Takım: Math.round((tools.reduce((s, t) => s + (t.stock || 0), 0) / maxTool) * 100) },
+        { subject: "Çeşitlilik", Hammadde: raws.length * 10, Takım: tools.length * 10 },
+        { subject: "Toplam Değer", Hammadde: Math.round((rawValue / maxVal) * 100), Takım: Math.round((toolValue / maxVal) * 100) },
+        { subject: "Risk Skoru", Hammadde: 80, Takım: Math.max(0, 100 - lowStockTools * 20) },
+      ];
+
+      // KPIs
+      const totalIncome = fins.filter((f) => f.doc_type === "fatura" || f.doc_type === "gelir").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
+      const totalExpense = fins.filter((f) => f.doc_type === "gider" || f.doc_type === "masraf").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
+      const openIssues = issues.filter((i) => i.status === "Açık").length;
+      const overdueOrders = orders.filter((o) => o.deadline && new Date(o.deadline) < new Date() && o.status !== "Tamamlandı").length;
+      const openTickets = tickets.filter((t) => t.status === "open").length;
+
+      // Top customers by balance
+      const topCustomers = [...custs]
+        .sort((a, b) => (Number(b.balance) || 0) - (Number(a.balance) || 0))
+        .slice(0, 6)
+        .map((c) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
+
+      // Monthly RFQ trend
+      const rfqByMonth: Record<string, { total: number; approved: number }> = {};
+      rfqs.forEach((r) => {
+        const m = r.date ? new Date(r.date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
+        if (!rfqByMonth[m]) rfqByMonth[m] = { total: 0, approved: 0 };
+        rfqByMonth[m].total++;
+        if (r.status === "Onaylandı") rfqByMonth[m].approved++;
+      });
+      const monthlyRfqs = Object.entries(rfqByMonth).map(([month, v]) => ({ month, Talep: v.total, Onaylanan: v.approved }));
+
+      setData({
+        rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
+        maintByType, pipelineByStage, inventoryRadar,
+        kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
+        topCustomers, monthlyRfqs,
+      });
+      setLoading(false);
+    };
+    fetch();
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => <div key={i} className="h-28 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />)}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 h-72 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />
+          <div className="h-72 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />
+        </div>
+      </div>
+    );
+  }
+
+  const kpiCards = [
+    { label: "Toplam Teklif", value: data.kpis.rfqs, icon: FileText, color: C.cyan, bg: "bg-[#0AA2CD]/10" },
+    { label: "Aktif Sipariş", value: data.kpis.orders, icon: Package, color: C.orange, bg: "bg-[#F97316]/10" },
+    { label: "Çözüm Ortağı", value: data.kpis.customers, icon: Users, color: C.emerald, bg: "bg-emerald-400/10" },
+    { label: "Açık Sorun", value: data.kpis.openIssues, icon: AlertTriangle, color: data.kpis.openIssues > 0 ? C.red : C.emerald, bg: data.kpis.openIssues > 0 ? "bg-red-500/10" : "bg-emerald-400/10" },
+    { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Wrench, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10" },
+    { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true },
+  ];
+
+  const cardClass = "dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all";
+
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
-      {/* OEE Metrics */}
+      {/* ── KPI CARDS ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {kpiCards.map((k) => (
+          <div key={k.label} className={cardClass}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight">{k.label}</span>
+              <div className={`w-7 h-7 rounded-lg ${k.bg} flex items-center justify-center`}>
+                <k.icon className="w-3.5 h-3.5" style={{ color: k.color }} />
+              </div>
+            </div>
+            <p className="text-xl sm:text-2xl font-black dark:text-white text-slate-800 font-mono tabular-nums">
+              {k.fmt ? Number(k.value).toLocaleString("tr-TR") : k.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── OEE METRICS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((m) => (
-          <div key={m.label} className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all">
+        {oeeMetrics.map((m) => (
+          <div key={m.label} className={cardClass}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{m.label}</span>
               <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center`}>
@@ -67,10 +290,9 @@ const DashboardHome = () => {
         ))}
       </div>
 
-      {/* Charts Row */}
+      {/* ── ROW 1: OEE Trend + RFQ Pie ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* OEE Trend Chart */}
-        <div className="lg:col-span-2 dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
+        <div className={`lg:col-span-2 ${cardClass}`}>
           <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">OEE Trend Analizi (6 Ay)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -78,29 +300,16 @@ const DashboardHome = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} domain={[70, 100]} axisLine={false} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "hsl(222.2 47.4% 11.2%)", border: "1px solid hsl(217.2 32.6% 17.5%)", borderRadius: "8px", fontSize: "12px", color: "#e2e8f0" }}
-                  labelStyle={{ color: "#94A3B8", fontWeight: 700, marginBottom: 4 }}
-                  itemStyle={{ padding: "1px 0" }}
-                  formatter={(value: number, name: string) => {
-                    const labels: Record<string, string> = { oee: "OEE", availability: "Kullanılabilirlik", performance: "Performans", quality: "Kalite" };
-                    return [`%${value}`, labels[name] || name];
-                  }}
-                />
-                <Line type="monotone" dataKey="oee" stroke="#0AA2CD" strokeWidth={3} dot={{ r: 4, fill: "#0AA2CD" }} activeDot={{ r: 6 }} />
-                <Line type="monotone" dataKey="availability" stroke="#F97316" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
-                <Line type="monotone" dataKey="performance" stroke="#FBBF24" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
-                <Line type="monotone" dataKey="quality" stroke="#34D399" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Line type="monotone" dataKey="oee" name="OEE" stroke={C.cyan} strokeWidth={3} dot={{ r: 4, fill: C.cyan }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="availability" name="Kullanılabilirlik" stroke={C.orange} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="performance" name="Performans" stroke={C.amber} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="quality" name="Kalite" stroke={C.emerald} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
           <div className="flex flex-wrap gap-4 mt-3">
-            {[
-              { label: "OEE", color: "#0AA2CD" },
-              { label: "Kullanılabilirlik", color: "#F97316" },
-              { label: "Performans", color: "#FBBF24" },
-              { label: "Kalite", color: "#34D399" },
-            ].map((l) => (
+            {[{ label: "OEE", color: C.cyan }, { label: "Kullanılabilirlik", color: C.orange }, { label: "Performans", color: C.amber }, { label: "Kalite", color: C.emerald }].map((l) => (
               <div key={l.label} className="flex items-center gap-1.5">
                 <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: l.color }} />
                 <span className="text-[10px] dark:text-slate-400 text-slate-500 font-medium">{l.label}</span>
@@ -109,130 +318,247 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Machine Utilization Pie Chart */}
-        <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Makine Kullanım Oranı</h3>
+        {/* RFQ Status Pie */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">RFQ Durum Dağılımı</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={machineUtilization}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={45}
-                  outerRadius={75}
-                  paddingAngle={3}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {machineUtilization.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
+                <Pie data={data.rfqByStatus} cx="50%" cy="50%" innerRadius={40} outerRadius={72} paddingAngle={3} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
+                  {data.rfqByStatus.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: "hsl(222.2 47.4% 11.2%)", border: "1px solid hsl(217.2 32.6% 17.5%)", borderRadius: "8px", fontSize: "12px", color: "#e2e8f0" }}
-                  formatter={(value: number) => [`%${value}`, ""]}
-                />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
           <div className="space-y-1.5 mt-2">
-            {machineUtilization.map((item) => (
+            {data.rfqByStatus.map((item) => (
               <div key={item.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                   <span className="text-[11px] dark:text-slate-300 text-slate-600">{item.name}</span>
                 </div>
-                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">%{item.value}</span>
+                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Machine Overview */}
-        <div className="lg:col-span-2 dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Makine Planlama Özeti</h3>
-            <button onClick={() => window.dispatchEvent(new CustomEvent('nexus-navigate', { detail: 'scheduling' }))} className="text-xs text-[#0AA2CD] font-bold hover:underline">Tam Görünüm →</button>
+      {/* ── ROW 2: Financial Area + Order Bar ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Financial Area Chart */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Finansal Akış (Aylık)</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                <defs>
+                  <linearGradient id="gradGelir" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={C.emerald} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={C.emerald} stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="gradGider" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={C.red} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={C.red} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="Gelir" stroke={C.emerald} strokeWidth={2} fill="url(#gradGelir)" />
+                <Area type="monotone" dataKey="Gider" stroke={C.red} strokeWidth={2} fill="url(#gradGider)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-          <div className="space-y-3">
-            {machines.map((m) => (
-              <div key={m.name} className="flex items-center gap-3">
-                <span className="text-xs font-bold dark:text-white text-slate-800 w-20">{m.name}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                  m.status === "Aktif" ? "bg-emerald-500/20 text-emerald-400" :
-                  m.status === "Bakım" ? "bg-red-500/20 text-red-400" :
-                  "bg-slate-500/20 text-slate-400"
-                }`}>{m.status}</span>
-                <div className="flex-1 h-6 dark:bg-[#0F172A] bg-slate-100 rounded-lg overflow-hidden">
-                  {m.progress > 0 && (
-                    <div className="h-full bg-[#0AA2CD]/30 rounded-lg flex items-center px-2" style={{ width: `${m.progress}%` }}>
-                      <span className="text-[10px] font-bold text-[#0AA2CD]">{m.job}</span>
-                    </div>
-                  )}
+          <div className="flex gap-6 mt-3">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.emerald }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Gelir</span>
+              <span className="text-xs font-bold dark:text-white text-slate-800 font-mono">{data.kpis.totalIncome.toLocaleString("tr-TR")} ₺</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.red }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Gider</span>
+              <span className="text-xs font-bold dark:text-white text-slate-800 font-mono">{data.kpis.totalExpense.toLocaleString("tr-TR")} ₺</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Status Bar Chart */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Sipariş Durum Dağılımı</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.orderByStatus} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={90} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="value" name="Adet" radius={[0, 6, 6, 0]} barSize={20}>
+                  {data.orderByStatus.map((e, i) => <Cell key={i} fill={e.color} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* ── ROW 3: Pipeline Pie + Issues Donut + Maintenance Bar ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Pipeline */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Pipeline Aşamaları</h3>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={data.pipelineByStage} cx="50%" cy="50%" outerRadius={70} paddingAngle={2} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
+                  {data.pipelineByStage.map((e, i) => <Cell key={i} fill={e.color} />)}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-1.5 mt-2">
+            {data.pipelineByStage.map((item) => (
+              <div key={item.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-[11px] dark:text-slate-300 text-slate-600">{item.name}</span>
                 </div>
+                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Alerts */}
-        <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Acil Uyarılar</h3>
-          <div className="space-y-3">
-            <div className="border-l-4 border-red-500 bg-red-500/10 rounded-r-lg p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <AlertTriangle className="w-4 h-4 text-red-400 animate-pulse" />
-                <span className="text-xs font-bold text-red-400">Kritik Durma</span>
+        {/* Issues by Severity */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Sorun Ciddiyet Dağılımı</h3>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={data.issuesBySeverity} cx="50%" cy="50%" innerRadius={35} outerRadius={70} paddingAngle={4} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
+                  {data.issuesBySeverity.map((e, i) => <Cell key={i} fill={e.color} />)}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-1.5 mt-2">
+            {data.issuesBySeverity.map((item) => (
+              <div key={item.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-[11px] dark:text-slate-300 text-slate-600 capitalize">{item.name}</span>
+                </div>
+                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
               </div>
-              <p className="text-[11px] dark:text-slate-300 text-slate-600">CNC-03 Spindle arızası — E-0442</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Maintenance Bar */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Bakım Türleri & Maliyetleri</h3>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.maintByType} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="Adet" fill={C.cyan} radius={[4, 4, 0, 0]} barSize={22} />
+                <Bar dataKey="Maliyet" fill={C.orange} radius={[4, 4, 0, 0]} barSize={22} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex gap-4 mt-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Adet</span>
             </div>
-            <div className="border-l-4 border-amber-500 bg-amber-500/10 rounded-r-lg p-3">
-              <div className="flex items-center gap-2 mb-1">
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-bold text-amber-400">Bakım Uyarısı</span>
-              </div>
-              <p className="text-[11px] dark:text-slate-300 text-slate-600">Abkant-01 periyodik bakım zamanı</p>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.orange }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Maliyet (₺)</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Active Orders */}
-      <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5">
-        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Aktif Üretim Siparişleri</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-b dark:border-[#334155] border-slate-200">
-                <th className="text-left pb-3">ID</th>
-                <th className="text-left pb-3">Ürün</th>
-                <th className="text-left pb-3">Makine</th>
-                <th className="text-left pb-3">İlerleme</th>
-                <th className="text-left pb-3">Teslim</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeOrders.map((o) => (
-                <tr key={o.id} className="border-b dark:border-[#334155]/50 border-slate-100 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                  <td className="py-3 font-bold text-[#0AA2CD]">{o.id}</td>
-                  <td className="py-3 dark:text-white text-slate-800">{o.product}</td>
-                  <td className="py-3 text-slate-400">{o.machine}</td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 h-2 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#0AA2CD] rounded-full transition-all duration-1000" style={{ width: `${o.progress}%` }} />
-                      </div>
-                      <span className="text-xs font-bold dark:text-white text-slate-800">{o.progress}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 text-slate-400">{o.deadline}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* ── ROW 4: Top Customers Bar + Inventory Radar + RFQ Trend ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Top Customers */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">En Yüksek Bakiyeli Müşteriler</h3>
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.topCustomers} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={70} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="Bakiye" name="Bakiye (₺)" radius={[0, 6, 6, 0]} barSize={16}>
+                  {data.topCustomers.map((_, i) => <Cell key={i} fill={i === 0 ? C.primary : i === 1 ? C.cyan : C.teal} opacity={1 - i * 0.1} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Inventory Radar */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Envanter Radar Analizi</h3>
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={data.inventoryRadar} cx="50%" cy="50%" outerRadius="70%">
+                <PolarGrid stroke="#334155" strokeOpacity={0.5} />
+                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: "#94A3B8" }} />
+                <PolarRadiusAxis tick={false} axisLine={false} />
+                <Radar name="Hammadde" dataKey="Hammadde" stroke={C.cyan} fill={C.cyan} fillOpacity={0.2} strokeWidth={2} />
+                <Radar name="Takım" dataKey="Takım" stroke={C.orange} fill={C.orange} fillOpacity={0.15} strokeWidth={2} />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex gap-4 mt-2 justify-center">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Hammadde</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.orange }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Takım</span>
+            </div>
+          </div>
+        </div>
+
+        {/* RFQ Monthly Trend */}
+        <div className={cardClass}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Aylık Teklif Trendi</h3>
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.monthlyRfqs} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="Talep" fill={C.cyan} radius={[4, 4, 0, 0]} barSize={18} />
+                <Bar dataKey="Onaylanan" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={18} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex gap-4 mt-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Toplam Talep</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.emerald }} />
+              <span className="text-[10px] dark:text-slate-400 text-slate-500">Onaylanan</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
