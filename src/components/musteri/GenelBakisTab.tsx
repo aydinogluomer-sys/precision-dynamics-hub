@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, Package, Clock, MessageSquare, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { FileText, Package, Clock, MessageSquare, AlertTriangle, CheckCircle2, Wallet, CalendarClock } from "lucide-react";
 import { StatsSkeleton, CardListSkeleton } from "./MusteriSkeletons";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -28,7 +28,17 @@ interface RecentRfq {
   quoted_price: number | null;
 }
 
-const StatCard = ({ icon: Icon, label, value, color }: { icon: React.ElementType; label: string; value: number; color: string }) => (
+interface UnpaidDoc {
+  id: string;
+  doc_type: string;
+  doc_number: string | null;
+  title: string | null;
+  total_amount: number | null;
+  due_date: string | null;
+  payment_status: string | null;
+}
+
+const StatCard = ({ icon: Icon, label, value, color }: { icon: React.ElementType; label: string; value: number | string; color: string }) => (
   <div className="bg-card border border-border p-5 flex items-start gap-4">
     <div className={`w-10 h-10 flex items-center justify-center ${color}`}>
       <Icon size={18} />
@@ -53,19 +63,23 @@ const GenelBakisTab = () => {
   const [stats, setStats] = useState<Stats>({ totalRfqs: 0, pendingRfqs: 0, approvedRfqs: 0, totalOrders: 0, activeOrders: 0, openTickets: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [recentRfqs, setRecentRfqs] = useState<RecentRfq[]>([]);
+  const [unpaidDocs, setUnpaidDocs] = useState<UnpaidDoc[]>([]);
+  const [totalDebt, setTotalDebt] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
-      const [rfqRes, orderRes, ticketRes] = await Promise.all([
+      const [rfqRes, orderRes, ticketRes, finRes] = await Promise.all([
         supabase.from("rfqs").select("id, service, status, quoted_price"),
         supabase.from("orders").select("id, part_name, status, progress"),
         supabase.from("support_tickets").select("id, status"),
+        supabase.from("financial_documents").select("id, doc_type, doc_number, title, total_amount, due_date, payment_status").in("payment_status", ["ödenmedi", "vadeli", "kısmi"]),
       ]);
 
       const rfqs = (rfqRes.data || []) as RecentRfq[];
       const orders = (orderRes.data || []) as RecentOrder[];
       const tickets = ticketRes.data || [];
+      const unpaid = (finRes.data || []) as UnpaidDoc[];
 
       setStats({
         totalRfqs: rfqs.length,
@@ -78,6 +92,12 @@ const GenelBakisTab = () => {
 
       setRecentOrders(orders.slice(0, 5));
       setRecentRfqs(rfqs.slice(0, 5));
+      setUnpaidDocs(unpaid.sort((a, b) => {
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      }));
+      setTotalDebt(unpaid.reduce((s, d) => s + (d.total_amount || 0), 0));
       setLoading(false);
     };
     load();
@@ -93,6 +113,12 @@ const GenelBakisTab = () => {
     </div>
   );
 
+  const daysUntilDue = (dateStr: string | null) => {
+    if (!dateStr) return null;
+    const diff = Math.ceil((new Date(dateStr).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    return diff;
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
@@ -104,6 +130,55 @@ const GenelBakisTab = () => {
         <StatCard icon={AlertTriangle} label="Aktif Siparişler" value={stats.activeOrders} color="bg-orange-500/10 text-orange-600" />
         <StatCard icon={MessageSquare} label="Açık Destek Talepleri" value={stats.openTickets} color="bg-purple-500/10 text-purple-600" />
       </div>
+
+      {/* Unpaid Invoices Summary */}
+      {unpaidDocs.length > 0 && (
+        <div className="border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/5 rounded-lg p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 flex items-center justify-center bg-red-500/10 rounded-lg">
+              <Wallet size={20} className="text-red-500" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-red-700 dark:text-red-400">Ödenmemiş Faturalar</h3>
+              <p className="text-2xl font-black font-mono text-red-600 dark:text-red-300">
+                ₺{totalDebt.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+            <Badge variant="outline" className="ml-auto bg-red-500/10 text-red-600 border-red-200 dark:border-red-500/30">
+              {unpaidDocs.length} belge
+            </Badge>
+          </div>
+          <div className="space-y-2">
+            {unpaidDocs.slice(0, 5).map(doc => {
+              const days = daysUntilDue(doc.due_date);
+              const isOverdue = days !== null && days < 0;
+              const isUrgent = days !== null && days >= 0 && days <= 7;
+              return (
+                <div key={doc.id} className="flex items-center gap-3 p-2.5 bg-background/80 rounded border border-border">
+                  <FileText size={14} className="text-red-400 shrink-0" />
+                  <span className="text-xs font-medium flex-1 truncate">{doc.title || doc.doc_number || doc.doc_type}</span>
+                  <span className="text-xs font-bold font-mono text-red-600 dark:text-red-400">
+                    ₺{(doc.total_amount || 0).toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                  </span>
+                  {doc.due_date && (
+                    <span className={`text-[10px] font-semibold flex items-center gap-1 ${
+                      isOverdue ? "text-red-600" : isUrgent ? "text-amber-600" : "text-muted-foreground"
+                    }`}>
+                      <CalendarClock size={11} />
+                      {isOverdue
+                        ? `${Math.abs(days!)} gün gecikmiş`
+                        : days === 0
+                          ? "Bugün"
+                          : `${days} gün kaldı`
+                      }
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Recent Orders */}
       <div>

@@ -59,6 +59,7 @@ interface FinDoc {
   tags: string[] | null;
   created_at: string;
   updated_at: string;
+  user_id: string | null;
 }
 
 const emptyDoc = {
@@ -353,6 +354,33 @@ const FinanceDocsView = () => {
     const { error } = await supabase.from("financial_documents").update({ status: newStatus } as any).eq("id", id);
     if (error) toast.error("Güncelleme hatası");
     else toast.success("Durum güncellendi");
+  };
+
+  const handlePaymentStatusChange = async (doc: FinDoc, newPaymentStatus: string) => {
+    const oldStatus = doc.payment_status;
+    const { error } = await supabase.from("financial_documents").update({ payment_status: newPaymentStatus } as any).eq("id", doc.id);
+    if (error) { toast.error("Güncelleme hatası"); return; }
+    toast.success("Ödeme durumu güncellendi");
+
+    // Send notification to customer if user_id exists
+    if (doc.user_id && oldStatus !== newPaymentStatus) {
+      const statusLabel = PAYMENT_MAP[newPaymentStatus]?.label || newPaymentStatus;
+      const totalStr = `₺${(doc.total_amount || 0).toLocaleString("tr-TR", { minimumFractionDigits: 2 })}`;
+      await supabase.from("notifications").insert({
+        user_id: doc.user_id,
+        type: "finance",
+        title: newPaymentStatus === "ödendi"
+          ? `Ödeme Onaylandı ✅ ${totalStr}`
+          : `Ödeme Durumu: ${statusLabel}`,
+        message: `${doc.doc_number || "Belge"} numaralı ${doc.doc_type} için ödeme durumu "${statusLabel}" olarak güncellendi. Tutar: ${totalStr}`,
+      });
+    }
+
+    // Refresh detail modal if open
+    if (showDetailModal?.id === doc.id) {
+      setShowDetailModal({ ...doc, payment_status: newPaymentStatus });
+    }
+    fetchDocs();
   };
 
   const handleDelete = async (id: string) => {
@@ -831,6 +859,20 @@ const FinanceDocsView = () => {
                   <p className="text-xs dark:text-slate-300 text-slate-600">{showDetailModal.notes}</p>
                 </div>
               )}
+              {/* Payment Status Changer */}
+              <div>
+                <span className="text-[10px] uppercase tracking-wider dark:text-slate-500 text-slate-400 font-bold block mb-1">Ödeme Durumu Değiştir</span>
+                <select
+                  value={showDetailModal.payment_status || "ödenmedi"}
+                  onChange={e => handlePaymentStatusChange(showDetailModal, e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800"
+                >
+                  <option value="ödenmedi">Ödenmedi</option>
+                  <option value="ödendi">Ödendi</option>
+                  <option value="vadeli">Vadeli</option>
+                  <option value="kısmi">Kısmi</option>
+                </select>
+              </div>
             </div>
             <div className="p-4 border-t dark:border-[#334155] border-slate-200">
               <button onClick={() => setShowDetailModal(null)} className="w-full px-4 py-2 rounded-lg dark:bg-white/5 bg-slate-100 dark:text-slate-300 text-slate-600 text-sm font-bold">Kapat</button>
