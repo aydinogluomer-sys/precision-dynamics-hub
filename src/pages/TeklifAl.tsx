@@ -238,6 +238,11 @@ const TeklifAl = () => {
       return;
     }
 
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error("Dosya boyutu 50 MB'ı aşıyor.");
+      return;
+    }
+
     setUploadedFile(file);
     setStepGeometry(null);
     setDimensions(null);
