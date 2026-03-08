@@ -17,6 +17,7 @@ import KaliteRaporTab from "@/components/musteri/KaliteRaporTab";
 import FinansTab from "@/components/musteri/FinansTab";
 import OdemeTab from "@/components/musteri/OdemeTab";
 import DestekTab from "@/components/musteri/DestekTab";
+import BildirimTercihleri from "@/components/musteri/BildirimTercihleri";
 
 interface Profile {
   id: string;
@@ -74,6 +75,7 @@ const MusteriPaneli = () => {
       case "finans": return <FinansTab />;
       case "odeme": return <OdemeTab />;
       case "destek": return <DestekTab />;
+      case "bildirimler": return <BildirimTercihleri />;
       default: return <GenelBakisTab />;
     }
   };

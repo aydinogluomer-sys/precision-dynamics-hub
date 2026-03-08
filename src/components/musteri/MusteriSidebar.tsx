@@ -1,7 +1,7 @@
 import React from "react";
 import {
   LayoutDashboard, FileText, Package, Factory, FolderArchive,
-  ShieldCheck, DollarSign, CreditCard, MessageSquare, LogOut
+  ShieldCheck, DollarSign, CreditCard, MessageSquare, Bell, LogOut
 } from "lucide-react";
 
 const menuItems = [
@@ -14,6 +14,7 @@ const menuItems = [
   { id: "finans", label: "Finans", icon: DollarSign },
   { id: "odeme", label: "Ödeme", icon: CreditCard },
   { id: "destek", label: "Destek", icon: MessageSquare },
+  { id: "bildirimler", label: "Bildirim Tercihleri", icon: Bell },
 ];
 
 interface Props {

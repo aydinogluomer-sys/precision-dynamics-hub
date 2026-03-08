@@ -425,6 +425,81 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email_finance: boolean
+          email_order: boolean
+          email_quality: boolean
+          email_rfq: boolean
+          id: string
+          push_finance: boolean
+          push_order: boolean
+          push_quality: boolean
+          push_rfq: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_finance?: boolean
+          email_order?: boolean
+          email_quality?: boolean
+          email_rfq?: boolean
+          id?: string
+          push_finance?: boolean
+          push_order?: boolean
+          push_quality?: boolean
+          push_rfq?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_finance?: boolean
+          email_order?: boolean
+          email_quality?: boolean
+          email_rfq?: boolean
+          id?: string
+          push_finance?: boolean
+          push_order?: boolean
+          push_quality?: boolean
+          push_rfq?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           completed_qty: number
