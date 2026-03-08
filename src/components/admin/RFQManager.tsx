@@ -174,6 +174,71 @@ const RFQManager = () => {
 
   const isNewStatus = (s: string | null) => !s || s === "Yeni" || s === "pending";
   const filters = ["Tümü", "Yeni", "Fiyat Verildi", "Onaylandı", "Reddedildi"];
+  const extractCadFileFromNotes = (notes: string | null) => {
+    const m = notes?.match(/CAD dosyası yüklendi:\s*(.+)$/i);
+    return m?.[1]?.trim() || null;
+  };
+  const getRfqFiles = (rfq: RFQ) => {
+    if (rfq.files && rfq.files.length > 0) return rfq.files;
+    const noteFile = extractCadFileFromNotes(rfq.notes);
+    return noteFile ? [noteFile] : [];
+  };
+
+  const downloadCadFile = async (rfq: RFQ, fileRef: string) => {
+    const rawPath = fileRef
+      .replace(/^\/+/, "")
+      .replace(/^cad-uploads\//, "")
+      .split("?")[0];
+
+    const baseName = rawPath.split("/").pop() || rawPath;
+    const cleanBaseName = baseName.replace(/^\d+_/, "");
+
+    const trySignedDownload = async (path: string) => {
+      const { data } = await supabase.storage.from("cad-uploads").createSignedUrl(path, 3600, { download: true });
+      return data?.signedUrl || null;
+    };
+
+    // 1) direct path
+    let signedUrl = await trySignedDownload(rawPath);
+
+    // 2) likely RFQ folder paths
+    if (!signedUrl) {
+      const candidateDirs = [
+        rfq.user_id ? `${rfq.user_id}/${rfq.id}` : null,
+        `anonymous/${rfq.id}`,
+      ].filter(Boolean) as string[];
+
+      for (const dir of candidateDirs) {
+        const { data: dirFiles } = await supabase.storage.from("cad-uploads").list(dir, { limit: 200 });
+        const match = dirFiles?.find((f) => f.name === baseName || f.name.includes(cleanBaseName));
+        if (match) {
+          signedUrl = await trySignedDownload(`${dir}/${match.name}`);
+          if (signedUrl) break;
+        }
+      }
+    }
+
+    // 3) root fallback
+    if (!signedUrl) {
+      const { data: rootFiles } = await supabase.storage.from("cad-uploads").list("", { limit: 200 });
+      const rootMatch = rootFiles?.find((f) => f.name === baseName || f.name.includes(cleanBaseName));
+      if (rootMatch) signedUrl = await trySignedDownload(rootMatch.name);
+    }
+
+    if (!signedUrl) {
+      toast.error("CAD dosyası storage'da bulunamadı.");
+      return;
+    }
+
+    const a = document.createElement("a");
+    a.href = signedUrl;
+    a.download = baseName;
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   const filtered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
 
   return (
@@ -239,9 +304,9 @@ const RFQManager = () => {
                     </td>
                     <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{r.date || "-"}</td>
                     <td className="p-4 text-center">
-                      {r.files && r.files.length > 0 ? (
+                      {getRfqFiles(r).length > 0 ? (
                         <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
-                          <Paperclip className="w-3 h-3" /> {r.files.length}
+                          <Paperclip className="w-3 h-3" /> {getRfqFiles(r).length}
                         </span>
                       ) : (
                         <span className="text-slate-400">-</span>
@@ -294,59 +359,17 @@ const RFQManager = () => {
               ))}
             </div>
             {/* CAD Files */}
-            {selectedRFQ.files && selectedRFQ.files.length > 0 ? (
+            {getRfqFiles(selectedRFQ).length > 0 ? (
               <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
                 <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
                 <div className="mt-2 space-y-1.5">
-                  {selectedRFQ.files.map((filePath, idx) => (
+                  {getRfqFiles(selectedRFQ).map((filePath, idx) => (
                     <button
                       key={idx}
                       onClick={async () => {
                         toast.loading("Dosya hazırlanıyor...", { id: "file-dl" });
-                        // Try direct path
-                        let { data } = await supabase.storage.from("cad-uploads").createSignedUrl(filePath, 3600);
-                        
-                        // If not found, search in bucket recursively
-                        if (!data?.signedUrl) {
-                          const fileName = filePath.split("/").pop() || filePath;
-                          const baseName = fileName.replace(/^\d+_/, "");
-                          
-                          // Search root level
-                          const { data: rootFiles } = await supabase.storage.from("cad-uploads").list("", { limit: 200 });
-                          const rootMatch = rootFiles?.find(f => f.name === fileName || f.name.includes(baseName));
-                          if (rootMatch) {
-                            const res = await supabase.storage.from("cad-uploads").createSignedUrl(rootMatch.name, 3600);
-                            data = res.data;
-                          }
-                          
-                          // Search in subfolders
-                          if (!data?.signedUrl && rootFiles) {
-                            const folders = rootFiles.filter(f => !f.metadata);
-                            for (const folder of folders) {
-                              const { data: subFiles } = await supabase.storage.from("cad-uploads").list(folder.name, { limit: 200 });
-                              if (subFiles) {
-                                for (const sub of subFiles) {
-                                  const { data: deepFiles } = await supabase.storage.from("cad-uploads").list(`${folder.name}/${sub.name}`, { limit: 200 });
-                                  const match = deepFiles?.find(f => f.name.includes(baseName));
-                                  if (match) {
-                                    const fullPath = `${folder.name}/${sub.name}/${match.name}`;
-                                    const res = await supabase.storage.from("cad-uploads").createSignedUrl(fullPath, 3600);
-                                    data = res.data;
-                                    break;
-                                  }
-                                }
-                              }
-                              if (data?.signedUrl) break;
-                            }
-                          }
-                        }
-
-                        if (data?.signedUrl) {
-                          toast.success("Dosya indiriliyor", { id: "file-dl" });
-                          window.open(data.signedUrl, "_blank");
-                        } else {
-                          toast.error("Dosya storage'da bulunamadı.", { id: "file-dl" });
-                        }
+                        await downloadCadFile(selectedRFQ, filePath);
+                        toast.dismiss("file-dl");
                       }}
                       className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-primary transition-colors"
                     >
@@ -361,7 +384,7 @@ const RFQManager = () => {
             ) : (
               <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
                 <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
-                <p className="mt-2 text-xs dark:text-slate-500 text-slate-400">Bu talep için dosya yüklenmemiş.</p>
+                <p className="mt-2 text-xs dark:text-slate-500 text-slate-400">Bu talep için CAD dosyası bulunamadı.</p>
               </div>
             )}
             <div className="flex gap-2 mt-6">
