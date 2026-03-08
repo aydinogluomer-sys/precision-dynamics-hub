@@ -68,7 +68,7 @@ const WBSView = () => {
 
     if (w.order_id) {
       const orderStatus = stepToOrderStatus[next] || "Üretimde";
-      const progressMap: Record<number, number> = { 0: 0, 1: 10, 2: 30, 3: 50, 4: 75, 5: 100 };
+      const progressMap: Record<number, number> = { 0: 0, 1: 16, 2: 33, 3: 50, 4: 75, 5: 100 };
       await supabase.from("orders").update({
         status: orderStatus,
         progress: progressMap[next] || 0,
