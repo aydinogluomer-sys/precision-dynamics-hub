@@ -37,7 +37,7 @@ const RFQManager = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Tümü");
-  const [cadFilter, setCadFilter] = useState(false);
+  
   const [selectedRFQ, setSelectedRFQ] = useState<RFQ | null>(null);
   const [priceModal, setPriceModal] = useState<RFQ | null>(null);
   const [priceForm, setPriceForm] = useState({ price: "", days: "7", notes: "" });
@@ -242,7 +242,7 @@ const RFQManager = () => {
     a.remove();
   };
   const statusFiltered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
-  const filtered = cadFilter ? statusFiltered.filter((r) => getRfqFiles(r).length > 0) : statusFiltered;
+  const filtered = statusFiltered;
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
@@ -306,13 +306,13 @@ const RFQManager = () => {
                       {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "-"}
                     </td>
                     <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{r.date || "-"}</td>
-                    <td className="p-4 text-center">
+                    <td className="p-4 hidden md:table-cell">
                       {getRfqFiles(r).length > 0 ? (
                         <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
                           <Paperclip className="w-3 h-3" /> {getRfqFiles(r).length}
                         </span>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="dark:text-slate-500 text-slate-400 text-xs">-</span>
                       )}
                     </td>
                     <td className="p-4">
