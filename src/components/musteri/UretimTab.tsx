@@ -48,7 +48,7 @@ const UretimTab = () => {
   const fetchOrders = async () => {
     const { data } = await supabase
       .from("orders")
-      .select("id, part_name, status, progress, quantity, deadline")
+      .select("id, part_name, status, progress, quantity, deadline, created_at")
       .in("status", ACTIVE_STATUSES)
       .order("created_at", { ascending: false });
     setItems((data as OrderProduction[]) || []);
