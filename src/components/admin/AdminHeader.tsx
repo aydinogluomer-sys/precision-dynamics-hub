@@ -1,5 +1,6 @@
-import { Search, Bell, Download, Activity, Sun, Moon } from "lucide-react";
+import { Search, Download, Activity, Sun, Moon } from "lucide-react";
 import { useState, useEffect, ReactNode } from "react";
+import AdminNotifications from "./AdminNotifications";
 
 const tabTitles: Record<string, string> = {
   dashboard: "Kontrol Paneli",
@@ -21,10 +22,11 @@ interface Props {
   activeTab: string;
   onToggleSidebar: () => void;
   onExportCSV: () => void;
+  onNavigate?: (tab: string) => void;
   mobileSidebar?: ReactNode;
 }
 
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, mobileSidebar }: Props) => {
+const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -62,10 +64,7 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, mobileSidebar }:
         >
           {darkMode ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
         </button>
-        <button className="relative dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD] opacity-60 cursor-not-allowed" title="Bildirimler yakında aktif olacak">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
-        </button>
+        <AdminNotifications onNavigate={onNavigate} />
         <button
           onClick={onExportCSV}
           className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0AA2CD]/10 text-[#0AA2CD] text-xs font-bold hover:bg-[#0AA2CD]/20 transition-colors"
