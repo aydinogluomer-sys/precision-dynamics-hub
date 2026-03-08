@@ -139,6 +139,7 @@ type DashData = {
   expenseByCategory: { name: string; value: number; color: string }[];
   paymentStatus: { name: string; value: number; color: string }[];
   customerFinancials: { name: string; income: number; expense: number; net: number; balance: number; orders: number }[];
+  cashFlowForecast: { month: string; Gelir: number; Gider: number; Net: number; Kümülatif: number; Bütçe: number }[];
 };
 
 /* ── Animation variants ── */
