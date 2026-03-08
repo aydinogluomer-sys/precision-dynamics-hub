@@ -8,20 +8,26 @@ import {
   PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
-/* ── Colors ── */
-const C = {
-  primary: "#0688AD",
-  cyan: "#0AA2CD",
-  orange: "#F97316",
-  amber: "#FBBF24",
-  emerald: "#34D399",
-  red: "#EF4444",
-  purple: "#A855F7",
-  pink: "#EC4899",
-  slate: "#64748B",
-  indigo: "#6366F1",
-  teal: "#14B8A6",
-  lime: "#84CC16",
+/* ── Theme-aware Colors ── */
+const useThemeColors = () => {
+  const isDark = document.documentElement.classList.contains("dark");
+  return {
+    primary: "#0688AD",
+    cyan: "#0AA2CD",
+    orange: isDark ? "#F97316" : "#EA580C",
+    amber: isDark ? "#FBBF24" : "#D97706",
+    emerald: isDark ? "#34D399" : "#059669",
+    red: isDark ? "#EF4444" : "#DC2626",
+    purple: isDark ? "#A855F7" : "#7C3AED",
+    pink: isDark ? "#EC4899" : "#DB2777",
+    slate: isDark ? "#64748B" : "#94A3B8",
+    indigo: isDark ? "#6366F1" : "#4F46E5",
+    teal: isDark ? "#14B8A6" : "#0D9488",
+    lime: isDark ? "#84CC16" : "#65A30D",
+    grid: isDark ? "#334155" : "#E2E8F0",
+    gridOpacity: isDark ? 0.2 : 0.6,
+    axisTick: isDark ? "#94A3B8" : "#64748B",
+  };
 };
 
 const RADIAN = Math.PI / 180;
