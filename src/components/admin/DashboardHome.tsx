@@ -721,6 +721,84 @@ const DashboardHome = () => {
         </div>
       </motion.div>
 
+      {/* ── CUSTOMER FINANCIAL TABLE ── */}
+      {data.customerFinancials.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className={`${cardBase} p-5 cursor-pointer`} onClick={() => navigateTo("customers")}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Müşteri Bazlı Gelir-Gider Karşılaştırması</h3>
+              <span className="text-[9px] px-2 py-0.5 rounded-full dark:bg-[#0AA2CD]/10 bg-[#0AA2CD]/10 text-[#0AA2CD] font-bold">Top {data.customerFinancials.length}</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[9px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
+                    <th className="text-left py-2.5 pr-3">Müşteri</th>
+                    <th className="text-right py-2.5 px-3 font-mono">Sipariş</th>
+                    <th className="text-right py-2.5 px-3 font-mono">Gelir (₺)</th>
+                    <th className="text-right py-2.5 px-3 font-mono hidden sm:table-cell">Bakiye (₺)</th>
+                    <th className="text-right py-2.5 pl-3 font-mono">Durum</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.customerFinancials.map((c, i) => {
+                    const maxIncome = data.customerFinancials[0]?.income || 1;
+                    const barW = maxIncome > 0 ? (c.income / maxIncome) * 100 : 0;
+                    return (
+                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
+                        <td className="py-2.5 pr-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white shrink-0" style={{ backgroundColor: [C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple, C.orange, C.amber, C.pink, C.lime][i] || C.slate }}>
+                              {(i + 1)}
+                            </div>
+                            <span className="text-[11px] font-bold dark:text-white text-slate-800 truncate max-w-[120px] sm:max-w-[180px]">{c.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <span className="text-[11px] font-bold dark:text-slate-300 text-slate-600 font-mono tabular-nums">{c.orders}</span>
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <div className="w-16 h-1.5 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden hidden md:block">
+                              <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: C.emerald }} />
+                            </div>
+                            <span className="text-[11px] font-bold dark:text-emerald-400 text-emerald-600 font-mono tabular-nums">{c.income.toLocaleString("tr-TR")}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right hidden sm:table-cell">
+                          <span className={`text-[11px] font-bold font-mono tabular-nums ${c.balance > 0 ? "dark:text-amber-400 text-amber-600" : c.balance < 0 ? "dark:text-red-400 text-red-600" : "dark:text-slate-400 text-slate-500"}`}>
+                            {c.balance !== 0 ? c.balance.toLocaleString("tr-TR") : "—"}
+                          </span>
+                        </td>
+                        <td className="py-2.5 pl-3 text-right">
+                          <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                            c.balance > 0 ? "bg-amber-500/10 text-amber-400" : c.income > 0 ? "bg-emerald-500/10 text-emerald-400" : "dark:bg-slate-700/50 bg-slate-100 dark:text-slate-400 text-slate-500"
+                          }`}>
+                            {c.balance > 0 ? "Alacak" : c.income > 0 ? "Temiz" : "Yeni"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {data.customerFinancials.length > 0 && (
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t dark:border-[#334155] border-slate-200">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">Toplam Müşteri Geliri:</span>
+                  <span className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">{data.customerFinancials.reduce((s, c) => s + c.income, 0).toLocaleString("tr-TR")} ₺</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">Toplam Alacak:</span>
+                  <span className="text-[11px] font-black dark:text-amber-400 text-amber-600 font-mono">{data.customerFinancials.reduce((s, c) => s + Math.max(c.balance, 0), 0).toLocaleString("tr-TR")} ₺</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
