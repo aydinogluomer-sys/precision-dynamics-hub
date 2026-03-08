@@ -859,6 +859,20 @@ const FinanceDocsView = () => {
                   <p className="text-xs dark:text-slate-300 text-slate-600">{showDetailModal.notes}</p>
                 </div>
               )}
+              {/* Payment Status Changer */}
+              <div>
+                <span className="text-[10px] uppercase tracking-wider dark:text-slate-500 text-slate-400 font-bold block mb-1">Ödeme Durumu Değiştir</span>
+                <select
+                  value={showDetailModal.payment_status || "ödenmedi"}
+                  onChange={e => handlePaymentStatusChange(showDetailModal, e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800"
+                >
+                  <option value="ödenmedi">Ödenmedi</option>
+                  <option value="ödendi">Ödendi</option>
+                  <option value="vadeli">Vadeli</option>
+                  <option value="kısmi">Kısmi</option>
+                </select>
+              </div>
             </div>
             <div className="p-4 border-t dark:border-[#334155] border-slate-200">
               <button onClick={() => setShowDetailModal(null)} className="w-full px-4 py-2 rounded-lg dark:bg-white/5 bg-slate-100 dark:text-slate-300 text-slate-600 text-sm font-bold">Kapat</button>
