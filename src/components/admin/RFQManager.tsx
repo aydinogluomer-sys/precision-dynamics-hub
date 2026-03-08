@@ -292,11 +292,38 @@ const RFQManager = () => {
                     <button
                       key={idx}
                       onClick={async () => {
-                        const { data } = await supabase.storage.from("cad-uploads").createSignedUrl(filePath, 3600);
+                        // Try direct path first
+                        let { data } = await supabase.storage.from("cad-uploads").createSignedUrl(filePath, 3600);
+                        
+                        // If not found and path has no slashes, search in bucket
+                        if (!data?.signedUrl && !filePath.includes("/")) {
+                          const { data: listData } = await supabase.storage.from("cad-uploads").list("", { search: filePath.replace(/^\d+_/, "") });
+                          if (!listData?.length) {
+                            // Search recursively in known prefixes
+                            const prefixes = ["anonymous"];
+                            for (const prefix of prefixes) {
+                              const { data: folders } = await supabase.storage.from("cad-uploads").list(prefix);
+                              if (folders) {
+                                for (const folder of folders) {
+                                  const { data: files } = await supabase.storage.from("cad-uploads").list(`${prefix}/${folder.name}`);
+                                  const match = files?.find(f => f.name.includes(filePath.replace(/^\d+_/, "")));
+                                  if (match) {
+                                    const fullPath = `${prefix}/${folder.name}/${match.name}`;
+                                    const res = await supabase.storage.from("cad-uploads").createSignedUrl(fullPath, 3600);
+                                    data = res.data;
+                                    break;
+                                  }
+                                }
+                              }
+                              if (data?.signedUrl) break;
+                            }
+                          }
+                        }
+
                         if (data?.signedUrl) {
                           window.open(data.signedUrl, "_blank");
                         } else {
-                          toast.error("Dosya linki oluşturulamadı.");
+                          toast.error("Dosya bulunamadı. Eski kayıtlarda dosya yolu eksik olabilir.");
                         }
                       }}
                       className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-[#0AA2CD] transition-colors"
