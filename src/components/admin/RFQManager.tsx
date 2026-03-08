@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, X, Send, Loader2, Trash2, Download } from "lucide-react";
+import { FileText, X, Send, Loader2, Trash2, Download, Paperclip } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -214,7 +214,8 @@ const RFQManager = () => {
                   <th className="text-left p-4 hidden lg:table-cell">Malzeme</th>
                   <th className="text-right p-4 font-mono">Adet</th>
                   <th className="text-right p-4 font-mono hidden md:table-cell">Fiyat</th>
-                  <th className="text-left p-4 hidden md:table-cell">Tarih</th>
+                   <th className="text-left p-4 hidden md:table-cell">Tarih</th>
+                   <th className="text-center p-4"><Paperclip className="w-3.5 h-3.5 mx-auto" /></th>
                   <th className="text-left p-4">Durum</th>
                   <th className="text-left p-4">İşlem</th>
                   <th className="text-left p-4">Sil</th>
@@ -237,6 +238,15 @@ const RFQManager = () => {
                       {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "-"}
                     </td>
                     <td className="p-4 dark:text-slate-400 text-slate-500 hidden md:table-cell">{r.date || "-"}</td>
+                    <td className="p-4 text-center">
+                      {r.files && r.files.length > 0 ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                          <Paperclip className="w-3 h-3" /> {r.files.length}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400">-</span>
+                      )}
+                    </td>
                     <td className="p-4">
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold ${statusColors[r.status || ""] || statusColors.Yeni}`}>
                         {r.status || "Yeni"}
