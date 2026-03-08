@@ -1,6 +1,6 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, useMemo, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, X, Send, Loader2, Trash2, Download, Paperclip, Filter } from "lucide-react";
+import { FileText, X, Send, Loader2, Trash2, Download, Paperclip, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,8 @@ const RFQManager = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Tümü");
+  const [sortKey, setSortKey] = useState<"date" | "customer" | "status" | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   
   const [selectedRFQ, setSelectedRFQ] = useState<RFQ | null>(null);
   const [priceModal, setPriceModal] = useState<RFQ | null>(null);
@@ -242,7 +244,36 @@ const RFQManager = () => {
     a.remove();
   };
   const statusFiltered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
-  const filtered = statusFiltered;
+
+  const toggleSort = (key: "date" | "customer" | "status") => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const SortIcon = ({ col }: { col: string }) => {
+    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    return sortDir === "asc" ? <ArrowUp className="w-3 h-3 ml-1 text-[#0AA2CD]" /> : <ArrowDown className="w-3 h-3 ml-1 text-[#0AA2CD]" />;
+  };
+
+  const filtered = useMemo(() => {
+    const list = [...statusFiltered];
+    if (!sortKey) return list;
+    return list.sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "date") {
+        cmp = (a.date || "").localeCompare(b.date || "");
+      } else if (sortKey === "customer") {
+        cmp = (a.customer || "").localeCompare(b.customer || "", "tr");
+      } else if (sortKey === "status") {
+        cmp = (a.status || "").localeCompare(b.status || "", "tr");
+      }
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }, [statusFiltered, sortKey, sortDir]);
 
   return (
     <div className="space-y-4 animate-[fadeInUp_0.4s_ease-out]">
