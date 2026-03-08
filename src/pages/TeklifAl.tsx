@@ -238,6 +238,11 @@ const TeklifAl = () => {
       return;
     }
 
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error("Dosya boyutu 50 MB'ı aşıyor.");
+      return;
+    }
+
     setUploadedFile(file);
     setStepGeometry(null);
     setDimensions(null);
@@ -348,6 +353,24 @@ const TeklifAl = () => {
         if (profile) profileData = profile;
       }
 
+      // Upload CAD file to storage if present
+      let uploadedFilePaths: string[] = [];
+      if (uploadedFile) {
+        const fileExt = uploadedFile.name.split(".").pop()?.toLowerCase() || "bin";
+        const storagePath = `${user?.id || "anonymous"}/${rfqId}/${Date.now()}-${uploadedFile.name}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from("cad-uploads")
+          .upload(storagePath, uploadedFile);
+        
+        if (uploadError) {
+          toast.error("Dosya yüklenemedi: " + uploadError.message);
+          setIsSubmitting(false);
+          return;
+        }
+        uploadedFilePaths = [storagePath];
+      }
+
       const { error } = await supabase.from("rfqs").insert({
         id: rfqId,
         customer: profileData.full_name || null,
@@ -361,7 +384,7 @@ const TeklifAl = () => {
         service: currentService.label,
         material: materialLabel,
         notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
-        files: uploadedFile ? [uploadedFile.name] : [],
+        files: uploadedFilePaths.length > 0 ? uploadedFilePaths : [],
       });
       if (error) throw error;
       toast.success(
@@ -454,7 +477,7 @@ const TeklifAl = () => {
             </div>
             <div className="text-center">
               <p className="text-base font-bold">CAD dosyanızı buraya sürükleyin veya tıklayın</p>
-              <p className="text-xs text-muted-foreground mt-2">STEP, STP, STL, OBJ, IGES, 3MF • Maks. 100 MB</p>
+              <p className="text-xs text-muted-foreground mt-2">STEP, STP, STL, OBJ, IGES, 3MF • Maks. 50 MB</p>
             </div>
             <div className="flex items-center gap-4 mt-2">
               {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
