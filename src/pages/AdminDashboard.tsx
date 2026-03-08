@@ -119,6 +119,8 @@ const AdminDashboard = () => {
           const raws = rawMatAll.data || [];
           const tools = toolAll.data || [];
           const tickets = supportAll.data || [];
+          const wbsItems = wbsAll.data || [];
+          const meetings = meetAll.data || [];
 
           // RFQ istatistikleri
           const rfqByStatus: Record<string, number> = {};
@@ -161,11 +163,26 @@ const AdminDashboard = () => {
 
           // Destek
           const openTickets = tickets.filter(t => t.status === "open").length;
+          const closedTickets = tickets.filter(t => t.status === "closed" || t.status === "resolved").length;
 
           // Müşteri
           const totalBalance = custs.reduce((s, c) => s + (Number(c.balance) || 0), 0);
 
-          const lines: string[] = ["Kategori;Metrik;Değer"];
+          // WBS
+          const wbsByStatus: Record<string, number> = {};
+          wbsItems.forEach(w => { wbsByStatus[w.status || "Belirsiz"] = (wbsByStatus[w.status || "Belirsiz"] || 0) + 1; });
+
+          // Toplantılar
+          const pendingMeetings = meetings.filter(m => m.status === "pending").length;
+          const confirmedMeetings = meetings.filter(m => m.status === "confirmed").length;
+
+          const reportDate = new Date().toLocaleString("tr-TR", { dateStyle: "long", timeStyle: "short" });
+          const lines: string[] = [
+            `MAS TECHNİC — GENEL ÖZET RAPORU;;`,
+            `Rapor Tarihi: ${reportDate};;`,
+            `;;`,
+            `Kategori;Metrik;Değer`,
+          ];
 
           // Genel Özet
           lines.push(`Genel;Toplam RFQ Talebi;${rfqs.length}`);
