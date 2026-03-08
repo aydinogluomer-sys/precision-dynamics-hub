@@ -113,6 +113,7 @@ const PipelineView = () => {
     if (error) { toast.error("İçe aktarma hatası"); } else { toast.success(`${rows.length} lead içe aktarıldı`); fetchLeads(); }
     setImporting(false);
     if (fileRef.current) fileRef.current.value = "";
+    if (fileRefExcel.current) fileRefExcel.current.value = "";
   };
 
   const handleExportCSV = () => {
