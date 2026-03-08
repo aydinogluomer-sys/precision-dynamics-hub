@@ -417,9 +417,9 @@ const DashboardHome = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={oeeHistory} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.2} />
-                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} domain={[70, 100]} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} />
+                <XAxis dataKey="month" tick={tkS} axisLine={false} tickLine={false} />
+                <YAxis tick={tkS} domain={[70, 100]} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line type="monotone" dataKey="oee" name="OEE" stroke={C.cyan} strokeWidth={3} dot={{ r: 4, fill: C.cyan, strokeWidth: 0 }} activeDot={{ r: 6, stroke: C.cyan, strokeWidth: 2, fill: "#0F172A" }} />
                 <Line type="monotone" dataKey="availability" name="Kullanılabilirlik" stroke={C.orange} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
@@ -489,9 +489,9 @@ const DashboardHome = () => {
                     <stop offset="100%" stopColor={C.emerald} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} />
+                <XAxis dataKey="name" tick={tkS} axisLine={false} tickLine={false} />
+                <YAxis tick={tkXS} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.8} />
                 <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.6} />
@@ -515,9 +515,9 @@ const DashboardHome = () => {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.orderByStatus} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={90} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} horizontal={false} />
+                <XAxis type="number" tick={tkS} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="name" tick={tkS} axisLine={false} tickLine={false} width={90} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="value" name="Adet" radius={[0, 8, 8, 0]} barSize={18}>
                   {data.orderByStatus.map((e, i) => <Cell key={i} fill={e.color} />)}
@@ -585,9 +585,9 @@ const DashboardHome = () => {
           <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.maintByType} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
-                <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} />
+                <XAxis dataKey="name" tick={tkXXS} axisLine={false} tickLine={false} />
+                <YAxis tick={tkXXS} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="Adet" fill={C.cyan} radius={[3, 3, 0, 0]} barSize={16} />
                 <Bar dataKey="Maliyet" fill={C.orange} radius={[3, 3, 0, 0]} barSize={16} />
@@ -642,9 +642,9 @@ const DashboardHome = () => {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.topCustomers} margin={{ top: 5, right: 5, left: -15, bottom: 5 }} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={55} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} horizontal={false} />
+                <XAxis type="number" tick={tkXXS} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <YAxis type="category" dataKey="name" tick={tkXXS} axisLine={false} tickLine={false} width={55} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="Bakiye" name="Bakiye (₺)" radius={[0, 6, 6, 0]} barSize={12}>
                   {data.topCustomers.map((_, i) => <Cell key={i} fill={[C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple][i] || C.slate} />)}
@@ -659,8 +659,8 @@ const DashboardHome = () => {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={data.inventoryRadar} cx="50%" cy="50%" outerRadius="65%">
-                <PolarGrid stroke="#334155" strokeOpacity={0.3} />
-                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: "#94A3B8" }} />
+                <PolarGrid stroke={ct.grid} strokeOpacity={ct.gridOpacity} />
+                <PolarAngleAxis dataKey="subject" tick={tkXXS} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
                 <Radar name="Hammadde" dataKey="Hammadde" stroke={C.cyan} fill={C.cyan} fillOpacity={0.15} strokeWidth={2} />
                 <Radar name="Takım" dataKey="Takım" stroke={C.orange} fill={C.orange} fillOpacity={0.1} strokeWidth={2} />
@@ -679,9 +679,9 @@ const DashboardHome = () => {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.monthlyRfqs} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
-                <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} />
+                <XAxis dataKey="month" tick={tkXXS} axisLine={false} tickLine={false} />
+                <YAxis tick={tkXXS} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="Talep" fill={C.cyan} radius={[3, 3, 0, 0]} barSize={14} />
                 <Bar dataKey="Onaylanan" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} />
@@ -700,9 +700,9 @@ const DashboardHome = () => {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={data.orderCompletion} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
-                <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" {...grd} />
+                <XAxis dataKey="name" tick={tkXXS} axisLine={false} tickLine={false} />
+                <YAxis tick={tkXXS} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="Hedef" name="Toplam" fill={C.slate} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.3} />
                 <Bar dataKey="Tamamlanan" name="Tamamlanan" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} />
