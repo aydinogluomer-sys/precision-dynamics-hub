@@ -57,7 +57,7 @@ const TekliflerimTab = () => {
   const fetchRfqs = async () => {
     const { data } = await supabase
       .from("rfqs")
-      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at")
+      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at, files, user_id")
       .order("created_at", { ascending: false });
     setRfqs((data as RFQ[]) || []);
     setLoading(false);
