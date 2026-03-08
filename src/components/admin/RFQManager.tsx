@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, X, Send, Loader2, Trash2 } from "lucide-react";
+import { FileText, X, Send, Loader2, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -283,6 +283,33 @@ const RFQManager = () => {
                 </div>
               ))}
             </div>
+            {/* CAD Files */}
+            {selectedRFQ.files && selectedRFQ.files.length > 0 && (
+              <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
+                <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
+                <div className="mt-2 space-y-1.5">
+                  {selectedRFQ.files.map((filePath, idx) => (
+                    <button
+                      key={idx}
+                      onClick={async () => {
+                        const { data } = await supabase.storage.from("cad-uploads").createSignedUrl(filePath, 3600);
+                        if (data?.signedUrl) {
+                          window.open(data.signedUrl, "_blank");
+                        } else {
+                          toast.error("Dosya linki oluşturulamadı.");
+                        }
+                      }}
+                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-[#0AA2CD] transition-colors"
+                    >
+                      <Download size={14} className="text-primary shrink-0" />
+                      <span className="text-xs font-medium truncate dark:text-white text-slate-800">
+                        {filePath.split("/").pop()}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex gap-2 mt-6">
               <button onClick={() => handleApprove(selectedRFQ)} className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/30">Onayla</button>
               <button onClick={() => { setRejectModal(selectedRFQ); setSelectedRFQ(null); }} className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-bold hover:bg-red-500/30">Reddet</button>
