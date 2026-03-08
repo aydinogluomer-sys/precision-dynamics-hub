@@ -340,7 +340,7 @@ const DashboardHome = () => {
       </motion.div>
 
       {/* ── KPI CARDS ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {kpiCards.map((k) => (
           <div key={k.label} className={`${cardBase} cursor-pointer hover:scale-[1.02] p-4 relative overflow-hidden`} onClick={() => navigateTo(k.tab)}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-[0.04]" style={{ backgroundColor: k.color, transform: "translate(30%, -30%)" }} />
@@ -359,7 +359,7 @@ const DashboardHome = () => {
       </div>
 
       {/* ── OEE METRICS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {oeeMetrics.map((m) => (
           <div key={m.label} className={`${cardBase} cursor-pointer p-4`} onClick={() => navigateTo("tpm")}>
             <div className="flex items-center justify-between mb-3">
@@ -384,7 +384,7 @@ const DashboardHome = () => {
       </div>
 
       {/* ── ROW 1: OEE Trend + RFQ Status (Redesigned as horizontal bars) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className={`lg:col-span-3 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
           <div className="h-64">
@@ -440,7 +440,7 @@ const DashboardHome = () => {
       </div>
 
       {/* ── ROW 2: Financial (Redesigned as ComposedChart) + Order Status ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Gelir & Gider Analizi</h3>
@@ -502,7 +502,7 @@ const DashboardHome = () => {
       </div>
 
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Pipeline Aşamaları</h3>
           <div className="h-44">
