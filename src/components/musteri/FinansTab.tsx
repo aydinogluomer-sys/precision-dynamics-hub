@@ -40,16 +40,22 @@ const FinansTab = () => {
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
+  const fetchDocs = async () => {
+    const { data } = await supabase
+      .from("financial_documents")
+      .select("id, title, doc_type, doc_number, doc_date, due_date, total_amount, currency, payment_status, file_urls")
+      .order("created_at", { ascending: false });
+    setDocs((data as FinDoc[]) || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("financial_documents")
-        .select("id, title, doc_type, doc_number, doc_date, due_date, total_amount, currency, payment_status, file_urls")
-        .order("created_at", { ascending: false });
-      setDocs((data as FinDoc[]) || []);
-      setLoading(false);
-    };
-    fetch();
+    fetchDocs();
+    const channel = supabase
+      .channel("customer-finance-tab")
+      .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, () => fetchDocs())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const handleDownload = async (doc: FinDoc) => {

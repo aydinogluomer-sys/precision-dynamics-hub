@@ -63,7 +63,14 @@ const TekliflerimTab = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchRfqs(); }, []);
+  useEffect(() => {
+    fetchRfqs();
+    const channel = supabase
+      .channel("customer-rfqs-tab")
+      .on("postgres_changes", { event: "*", schema: "public", table: "rfqs" }, () => fetchRfqs())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const handleApprove = async (rfqId: string) => {
     setApproving(rfqId);
