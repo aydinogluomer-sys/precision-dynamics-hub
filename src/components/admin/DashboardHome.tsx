@@ -1,8 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList, X, CreditCard, Truck } from "lucide-react";
 import QuickActionModals, { type ModalType } from "./QuickActionModals";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
@@ -150,9 +152,12 @@ const itemVariants = {
 const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashData | null>(null);
+  const [rawFins, setRawFins] = useState<any[]>([]);
+  const [rawOrders, setRawOrders] = useState<any[]>([]);
   const [realtimeActive, setRealtimeActive] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"all" | "rfq" | "order" | "ticket">("all");
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const ct = useChartTheme();
 
   const statusColors: Record<string, string> = {
@@ -362,6 +367,8 @@ const DashboardHome = () => {
       supabase.from("support_tickets").select("*"),
     ]);
 
+    setRawFins(finR.data || []);
+    setRawOrders(ordR.data || []);
     const result = buildData(
       rfqR.data || [], ordR.data || [], issR.data || [], finR.data || [],
       custR.data || [], pipeR.data || [], maintR.data || [], rawR.data || [],
@@ -421,6 +428,19 @@ const DashboardHome = () => {
   const tkXS = { fontSize: 10, fill: ct.tick };
   const tkXXS = { fontSize: 9, fill: ct.tick };
   const filteredActivity = activityFilter === "all" ? data.recentActivity : data.recentActivity.filter((a) => a.type === activityFilter);
+
+  // Customer detail modal data
+  const customerDetail = useMemo(() => {
+    if (!selectedCustomer) return null;
+    const custOrders = rawOrders.filter((o: any) => o.customer === selectedCustomer);
+    const custFins = rawFins.filter((f: any) => 
+      f.vendor === selectedCustomer || f.title?.includes(selectedCustomer) || f.notes?.includes(selectedCustomer)
+    );
+    const invoices = custFins.filter((f: any) => f.doc_type === "fatura" || f.doc_type === "gelir");
+    const payments = custFins.filter((f: any) => f.payment_status === "ödendi");
+    const unpaid = custFins.filter((f: any) => f.payment_status !== "ödendi");
+    return { custOrders, invoices, payments, unpaid, allFins: custFins };
+  }, [selectedCustomer, rawOrders, rawFins]);
 
   return (
     <motion.div className="space-y-5 p-1" variants={containerVariants} initial="hidden" animate="visible">
@@ -745,7 +765,7 @@ const DashboardHome = () => {
                     const maxIncome = data.customerFinancials[0]?.income || 1;
                     const barW = maxIncome > 0 ? (c.income / maxIncome) * 100 : 0;
                     return (
-                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
+                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors cursor-pointer" onClick={(e) => { e.stopPropagation(); setSelectedCustomer(c.name); }}>
                         <td className="py-2.5 pr-3">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white shrink-0" style={{ backgroundColor: [C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple, C.orange, C.amber, C.pink, C.lime][i] || C.slate }}>
@@ -1046,6 +1066,120 @@ const DashboardHome = () => {
         )}
       </motion.div>
       <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
+
+      {/* ── CUSTOMER DETAIL MODAL ── */}
+      <Dialog open={!!selectedCustomer} onOpenChange={(open) => !open && setSelectedCustomer(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto dark:bg-[#0F172A] dark:border-[#334155]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <Users className="w-4 h-4 text-[#0AA2CD]" />
+              {selectedCustomer} — Finansal Detay
+            </DialogTitle>
+          </DialogHeader>
+
+          {customerDetail && (
+            <div className="space-y-5 mt-2">
+              {/* Summary mini cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: "Sipariş", value: customerDetail.custOrders.length, icon: Package, color: C.orange },
+                  { label: "Fatura", value: customerDetail.invoices.length, icon: FileText, color: C.cyan },
+                  { label: "Ödenen", value: customerDetail.payments.length, icon: CreditCard, color: C.emerald },
+                  { label: "Bekleyen", value: customerDetail.unpaid.length, icon: Clock, color: C.red },
+                ].map((s) => (
+                  <div key={s.label} className="dark:bg-[#1E293B] bg-slate-50 rounded-xl p-3 border dark:border-[#334155] border-slate-200">
+                    <s.icon className="w-3.5 h-3.5 mb-1" style={{ color: s.color }} />
+                    <p className="text-lg font-black dark:text-white text-slate-800 font-mono">{s.value}</p>
+                    <p className="text-[9px] dark:text-slate-500 text-slate-400 font-semibold uppercase tracking-wider">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Invoices */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <FileText className="w-3 h-3" /> Fatura Listesi
+                </h4>
+                {customerDetail.invoices.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Fatura kaydı bulunamadı.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {customerDetail.invoices.map((inv: any) => (
+                      <div key={inv.id} className="flex items-center justify-between dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{inv.title || inv.doc_number || "Fatura"}</p>
+                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{inv.doc_date || "—"} • {inv.doc_number || "—"}</p>
+                        </div>
+                        <div className="text-right ml-3">
+                          <p className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</p>
+                          <Badge variant="outline" className={`text-[8px] px-1.5 py-0 ${inv.payment_status === "ödendi" ? "border-emerald-300 text-emerald-500" : "border-red-300 text-red-500"}`}>
+                            {inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Payment History */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <CreditCard className="w-3 h-3" /> Ödeme Geçmişi
+                </h4>
+                {customerDetail.payments.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Ödeme kaydı bulunamadı.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {customerDetail.payments.map((pay: any) => (
+                      <div key={pay.id} className="flex items-center gap-3 dark:bg-emerald-500/5 bg-emerald-50 rounded-lg p-2.5 border dark:border-emerald-500/20 border-emerald-200">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{pay.title || pay.doc_number || "Ödeme"}</p>
+                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{pay.doc_date || "—"}</p>
+                        </div>
+                        <span className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Order Timeline */}
+              <div>
+                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                  <Truck className="w-3 h-3" /> Sipariş Timeline
+                </h4>
+                {customerDetail.custOrders.length === 0 ? (
+                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Sipariş bulunamadı.</p>
+                ) : (
+                  <div className="relative pl-4 border-l-2 dark:border-[#334155] border-slate-200 space-y-3">
+                    {customerDetail.custOrders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((ord: any) => {
+                      const statusColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? C.emerald : ord.status === "Üretimde" ? C.cyan : ord.status === "İptal" ? C.red : C.orange;
+                      return (
+                        <div key={ord.id} className="relative">
+                          <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 dark:border-[#0F172A] border-white" style={{ backgroundColor: statusColor }} />
+                          <div className="dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[11px] font-bold dark:text-white text-slate-800">{ord.id}</span>
+                              <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: `${statusColor}20`, color: statusColor }}>{ord.status || "—"}</span>
+                            </div>
+                            <p className="text-[10px] dark:text-slate-400 text-slate-500">{ord.part_name || "—"} • Adet: {ord.quantity || "—"}</p>
+                            <div className="flex items-center gap-3 mt-1 text-[9px] dark:text-slate-500 text-slate-400">
+                              <span>Sipariş: {ord.order_date || "—"}</span>
+                              <span>Termin: {ord.deadline || "—"}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
