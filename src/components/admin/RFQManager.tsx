@@ -309,7 +309,7 @@ const RFQManager = () => {
                   ))}
                 </div>
               </div>
-            )
+            )}
             <div className="flex gap-2 mt-6">
               <button onClick={() => handleApprove(selectedRFQ)} className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/30">Onayla</button>
               <button onClick={() => { setRejectModal(selectedRFQ); setSelectedRFQ(null); }} className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-bold hover:bg-red-500/30">Reddet</button>
