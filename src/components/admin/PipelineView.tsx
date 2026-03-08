@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2 } from "lucide-react";
+import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2, Download, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 
 const stagesDef = [
