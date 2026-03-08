@@ -327,9 +327,9 @@ const DashboardHome = () => {
   const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
 
   return (
-    <div className="space-y-5 animate-[fadeInUp_0.4s_ease-out] p-1">
+    <motion.div className="space-y-5 p-1" variants={containerVariants} initial="hidden" animate="visible">
       {/* ── Realtime indicator ── */}
-      <div className="flex items-center gap-2">
+      <motion.div variants={itemVariants} className="flex items-center gap-2">
         <div className="relative">
           <Radio className={`w-3.5 h-3.5 ${realtimeActive ? "text-emerald-400" : "text-slate-500"}`} />
           {realtimeActive && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />}
@@ -337,7 +337,7 @@ const DashboardHome = () => {
         <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">
           {realtimeActive ? "CANLI VERİ AKIŞI AKTİF" : "Bağlanıyor..."}
         </span>
-      </div>
+      </motion.div>
 
       {/* ── KPI CARDS ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
