@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList } from "lucide-react";
+import QuickActionModals, { type ModalType } from "./QuickActionModals";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
@@ -148,6 +149,7 @@ const DashboardHome = () => {
   const [data, setData] = useState<DashData | null>(null);
   const [realtimeActive, setRealtimeActive] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"all" | "rfq" | "order" | "ticket">("all");
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
   const ct = useChartTheme();
 
   const statusColors: Record<string, string> = {
@@ -369,14 +371,14 @@ const DashboardHome = () => {
       {/* ── QUICK ACTIONS ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Yeni Teklif", icon: Plus, color: C.cyan, bg: "bg-[#0AA2CD]/10", tab: "rfq" },
-          { label: "Sipariş Ekle", icon: ClipboardList, color: C.orange, bg: "bg-[#F97316]/10", tab: "orders" },
-          { label: "Destek Talebi", icon: Headphones, color: C.purple, bg: "bg-purple-500/10", tab: "support" },
-          { label: "Pipeline Ekle", icon: DollarSign, color: C.emerald, bg: "bg-emerald-400/10", tab: "pipeline" },
+          { label: "Yeni Teklif", icon: Plus, color: C.cyan, bg: "bg-[#0AA2CD]/10", modal: "rfq" as ModalType },
+          { label: "Sipariş Ekle", icon: ClipboardList, color: C.orange, bg: "bg-[#F97316]/10", modal: "order" as ModalType },
+          { label: "Destek Talebi", icon: Headphones, color: C.purple, bg: "bg-purple-500/10", modal: "support" as ModalType },
+          { label: "Pipeline Ekle", icon: DollarSign, color: C.emerald, bg: "bg-emerald-400/10", modal: "pipeline" as ModalType },
         ].map((a) => (
           <button
             key={a.label}
-            onClick={() => navigateTo(a.tab)}
+            onClick={() => setActiveModal(a.modal)}
             className="flex items-center gap-3 dark:bg-[#1E293B]/80 bg-white rounded-2xl border dark:border-[#1E293B] border-slate-200 p-4 hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-200 hover:scale-[1.02] group"
           >
             <div className={`w-9 h-9 rounded-xl ${a.bg} flex items-center justify-center shrink-0`}>
@@ -795,6 +797,7 @@ const DashboardHome = () => {
           </div>
         )}
       </motion.div>
+      <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
     </motion.div>
   );
 };
