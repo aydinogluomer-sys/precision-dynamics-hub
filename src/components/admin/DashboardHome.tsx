@@ -347,6 +347,11 @@ const DashboardHome = () => {
   const clickableCard = (tab: string) => `${cardBase} cursor-pointer group p-5`;
 
   const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
+  const grd = { stroke: ct.grid, strokeOpacity: ct.gridOpacity };
+  const tkS = { fontSize: 11, fill: ct.tick };
+  const tkXS = { fontSize: 10, fill: ct.tick };
+  const tkXXS = { fontSize: 9, fill: ct.tick };
+  const filteredActivity = activityFilter === "all" ? data.recentActivity : data.recentActivity.filter((a) => a.type === activityFilter);
 
   return (
     <motion.div className="space-y-5 p-1" variants={containerVariants} initial="hidden" animate="visible">
