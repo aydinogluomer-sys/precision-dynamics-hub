@@ -356,7 +356,7 @@ const DashboardHome = () => {
             <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">{k.label}</span>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── OEE METRICS ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -381,7 +381,7 @@ const DashboardHome = () => {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── ROW 1: OEE Trend + RFQ Status (Redesigned as horizontal bars) ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -437,7 +437,7 @@ const DashboardHome = () => {
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 2: Financial (Redesigned as ComposedChart) + Order Status ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -499,7 +499,7 @@ const DashboardHome = () => {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -606,7 +606,7 @@ const DashboardHome = () => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 4: Top Customers + Radar + RFQ Trend + Order Completion ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
