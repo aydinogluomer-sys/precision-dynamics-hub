@@ -14,6 +14,7 @@ const tabTitles: Record<string, string> = {
   odeme: "Ödeme",
   destek: "Destek",
   bildirimler: "Bildirim Tercihleri",
+  profil: "Profil Ayarları",
 };
 
 interface Props {
