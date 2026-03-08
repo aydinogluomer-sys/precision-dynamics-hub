@@ -258,6 +258,14 @@ const RFQManager = () => {
             {f} {f !== "Tümü" && `(${f === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)).length : rfqs.filter((r) => r.status === f).length})`}
           </button>
         ))}
+        <button
+          onClick={() => setCadFilter(!cadFilter)}
+          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 ${
+            cadFilter ? "bg-primary text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-primary"
+          }`}
+        >
+          <Paperclip className="w-3 h-3" /> CAD Dosyalı ({rfqs.filter((r) => getRfqFiles(r).length > 0).length})
+        </button>
       </div>
 
       <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden">
