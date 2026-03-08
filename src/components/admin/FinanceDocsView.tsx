@@ -363,16 +363,48 @@ const FinanceDocsView = () => {
               <Sparkles className="w-5 h-5 text-violet-400" />
             </div>
             <div className="text-left">
-              <h3 className="text-sm font-bold dark:text-white text-slate-800">AI Finansal Asistan</h3>
-              <p className="text-[10px] dark:text-slate-400 text-slate-500">{aiInsights.length} öneri hazır</p>
+              <h3 className="text-sm font-bold dark:text-white text-slate-800">AI Finansal Asistan <span className="text-[10px] font-normal text-violet-400">(Gemini)</span></h3>
+              <p className="text-[10px] dark:text-slate-400 text-slate-500">
+                {aiLoading ? "Analiz yapılıyor..." : aiInsights.length > 0 ? `${aiInsights.length} satır analiz hazır` : "Paneli açın ve analiz başlatın"}
+              </p>
             </div>
           </div>
-          <ChevronDown className={`w-5 h-5 dark:text-slate-400 text-slate-500 transition-transform ${showAiPanel ? "rotate-180" : ""}`} />
+          <div className="flex items-center gap-2">
+            {aiLoading && <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />}
+            <ChevronDown className={`w-5 h-5 dark:text-slate-400 text-slate-500 transition-transform ${showAiPanel ? "rotate-180" : ""}`} />
+          </div>
         </button>
         {showAiPanel && (
-          <div className="px-4 pb-4 space-y-2">
+          <div className="px-4 pb-4 space-y-3">
+            {/* Question input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="AI'ya soru sor... (ör: Hangi kategoride tasarruf yapabilirim?)"
+                value={aiQuestion}
+                onChange={e => setAiQuestion(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !aiLoading) { generateAiInsights(docs, aiQuestion); setAiQuestion(""); } }}
+                className="flex-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-white border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-violet-500"
+              />
+              <button
+                onClick={() => { generateAiInsights(docs, aiQuestion || undefined); setAiQuestion(""); }}
+                disabled={aiLoading}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-cyan-500 text-white text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
+                {aiLoading ? "Analiz..." : "Analiz Et"}
+              </button>
+            </div>
+
+            {/* AI Response */}
+            {aiLoading && aiInsights.length === 0 && (
+              <div className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-4 text-sm dark:text-slate-400 text-slate-500 border dark:border-[#334155]/50 border-slate-200 text-center">
+                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-violet-400" />
+                Gemini finansal analiz yapıyor...
+              </div>
+            )}
             {aiInsights.map((insight, i) => (
-              <div key={i} className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200">
+              <div key={i} className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200 leading-relaxed">
                 {insight}
               </div>
             ))}
