@@ -216,11 +216,22 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
               <label className={labelCls}>CAD Dosyaları</label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed dark:border-[#334155] border-slate-200 rounded-xl p-4 text-center cursor-pointer dark:hover:border-[#0AA2CD]/40 hover:border-[#0AA2CD]/40 dark:hover:bg-[#0AA2CD]/5 hover:bg-[#0AA2CD]/5 transition-all group"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all group ${
+                  dragging
+                    ? "border-[#0AA2CD] dark:bg-[#0AA2CD]/10 bg-[#0AA2CD]/10 scale-[1.02]"
+                    : "dark:border-[#334155] border-slate-200 dark:hover:border-[#0AA2CD]/40 hover:border-[#0AA2CD]/40 dark:hover:bg-[#0AA2CD]/5 hover:bg-[#0AA2CD]/5"
+                }`}
               >
-                <Upload className="w-6 h-6 mx-auto mb-2 dark:text-slate-500 text-slate-400 group-hover:text-[#0AA2CD] transition-colors" />
+                <Upload className={`w-6 h-6 mx-auto mb-2 transition-colors ${dragging ? "text-[#0AA2CD] animate-bounce" : "dark:text-slate-500 text-slate-400 group-hover:text-[#0AA2CD]"}`} />
                 <p className="text-xs dark:text-slate-400 text-slate-500">
-                  <span className="font-bold text-[#0AA2CD]">Dosya seçin</span> veya sürükleyin
+                  {dragging ? (
+                    <span className="font-bold text-[#0AA2CD]">Dosyaları bırakın...</span>
+                  ) : (
+                    <><span className="font-bold text-[#0AA2CD]">Dosya seçin</span> veya sürükleyip bırakın</>
+                  )}
                 </p>
                 <p className="text-[10px] dark:text-slate-600 text-slate-400 mt-1">
                   STEP, IGES, STL, DXF, DWG, PDF, ZIP — maks 50 MB, en fazla 5 dosya
