@@ -1,4 +1,4 @@
-import { Search, Download, Activity, Sun, Moon } from "lucide-react";
+import { Search, Download, Activity, Sun, Moon, Loader2 } from "lucide-react";
 import { useState, useEffect, ReactNode } from "react";
 import AdminNotifications from "./AdminNotifications";
 
@@ -24,9 +24,10 @@ interface Props {
   onExportCSV: () => void;
   onNavigate?: (tab: string) => void;
   mobileSidebar?: ReactNode;
+  exporting?: boolean;
 }
 
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar }: Props) => {
+const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar, exporting }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -67,10 +68,11 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobi
         <AdminNotifications onNavigate={onNavigate} />
         <button
           onClick={onExportCSV}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0AA2CD]/10 text-[#0AA2CD] text-xs font-bold hover:bg-[#0AA2CD]/20 transition-colors"
+          disabled={exporting}
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0AA2CD]/10 text-[#0AA2CD] text-xs font-bold hover:bg-[#0AA2CD]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-3.5 h-3.5" />
-          Rapor Al
+          {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+          {exporting ? "İndiriliyor..." : "Rapor Al"}
         </button>
       </div>
     </header>
