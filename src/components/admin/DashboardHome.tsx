@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Area, AreaChart,
 } from "recharts";
 
 /* ── Colors ── */
