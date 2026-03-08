@@ -3,6 +3,17 @@ import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { findBestFaqMatch } from "@/data/chatFaqData";
+import { supabase } from "@/integrations/supabase/client";
+
+/** Fire-and-forget analytics log to faq_analytics table */
+function logChatEvent(eventType: string, query: string, question?: string, category?: string) {
+  supabase.from("faq_analytics").insert({
+    event_type: eventType,
+    query,
+    question: question ?? null,
+    category: category ?? null,
+  }).then(() => {});
+}
 
 type Msg = { role: "user" | "assistant"; content: string };
 
