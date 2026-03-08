@@ -149,6 +149,7 @@ const DashboardHome = () => {
   const [data, setData] = useState<DashData | null>(null);
   const [realtimeActive, setRealtimeActive] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"all" | "rfq" | "order" | "ticket">("all");
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
   const ct = useChartTheme();
 
   const statusColors: Record<string, string> = {
