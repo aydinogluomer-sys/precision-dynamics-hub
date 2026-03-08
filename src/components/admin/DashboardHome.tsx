@@ -367,6 +367,8 @@ const DashboardHome = () => {
       supabase.from("support_tickets").select("*"),
     ]);
 
+    setRawFins(finR.data || []);
+    setRawOrders(ordR.data || []);
     const result = buildData(
       rfqR.data || [], ordR.data || [], issR.data || [], finR.data || [],
       custR.data || [], pipeR.data || [], maintR.data || [], rawR.data || [],
