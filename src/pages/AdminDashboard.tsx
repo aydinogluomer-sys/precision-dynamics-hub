@@ -21,6 +21,7 @@ import TPMView from "@/components/admin/TPMView";
 import InventoryView from "@/components/admin/InventoryView";
 import FinanceDocsView from "@/components/admin/FinanceDocsView";
 import SupportView from "@/components/admin/SupportView";
+import ChatbotAnalyticsView from "@/components/admin/ChatbotAnalyticsView";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
       case "inventory": return <InventoryView />;
       case "financedocs": return <FinanceDocsView />;
       case "support": return <SupportView />;
+      case "chatbot-analytics": return <ChatbotAnalyticsView />;
       case "issues": return <IssuesView />;
       case "customers": return <CustomersView />;
       case "settings": return <SettingsView />;
@@ -126,7 +128,7 @@ const AdminDashboard = () => {
                 rfq: "Talep Merkezi", orders: "Üretim Günlüğü", wbs: "İş Akış Hattı",
                 scheduling: "Kaynak Yerleşimi", financial: "Finansal Analitik", pipeline: "Satış Pipeline",
                 tpm: "TPM & Bakım", inventory: "Envanter & Takım", financedocs: "Nakit Akışı",
-                support: "Destek Talepleri", issues: "Olay Merkezi", customers: "Çözüm Ortakları",
+                support: "Destek Talepleri", "chatbot-analytics": "Chatbot Analitik", issues: "Olay Merkezi", customers: "Çözüm Ortakları",
                 settings: "Sistem Ayarları",
               } as Record<string, string>)[activeTab] || "Dashboard"}
             </span>
