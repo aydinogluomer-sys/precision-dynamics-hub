@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Loader2, Check, Upload } from "lucide-react";
+import { FileText, Loader2, Check, Upload, Paperclip, ChevronDown, ChevronUp } from "lucide-react";
 import { TableSkeleton } from "./MusteriSkeletons";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
 
 interface RFQ {
   id: string;
