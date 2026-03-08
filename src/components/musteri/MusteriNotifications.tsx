@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Bell, X, FileText, Package, ClipboardCheck, Wallet } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 interface Notification {
@@ -14,26 +13,42 @@ interface Notification {
   read: boolean;
 }
 
-const iconMap = {
-  rfq: FileText,
-  order: Package,
-  quality: ClipboardCheck,
-  finance: Wallet,
-};
-
-const colorMap = {
-  rfq: "text-cyan-500",
-  order: "text-blue-500",
-  quality: "text-purple-500",
-  finance: "text-emerald-500",
-};
+const iconMap = { rfq: FileText, order: Package, quality: ClipboardCheck, finance: Wallet };
+const colorMap = { rfq: "text-cyan-500", order: "text-blue-500", quality: "text-purple-500", finance: "text-emerald-500" };
 
 const MusteriNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const initialized = useRef(false);
 
-  const addNotification = (n: Omit<Notification, "id" | "timestamp" | "read">) => {
+  const persistNotification = async (n: { type: string; title: string; message: string }) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      type: n.type,
+      title: n.title,
+      message: n.message,
+    });
+  };
+
+  const shouldNotify = async (type: string): Promise<boolean> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return true;
+    const { data } = await supabase
+      .from("notification_preferences")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+    if (!data) return true;
+    const key = `push_${type}` as string;
+    return (data as any)[key] !== false;
+  };
+
+  const addNotification = async (n: Omit<Notification, "id" | "timestamp" | "read">) => {
+    const allowed = await shouldNotify(n.type);
+    if (!allowed) return;
+
     const notif: Notification = {
       ...n,
       id: crypto.randomUUID(),
@@ -42,7 +57,33 @@ const MusteriNotifications = () => {
     };
     setNotifications((prev) => [notif, ...prev].slice(0, 50));
     toast.info(n.title, { description: n.message, duration: 5000 });
+    persistNotification(n);
   };
+
+  // Load history from DB
+  useEffect(() => {
+    const loadHistory = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (data) {
+        setNotifications(data.map((d: any) => ({
+          id: d.id,
+          type: d.type as Notification["type"],
+          title: d.title,
+          message: d.message,
+          timestamp: new Date(d.created_at),
+          read: d.read,
+        })));
+      }
+    };
+    loadHistory();
+  }, []);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -54,17 +95,9 @@ const MusteriNotifications = () => {
         const n = payload.new as any;
         const o = payload.old as any;
         if (n.quoted_price && !o.quoted_price) {
-          addNotification({
-            type: "rfq",
-            title: "Teklif Fiyatı Verildi",
-            message: `${n.service || "Teklif"} için ₺${Number(n.quoted_price).toLocaleString("tr-TR")} fiyat teklifi geldi.`,
-          });
+          addNotification({ type: "rfq", title: "Teklif Fiyatı Verildi", message: `${n.service || "Teklif"} için ₺${Number(n.quoted_price).toLocaleString("tr-TR")} fiyat teklifi geldi.` });
         } else if (n.status !== o.status) {
-          addNotification({
-            type: "rfq",
-            title: "Teklif Durumu Güncellendi",
-            message: `Teklif durumu "${n.status}" olarak değiştirildi.`,
-          });
+          addNotification({ type: "rfq", title: "Teklif Durumu Güncellendi", message: `Teklif durumu "${n.status}" olarak değiştirildi.` });
         }
       })
       .subscribe();
@@ -75,17 +108,9 @@ const MusteriNotifications = () => {
         const n = payload.new as any;
         const o = payload.old as any;
         if (n.status !== o.status) {
-          addNotification({
-            type: "order",
-            title: "Sipariş Durumu Değişti",
-            message: `"${n.part_name || "Sipariş"}" durumu "${n.status}" olarak güncellendi.`,
-          });
+          addNotification({ type: "order", title: "Sipariş Durumu Değişti", message: `"${n.part_name || "Sipariş"}" durumu "${n.status}" olarak güncellendi.` });
         } else if (n.progress !== o.progress) {
-          addNotification({
-            type: "order",
-            title: "Üretim İlerlemesi",
-            message: `"${n.part_name || "Sipariş"}" ilerleme: %${n.progress}`,
-          });
+          addNotification({ type: "order", title: "Üretim İlerlemesi", message: `"${n.part_name || "Sipariş"}" ilerleme: %${n.progress}` });
         }
       })
       .subscribe();
@@ -94,11 +119,7 @@ const MusteriNotifications = () => {
       .channel("notif-quality")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "quality_reports" }, (payload) => {
         const n = payload.new as any;
-        addNotification({
-          type: "quality",
-          title: "Yeni Kalite Raporu",
-          message: `"${n.title}" raporu yüklendi.`,
-        });
+        addNotification({ type: "quality", title: "Yeni Kalite Raporu", message: `"${n.title}" raporu yüklendi.` });
       })
       .subscribe();
 
@@ -107,17 +128,9 @@ const MusteriNotifications = () => {
       .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, (payload) => {
         const n = payload.new as any;
         if (payload.eventType === "INSERT") {
-          addNotification({
-            type: "finance",
-            title: "Yeni Finansal Belge",
-            message: `"${n.title || n.doc_type}" belgesi oluşturuldu.`,
-          });
+          addNotification({ type: "finance", title: "Yeni Finansal Belge", message: `"${n.title || n.doc_type}" belgesi oluşturuldu.` });
         } else if (payload.eventType === "UPDATE") {
-          addNotification({
-            type: "finance",
-            title: "Finansal Belge Güncellendi",
-            message: `"${n.title || n.doc_number || "Belge"}" güncellendi.`,
-          });
+          addNotification({ type: "finance", title: "Finansal Belge Güncellendi", message: `"${n.title || n.doc_number || "Belge"}" güncellendi.` });
         }
       })
       .subscribe();
@@ -132,8 +145,12 @@ const MusteriNotifications = () => {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllRead = () => {
+  const markAllRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false);
+    }
   };
 
   return (
