@@ -66,13 +66,16 @@ const IssuesView = () => {
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
-      <div className="flex items-center justify-between">
-        <div /> {/* spacer */}
+      {/* Header with Add Button */}
+      <div className="flex items-center justify-end">
         <button onClick={() => { setForm({ ...emptyIssue, id: `ISS-${String(issues.length + 1).padStart(3, "0")}` }); setShowAdd(true); }}
           className="flex items-center gap-1 px-3 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold hover:bg-[#0AA2CD]/90 transition-colors">
           <Plus className="w-3.5 h-3.5" /> Yeni Olay
         </button>
       </div>
+
+      {/* Category KPIs */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {categories.map((cat) => {
           const Icon = categoryIcons[cat] || AlertTriangle;
           const count = issues.filter((i) => i.category === cat && i.status !== "resolved").length;
@@ -86,6 +89,7 @@ const IssuesView = () => {
         })}
       </div>
 
+      {/* Issues List */}
       <div className="space-y-3">
         {issues.length === 0 ? (
           <div className="text-center py-20 text-slate-500">
@@ -128,6 +132,64 @@ const IssuesView = () => {
         ))}
       </div>
 
+      {/* Add Issue Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setShowAdd(false)}>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-black dark:text-white text-slate-800">Yeni Olay Kaydı</h3>
+              <button onClick={() => setShowAdd(false)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Olay ID</label>
+                  <input value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tarih</label>
+                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kategori</label>
+                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm">
+                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Önem</label>
+                  <select value={form.severity} onChange={(e) => setForm({ ...form, severity: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm">
+                    <option value="low">Bilgilendirme</option>
+                    <option value="normal">Normal</option>
+                    <option value="high">Müdahale Gerekli</option>
+                  </select></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Makine</label>
+                  <input value={form.machine} onChange={(e) => setForm({ ...form, machine: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">İş</label>
+                  <input value={form.job} onChange={(e) => setForm({ ...form, job: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              </div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Maliyet ₺</label>
+                <input type="number" value={form.cost} onChange={(e) => setForm({ ...form, cost: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detay</label>
+                <textarea value={form.detail} onChange={(e) => setForm({ ...form, detail: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm min-h-[60px]" /></div>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setShowAdd(false)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
+              <button disabled={!form.id || saving} onClick={async () => {
+                setSaving(true);
+                const { error } = await supabase.from("issues").insert({ id: form.id, category: form.category, date: form.date, severity: form.severity, machine: form.machine || null, job: form.job || null, detail: form.detail || null, cost: form.cost, status: "open" });
+                setSaving(false);
+                if (error) { toast.error("Kayıt eklenemedi"); return; }
+                toast.success("Olay kaydedildi");
+                setForm(emptyIssue);
+                setShowAdd(false);
+                fetchData();
+              }} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center justify-center gap-1">
+                {saving && <Loader2 className="w-3 h-3 animate-spin" />} Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Resolve Modal */}
       {resolveModal && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setResolveModal(null)}>
           <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
