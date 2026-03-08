@@ -73,7 +73,15 @@ const emptyDoc = {
   due_date: "",
   notes: "",
   payment_status: "ödenmedi",
+  user_id: "",
 };
+
+interface CustomerProfile {
+  id: string;
+  full_name: string | null;
+  company: string | null;
+  email?: string;
+}
 
 const FinanceDocsView = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
@@ -93,6 +101,7 @@ const FinanceDocsView = () => {
   const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
   const [parasutSyncing, setParasutSyncing] = useState(false);
+  const [customerProfiles, setCustomerProfiles] = useState<CustomerProfile[]>([]);
 
   const fetchDocs = async () => {
     const { data, error } = await supabase
@@ -114,6 +123,10 @@ const FinanceDocsView = () => {
 
   useEffect(() => {
     fetchDocs();
+    // Fetch customer profiles for dropdown
+    supabase.from("profiles").select("id, full_name, company").then(({ data }) => {
+      if (data) setCustomerProfiles(data as CustomerProfile[]);
+    });
     const channel = supabase
       .channel("financial_documents_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, () => fetchDocs())
@@ -203,12 +216,26 @@ const FinanceDocsView = () => {
       payment_status: formData.payment_status,
       source: "manuel",
       status: "beklemede",
+      user_id: formData.user_id || null,
     } as any);
 
     if (error) {
       toast.error("Belge eklenemedi: " + error.message);
     } else {
       toast.success("Belge başarıyla eklendi");
+
+      // Send notification to customer with amount
+      if (formData.user_id) {
+        const docLabel = DOC_TYPES.find(t => t.value === formData.doc_type)?.label || formData.doc_type;
+        const dueDateStr = formData.due_date ? ` Vade: ${new Date(formData.due_date).toLocaleDateString("tr-TR")}` : "";
+        await supabase.from("notifications").insert({
+          user_id: formData.user_id,
+          type: "finance",
+          title: `Yeni ${docLabel}: ₺${totalAmt.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}`,
+          message: `${docNum} numaralı ${docLabel.toLowerCase()} oluşturuldu. Tutar: ₺${totalAmt.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}.${dueDateStr}`,
+        });
+      }
+
       setShowAddModal(false);
       setFormData(emptyDoc);
     }
@@ -629,6 +656,15 @@ const FinanceDocsView = () => {
                   <label className="text-[10px] uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold block mb-1">Belge No</label>
                   <input value={formData.doc_number} onChange={e => setFormData({ ...formData, doc_number: e.target.value })} placeholder="Otomatik" className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-500" />
                 </div>
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold block mb-1">Müşteri (Bildirim İçin)</label>
+                <select value={formData.user_id} onChange={e => setFormData({ ...formData, user_id: e.target.value })} className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800">
+                  <option value="">Müşteri seçiniz (opsiyonel)</option>
+                  {customerProfiles.map(p => (
+                    <option key={p.id} value={p.id}>{p.full_name || "İsimsiz"}{p.company ? ` — ${p.company}` : ""}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="text-[10px] uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold block mb-1">Başlık</label>
