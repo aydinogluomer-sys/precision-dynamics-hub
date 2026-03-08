@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, BarChart3 } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 
 /* ── Colors ── */
@@ -23,17 +23,9 @@ const C = {
   lime: "#84CC16",
 };
 
-const tooltipStyle = {
-  backgroundColor: "hsl(222.2 47.4% 11.2%)",
-  border: "1px solid hsl(217.2 32.6% 17.5%)",
-  borderRadius: "8px",
-  fontSize: "12px",
-  color: "#e2e8f0",
-};
-
 const RADIAN = Math.PI / 180;
 
-/* ── Static OEE data (kept from original) ── */
+/* ── Static OEE data ── */
 const oeeHistory = [
   { month: "Eyl", oee: 76, availability: 85, performance: 90, quality: 97 },
   { month: "Eki", oee: 78, availability: 87, performance: 91, quality: 97 },
@@ -82,144 +74,163 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
   );
 };
 
+/* ── Navigate helper ── */
+const navigateTo = (tab: string) => {
+  window.dispatchEvent(new CustomEvent("nexus-navigate", { detail: tab }));
+};
+
+/* ── Realtime tables ── */
+const REALTIME_TABLES = [
+  "rfqs", "orders", "issues", "financial_documents", "customers",
+  "pipeline_leads", "maintenance_logs", "raw_materials", "tool_inventory", "support_tickets",
+] as const;
+
+type DashData = {
+  rfqByStatus: { name: string; value: number; color: string }[];
+  orderByStatus: { name: string; value: number; color: string }[];
+  financialSummary: { name: string; Gelir: number; Gider: number }[];
+  issuesBySeverity: { name: string; value: number; color: string }[];
+  maintByType: { name: string; Adet: number; Maliyet: number }[];
+  pipelineByStage: { name: string; value: number; color: string }[];
+  inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
+  kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number };
+  topCustomers: { name: string; Bakiye: number }[];
+  monthlyRfqs: { month: string; Talep: number; Onaylanan: number }[];
+};
+
 const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<{
-    rfqByStatus: { name: string; value: number; color: string }[];
-    orderByStatus: { name: string; value: number; color: string }[];
-    financialSummary: { name: string; Gelir: number; Gider: number }[];
-    issuesBySeverity: { name: string; value: number; color: string }[];
-    maintByType: { name: string; Adet: number; Maliyet: number }[];
-    pipelineByStage: { name: string; value: number; color: string }[];
-    inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
-    kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number };
-    topCustomers: { name: string; Bakiye: number }[];
-    monthlyRfqs: { month: string; Talep: number; Onaylanan: number }[];
-  } | null>(null);
+  const [data, setData] = useState<DashData | null>(null);
+  const [realtimeActive, setRealtimeActive] = useState(false);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const [rfqR, ordR, issR, finR, custR, pipeR, maintR, rawR, toolR, ticketR] = await Promise.all([
-        supabase.from("rfqs").select("*"),
-        supabase.from("orders").select("*"),
-        supabase.from("issues").select("*"),
-        supabase.from("financial_documents").select("*"),
-        supabase.from("customers").select("*"),
-        supabase.from("pipeline_leads").select("*"),
-        supabase.from("maintenance_logs").select("*"),
-        supabase.from("raw_materials").select("*"),
-        supabase.from("tool_inventory").select("*"),
-        supabase.from("support_tickets").select("*"),
-      ]);
+  const statusColors: Record<string, string> = {
+    "Onaylandı": C.emerald, "Fiyat Verildi": C.cyan, "Reddedildi": C.red, "Beklemede": C.amber,
+    "Üretimde": C.cyan, "Hazırlık": C.orange, "Kalite Kontrol": C.purple, "Tamamlandı": C.emerald,
+    "Teslim Edildi": C.lime, "İptal": C.red,
+  };
+  const severityColors: Record<string, string> = { "high": C.red, "normal": C.amber, "low": C.emerald, "critical": C.pink };
+  const stageColors: Record<string, string> = { "prospect": C.slate, "qualified": C.cyan, "proposal": C.orange, "negotiation": C.purple, "closed_won": C.emerald, "closed_lost": C.red };
 
-      const rfqs = rfqR.data || [];
-      const orders = ordR.data || [];
-      const issues = issR.data || [];
-      const fins = finR.data || [];
-      const custs = custR.data || [];
-      const pipes = pipeR.data || [];
-      const maints = maintR.data || [];
-      const raws = rawR.data || [];
-      const tools = toolR.data || [];
-      const tickets = ticketR.data || [];
+  const group = (arr: any[], key: string, colorMap: Record<string, string>) => {
+    const map: Record<string, number> = {};
+    arr.forEach((r) => { const k = r[key] || "Belirsiz"; map[k] = (map[k] || 0) + 1; });
+    return Object.entries(map).map(([name, value]) => ({ name, value, color: colorMap[name] || C.slate }));
+  };
 
-      // Status colors
-      const statusColors: Record<string, string> = {
-        "Onaylandı": C.emerald, "Fiyat Verildi": C.cyan, "Reddedildi": C.red, "Beklemede": C.amber,
-        "Üretimde": C.cyan, "Hazırlık": C.orange, "Kalite Kontrol": C.purple, "Tamamlandı": C.emerald,
-        "Teslim Edildi": C.lime, "İptal": C.red,
-      };
-      const severityColors: Record<string, string> = { "high": C.red, "normal": C.amber, "low": C.emerald, "critical": C.pink };
-      const stageColors: Record<string, string> = { "prospect": C.slate, "qualified": C.cyan, "proposal": C.orange, "negotiation": C.purple, "closed_won": C.emerald, "closed_lost": C.red };
+  const buildData = useCallback((rfqs: any[], orders: any[], issues: any[], fins: any[], custs: any[], pipes: any[], maints: any[], raws: any[], tools: any[], tickets: any[]): DashData => {
+    const rfqByStatus = group(rfqs, "status", statusColors);
+    const orderByStatus = group(orders, "status", statusColors);
 
-      // Group helper
-      const group = (arr: any[], key: string, colorMap: Record<string, string>) => {
-        const map: Record<string, number> = {};
-        arr.forEach((r) => { const k = r[key] || "Belirsiz"; map[k] = (map[k] || 0) + 1; });
-        return Object.entries(map).map(([name, value]) => ({ name, value, color: colorMap[name] || C.slate }));
-      };
+    const finByMonth: Record<string, { Gelir: number; Gider: number }> = {};
+    fins.forEach((f) => {
+      const m = f.doc_date ? new Date(f.doc_date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
+      if (!finByMonth[m]) finByMonth[m] = { Gelir: 0, Gider: 0 };
+      if (f.doc_type === "fatura" || f.doc_type === "gelir") finByMonth[m].Gelir += Number(f.total_amount) || 0;
+      else finByMonth[m].Gider += Number(f.total_amount) || 0;
+    });
+    const financialSummary = Object.entries(finByMonth).map(([name, v]) => ({ name, ...v }));
 
-      // RFQ by status
-      const rfqByStatus = group(rfqs, "status", statusColors);
+    const issuesBySeverity = group(issues, "severity", severityColors);
 
-      // Orders by status
-      const orderByStatus = group(orders, "status", statusColors);
+    const maintMap: Record<string, { count: number; cost: number }> = {};
+    maints.forEach((m) => {
+      const k = m.type || "Belirsiz";
+      if (!maintMap[k]) maintMap[k] = { count: 0, cost: 0 };
+      maintMap[k].count++;
+      maintMap[k].cost += Number(m.cost) || 0;
+    });
+    const maintByType = Object.entries(maintMap).map(([name, v]) => ({ name, Adet: v.count, Maliyet: v.cost }));
 
-      // Financial monthly
-      const finByMonth: Record<string, { Gelir: number; Gider: number }> = {};
-      fins.forEach((f) => {
-        const m = f.doc_date ? new Date(f.doc_date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
-        if (!finByMonth[m]) finByMonth[m] = { Gelir: 0, Gider: 0 };
-        if (f.doc_type === "fatura" || f.doc_type === "gelir") finByMonth[m].Gelir += Number(f.total_amount) || 0;
-        else finByMonth[m].Gider += Number(f.total_amount) || 0;
-      });
-      const financialSummary = Object.entries(finByMonth).map(([name, v]) => ({ name, ...v }));
+    const pipelineByStage = group(pipes, "stage", stageColors);
 
-      // Issues by severity
-      const issuesBySeverity = group(issues, "severity", severityColors);
+    const maxRaw = Math.max(raws.reduce((s: number, r: any) => s + (r.stock || 0), 0), 1);
+    const maxTool = Math.max(tools.reduce((s: number, t: any) => s + (t.stock || 0), 0), 1);
+    const rawValue = raws.reduce((s: number, r: any) => s + (r.stock || 0) * (Number(r.unit_cost) || 0), 0);
+    const toolValue = tools.reduce((s: number, t: any) => s + (t.stock || 0) * (Number(t.unit_cost) || 0), 0);
+    const maxVal = Math.max(rawValue, toolValue, 1);
+    const lowStockTools = tools.filter((t: any) => (t.stock || 0) <= (t.min_stock || 5)).length;
+    const inventoryRadar = [
+      { subject: "Stok Adedi", Hammadde: Math.round((raws.reduce((s: number, r: any) => s + (r.stock || 0), 0) / maxRaw) * 100), Takım: Math.round((tools.reduce((s: number, t: any) => s + (t.stock || 0), 0) / maxTool) * 100) },
+      { subject: "Çeşitlilik", Hammadde: raws.length * 10, Takım: tools.length * 10 },
+      { subject: "Toplam Değer", Hammadde: Math.round((rawValue / maxVal) * 100), Takım: Math.round((toolValue / maxVal) * 100) },
+      { subject: "Risk Skoru", Hammadde: 80, Takım: Math.max(0, 100 - lowStockTools * 20) },
+    ];
 
-      // Maintenance by type
-      const maintMap: Record<string, { count: number; cost: number }> = {};
-      maints.forEach((m) => {
-        const k = m.type || "Belirsiz";
-        if (!maintMap[k]) maintMap[k] = { count: 0, cost: 0 };
-        maintMap[k].count++;
-        maintMap[k].cost += Number(m.cost) || 0;
-      });
-      const maintByType = Object.entries(maintMap).map(([name, v]) => ({ name, Adet: v.count, Maliyet: v.cost }));
+    const totalIncome = fins.filter((f: any) => f.doc_type === "fatura" || f.doc_type === "gelir").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
+    const totalExpense = fins.filter((f: any) => f.doc_type === "gider" || f.doc_type === "masraf").reduce((s: number, f: any) => s + (Number(f.total_amount) || 0), 0);
+    const openIssues = issues.filter((i: any) => i.status === "Açık").length;
+    const overdueOrders = orders.filter((o: any) => o.deadline && new Date(o.deadline) < new Date() && o.status !== "Tamamlandı").length;
+    const openTickets = tickets.filter((t: any) => t.status === "open").length;
 
-      // Pipeline by stage
-      const pipelineByStage = group(pipes, "stage", stageColors);
+    const topCustomers = [...custs]
+      .sort((a: any, b: any) => (Number(b.balance) || 0) - (Number(a.balance) || 0))
+      .slice(0, 6)
+      .map((c: any) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
 
-      // Inventory radar
-      const rawCategories = ["Stok", "Çeşitlilik", "Değer", "Minimum Risk"];
-      const toolCategories = rawCategories;
-      const maxRaw = Math.max(raws.reduce((s, r) => s + (r.stock || 0), 0), 1);
-      const maxTool = Math.max(tools.reduce((s, t) => s + (t.stock || 0), 0), 1);
-      const rawValue = raws.reduce((s, r) => s + (r.stock || 0) * (Number(r.unit_cost) || 0), 0);
-      const toolValue = tools.reduce((s, t) => s + (t.stock || 0) * (Number(t.unit_cost) || 0), 0);
-      const maxVal = Math.max(rawValue, toolValue, 1);
-      const lowStockTools = tools.filter((t) => (t.stock || 0) <= (t.min_stock || 5)).length;
-      const inventoryRadar = [
-        { subject: "Stok Adedi", Hammadde: Math.round((raws.reduce((s, r) => s + (r.stock || 0), 0) / maxRaw) * 100), Takım: Math.round((tools.reduce((s, t) => s + (t.stock || 0), 0) / maxTool) * 100) },
-        { subject: "Çeşitlilik", Hammadde: raws.length * 10, Takım: tools.length * 10 },
-        { subject: "Toplam Değer", Hammadde: Math.round((rawValue / maxVal) * 100), Takım: Math.round((toolValue / maxVal) * 100) },
-        { subject: "Risk Skoru", Hammadde: 80, Takım: Math.max(0, 100 - lowStockTools * 20) },
-      ];
+    const rfqByMonth: Record<string, { total: number; approved: number }> = {};
+    rfqs.forEach((r: any) => {
+      const m = r.date ? new Date(r.date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
+      if (!rfqByMonth[m]) rfqByMonth[m] = { total: 0, approved: 0 };
+      rfqByMonth[m].total++;
+      if (r.status === "Onaylandı") rfqByMonth[m].approved++;
+    });
+    const monthlyRfqs = Object.entries(rfqByMonth).map(([month, v]) => ({ month, Talep: v.total, Onaylanan: v.approved }));
 
-      // KPIs
-      const totalIncome = fins.filter((f) => f.doc_type === "fatura" || f.doc_type === "gelir").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
-      const totalExpense = fins.filter((f) => f.doc_type === "gider" || f.doc_type === "masraf").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
-      const openIssues = issues.filter((i) => i.status === "Açık").length;
-      const overdueOrders = orders.filter((o) => o.deadline && new Date(o.deadline) < new Date() && o.status !== "Tamamlandı").length;
-      const openTickets = tickets.filter((t) => t.status === "open").length;
-
-      // Top customers by balance
-      const topCustomers = [...custs]
-        .sort((a, b) => (Number(b.balance) || 0) - (Number(a.balance) || 0))
-        .slice(0, 6)
-        .map((c) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
-
-      // Monthly RFQ trend
-      const rfqByMonth: Record<string, { total: number; approved: number }> = {};
-      rfqs.forEach((r) => {
-        const m = r.date ? new Date(r.date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
-        if (!rfqByMonth[m]) rfqByMonth[m] = { total: 0, approved: 0 };
-        rfqByMonth[m].total++;
-        if (r.status === "Onaylandı") rfqByMonth[m].approved++;
-      });
-      const monthlyRfqs = Object.entries(rfqByMonth).map(([month, v]) => ({ month, Talep: v.total, Onaylanan: v.approved }));
-
-      setData({
-        rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
-        maintByType, pipelineByStage, inventoryRadar,
-        kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
-        topCustomers, monthlyRfqs,
-      });
-      setLoading(false);
+    return {
+      rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
+      maintByType, pipelineByStage, inventoryRadar,
+      kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
+      topCustomers, monthlyRfqs,
     };
-    fetch();
   }, []);
+
+  const fetchAll = useCallback(async () => {
+    const [rfqR, ordR, issR, finR, custR, pipeR, maintR, rawR, toolR, ticketR] = await Promise.all([
+      supabase.from("rfqs").select("*"),
+      supabase.from("orders").select("*"),
+      supabase.from("issues").select("*"),
+      supabase.from("financial_documents").select("*"),
+      supabase.from("customers").select("*"),
+      supabase.from("pipeline_leads").select("*"),
+      supabase.from("maintenance_logs").select("*"),
+      supabase.from("raw_materials").select("*"),
+      supabase.from("tool_inventory").select("*"),
+      supabase.from("support_tickets").select("*"),
+    ]);
+
+    const result = buildData(
+      rfqR.data || [], ordR.data || [], issR.data || [], finR.data || [],
+      custR.data || [], pipeR.data || [], maintR.data || [], rawR.data || [],
+      toolR.data || [], ticketR.data || [],
+    );
+    setData(result);
+    setLoading(false);
+  }, [buildData]);
+
+  // Initial fetch + Realtime subscriptions
+  useEffect(() => {
+    fetchAll();
+
+    const channel = supabase
+      .channel("dashboard-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "rfqs" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "issues" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "customers" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "pipeline_leads" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "maintenance_logs" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "raw_materials" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "tool_inventory" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, () => fetchAll())
+      .subscribe((status) => {
+        setRealtimeActive(status === "SUBSCRIBED");
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchAll]);
 
   if (loading || !data) {
     return (
@@ -236,22 +247,31 @@ const DashboardHome = () => {
   }
 
   const kpiCards = [
-    { label: "Toplam Teklif", value: data.kpis.rfqs, icon: FileText, color: C.cyan, bg: "bg-[#0AA2CD]/10" },
-    { label: "Aktif Sipariş", value: data.kpis.orders, icon: Package, color: C.orange, bg: "bg-[#F97316]/10" },
-    { label: "Çözüm Ortağı", value: data.kpis.customers, icon: Users, color: C.emerald, bg: "bg-emerald-400/10" },
-    { label: "Açık Sorun", value: data.kpis.openIssues, icon: AlertTriangle, color: data.kpis.openIssues > 0 ? C.red : C.emerald, bg: data.kpis.openIssues > 0 ? "bg-red-500/10" : "bg-emerald-400/10" },
-    { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Wrench, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10" },
-    { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true },
+    { label: "Toplam Teklif", value: data.kpis.rfqs, icon: FileText, color: C.cyan, bg: "bg-[#0AA2CD]/10", tab: "rfq" },
+    { label: "Aktif Sipariş", value: data.kpis.orders, icon: Package, color: C.orange, bg: "bg-[#F97316]/10", tab: "orders" },
+    { label: "Çözüm Ortağı", value: data.kpis.customers, icon: Users, color: C.emerald, bg: "bg-emerald-400/10", tab: "customers" },
+    { label: "Açık Sorun", value: data.kpis.openIssues, icon: AlertTriangle, color: data.kpis.openIssues > 0 ? C.red : C.emerald, bg: data.kpis.openIssues > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "issues" },
+    { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Wrench, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "orders" },
+    { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true, tab: "financial" },
   ];
 
   const cardClass = "dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all";
+  const clickableCard = (tab: string) => `${cardClass} cursor-pointer group`;
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
+      {/* ── Realtime indicator ── */}
+      <div className="flex items-center gap-2">
+        <Radio className={`w-3.5 h-3.5 ${realtimeActive ? "text-emerald-400 animate-pulse" : "text-slate-500"}`} />
+        <span className="text-[10px] font-medium dark:text-slate-400 text-slate-500">
+          {realtimeActive ? "Canlı veri akışı aktif" : "Bağlanıyor..."}
+        </span>
+      </div>
+
       {/* ── KPI CARDS ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {kpiCards.map((k) => (
-          <div key={k.label} className={cardClass}>
+          <div key={k.label} className={`${cardClass} cursor-pointer hover:scale-[1.02]`} onClick={() => navigateTo(k.tab)}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight">{k.label}</span>
               <div className={`w-7 h-7 rounded-lg ${k.bg} flex items-center justify-center`}>
@@ -268,7 +288,7 @@ const DashboardHome = () => {
       {/* ── OEE METRICS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {oeeMetrics.map((m) => (
-          <div key={m.label} className={cardClass}>
+          <div key={m.label} className={`${cardClass} cursor-pointer`} onClick={() => navigateTo("tpm")}>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{m.label}</span>
               <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center`}>
@@ -292,8 +312,8 @@ const DashboardHome = () => {
 
       {/* ── ROW 1: OEE Trend + RFQ Pie ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className={`lg:col-span-2 ${cardClass}`}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">OEE Trend Analizi (6 Ay)</h3>
+        <div className={`lg:col-span-2 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={oeeHistory} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
@@ -319,8 +339,8 @@ const DashboardHome = () => {
         </div>
 
         {/* RFQ Status Pie */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">RFQ Durum Dağılımı</h3>
+        <div className={clickableCard("rfq")} onClick={() => navigateTo("rfq")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">RFQ Durum Dağılımı</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -347,9 +367,8 @@ const DashboardHome = () => {
 
       {/* ── ROW 2: Financial Area + Order Bar ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Financial Area Chart */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Finansal Akış (Aylık)</h3>
+        <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Finansal Akış (Aylık)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
@@ -386,9 +405,8 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Order Status Bar Chart */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Sipariş Durum Dağılımı</h3>
+        <div className={clickableCard("orders")} onClick={() => navigateTo("orders")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Durum Dağılımı</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.orderByStatus} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
@@ -405,11 +423,10 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      {/* ── ROW 3: Pipeline Pie + Issues Donut + Maintenance Bar ── */}
+      {/* ── ROW 3: Pipeline + Issues + Maintenance ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Pipeline */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Pipeline Aşamaları</h3>
+        <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Pipeline Aşamaları</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -433,9 +450,8 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Issues by Severity */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Sorun Ciddiyet Dağılımı</h3>
+        <div className={clickableCard("issues")} onClick={() => navigateTo("issues")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Sorun Ciddiyet Dağılımı</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -459,9 +475,8 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Maintenance Bar */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Bakım Türleri & Maliyetleri</h3>
+        <div className={clickableCard("tpm")} onClick={() => navigateTo("tpm")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Bakım Türleri & Maliyetleri</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.maintByType} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
@@ -487,11 +502,10 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      {/* ── ROW 4: Top Customers Bar + Inventory Radar + RFQ Trend ── */}
+      {/* ── ROW 4: Top Customers + Inventory Radar + RFQ Trend ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Top Customers */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">En Yüksek Bakiyeli Müşteriler</h3>
+        <div className={clickableCard("customers")} onClick={() => navigateTo("customers")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">En Yüksek Bakiyeli Müşteriler</h3>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.topCustomers} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
@@ -507,9 +521,8 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Inventory Radar */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Envanter Radar Analizi</h3>
+        <div className={clickableCard("inventory")} onClick={() => navigateTo("inventory")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Envanter Radar Analizi</h3>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={data.inventoryRadar} cx="50%" cy="50%" outerRadius="70%">
@@ -534,9 +547,8 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* RFQ Monthly Trend */}
-        <div className={cardClass}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Aylık Teklif Trendi</h3>
+        <div className={clickableCard("rfq")} onClick={() => navigateTo("rfq")}>
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Aylık Teklif Trendi</h3>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.monthlyRfqs} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
