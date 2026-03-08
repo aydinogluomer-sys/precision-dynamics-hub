@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2, Download, FileSpreadsheet } from "lucide-react";
+import { Filter, PhoneCall, Mail, Handshake, Truck, Star, ArrowRight, Plus, Upload, X, Loader2, Trash2, Download, FileSpreadsheet, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 const stagesDef = [
@@ -154,6 +154,53 @@ const PipelineView = () => {
     toast.success("Excel/Sheets uyumlu TSV dışa aktarıldı");
   };
 
+  const handleExportPDF = () => {
+    const stageLabels: Record<string, string> = {};
+    stagesDef.forEach(s => { stageLabels[s.id] = s.label; });
+
+    const title = `MAS Technic — Satış Pipeline Raporu (${new Date().toLocaleDateString("tr-TR")})`;
+    const tableHead = ["#", "Firma", "İlgili Kişi", "E-posta", "Değer (₺)", "Aşama", "Olasılık (%)", "Son Eylem"];
+    const tableRows = filteredLeads.map((d, i) => [
+      i + 1,
+      d.company || "—",
+      d.contact_name || "—",
+      d.contact_email || "—",
+      (d.value || 0).toLocaleString("tr-TR"),
+      stageLabels[d.stage || "prospect"] || d.stage,
+      d.probability || 0,
+      d.last_action || "—",
+    ]);
+
+    const totalVal = filteredLeads.reduce((s, d) => s + (d.value || 0), 0);
+    const weightedVal = filteredLeads.reduce((s, d) => s + (d.value || 0) * ((d.probability || 0) / 100), 0);
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:40px;color:#1e293b;font-size:12px}
+  h1{font-size:18px;margin-bottom:4px;color:#0AA2CD}
+  .meta{color:#64748b;margin-bottom:20px;font-size:11px}
+  table{width:100%;border-collapse:collapse;margin-bottom:20px}
+  th{background:#0AA2CD;color:#fff;text-align:left;padding:8px 10px;font-size:10px;text-transform:uppercase}
+  td{padding:7px 10px;border-bottom:1px solid #e2e8f0}
+  tr:nth-child(even){background:#f8fafc}
+  .summary{display:flex;gap:30px;margin-top:10px}
+  .summary div{padding:12px 16px;background:#f1f5f9;border-radius:8px}
+  .summary .label{font-size:10px;color:#64748b;text-transform:uppercase;font-weight:700}
+  .summary .val{font-size:16px;font-weight:900;color:#0f172a;margin-top:2px}
+  @media print{body{padding:20px}}
+</style></head><body>
+  <h1>${title}</h1>
+  <p class="meta">${filteredLeads.length} lead · Toplam: ₺${totalVal.toLocaleString("tr-TR")} · Ağırlıklı: ₺${weightedVal.toLocaleString("tr-TR", { maximumFractionDigits: 0 })}</p>
+  <table><thead><tr>${tableHead.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+  <tbody>${tableRows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>
+  <script>window.onload=function(){window.print()}</script>
+</body></html>`;
+
+    const win = window.open("", "_blank");
+    if (win) { win.document.write(html); win.document.close(); }
+    toast.success("PDF yazdırma penceresi açıldı");
+  };
+
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
 
   return (
@@ -216,6 +263,9 @@ const PipelineView = () => {
         </button>
         <button onClick={handleExportTSV} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
           <FileSpreadsheet className="w-3.5 h-3.5" /> Dışa Aktar Excel/Sheets
+        </button>
+        <button onClick={handleExportPDF} className="flex items-center gap-1.5 px-3 py-1.5 dark:bg-[#1E293B] bg-slate-100 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold hover:text-[#0AA2CD]">
+          <FileText className="w-3.5 h-3.5" /> Dışa Aktar PDF
         </button>
       </div>
 
