@@ -69,6 +69,7 @@ const OrdersView = () => {
     setSaving(true);
     const qty = selected.quantity || 1;
     const progress = calcProgress(form.completed_qty, form.qc_passed_qty, form.packed_qty, qty);
+    const oldStatus = selected.status;
 
     const { error } = await supabase.from("orders").update({
       completed_qty: form.completed_qty,
@@ -82,6 +83,17 @@ const OrdersView = () => {
 
     setSaving(false);
     if (error) { toast.error("Güncelleme hatası"); return; }
+
+    // Send notification to customer if status changed and order has user_id
+    if (oldStatus !== form.status && (selected as any).user_id) {
+      await supabase.from("notifications").insert({
+        user_id: (selected as any).user_id,
+        type: "order",
+        title: `Sipariş Durumu: ${form.status}`,
+        message: `${selected.id} numaralı siparişiniz "${oldStatus}" → "${form.status}" olarak güncellendi. İlerleme: %${progress}`,
+      }).then(() => {});
+    }
+
     toast.success(`İlerleme %${progress} olarak güncellendi`);
     setSelected(null);
     fetchOrders();
