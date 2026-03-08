@@ -86,7 +86,14 @@ const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
                 }`}
               >
                 <item.icon className="w-5 h-5 shrink-0" />
-                {!collapsed && <span className="font-medium">{item.label}</span>}
+                {!collapsed && (
+                  <span className="font-medium flex-1 text-left">{item.label}</span>
+                )}
+                {item.id === "bildirimler" && unreadCount > 0 && (
+                  <span className="ml-auto w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
               </button>
             );
           })}
