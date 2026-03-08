@@ -147,6 +147,8 @@ const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashData | null>(null);
   const [realtimeActive, setRealtimeActive] = useState(false);
+  const [activityFilter, setActivityFilter] = useState<"all" | "rfq" | "order" | "ticket">("all");
+  const ct = useChartTheme();
 
   const statusColors: Record<string, string> = {
     "Onaylandı": C.emerald, "Fiyat Verildi": C.cyan, "Reddedildi": C.red, "Beklemede": C.amber,
