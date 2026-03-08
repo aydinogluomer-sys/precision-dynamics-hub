@@ -245,7 +245,7 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobi
                 })}
               </div>
             )}
-            <div className="px-4 py-2 border-t dark:border-[#334155] border-slate-100 flex items-center justify-between">
+            <div className="px-4 py-2 border-t dark:border-[#334155] border-slate-200 flex items-center justify-between">
               <span className="text-[9px] text-slate-500">↑↓ gezin • ↵ seç • esc kapat</span>
               <span className="text-[9px] text-slate-500 font-mono">{results.length} sonuç</span>
             </div>
