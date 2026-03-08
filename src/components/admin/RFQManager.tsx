@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, X, Send, Loader2 } from "lucide-react";
+import { FileText, X, Send, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -97,7 +97,7 @@ const RFQManager = () => {
       part_name: `${rfq.service || ""} ${rfq.material || ""}`.trim() || "Belirtilmemiş",
       quantity: rfq.quantity || 1,
       user_id: rfq.user_id,
-      status: "Hazırlık",
+      status: "Üretimde",
       progress: 0,
       order_date: new Date().toISOString().split("T")[0],
     });
@@ -153,6 +153,15 @@ const RFQManager = () => {
     fetchRFQs();
   };
 
+  const deleteRFQ = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm("Bu teklif talebini silmek istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("rfqs").delete().eq("id", id);
+    if (error) { toast.error("Silme hatası"); return; }
+    toast.success("Teklif talebi silindi");
+    fetchRFQs();
+  };
+
   const isNewStatus = (s: string | null) => !s || s === "Yeni" || s === "pending";
   const filters = ["Tümü", "Yeni", "Fiyat Verildi", "Onaylandı", "Reddedildi"];
   const filtered = filter === "Tümü" ? rfqs : filter === "Yeni" ? rfqs.filter((r) => isNewStatus(r.status)) : rfqs.filter((r) => r.status === filter);
@@ -198,6 +207,7 @@ const RFQManager = () => {
                   <th className="text-left p-4 hidden md:table-cell">Tarih</th>
                   <th className="text-left p-4">Durum</th>
                   <th className="text-left p-4">İşlem</th>
+                  <th className="text-left p-4">Sil</th>
                 </tr>
               </thead>
               <tbody>
@@ -228,6 +238,11 @@ const RFQManager = () => {
                         className="text-xs bg-[#0AA2CD]/10 text-[#0AA2CD] px-3 py-1 rounded font-bold hover:bg-[#0AA2CD]/20"
                       >
                         Fiyat Ver
+                      </button>
+                    </td>
+                    <td className="p-4">
+                      <button onClick={(e) => deleteRFQ(e, r.id)} className="p-1.5 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors">
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Package, Loader2, X, Save } from "lucide-react";
+import { Package, Loader2, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -87,6 +87,15 @@ const OrdersView = () => {
     fetchOrders();
   };
 
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm("Bu sipariş kaydını silmek istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+    if (error) { toast.error("Silme hatası"); return; }
+    toast.success("Sipariş silindi");
+    fetchOrders();
+  };
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
 
   if (orders.length === 0) {
@@ -116,6 +125,7 @@ const OrdersView = () => {
                 <th className="text-right p-4 font-mono hidden lg:table-cell">Paket</th>
                 <th className="text-left p-4">Durum</th>
                 <th className="text-left p-4">İlerleme</th>
+                <th className="text-left p-4">Sil</th>
               </tr>
             </thead>
             <tbody>
@@ -142,6 +152,11 @@ const OrdersView = () => {
                       <span className="text-xs font-bold dark:text-white text-slate-800 font-mono tabular-nums">{o.progress || 0}%</span>
                     </div>
                   </td>
+                  <td className="p-4">
+                    <button onClick={(e) => handleDelete(e, o.id)} className="p-1.5 rounded-lg hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -163,7 +178,6 @@ const OrdersView = () => {
           </DialogHeader>
 
           <div className="space-y-4 mt-2">
-            {/* Progress preview */}
             <div className="p-3 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold dark:text-slate-400 text-slate-500">Tahmini İlerleme</span>
@@ -179,7 +193,6 @@ const OrdersView = () => {
               </div>
             </div>
 
-            {/* Quantity inputs */}
             <div className="grid grid-cols-3 gap-3">
               {[
                 { label: "Üretilen Adet", key: "completed_qty" as const },
@@ -200,7 +213,6 @@ const OrdersView = () => {
               ))}
             </div>
 
-            {/* Status */}
             <div>
               <label className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">Durum</label>
               <select
@@ -212,7 +224,6 @@ const OrdersView = () => {
               </select>
             </div>
 
-            {/* Machine */}
             <div>
               <label className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">Tezgah</label>
               <input
@@ -223,7 +234,6 @@ const OrdersView = () => {
               />
             </div>
 
-            {/* Notes */}
             <div>
               <label className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">Üretim Notları</label>
               <textarea

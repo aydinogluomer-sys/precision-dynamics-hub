@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, GitBranch, Pause, Play } from "lucide-react";
+import { Loader2, GitBranch, Pause, Play, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface WBS {
@@ -66,7 +66,6 @@ const WBSView = () => {
     if (next === 5) update.status = "active";
     await supabase.from("wbs").update(update).eq("id", w.id);
 
-    // Sync order status based on WBS step
     if (w.order_id) {
       const orderStatus = stepToOrderStatus[next] || "Üretimde";
       const progressMap: Record<number, number> = { 0: 0, 1: 10, 2: 30, 3: 50, 4: 75, 5: 100 };
@@ -77,6 +76,14 @@ const WBSView = () => {
     }
 
     toast.success(`Adım ${next + 1}: ${steps[next]}`);
+    fetchData();
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Bu iş akışını silmek istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("wbs").delete().eq("id", id);
+    if (error) { toast.error("Silme hatası"); return; }
+    toast.success("İş akışı silindi");
     fetchData();
   };
 
@@ -117,6 +124,9 @@ const WBSView = () => {
                   <p className="text-xs dark:text-slate-400 text-slate-500">{w.customer} • Makine: {w.machine || "Atanmadı"} • Termin: {w.deadline || "—"}</p>
                 </div>
                 <div className="flex gap-2">
+                  <button onClick={() => handleDelete(w.id)} className="px-3 py-1.5 rounded-lg dark:bg-red-500/10 bg-red-50 text-xs font-bold text-red-400 hover:bg-red-500/20 flex items-center gap-1">
+                    <Trash2 className="w-3 h-3" /> Sil
+                  </button>
                   <button onClick={() => togglePause(w)} className="px-3 py-1.5 rounded-lg dark:bg-[#0F172A] bg-slate-100 text-xs font-bold dark:text-slate-300 text-slate-600 hover:text-[#0AA2CD] flex items-center gap-1">
                     {st === "paused" ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
                     {st === "paused" ? "Devam" : "Duraklat"}

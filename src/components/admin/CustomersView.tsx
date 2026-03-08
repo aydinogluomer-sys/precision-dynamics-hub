@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Plus, X } from "lucide-react";
+import { Loader2, Users, Plus, X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Customer {
@@ -53,6 +53,14 @@ const CustomersView = () => {
     fetchData();
   };
 
+  const handleDelete = async (id: number) => {
+    if (!confirm("Bu çözüm ortağını silmek istediğinize emin misiniz?")) return;
+    const { error } = await supabase.from("customers").delete().eq("id", id);
+    if (error) { toast.error("Silme hatası"); return; }
+    toast.success("Çözüm ortağı silindi");
+    fetchData();
+  };
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
 
   return (
@@ -72,7 +80,13 @@ const CustomersView = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {customers.map((c) => (
-            <div key={c.id} className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all">
+            <div key={c.id} className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all relative group">
+              <button
+                onClick={() => handleDelete(c.id)}
+                className="absolute top-3 right-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-[#0AA2CD]/20 flex items-center justify-center text-[#0AA2CD] font-black text-sm">
                   {(c.short_name || c.name || "?").charAt(0).toUpperCase()}
