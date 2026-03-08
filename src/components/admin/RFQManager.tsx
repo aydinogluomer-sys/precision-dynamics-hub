@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, X, Send, Loader2, Trash2, Download, Paperclip } from "lucide-react";
+import { FileText, X, Send, Loader2, Trash2, Download, Paperclip, Filter } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
+const RFQCadPreview = lazy(() => import("./RFQCadPreview"));
 
 interface RFQ {
   id: string;
