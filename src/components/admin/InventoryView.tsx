@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Package, AlertTriangle, Scissors, Wrench, Loader2 } from "lucide-react";
+import { Package, AlertTriangle, Scissors, Wrench, Loader2, Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Tool {
   id: string;
@@ -24,11 +25,19 @@ interface RawMaterial {
   waste_rate: number;
 }
 
+const emptyTool = { code: "", name: "", category: "", stock: 0, min_stock: 5, unit_cost: 0, supplier: "" };
+const emptyMaterial = { code: "", name: "", spec: "", stock: 0, unit: "adet", unit_cost: 0, waste_rate: 0 };
+
 const InventoryView = () => {
   const [tab, setTab] = useState<"tools" | "materials">("tools");
   const [tools, setTools] = useState<Tool[]>([]);
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddTool, setShowAddTool] = useState(false);
+  const [showAddMat, setShowAddMat] = useState(false);
+  const [toolForm, setToolForm] = useState(emptyTool);
+  const [matForm, setMatForm] = useState(emptyMaterial);
+  const [saving, setSaving] = useState(false);
 
   const fetchData = async () => {
     const [{ data: tData }, { data: mData }] = await Promise.all([
@@ -78,18 +87,118 @@ const InventoryView = () => {
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2">
-        {[
-          { id: "tools" as const, label: "Kesici Takımlar" },
-          { id: "materials" as const, label: "Hammaddeler" },
-        ].map((t) => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${tab === t.id ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"}`}>
-            {t.label}
-          </button>
-        ))}
+      {/* Tabs + Add */}
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2">
+          {[
+            { id: "tools" as const, label: "Kesici Takımlar" },
+            { id: "materials" as const, label: "Hammaddeler" },
+          ].map((t) => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${tab === t.id ? "bg-[#0AA2CD] text-white" : "dark:bg-[#1E293B] bg-slate-100 dark:text-slate-400 text-slate-600 hover:text-[#0AA2CD]"}`}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <button onClick={() => tab === "tools" ? setShowAddTool(true) : setShowAddMat(true)}
+          className="flex items-center gap-1 px-3 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold hover:bg-[#0AA2CD]/90 transition-colors">
+          <Plus className="w-3.5 h-3.5" /> {tab === "tools" ? "Takım Ekle" : "Malzeme Ekle"}
+        </button>
       </div>
+
+      {/* Add Tool Modal */}
+      {showAddTool && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setShowAddTool(false)}>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-black dark:text-white text-slate-800">Yeni Kesici Takım</h3>
+              <button onClick={() => setShowAddTool(false)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kod</label>
+                  <input value={toolForm.code} onChange={(e) => setToolForm({ ...toolForm, code: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kategori</label>
+                  <input value={toolForm.category} onChange={(e) => setToolForm({ ...toolForm, category: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              </div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Takım Adı</label>
+                <input value={toolForm.name} onChange={(e) => setToolForm({ ...toolForm, name: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              <div className="grid grid-cols-3 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Stok</label>
+                  <input type="number" value={toolForm.stock} onChange={(e) => setToolForm({ ...toolForm, stock: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Min. Stok</label>
+                  <input type="number" value={toolForm.min_stock} onChange={(e) => setToolForm({ ...toolForm, min_stock: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Birim ₺</label>
+                  <input type="number" value={toolForm.unit_cost} onChange={(e) => setToolForm({ ...toolForm, unit_cost: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              </div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tedarikçi</label>
+                <input value={toolForm.supplier} onChange={(e) => setToolForm({ ...toolForm, supplier: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setShowAddTool(false)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
+              <button disabled={!toolForm.code || !toolForm.name || saving} onClick={async () => {
+                setSaving(true);
+                const { error } = await supabase.from("tool_inventory").insert({ code: toolForm.code, name: toolForm.name, category: toolForm.category || null, stock: toolForm.stock, min_stock: toolForm.min_stock, unit_cost: toolForm.unit_cost, supplier: toolForm.supplier || null });
+                setSaving(false);
+                if (error) { toast.error("Eklenemedi"); return; }
+                toast.success("Takım eklendi");
+                setToolForm(emptyTool);
+                setShowAddTool(false);
+              }} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center justify-center gap-1">
+                {saving && <Loader2 className="w-3 h-3 animate-spin" />} Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Material Modal */}
+      {showAddMat && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setShowAddMat(false)}>
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-black dark:text-white text-slate-800">Yeni Hammadde</h3>
+              <button onClick={() => setShowAddMat(false)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kod</label>
+                  <input value={matForm.code} onChange={(e) => setMatForm({ ...matForm, code: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Birim</label>
+                  <select value={matForm.unit} onChange={(e) => setMatForm({ ...matForm, unit: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm">
+                    {["adet", "kg", "metre", "m²", "litre"].map((u) => <option key={u} value={u}>{u}</option>)}
+                  </select></div>
+              </div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Malzeme Adı</label>
+                <input value={matForm.name} onChange={(e) => setMatForm({ ...matForm, name: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ebat / Spec</label>
+                <input value={matForm.spec} onChange={(e) => setMatForm({ ...matForm, spec: e.target.value })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              <div className="grid grid-cols-3 gap-3">
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Stok</label>
+                  <input type="number" value={matForm.stock} onChange={(e) => setMatForm({ ...matForm, stock: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Birim ₺</label>
+                  <input type="number" value={matForm.unit_cost} onChange={(e) => setMatForm({ ...matForm, unit_cost: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+                <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fire %</label>
+                  <input type="number" value={matForm.waste_rate} onChange={(e) => setMatForm({ ...matForm, waste_rate: Number(e.target.value) })} className="w-full mt-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border dark:text-white text-slate-800 text-sm" /></div>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setShowAddMat(false)} className="flex-1 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-300 text-slate-600 rounded-lg text-xs font-bold">İptal</button>
+              <button disabled={!matForm.code || !matForm.name || saving} onClick={async () => {
+                setSaving(true);
+                const { error } = await supabase.from("raw_materials").insert({ code: matForm.code, name: matForm.name, spec: matForm.spec || null, stock: matForm.stock, unit: matForm.unit, unit_cost: matForm.unit_cost, waste_rate: matForm.waste_rate });
+                setSaving(false);
+                if (error) { toast.error("Eklenemedi"); return; }
+                toast.success("Hammadde eklendi");
+                setMatForm(emptyMaterial);
+                setShowAddMat(false);
+              }} className="flex-1 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center justify-center gap-1">
+                {saving && <Loader2 className="w-3 h-3 animate-spin" />} Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {tab === "tools" ? (
         <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden">

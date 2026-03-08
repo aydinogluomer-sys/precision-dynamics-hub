@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, AlertTriangle, Wrench, Code, UserX, Package, Cog, CheckCircle2, X } from "lucide-react";
+import { Loader2, AlertTriangle, Wrench, Code, UserX, Package, Cog, CheckCircle2, X, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 interface Issue {
@@ -32,11 +32,16 @@ const categoryColors: Record<string, string> = {
   "Kritik Donanım": "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
+const emptyIssue = { id: "", job: "", category: "Takım Arızası", date: new Date().toISOString().slice(0, 10), severity: "normal", machine: "", detail: "", cost: 0 };
+
 const IssuesView = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [resolveModal, setResolveModal] = useState<Issue | null>(null);
   const [resolution, setResolution] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState(emptyIssue);
+  const [saving, setSaving] = useState(false);
 
   const fetchData = async () => {
     const { data } = await supabase.from("issues").select("*").order("created_at", { ascending: false });
@@ -61,7 +66,13 @@ const IssuesView = () => {
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="flex items-center justify-between">
+        <div /> {/* spacer */}
+        <button onClick={() => { setForm({ ...emptyIssue, id: `ISS-${String(issues.length + 1).padStart(3, "0")}` }); setShowAdd(true); }}
+          className="flex items-center gap-1 px-3 py-2 bg-[#0AA2CD] text-white rounded-lg text-xs font-bold hover:bg-[#0AA2CD]/90 transition-colors">
+          <Plus className="w-3.5 h-3.5" /> Yeni Olay
+        </button>
+      </div>
         {categories.map((cat) => {
           const Icon = categoryIcons[cat] || AlertTriangle;
           const count = issues.filter((i) => i.category === cat && i.status !== "resolved").length;
