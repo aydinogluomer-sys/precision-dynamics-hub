@@ -23,6 +23,7 @@ interface Props {
 
 const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const [saving, setSaving] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // RFQ form
