@@ -92,7 +92,7 @@ const AdminDashboard = () => {
 
       switch (activeTab) {
         case "dashboard": {
-          const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll] = await Promise.all([
+          const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll, wbsAll, meetAll] = await Promise.all([
             supabase.from("rfqs").select("*"),
             supabase.from("orders").select("*"),
             supabase.from("issues").select("*"),
@@ -104,6 +104,8 @@ const AdminDashboard = () => {
             supabase.from("raw_materials").select("*"),
             supabase.from("tool_inventory").select("*"),
             supabase.from("support_tickets").select("*"),
+            supabase.from("wbs").select("*"),
+            supabase.from("meetings").select("*"),
           ]);
 
           const rfqs = rfqAll.data || [];
