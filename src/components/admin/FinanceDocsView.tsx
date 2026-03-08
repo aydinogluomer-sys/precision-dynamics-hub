@@ -73,7 +73,15 @@ const emptyDoc = {
   due_date: "",
   notes: "",
   payment_status: "ödenmedi",
+  user_id: "",
 };
+
+interface CustomerProfile {
+  id: string;
+  full_name: string | null;
+  company: string | null;
+  email?: string;
+}
 
 const FinanceDocsView = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
