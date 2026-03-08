@@ -116,38 +116,48 @@ const FinanceDocsView = () => {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const generateAiInsights = (data: FinDoc[]) => {
-    if (!data.length) return;
-    const insights: string[] = [];
-    const totalSpend = data.reduce((s, d) => s + (d.total_amount || 0), 0);
-    const unpaid = data.filter(d => d.payment_status === "ödenmedi");
-    const unpaidTotal = unpaid.reduce((s, d) => s + (d.total_amount || 0), 0);
-    const categories = data.reduce((acc, d) => {
-      const cat = d.category || "Diğer";
-      acc[cat] = (acc[cat] || 0) + (d.total_amount || 0);
-      return acc;
-    }, {} as Record<string, number>);
-    const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
+  const generateAiInsights = async (data: FinDoc[], question?: string) => {
+    if (!data.length && !question) return;
+    setAiLoading(true);
+    try {
+      const docsSummary = data.map(d => ({
+        doc_type: d.doc_type,
+        vendor: d.vendor,
+        total_amount: d.total_amount,
+        category: d.category,
+        payment_status: d.payment_status,
+        doc_date: d.doc_date,
+        status: d.status,
+      }));
 
-    insights.push(`📊 Toplam belge tutarı: ₺${totalSpend.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — ${data.length} belge işlendi.`);
-    if (unpaid.length > 0) {
-      insights.push(`⚠️ ${unpaid.length} adet ödenmemiş belge tespit edildi. Toplam: ₺${unpaidTotal.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}. Nakit akışınızı olumsuz etkileyebilir.`);
+      const { data: result, error } = await supabase.functions.invoke("finance-ai", {
+        body: { documents: docsSummary, question: question || null },
+      });
+
+      if (error) throw error;
+      if (result?.error) {
+        if (result.error.includes("hız limiti")) toast.error(result.error);
+        else if (result.error.includes("kredi")) toast.error(result.error);
+        else throw new Error(result.error);
+        return;
+      }
+
+      const analysis = result?.analysis || "";
+      const lines = analysis.split("\n").filter((l: string) => l.trim().length > 0);
+      setAiInsights(lines);
+    } catch (e: any) {
+      console.error("AI insights error:", e);
+      toast.error("AI analizi yapılamadı");
+      // Fallback to basic insights
+      const insights: string[] = [];
+      const totalSpend = data.reduce((s, d) => s + (d.total_amount || 0), 0);
+      const unpaid = data.filter(d => d.payment_status === "ödenmedi");
+      insights.push(`📊 Toplam belge tutarı: ₺${totalSpend.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — ${data.length} belge.`);
+      if (unpaid.length > 0) insights.push(`⚠️ ${unpaid.length} adet ödenmemiş belge tespit edildi.`);
+      setAiInsights(insights);
+    } finally {
+      setAiLoading(false);
     }
-    if (topCategory) {
-      const pct = ((topCategory[1] / totalSpend) * 100).toFixed(1);
-      insights.push(`🏷️ En yüksek gider kalemi: "${topCategory[0]}" — toplam harcamanın %${pct}'i bu kategoride.`);
-    }
-    const vatTotal = data.reduce((s, d) => s + (d.vat_amount || 0), 0);
-    insights.push(`💰 Toplam KDV yükü: ₺${vatTotal.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — KDV iade potansiyeli değerlendirilebilir.`);
-    const pending = data.filter(d => d.status === "beklemede");
-    if (pending.length > 0) {
-      insights.push(`🔄 ${pending.length} belge henüz onay bekliyor. Hızlı onay süreci nakit akışını iyileştirir.`);
-    }
-    const vendors = [...new Set(data.map(d => d.vendor).filter(Boolean))];
-    if (vendors.length > 5) {
-      insights.push(`🤝 ${vendors.length} farklı tedarikçi ile çalışıyorsunuz. Konsolidasyon ile fiyat avantajı sağlanabilir.`);
-    }
-    setAiInsights(insights);
   };
 
   const handleAddDoc = async () => {
