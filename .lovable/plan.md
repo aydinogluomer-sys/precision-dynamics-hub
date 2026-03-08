@@ -1,71 +1,34 @@
 
 
-# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
+# Backend Test Results
 
-## Mevcut Durum
+## 1. `is_staff()` Function -- FIXED
+The migration was applied successfully. The function now correctly filters by `role IN ('admin', 'staff', 'production', 'quality')` instead of just checking for any role existence. Verified directly from the database.
 
-- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
-- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
+## 2. `app_role` Enum Values
+Current values: `admin`, `staff`, `production`, `quality`. No `customer` or `user` role exists in the enum, which means the current system is safe. However, if a `customer` role were ever added to the enum, the fix ensures it would not pass `is_staff()`.
 
-## Birleştirme Fikri
+## 3. RFQ Submissions -- Working
+The `rfqs` table has data flowing in correctly. Submissions from the Teklif Al page are inserting properly with all fields (service, material, quantity, notes, files).
 
-**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
+## 4. Edge Functions -- Auth Working
+- `finance-ai`: Returns 401 for unauthenticated requests (correct)
+- `ocr-invoice`: Same auth pattern (correct)
+- `parasut-sync`: Same auth pattern (correct)
 
-### Yapı: Adım 1'de CAD Dashboard'u Göm
+All three functions check for valid JWT, then verify admin role via `user_roles` table before proceeding.
 
-```text
-┌─────────────────────────────────────────────────────┐
-│  Header + Stepper (4 adım)                          │
-├────────────────────────────┬────────────────────────┤
-│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
-│  ┌──────────────────────┐  │  ┌──────────────────┐  │
-│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
-│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
-│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
-│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
-│  │ (toolbar, grid,      │  │  └──────────────────┘  │
-│  │  wireframe, renk,    │  │                        │
-│  │  fullscreen, gizmo)  │  │                        │
-│  └──────────────────────┘  │                        │
-│  ┌──────────────────────┐  │                        │
-│  │ Parça Tablosu        │  │                        │
-│  │ (çoklu dosya/parça)  │  │                        │
-│  └──────────────────────┘  │                        │
-├────────────────────────────┴────────────────────────┤
-│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
-└─────────────────────────────────────────────────────┘
-```
+## 5. Issues Found
 
-### Detaylar
+### Issue A: Files Not Uploaded to Storage
+The Teklif Al page only stores the **filename** in the `files` column (e.g., `["SB 4335-60.stl"]`). The actual CAD file is never uploaded to the `cad-uploads` storage bucket. This means staff cannot access the uploaded files later.
 
-1. **Adım 1 — Gelişmiş CAD Yükleme**:
-   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
-   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
-   - Dosya yüklenmeden önce: drag-drop alanı göster
-   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
-   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
+### Issue B: "Maks. 100 MB" Label May Be Inaccurate
+No file size validation exists in the code, and Supabase free plan defaults to 50 MB per file. The "100 MB" label on the upload area could be misleading.
 
-2. **Adım 2-4 — Mevcut akış korunur**:
-   - Özellikler, İnceleme, Gönderim adımları aynen kalır
-   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+### Issue C: No `user_id` on Most RFQs
+All recent RFQs have `user_id: null`, meaning they were submitted without authentication. The RLS policy "Customers can read own rfqs" (`auth.uid() = user_id`) won't match these records, so customers can't see their own submissions in the panel.
 
-3. **Sağ panel adaptasyonu**:
-   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
-   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
-
-4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
-   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
-
-### Teknik Değişiklikler
-
-| Dosya | İşlem |
-|-------|-------|
-| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
-| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
-| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
-
-### Avantajlar
-- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
-- Gereksiz sayfa duplikasyonu ortadan kalkar
-- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
+## Recommendation
+The most critical fix is **Issue A** (files not actually uploaded). Without it, the entire RFQ file attachment feature is non-functional. Issues B and C are secondary but should also be addressed.
 
