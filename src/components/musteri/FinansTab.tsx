@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, FileText, Download } from "lucide-react";
+import { Wallet, Download, Loader2 } from "lucide-react";
 import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface FinDoc {
   id: string;
@@ -37,6 +38,7 @@ const paymentLabel = (s: string | null) => {
 const FinansTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -50,6 +52,29 @@ const FinansTab = () => {
     fetch();
   }, []);
 
+  const handleDownload = async (doc: FinDoc) => {
+    if (!doc.file_urls || doc.file_urls.length === 0) return;
+    const path = doc.file_urls[0];
+
+    // If it's already a full URL, open directly
+    if (path.startsWith("http")) {
+      window.open(path, "_blank");
+      return;
+    }
+
+    setDownloadingId(doc.id);
+    const { data, error } = await supabase.storage
+      .from("finance-docs")
+      .createSignedUrl(path, 120);
+
+    setDownloadingId(null);
+    if (error || !data?.signedUrl) {
+      toast.error("Dosya indirme bağlantısı oluşturulamadı.");
+      return;
+    }
+    window.open(data.signedUrl, "_blank");
+  };
+
   if (loading) return (
     <div className="space-y-6">
       <SummarySkeleton />
@@ -57,7 +82,6 @@ const FinansTab = () => {
     </div>
   );
 
-  // Calculate summary
   const totalDebt = docs.filter(d => d.payment_status !== "ödendi").reduce((acc, d) => acc + (d.total_amount || 0), 0);
   const totalPaid = docs.filter(d => d.payment_status === "ödendi").reduce((acc, d) => acc + (d.total_amount || 0), 0);
 
@@ -120,9 +144,15 @@ const FinansTab = () => {
                 </td>
                 <td className="py-3">
                   {d.file_urls && d.file_urls.length > 0 && (
-                    <a href={d.file_urls[0]} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0"><Download size={14} /></Button>
-                    </a>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0"
+                      disabled={downloadingId === d.id}
+                      onClick={() => handleDownload(d)}
+                    >
+                      {downloadingId === d.id ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                    </Button>
                   )}
                 </td>
               </tr>

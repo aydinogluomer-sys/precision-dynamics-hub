@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2 } from "lucide-react";
+import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2, Info } from "lucide-react";
 import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
@@ -52,6 +52,13 @@ const OdemeTab = () => {
   const [showCardDialog, setShowCardDialog] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
+  // Çek form state
+  const [cekNo, setCekNo] = useState("");
+  const [cekBank, setCekBank] = useState("");
+  const [cekVade, setCekVade] = useState("");
+  const [cekTutar, setCekTutar] = useState("");
+  const [cekSubmitting, setCekSubmitting] = useState(false);
+
   useEffect(() => {
     const load = async () => {
       const { data } = await supabase
@@ -77,7 +84,42 @@ const OdemeTab = () => {
     } else if (paymentMethod === "havale") {
       setShowHavaleDialog(true);
     } else if (paymentMethod === "cek") {
-      setShowCekDialog(true);
+      openCekDialog();
+    }
+  };
+
+  const openCekDialog = () => {
+    setCekNo("");
+    setCekBank("");
+    setCekVade("");
+    setCekTutar(selectedPayment?.total_amount?.toString() || "");
+    setShowCekDialog(true);
+  };
+
+  const handleCekSubmit = async () => {
+    if (!cekNo.trim() || !cekBank.trim() || !cekVade) {
+      toast.error("Lütfen tüm alanları doldurun.");
+      return;
+    }
+    setCekSubmitting(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setCekSubmitting(false); toast.error("Oturum bulunamadı."); return; }
+
+    const message = `Çek Bildirimi\nÇek No: ${cekNo}\nBanka: ${cekBank}\nVade: ${cekVade}\nTutar: ₺${cekTutar}\nFatura: ${selectedPayment?.doc_number || "Genel"}`;
+
+    const { error } = await supabase.from("support_tickets").insert({
+      user_id: user.id,
+      subject: `Çek Bildirimi — ${selectedPayment?.doc_number || "Genel"}`,
+      message,
+      priority: "normal",
+    });
+
+    setCekSubmitting(false);
+    if (error) {
+      toast.error("Çek bildirimi gönderilemedi.");
+    } else {
+      setShowCekDialog(false);
+      toast.success("Çek bilgileriniz iletildi. Ekibimiz sizinle iletişime geçecektir.");
     }
   };
 
@@ -105,6 +147,10 @@ const OdemeTab = () => {
     return new Date(due) < new Date();
   };
 
+  const paymentInfoText = selectedPayment
+    ? `${selectedPayment.doc_number || selectedPayment.id.slice(0, 8)} — ₺${(selectedPayment.total_amount || 0).toLocaleString("tr-TR")}`
+    : "Genel ödeme bilgisi";
+
   return (
     <div className="space-y-6">
       {/* Payment Method Buttons - Always visible */}
@@ -112,7 +158,7 @@ const OdemeTab = () => {
         <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider text-muted-foreground">Ödeme Yöntemleri</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
-            onClick={() => { setSelectedPayment(null); setPaymentMethod("card"); setShowCardDialog(true); }}
+            onClick={() => { setSelectedPayment(null); setShowCardDialog(true); }}
             className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
           >
             <CreditCard size={20} className="text-primary shrink-0" />
@@ -121,20 +167,17 @@ const OdemeTab = () => {
               <p className="text-xs text-muted-foreground">Visa, Mastercard, Stripe</p>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
-              {/* Visa */}
               <svg viewBox="0 0 780 500" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
                 <rect width="780" height="500" rx="20" fill="#1A1F71"/>
                 <path d="M293.2 348.7l33.4-195.8h53.4l-33.4 195.8H293.2zm224.5-191c-10.5-4-27.2-8.3-47.9-8.3-52.8 0-90 26.6-90.3 64.7-.3 28.2 26.5 43.9 46.8 53.3 20.8 9.6 27.8 15.8 27.7 24.4-.1 13.2-16.6 19.2-31.9 19.2-21.4 0-32.7-3-50.3-10.2l-6.9-3.1-7.5 44c12.5 5.5 35.5 10.2 59.4 10.5 56.2 0 92.7-26.3 93.1-67 .2-22.3-14-39.3-44.8-53.3-18.6-9.1-30.1-15.1-30-24.3 0-8.1 9.7-16.8 30.6-16.8 17.4-.3 30.1 3.5 39.9 7.5l4.8 2.3 7.3-42.8zm139.4-4.8h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.5h56.2s9.2-24.2 11.3-29.5h68.6c1.6 6.9 6.5 29.5 6.5 29.5h49.7l-43.6-195.8zm-65.9 126.3c4.4-11.3 21.5-55 21.5-55-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.3 47.2 12.5 56.8h-44.7zM327.1 152.9l-52.3 133.5-5.6-27.1c-9.7-31.2-39.9-65-73.7-82l47.9 171.5h56.6l84.2-195.8h-57.1z" fill="white"/>
                 <path d="M221.5 152.9h-86.2l-.7 3.8c67.1 16.2 111.5 55.4 129.9 102.5l-18.7-90c-3.2-12.4-12.7-15.8-24.3-16.3z" fill="#F7B600"/>
               </svg>
-              {/* Mastercard */}
               <svg viewBox="0 0 48 32" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="32" rx="4" fill="#252525"/>
                 <circle cx="19" cy="16" r="8" fill="#EB001B"/>
                 <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
                 <path d="M24 10.3a8 8 0 0 1 0 11.4 8 8 0 0 1 0-11.4z" fill="#FF5F00"/>
               </svg>
-              {/* Stripe */}
               <svg viewBox="0 0 48 32" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="32" rx="4" fill="#635BFF"/>
                 <path d="M22.5 13.3c0-.8.7-1.1 1.8-1.1 1.6 0 3.6.5 5.2 1.4V9.2c-1.7-.7-3.5-1-5.2-1-4.3 0-7.1 2.2-7.1 6 0 5.8 8 4.9 8 7.4 0 1-.8 1.3-2 1.3-1.7 0-4-.7-5.7-1.7v4.5c1.9.8 3.9 1.2 5.7 1.2 4.4 0 7.4-2.2 7.4-6 0-6.3-8-5.2-8-7.6z" fill="white"/>
@@ -152,7 +195,7 @@ const OdemeTab = () => {
             </div>
           </button>
           <button
-            onClick={() => { setSelectedPayment(null); setShowCekDialog(true); }}
+            onClick={() => { setSelectedPayment(null); openCekDialog(); }}
             className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
           >
             <FileCheck size={20} className="text-primary shrink-0" />
@@ -246,14 +289,13 @@ const OdemeTab = () => {
           </table>
         </div>
       )}
+
       {/* Method Selection Dialog */}
       <Dialog open={showMethodDialog} onOpenChange={setShowMethodDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Ödeme Yöntemi Seçin</DialogTitle>
-            <DialogDescription>
-              {selectedPayment?.doc_number || ""} — ₺{(selectedPayment?.total_amount || 0).toLocaleString("tr-TR")}
-            </DialogDescription>
+            <DialogDescription>{paymentInfoText}</DialogDescription>
           </DialogHeader>
           <RadioGroup value={paymentMethod || ""} onValueChange={(v) => setPaymentMethod(v as "card" | "havale" | "cek")} className="space-y-3 mt-2">
             <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
@@ -287,37 +329,39 @@ const OdemeTab = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Card Payment Dialog (Stripe - placeholder) */}
+      {/* Card Payment Dialog — "Yakında aktif" placeholder */}
       <Dialog open={showCardDialog} onOpenChange={setShowCardDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Kart ile Ödeme</DialogTitle>
-            <DialogDescription>
-              {selectedPayment?.doc_number || ""} — ₺{(selectedPayment?.total_amount || 0).toLocaleString("tr-TR")}
-            </DialogDescription>
+            <DialogDescription>{paymentInfoText}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-2">
-            <div className="flex items-center gap-3">
-              {/* Visa */}
+            <div className="flex items-center gap-3 justify-center">
               <svg viewBox="0 0 780 500" className="h-8" xmlns="http://www.w3.org/2000/svg">
                 <rect width="780" height="500" rx="20" fill="#1A1F71"/>
                 <path d="M293.2 348.7l33.4-195.8h53.4l-33.4 195.8H293.2zm224.5-191c-10.5-4-27.2-8.3-47.9-8.3-52.8 0-90 26.6-90.3 64.7-.3 28.2 26.5 43.9 46.8 53.3 20.8 9.6 27.8 15.8 27.7 24.4-.1 13.2-16.6 19.2-31.9 19.2-21.4 0-32.7-3-50.3-10.2l-6.9-3.1-7.5 44c12.5 5.5 35.5 10.2 59.4 10.5 56.2 0 92.7-26.3 93.1-67 .2-22.3-14-39.3-44.8-53.3-18.6-9.1-30.1-15.1-30-24.3 0-8.1 9.7-16.8 30.6-16.8 17.4-.3 30.1 3.5 39.9 7.5l4.8 2.3 7.3-42.8zm139.4-4.8h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.5h56.2s9.2-24.2 11.3-29.5h68.6c1.6 6.9 6.5 29.5 6.5 29.5h49.7l-43.6-195.8zm-65.9 126.3c4.4-11.3 21.5-55 21.5-55-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.3 47.2 12.5 56.8h-44.7zM327.1 152.9l-52.3 133.5-5.6-27.1c-9.7-31.2-39.9-65-73.7-82l47.9 171.5h56.6l84.2-195.8h-57.1z" fill="white"/>
                 <path d="M221.5 152.9h-86.2l-.7 3.8c67.1 16.2 111.5 55.4 129.9 102.5l-18.7-90c-3.2-12.4-12.7-15.8-24.3-16.3z" fill="#F7B600"/>
               </svg>
-              {/* Mastercard */}
               <svg viewBox="0 0 48 32" className="h-8" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="32" rx="4" fill="#252525"/>
                 <circle cx="19" cy="16" r="8" fill="#EB001B"/>
                 <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
                 <path d="M24 10.3a8 8 0 0 1 0 11.4 8 8 0 0 1 0-11.4z" fill="#FF5F00"/>
               </svg>
-              {/* Stripe */}
               <svg viewBox="0 0 48 32" className="h-8" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="32" rx="4" fill="#635BFF"/>
                 <path d="M22.5 13.3c0-.8.7-1.1 1.8-1.1 1.6 0 3.6.5 5.2 1.4V9.2c-1.7-.7-3.5-1-5.2-1-4.3 0-7.1 2.2-7.1 6 0 5.8 8 4.9 8 7.4 0 1-.8 1.3-2 1.3-1.7 0-4-.7-5.7-1.7v4.5c1.9.8 3.9 1.2 5.7 1.2 4.4 0 7.4-2.2 7.4-6 0-6.3-8-5.2-8-7.6z" fill="white"/>
               </svg>
             </div>
-            <Button variant="outline" className="w-full" onClick={() => { setShowCardDialog(false); setShowMethodDialog(true); }}>
+            <div className="flex items-start gap-3 bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg">
+              <Info size={18} className="text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-amber-700 dark:text-amber-400">Stripe ile kart ödemesi yakında aktif olacak</p>
+                <p className="text-xs text-muted-foreground mt-1">Şu an için Havale/EFT veya Çek ile ödeme yapabilirsiniz.</p>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full" onClick={() => { setShowCardDialog(false); if (selectedPayment) setShowMethodDialog(true); }}>
               Geri Dön
             </Button>
           </div>
@@ -335,7 +379,7 @@ const OdemeTab = () => {
           </DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="bg-muted/30 border border-border p-3 text-sm">
-              <span className="font-medium">Fatura:</span> {selectedPayment?.doc_number || selectedPayment?.id.slice(0, 8)} — <span className="font-mono font-semibold">₺{(selectedPayment?.total_amount || 0).toLocaleString("tr-TR")}</span>
+              <span className="font-medium">Fatura:</span> {paymentInfoText}
             </div>
             {BANK_ACCOUNTS.map((acc, i) => (
               <div key={i} className="border border-border p-4 space-y-2">
@@ -354,7 +398,7 @@ const OdemeTab = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Çek Dialog */}
+      {/* Çek Dialog — with controlled form + Supabase save */}
       <Dialog open={showCekDialog} onOpenChange={setShowCekDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -365,26 +409,26 @@ const OdemeTab = () => {
           </DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="bg-muted/30 border border-border p-3 text-sm">
-              <span className="font-medium">Fatura:</span> {selectedPayment?.doc_number || selectedPayment?.id.slice(0, 8)} — <span className="font-mono font-semibold">₺{(selectedPayment?.total_amount || 0).toLocaleString("tr-TR")}</span>
+              <span className="font-medium">Fatura:</span> {paymentInfoText}
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Çek Numarası</Label>
-              <Input placeholder="Çek seri numarası" />
+              <Input placeholder="Çek seri numarası" value={cekNo} onChange={e => setCekNo(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Banka</Label>
-              <Input placeholder="Çeki düzenleyen banka" />
+              <Input placeholder="Çeki düzenleyen banka" value={cekBank} onChange={e => setCekBank(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Vade Tarihi</Label>
-              <Input type="date" />
+              <Input type="date" value={cekVade} onChange={e => setCekVade(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Tutar (₺)</Label>
-              <Input type="number" defaultValue={selectedPayment?.total_amount || 0} />
+              <Input type="number" value={cekTutar} onChange={e => setCekTutar(e.target.value)} />
             </div>
-            <Button className="w-full" onClick={() => { setShowCekDialog(false); toast.success("Çek bilgileriniz iletildi. Ekibimiz sizinle iletişime geçecektir."); }}>
-              Çek Bilgilerini Gönder
+            <Button className="w-full" disabled={cekSubmitting} onClick={handleCekSubmit}>
+              {cekSubmitting ? <><Loader2 size={14} className="animate-spin mr-2" /> Gönderiliyor...</> : "Çek Bilgilerini Gönder"}
             </Button>
           </div>
         </DialogContent>
