@@ -220,11 +220,40 @@ const DashboardHome = () => {
       name, Tamamlanan: v.completed, Hedef: v.total,
     }));
 
+    // Recent activity feed
+    const timeAgo = (d: string) => {
+      const diff = Date.now() - new Date(d).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}dk önce`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}sa önce`;
+      return `${Math.floor(hrs / 24)}g önce`;
+    };
+    const recentActivity: ActivityItem[] = [
+      ...rfqs.slice(-8).map((r: any) => ({
+        id: `rfq-${r.id}`, type: "rfq" as const, title: `Teklif: ${r.id}`,
+        subtitle: `${r.customer || "—"} • ${r.service || "—"}`,
+        time: r.created_at, color: C.cyan, icon: FileText, tab: "rfq",
+      })),
+      ...orders.slice(-8).map((o: any) => ({
+        id: `ord-${o.id}`, type: "order" as const, title: `Sipariş: ${o.id}`,
+        subtitle: `${o.part_name || "—"} • ${o.customer || "—"}`,
+        time: o.created_at, color: C.orange, icon: Package, tab: "orders",
+      })),
+      ...tickets.slice(-8).map((t: any) => ({
+        id: `tkt-${t.id}`, type: "ticket" as const, title: t.subject || "Destek Talebi",
+        subtitle: `${t.priority || "normal"} öncelik`,
+        time: t.created_at, color: C.purple, icon: MessageSquare, tab: "support",
+      })),
+    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+     .slice(0, 12)
+     .map((a) => ({ ...a, time: timeAgo(a.time) }));
+
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
-      topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion,
+      topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
     };
   }, []);
 
