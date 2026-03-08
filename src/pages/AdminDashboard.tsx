@@ -281,6 +281,7 @@ const AdminDashboard = () => {
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           onExportCSV={handleExportCSV}
           onNavigate={setActiveTab}
+          exporting={exporting}
           mobileSidebar={
             <MobileSidebar
               activeTab={activeTab}
