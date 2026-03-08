@@ -347,12 +347,61 @@ const DashboardHome = () => {
      .slice(0, 12)
      .map((a) => ({ ...a, time: timeAgo(a.time) }));
 
+    // Cash flow forecast — actual months + 3 month projection
+    const monthNames = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+    const now = new Date();
+    const cfMap: Record<string, { income: number; expense: number }> = {};
+    fins.forEach((f: any) => {
+      if (!f.doc_date) return;
+      const d = new Date(f.doc_date);
+      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, "0")}`;
+      if (!cfMap[key]) cfMap[key] = { income: 0, expense: 0 };
+      const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
+      if (isIncome) cfMap[key].income += Number(f.total_amount) || 0;
+      else cfMap[key].expense += Number(f.total_amount) || 0;
+    });
+    const sortedMonths = Object.keys(cfMap).sort();
+    const avgIncome = sortedMonths.length > 0 ? sortedMonths.reduce((s, k) => s + cfMap[k].income, 0) / sortedMonths.length : 50000;
+    const avgExpense = sortedMonths.length > 0 ? sortedMonths.reduce((s, k) => s + cfMap[k].expense, 0) / sortedMonths.length : 30000;
+    let cumulative = 0;
+    const cashFlowForecast: DashData["cashFlowForecast"] = [];
+    // Actual months
+    sortedMonths.forEach((key) => {
+      const [y, m] = key.split("-").map(Number);
+      const net = cfMap[key].income - cfMap[key].expense;
+      cumulative += net;
+      cashFlowForecast.push({
+        month: `${monthNames[m]} ${String(y).slice(2)}`,
+        Gelir: Math.round(cfMap[key].income),
+        Gider: Math.round(cfMap[key].expense),
+        Net: Math.round(net),
+        Kümülatif: Math.round(cumulative),
+        Bütçe: Math.round(avgIncome * 0.85), // budget target at 85% of avg income
+      });
+    });
+    // 3 month forecast
+    for (let i = 1; i <= 3; i++) {
+      const futureDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const projIncome = Math.round(avgIncome * (1 + (Math.random() - 0.4) * 0.2));
+      const projExpense = Math.round(avgExpense * (1 + (Math.random() - 0.4) * 0.15));
+      const net = projIncome - projExpense;
+      cumulative += net;
+      cashFlowForecast.push({
+        month: `${monthNames[futureDate.getMonth()]} ${String(futureDate.getFullYear()).slice(2)}*`,
+        Gelir: projIncome,
+        Gider: projExpense,
+        Net: Math.round(net),
+        Kümülatif: Math.round(cumulative),
+        Bütçe: Math.round(avgIncome * 0.85),
+      });
+    }
+
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders, paidAmount, unpaidAmount, overduePayments, profitMargin, vatCollected },
       topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
-      expenseByCategory, paymentStatus, customerFinancials,
+      expenseByCategory, paymentStatus, customerFinancials, cashFlowForecast,
     };
   }, []);
 
