@@ -1219,15 +1219,65 @@ const DashboardHome = () => {
                 variant="outline"
                 className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
                 onClick={() => {
-                  // Generate printable HTML and trigger print/PDF
-                  const invoiceRows = customerDetail.invoices.map((inv: any) =>
-                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_number || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.title || "Fatura"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_date || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.payment_status === "ödendi" ? "✅ Ödendi" : "⏳ Bekliyor"}</td></tr>`
-                  ).join("");
-                  const orderRows = customerDetail.custOrders.map((ord: any) =>
-                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.id}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.quantity || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.status || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.deadline || "—"}</td></tr>`
+                  const totalInvoiceAmount = customerDetail.invoices.reduce((s: number, inv: any) => s + (Number(inv.total_amount) || 0), 0);
+                  const totalPaidAmount = customerDetail.payments.reduce((s: number, p: any) => s + (Number(p.total_amount) || 0), 0);
+                  const totalUnpaidAmount = customerDetail.unpaid.reduce((s: number, u: any) => s + (Number(u.total_amount) || 0), 0);
+
+                  const invoiceRows = customerDetail.invoices.map((inv: any, idx: number) =>
+                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#64748b">${inv.doc_number || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:600">${inv.title || "Fatura"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.due_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;font-weight:700">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${inv.payment_status === "ödendi" ? "background:#dcfce7;color:#16a34a" : "background:#fef2f2;color:#dc2626"}">${inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}</span></td></tr>`
                   ).join("");
 
-                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title><style>body{font-family:system-ui,sans-serif;padding:40px;color:#1e293b}h1{font-size:18px;margin-bottom:4px}h2{font-size:14px;color:#64748b;margin-top:28px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:8px 6px;background:#f1f5f9;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}.summary{display:flex;gap:16px;margin:16px 0}.card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;flex:1}.card .num{font-size:20px;font-weight:800;font-family:monospace}.card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}@media print{body{padding:20px}}</style></head><body><h1>${selectedCustomer}</h1><p style="font-size:12px;color:#94a3b8">Finansal Rapor — ${new Date().toLocaleDateString("tr-TR")}</p><div class="summary"><div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Fatura</div></div><div class="card"><div class="num">${customerDetail.payments.length}</div><div class="lbl">Ödenen</div></div><div class="card"><div class="num">${customerDetail.unpaid.length}</div><div class="lbl">Bekleyen</div></div><div class="card"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş</div></div></div>${customerDetail.invoices.length > 0 ? `<h2>Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody></table>` : ""}${customerDetail.custOrders.length > 0 ? `<h2>Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th>Adet</th><th>Durum</th><th>Termin</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}</body></html>`;
+                  const orderRows = customerDetail.custOrders.map((ord: any, idx: number) => {
+                    const sColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? "#16a34a" : ord.status === "Üretimde" ? "#0688AD" : ord.status === "İptal" ? "#dc2626" : "#ea580c";
+                    return `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;font-weight:600">${ord.id}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace">${ord.quantity || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;background:${sColor}15;color:${sColor}">${ord.status || "—"}</span></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.order_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.deadline || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center"><div style="background:#e2e8f0;border-radius:4px;height:6px;width:60px;overflow:hidden"><div style="background:${sColor};height:100%;width:${ord.progress || 0}%"></div></div></td></tr>`;
+                  }).join("");
+
+                  const paymentRows = customerDetail.payments.map((pay: any, idx: number) =>
+                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f0fdf4"}"><td style="padding:8px 10px;border-bottom:1px solid #dcfce7">✅</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;font-weight:600">${pay.title || pay.doc_number || "Ödeme"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;color:#64748b">${pay.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;text-align:right;font-family:monospace;font-weight:700;color:#16a34a">₺${(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</td></tr>`
+                  ).join("");
+
+                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1e293b;background:#fff}
+  .header{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:white;padding:32px 40px;display:flex;align-items:center;gap:20px}
+  .logo-box{width:56px;height:56px;background:#0AA2CD;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:white;letter-spacing:-1px}
+  .header h1{font-size:20px;font-weight:800;margin-bottom:2px}
+  .header p{font-size:11px;color:#94a3b8}
+  .content{padding:32px 40px}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 28px}
+  .card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+  .card .num{font-size:22px;font-weight:800;font-family:'Courier New',monospace}
+  .card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+  .card.green .num{color:#16a34a} .card.red .num{color:#dc2626} .card.blue .num{color:#0688AD}
+  h2{font-size:13px;color:#475569;margin:24px 0 10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+  th{text-align:left;padding:10px;background:#f1f5f9;font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#64748b;border-bottom:2px solid #e2e8f0}
+  .footer{margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between}
+  @media print{body{padding:0}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<div class="header">
+  <div class="logo-box">MT</div>
+  <div>
+    <h1>${selectedCustomer}</h1>
+    <p>MAS Technic Precision — Finansal Rapor • ${new Date().toLocaleDateString("tr-TR")} • Rapor No: FR-${Date.now().toString(36).toUpperCase()}</p>
+  </div>
+</div>
+<div class="content">
+  <div class="summary">
+    <div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Toplam Fatura</div></div>
+    <div class="card green"><div class="num">₺${totalPaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Ödenen Tutar</div></div>
+    <div class="card red"><div class="num">₺${totalUnpaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Bekleyen Tutar</div></div>
+    <div class="card blue"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş Adedi</div></div>
+  </div>
+  ${customerDetail.invoices.length > 0 ? `<h2>📄 Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th>Vade</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody><tfoot><tr style="background:#f1f5f9"><td colspan="4" style="padding:10px;font-weight:700;font-size:11px">TOPLAM</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px">₺${totalInvoiceAmount.toLocaleString("tr-TR")}</td><td></td></tr></tfoot></table>` : ""}
+  ${customerDetail.payments.length > 0 ? `<h2>💰 Ödeme Geçmişi</h2><table><thead><tr><th style="width:30px"></th><th>Açıklama</th><th>Tarih</th><th style="text-align:right">Tutar</th></tr></thead><tbody>${paymentRows}</tbody><tfoot><tr style="background:#f0fdf4"><td></td><td colspan="2" style="padding:10px;font-weight:700;font-size:11px;color:#16a34a">TOPLAM ÖDENEN</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px;color:#16a34a">₺${totalPaidAmount.toLocaleString("tr-TR")}</td></tr></tfoot></table>` : ""}
+  ${customerDetail.custOrders.length > 0 ? `<h2>📦 Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th style="text-align:center">Adet</th><th>Durum</th><th>Sipariş Tarihi</th><th>Termin</th><th style="text-align:center">İlerleme</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}
+  <div class="footer">
+    <span>MAS Technic Precision Manufacturing • Bu rapor otomatik olarak oluşturulmuştur.</span>
+    <span>${new Date().toLocaleDateString("tr-TR")} ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</span>
+  </div>
+</div></body></html>`;
 
                   const printWindow = window.open("", "_blank");
                   if (printWindow) {
