@@ -134,6 +134,7 @@ type DashData = {
   recentActivity: ActivityItem[];
   expenseByCategory: { name: string; value: number; color: string }[];
   paymentStatus: { name: string; value: number; color: string }[];
+  customerFinancials: { name: string; income: number; expense: number; net: number; balance: number; orders: number }[];
 };
 
 /* ── Animation variants ── */
@@ -240,6 +241,48 @@ const DashboardHome = () => {
       .slice(0, 6)
       .map((c: any) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
 
+    // Customer-based financial breakdown
+    const custFinMap: Record<string, { income: number; expense: number; orders: number; balance: number }> = {};
+    // Map orders per customer
+    orders.forEach((o: any) => {
+      const cName = o.customer || "Belirsiz";
+      if (!custFinMap[cName]) custFinMap[cName] = { income: 0, expense: 0, orders: 0, balance: 0 };
+      custFinMap[cName].orders++;
+    });
+    // Map financial docs — use vendor for expenses, title-match or general for income
+    fins.forEach((f: any) => {
+      const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
+      const vendor = f.vendor || "Belirsiz";
+      // Try to match income to a customer from orders
+      if (isIncome) {
+        // Match by title containing customer name or use vendor
+        let matched = false;
+        for (const cName of Object.keys(custFinMap)) {
+          if (cName !== "Belirsiz" && (f.title?.includes(cName) || f.notes?.includes(cName))) {
+            custFinMap[cName].income += Number(f.total_amount) || 0;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          if (!custFinMap[vendor]) custFinMap[vendor] = { income: 0, expense: 0, orders: 0, balance: 0 };
+          custFinMap[vendor].income += Number(f.total_amount) || 0;
+        }
+      }
+    });
+    // Merge customer balances
+    custs.forEach((c: any) => {
+      const cName = c.short_name || c.company || c.name || "?";
+      if (custFinMap[cName]) {
+        custFinMap[cName].balance = Number(c.balance) || 0;
+      }
+    });
+    const customerFinancials = Object.entries(custFinMap)
+      .map(([name, v]) => ({ name, income: v.income, expense: v.expense, net: v.income - v.expense, balance: v.balance, orders: v.orders }))
+      .filter((c) => c.income > 0 || c.orders > 0 || c.balance !== 0)
+      .sort((a, b) => b.income - a.income)
+      .slice(0, 10);
+
     const rfqByMonth: Record<string, { total: number; approved: number }> = {};
     rfqs.forEach((r: any) => {
       const m = r.date ? new Date(r.date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
@@ -301,7 +344,7 @@ const DashboardHome = () => {
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders, paidAmount, unpaidAmount, overduePayments, profitMargin, vatCollected },
       topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
-      expenseByCategory, paymentStatus,
+      expenseByCategory, paymentStatus, customerFinancials,
     };
   }, []);
 
@@ -677,6 +720,84 @@ const DashboardHome = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* ── CUSTOMER FINANCIAL TABLE ── */}
+      {data.customerFinancials.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className={`${cardBase} p-5 cursor-pointer`} onClick={() => navigateTo("customers")}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Müşteri Bazlı Gelir-Gider Karşılaştırması</h3>
+              <span className="text-[9px] px-2 py-0.5 rounded-full dark:bg-[#0AA2CD]/10 bg-[#0AA2CD]/10 text-[#0AA2CD] font-bold">Top {data.customerFinancials.length}</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[9px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
+                    <th className="text-left py-2.5 pr-3">Müşteri</th>
+                    <th className="text-right py-2.5 px-3 font-mono">Sipariş</th>
+                    <th className="text-right py-2.5 px-3 font-mono">Gelir (₺)</th>
+                    <th className="text-right py-2.5 px-3 font-mono hidden sm:table-cell">Bakiye (₺)</th>
+                    <th className="text-right py-2.5 pl-3 font-mono">Durum</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.customerFinancials.map((c, i) => {
+                    const maxIncome = data.customerFinancials[0]?.income || 1;
+                    const barW = maxIncome > 0 ? (c.income / maxIncome) * 100 : 0;
+                    return (
+                      <tr key={c.name} className="dark:border-[#334155]/50 border-slate-100 border-b last:border-0 dark:hover:bg-white/5 hover:bg-slate-50 transition-colors">
+                        <td className="py-2.5 pr-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white shrink-0" style={{ backgroundColor: [C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple, C.orange, C.amber, C.pink, C.lime][i] || C.slate }}>
+                              {(i + 1)}
+                            </div>
+                            <span className="text-[11px] font-bold dark:text-white text-slate-800 truncate max-w-[120px] sm:max-w-[180px]">{c.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <span className="text-[11px] font-bold dark:text-slate-300 text-slate-600 font-mono tabular-nums">{c.orders}</span>
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <div className="w-16 h-1.5 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden hidden md:block">
+                              <div className="h-full rounded-full" style={{ width: `${barW}%`, backgroundColor: C.emerald }} />
+                            </div>
+                            <span className="text-[11px] font-bold dark:text-emerald-400 text-emerald-600 font-mono tabular-nums">{c.income.toLocaleString("tr-TR")}</span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3 text-right hidden sm:table-cell">
+                          <span className={`text-[11px] font-bold font-mono tabular-nums ${c.balance > 0 ? "dark:text-amber-400 text-amber-600" : c.balance < 0 ? "dark:text-red-400 text-red-600" : "dark:text-slate-400 text-slate-500"}`}>
+                            {c.balance !== 0 ? c.balance.toLocaleString("tr-TR") : "—"}
+                          </span>
+                        </td>
+                        <td className="py-2.5 pl-3 text-right">
+                          <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                            c.balance > 0 ? "bg-amber-500/10 text-amber-400" : c.income > 0 ? "bg-emerald-500/10 text-emerald-400" : "dark:bg-slate-700/50 bg-slate-100 dark:text-slate-400 text-slate-500"
+                          }`}>
+                            {c.balance > 0 ? "Alacak" : c.income > 0 ? "Temiz" : "Yeni"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {data.customerFinancials.length > 0 && (
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t dark:border-[#334155] border-slate-200">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">Toplam Müşteri Geliri:</span>
+                  <span className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">{data.customerFinancials.reduce((s, c) => s + c.income, 0).toLocaleString("tr-TR")} ₺</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">Toplam Alacak:</span>
+                  <span className="text-[11px] font-black dark:text-amber-400 text-amber-600 font-mono">{data.customerFinancials.reduce((s, c) => s + Math.max(c.balance, 0), 0).toLocaleString("tr-TR")} ₺</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
