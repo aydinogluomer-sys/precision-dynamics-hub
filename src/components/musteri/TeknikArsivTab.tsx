@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Loader2, FolderOpen, Upload, FileCode, FileText, Download } from "lucide-react";
 import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
+import { lazy, Suspense } from "react";
+
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
 
 interface CustomerFile {
   id: string;
@@ -23,6 +26,12 @@ const fileIcon = (type: string | null) => {
     case "cad": case "step": case "stp": case "iges": return FileCode;
     default: return FileText;
   }
+};
+
+const CAD_EXTS = ["stl", "obj", "step", "stp", "iges", "igs"];
+const isCadFile = (name: string) => {
+  const ext = name.split(".").pop()?.toLowerCase() || "";
+  return CAD_EXTS.includes(ext);
 };
 
 const TeknikArsivTab = () => {
@@ -111,19 +120,28 @@ const TeknikArsivTab = () => {
           {files.map((f) => {
             const Icon = fileIcon(f.file_type);
             return (
-              <div key={f.id} className="flex items-center gap-4 p-3 border border-border bg-background hover:border-primary/20 transition-colors">
-                <Icon size={20} className="text-muted-foreground shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{f.file_name}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {new Date(f.created_at).toLocaleDateString("tr-TR")}
-                    {f.version && f.version > 1 && ` · v${f.version}`}
-                  </p>
+              <div key={f.id} className="border border-border bg-background hover:border-primary/20 transition-colors rounded-lg overflow-hidden">
+                <div className="flex items-center gap-4 p-3">
+                  <Icon size={20} className="text-muted-foreground shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{f.file_name}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {new Date(f.created_at).toLocaleDateString("tr-TR")}
+                      {f.version && f.version > 1 && ` · v${f.version}`}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="text-[10px] uppercase">{f.file_type || "dosya"}</Badge>
+                  <a href={f.signedUrl || "#"} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" variant="ghost" className="h-8 w-8 p-0" disabled={!f.signedUrl}><Download size={14} /></Button>
+                  </a>
                 </div>
-                <Badge variant="outline" className="text-[10px] uppercase">{f.file_type || "dosya"}</Badge>
-                <a href={f.signedUrl || "#"} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0" disabled={!f.signedUrl}><Download size={14} /></Button>
-                </a>
+                {f.signedUrl && isCadFile(f.file_name) && (
+                  <div className="px-3 pb-3">
+                    <Suspense fallback={<div className="flex justify-center py-3"><Loader2 className="w-4 h-4 animate-spin text-primary" /></div>}>
+                      <CustomerCadPreview signedUrl={f.signedUrl} fileName={f.file_name} />
+                    </Suspense>
+                  </div>
+                )}
               </div>
             );
           })}
