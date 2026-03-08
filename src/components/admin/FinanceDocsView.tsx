@@ -216,12 +216,26 @@ const FinanceDocsView = () => {
       payment_status: formData.payment_status,
       source: "manuel",
       status: "beklemede",
+      user_id: formData.user_id || null,
     } as any);
 
     if (error) {
       toast.error("Belge eklenemedi: " + error.message);
     } else {
       toast.success("Belge başarıyla eklendi");
+
+      // Send notification to customer with amount
+      if (formData.user_id) {
+        const docLabel = DOC_TYPES.find(t => t.value === formData.doc_type)?.label || formData.doc_type;
+        const dueDateStr = formData.due_date ? ` Vade: ${new Date(formData.due_date).toLocaleDateString("tr-TR")}` : "";
+        await supabase.from("notifications").insert({
+          user_id: formData.user_id,
+          type: "finance",
+          title: `Yeni ${docLabel}: ₺${totalAmt.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}`,
+          message: `${docNum} numaralı ${docLabel.toLowerCase()} oluşturuldu. Tutar: ₺${totalAmt.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}.${dueDateStr}`,
+        });
+      }
+
       setShowAddModal(false);
       setFormData(emptyDoc);
     }
