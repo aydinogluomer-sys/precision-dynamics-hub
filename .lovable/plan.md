@@ -1,71 +1,43 @@
 
 
-# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
+## "Rapor Al" - Bağlama Duyarlı Detaylı Rapor Sistemi
 
-## Mevcut Durum
+### Mevcut Durum
+"Rapor Al" butonu şu anda sadece tarih içeren boş bir CSV indiriyor. Gerçek veri çekmiyor.
 
-- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
-- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
+### Plan
 
-## Birleştirme Fikri
+**Yaklaşım:** "Rapor Al" butonuna tıklandığında, aktif sekmeye (activeTab) göre ilgili Supabase tablosundan veri çekip detaylı CSV oluşturacak bir sistem.
 
-**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
+**Her sekme için rapor içeriği:**
 
-### Yapı: Adım 1'de CAD Dashboard'u Göm
+| Sekme | Tablo | Rapor Kolonları |
+|-------|-------|-----------------|
+| dashboard | rfqs + orders + issues | Özet: toplam RFQ, sipariş, açık sorun sayıları |
+| rfq | rfqs | ID, Müşteri, Firma, Malzeme, Hizmet, Miktar, Durum, Tarih, Fiyat |
+| orders | orders | ID, Parça, Müşteri, Miktar, Durum, İlerleme, Makine, Termin |
+| wbs | wbs | ID, Sipariş, Parça, Müşteri, Adım, Durum, Termin |
+| scheduling | machine_schedule | Makine, Gün, Hafta, İş Adı, Saat |
+| financial | financial_documents | No, Tür, Başlık, Tutar, KDV, Toplam, Durum, Vade |
+| pipeline | pipeline_leads | Firma, Kişi, Aşama, Değer, Olasılık |
+| tpm | maintenance_logs + machine_health | Makine, Tür, Tarih, Teknisyen, Maliyet, Durum |
+| inventory | raw_materials + tool_inventory | Kod, Ad, Stok, Birim Fiyat, Toplam Değer |
+| issues | issues | ID, İş, Makine, Kategori, Ciddiyet, Durum, Maliyet |
+| customers | customers | Ad, Firma, Şehir, Telefon, Email, Bakiye |
+| financedocs | financial_documents | Belge no, tür, tutar, ödeme durumu |
+| support | support_tickets | Konu, Öncelik, Durum, Tarih |
 
-```text
-┌─────────────────────────────────────────────────────┐
-│  Header + Stepper (4 adım)                          │
-├────────────────────────────┬────────────────────────┤
-│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
-│  ┌──────────────────────┐  │  ┌──────────────────┐  │
-│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
-│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
-│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
-│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
-│  │ (toolbar, grid,      │  │  └──────────────────┘  │
-│  │  wireframe, renk,    │  │                        │
-│  │  fullscreen, gizmo)  │  │                        │
-│  └──────────────────────┘  │                        │
-│  ┌──────────────────────┐  │                        │
-│  │ Parça Tablosu        │  │                        │
-│  │ (çoklu dosya/parça)  │  │                        │
-│  └──────────────────────┘  │                        │
-├────────────────────────────┴────────────────────────┤
-│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
-└─────────────────────────────────────────────────────┘
-```
+**Teknik uygulama:**
 
-### Detaylar
+1. **AdminDashboard.tsx**: `handleExportCSV` fonksiyonunu `activeTab`'a göre Supabase'den veri çeken async bir fonksiyona dönüştür. Her sekme için ilgili tablodan `.select("*")` ile veri çek.
 
-1. **Adım 1 — Gelişmiş CAD Yükleme**:
-   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
-   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
-   - Dosya yüklenmeden önce: drag-drop alanı göster
-   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
-   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
+2. **CSV oluşturma yardımcı fonksiyonu**: Veriyi kolonlarla eşleştirip BOM + UTF-8 CSV formatında dışa aktar. Türkçe kolon başlıkları kullan. Sayısal değerlerde Türk biçimlendirmesi (nokta ayırıcı yerine virgül).
 
-2. **Adım 2-4 — Mevcut akış korunur**:
-   - Özellikler, İnceleme, Gönderim adımları aynen kalır
-   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+3. **AdminHeader.tsx**: Butona loading state ekle (Loader2 spinner). Dışa aktarım sırasında buton disable olsun.
 
-3. **Sağ panel adaptasyonu**:
-   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
-   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
+4. Dosya adı formatı: `MasTechnic_{SekmeAdı}_{tarih}.csv`
 
-4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
-   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
-
-### Teknik Değişiklikler
-
-| Dosya | İşlem |
-|-------|-------|
-| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
-| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
-| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
-
-### Avantajlar
-- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
-- Gereksiz sayfa duplikasyonu ortadan kalkar
-- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
+**Değişecek dosyalar:**
+- `src/pages/AdminDashboard.tsx` — async veri çekme + CSV üretimi
+- `src/components/admin/AdminHeader.tsx` — loading prop ekle
 
