@@ -3,6 +3,17 @@ import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { findBestFaqMatch } from "@/data/chatFaqData";
+import { supabase } from "@/integrations/supabase/client";
+
+/** Fire-and-forget analytics log to faq_analytics table */
+function logChatEvent(eventType: string, query: string, question?: string, category?: string) {
+  supabase.from("faq_analytics").insert({
+    event_type: eventType,
+    query,
+    question: question ?? null,
+    category: category ?? null,
+  }).then(() => {});
+}
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -170,11 +181,13 @@ export default function ChatBot() {
       // 1. Yerel FAQ eşleştirme
       const match = findBestFaqMatch(text);
       if (match) {
+        logChatEvent("faq_match", text.trim(), match.entry.question, "chatbot");
         addAssistantMsg(match.entry.answer);
         return;
       }
 
       // 2. Eşleşme yok → AI onayı iste
+      logChatEvent("ai_fallback", text.trim(), undefined, "chatbot");
       const remaining = AI_DAILY_LIMIT - getAiUsageToday();
       if (remaining <= 0) {
         addAssistantMsg("⚠️ Günlük AI kullanım limitine ulaştınız. Lütfen yarın tekrar deneyin veya [Teklif Al](/teklif-al) sayfamızdan bize ulaşın.");

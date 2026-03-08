@@ -212,5 +212,5 @@ export function findBestFaqMatch(userInput: string): MatchResult | null {
     }
   }
 
-  return bestMatch && bestMatch.score >= 0.5 ? bestMatch : null;
+  return bestMatch && bestMatch.score >= 0.6 ? bestMatch : null;
 }
