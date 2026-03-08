@@ -871,6 +871,69 @@ const DashboardHome = () => {
         </motion.div>
       )}
 
+      {/* ── CASH FLOW FORECAST ── */}
+      {data.cashFlowForecast.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className={`${cardBase} p-5`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-[#0AA2CD]" />
+                <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Aylık Nakit Akışı Tahmini & Bütçe Karşılaştırması</h3>
+              </div>
+              <span className="text-[9px] px-2 py-0.5 rounded-full dark:bg-amber-500/10 bg-amber-500/10 text-amber-500 font-bold">* Tahmin</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              {[
+                { label: "Son Ay Net", value: data.cashFlowForecast.filter(c => !c.month.includes("*")).slice(-1)[0]?.Net || 0, color: C.emerald, prefix: "₺" },
+                { label: "Kümülatif", value: data.cashFlowForecast[data.cashFlowForecast.length - 1]?.Kümülatif || 0, color: C.cyan, prefix: "₺" },
+                { label: "Ort. Gelir", value: Math.round(data.cashFlowForecast.reduce((s, c) => s + c.Gelir, 0) / data.cashFlowForecast.length), color: C.primary, prefix: "₺" },
+                { label: "Bütçe Sapma", value: Math.round(((data.cashFlowForecast.filter(c => !c.month.includes("*")).slice(-1)[0]?.Gelir || 0) / (data.cashFlowForecast[0]?.Bütçe || 1) - 1) * 100), color: C.orange, prefix: "%", suffix: "" },
+              ].map((m) => (
+                <div key={m.label} className="dark:bg-[#0F172A]/50 bg-slate-50 rounded-xl p-3 border dark:border-[#334155] border-slate-200">
+                  <p className="text-[9px] dark:text-slate-500 text-slate-400 font-semibold uppercase tracking-wider mb-1">{m.label}</p>
+                  <p className="text-lg font-black font-mono tabular-nums" style={{ color: m.color }}>
+                    {m.prefix}{Math.abs(m.value).toLocaleString("tr-TR")}{m.suffix || ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={data.cashFlowForecast} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="cashGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={C.cyan} stopOpacity={0.15} />
+                      <stop offset="95%" stopColor={C.cyan} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} strokeOpacity={ct.gridOpacity} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9, fill: ct.tick }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: ct.tick }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="Kümülatif" fill="url(#cashGradient)" stroke={C.cyan} strokeWidth={2} dot={false} />
+                  <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.8} />
+                  <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.6} />
+                  <Line type="monotone" dataKey="Bütçe" name="Bütçe Hedefi" stroke={C.amber} strokeWidth={2} strokeDasharray="6 3" dot={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-4 mt-2">
+              {[
+                { label: "Gelir", color: C.emerald },
+                { label: "Gider", color: C.red },
+                { label: "Kümülatif", color: C.cyan },
+                { label: "Bütçe Hedefi", color: C.amber, dashed: true },
+              ].map((l) => (
+                <div key={l.label} className="flex items-center gap-1.5">
+                  <div className="w-3 h-0.5 rounded" style={{ backgroundColor: l.color, borderBottom: l.dashed ? `2px dashed ${l.color}` : undefined }} />
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">{l.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
