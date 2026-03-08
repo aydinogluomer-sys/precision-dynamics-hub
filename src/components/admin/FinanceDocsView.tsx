@@ -87,6 +87,8 @@ const FinanceDocsView = () => {
   const [uploading, setUploading] = useState(false);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
   const [showAiPanel, setShowAiPanel] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState("");
   const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
   const [parasutSyncing, setParasutSyncing] = useState(false);
 
