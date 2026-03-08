@@ -429,6 +429,19 @@ const DashboardHome = () => {
   const tkXXS = { fontSize: 9, fill: ct.tick };
   const filteredActivity = activityFilter === "all" ? data.recentActivity : data.recentActivity.filter((a) => a.type === activityFilter);
 
+  // Customer detail modal data
+  const customerDetail = useMemo(() => {
+    if (!selectedCustomer) return null;
+    const custOrders = rawOrders.filter((o: any) => o.customer === selectedCustomer);
+    const custFins = rawFins.filter((f: any) => 
+      f.vendor === selectedCustomer || f.title?.includes(selectedCustomer) || f.notes?.includes(selectedCustomer)
+    );
+    const invoices = custFins.filter((f: any) => f.doc_type === "fatura" || f.doc_type === "gelir");
+    const payments = custFins.filter((f: any) => f.payment_status === "ödendi");
+    const unpaid = custFins.filter((f: any) => f.payment_status !== "ödendi");
+    return { custOrders, invoices, payments, unpaid, allFins: custFins };
+  }, [selectedCustomer, rawOrders, rawFins]);
+
   return (
     <motion.div className="space-y-5 p-1" variants={containerVariants} initial="hidden" animate="visible">
       {/* ── Realtime indicator ── */}
