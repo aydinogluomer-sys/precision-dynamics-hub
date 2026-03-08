@@ -59,6 +59,7 @@ interface FinDoc {
   tags: string[] | null;
   created_at: string;
   updated_at: string;
+  user_id: string | null;
 }
 
 const emptyDoc = {
@@ -353,6 +354,33 @@ const FinanceDocsView = () => {
     const { error } = await supabase.from("financial_documents").update({ status: newStatus } as any).eq("id", id);
     if (error) toast.error("Güncelleme hatası");
     else toast.success("Durum güncellendi");
+  };
+
+  const handlePaymentStatusChange = async (doc: FinDoc, newPaymentStatus: string) => {
+    const oldStatus = doc.payment_status;
+    const { error } = await supabase.from("financial_documents").update({ payment_status: newPaymentStatus } as any).eq("id", doc.id);
+    if (error) { toast.error("Güncelleme hatası"); return; }
+    toast.success("Ödeme durumu güncellendi");
+
+    // Send notification to customer if user_id exists
+    if (doc.user_id && oldStatus !== newPaymentStatus) {
+      const statusLabel = PAYMENT_MAP[newPaymentStatus]?.label || newPaymentStatus;
+      const totalStr = `₺${(doc.total_amount || 0).toLocaleString("tr-TR", { minimumFractionDigits: 2 })}`;
+      await supabase.from("notifications").insert({
+        user_id: doc.user_id,
+        type: "finance",
+        title: newPaymentStatus === "ödendi"
+          ? `Ödeme Onaylandı ✅ ${totalStr}`
+          : `Ödeme Durumu: ${statusLabel}`,
+        message: `${doc.doc_number || "Belge"} numaralı ${doc.doc_type} için ödeme durumu "${statusLabel}" olarak güncellendi. Tutar: ${totalStr}`,
+      });
+    }
+
+    // Refresh detail modal if open
+    if (showDetailModal?.id === doc.id) {
+      setShowDetailModal({ ...doc, payment_status: newPaymentStatus });
+    }
+    fetchDocs();
   };
 
   const handleDelete = async (id: string) => {
