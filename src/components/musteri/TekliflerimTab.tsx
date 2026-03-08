@@ -22,9 +22,12 @@ interface RFQ {
   customer_approved: boolean | null;
   rejection_reason: string | null;
   created_at: string;
+  files: string[] | null;
+  user_id: string | null;
 }
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const CAD_EXTS = ["stl", "obj", "step", "stp", "iges", "igs"];
 
 const getDisplayStatus = (r: RFQ): string => {
   const s = r.status;
