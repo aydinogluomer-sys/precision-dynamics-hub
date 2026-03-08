@@ -352,8 +352,8 @@ const RFQManager = () => {
       {/* Detail Panel */}
       {selectedRFQ && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setSelectedRFQ(null)}>
-          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-lg p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
+          <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border w-full max-w-lg max-h-[90vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4 sticky top-0 dark:bg-[#1E293B] bg-white z-10 pb-2">
               <h3 className="font-black dark:text-white text-slate-800">{selectedRFQ.id}</h3>
               <button onClick={() => setSelectedRFQ(null)} className="dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]"><X className="w-5 h-5" /></button>
             </div>
@@ -369,35 +369,31 @@ const RFQManager = () => {
                 </div>
               ))}
             </div>
-            {/* CAD Files */}
-            {getRfqFiles(selectedRFQ).length > 0 ? (
-              <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
-                <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
-                <div className="mt-2 space-y-1.5">
-                  {getRfqFiles(selectedRFQ).map((filePath, idx) => (
-                    <button
-                      key={idx}
-                      onClick={async () => {
-                        toast.loading("Dosya hazırlanıyor...", { id: "file-dl" });
-                        await downloadCadFile(selectedRFQ, filePath);
-                        toast.dismiss("file-dl");
-                      }}
-                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-primary transition-colors"
-                    >
-                      <Download size={14} className="text-primary shrink-0" />
-                      <span className="text-xs font-medium truncate dark:text-white text-slate-800">
-                        {filePath.split("/").pop()}
-                      </span>
-                    </button>
-                  ))}
+            {/* CAD Files with Preview */}
+            <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
+              <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
+              {getRfqFiles(selectedRFQ).length > 0 ? (
+                <div className="mt-2 space-y-3">
+                  <Suspense fallback={<div className="flex justify-center py-4"><Loader2 className="w-5 h-5 animate-spin text-primary" /></div>}>
+                    {getRfqFiles(selectedRFQ).map((filePath, idx) => (
+                      <RFQCadPreview
+                        key={idx}
+                        filePath={filePath}
+                        rfqId={selectedRFQ.id}
+                        userId={selectedRFQ.user_id}
+                        onDownload={async () => {
+                          toast.loading("Dosya hazırlanıyor...", { id: "file-dl" });
+                          await downloadCadFile(selectedRFQ, filePath);
+                          toast.dismiss("file-dl");
+                        }}
+                      />
+                    ))}
+                  </Suspense>
                 </div>
-              </div>
-            ) : (
-              <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
-                <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
+              ) : (
                 <p className="mt-2 text-xs dark:text-slate-500 text-slate-400">Bu talep için CAD dosyası bulunamadı.</p>
-              </div>
-            )}
+              )}
+            </div>
             <div className="flex gap-2 mt-6">
               <button onClick={() => handleApprove(selectedRFQ)} className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold hover:bg-emerald-500/30">Onayla</button>
               <button onClick={() => { setRejectModal(selectedRFQ); setSelectedRFQ(null); }} className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-lg text-xs font-bold hover:bg-red-500/30">Reddet</button>
