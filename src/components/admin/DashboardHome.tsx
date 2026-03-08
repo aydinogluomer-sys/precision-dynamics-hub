@@ -687,8 +687,47 @@ const DashboardHome = () => {
             <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.emerald }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Tamamlanan</span></div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+
+      {/* ── ROW 5: Activity Feed ── */}
+      <motion.div variants={itemVariants} className={`${cardBase} p-5`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#0AA2CD]" />
+            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Son Aktiviteler</h3>
+          </div>
+          <span className="text-[10px] dark:text-slate-600 text-slate-300 font-mono">{data.recentActivity.length} kayıt</span>
+        </div>
+        {data.recentActivity.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <Activity className="w-8 h-8 dark:text-slate-700 text-slate-200" />
+            <span className="text-[11px] dark:text-slate-600 text-slate-400">Henüz aktivite yok</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {data.recentActivity.map((a, i) => (
+              <motion.div
+                key={a.id}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.03, duration: 0.3 }}
+                className="flex items-center gap-3 p-2.5 rounded-xl dark:hover:bg-white/[0.03] hover:bg-slate-50 cursor-pointer transition-colors"
+                onClick={() => navigateTo(a.tab)}
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${a.color}15` }}>
+                  <a.icon className="w-3.5 h-3.5" style={{ color: a.color }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold dark:text-slate-200 text-slate-700 truncate">{a.title}</p>
+                  <p className="text-[10px] dark:text-slate-500 text-slate-400 truncate">{a.subtitle}</p>
+                </div>
+                <span className="text-[9px] dark:text-slate-600 text-slate-300 font-mono shrink-0">{a.time}</span>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
   );
 };
 
