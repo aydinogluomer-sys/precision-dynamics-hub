@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Legend,
+  PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
 /* ── Colors ── */
@@ -85,6 +86,17 @@ const REALTIME_TABLES = [
   "pipeline_leads", "maintenance_logs", "raw_materials", "tool_inventory", "support_tickets",
 ] as const;
 
+type ActivityItem = {
+  id: string;
+  type: "rfq" | "order" | "ticket";
+  title: string;
+  subtitle: string;
+  time: string;
+  color: string;
+  icon: any;
+  tab: string;
+};
+
 type DashData = {
   rfqByStatus: { name: string; value: number; color: string }[];
   orderByStatus: { name: string; value: number; color: string }[];
@@ -98,6 +110,17 @@ type DashData = {
   monthlyRfqs: { month: string; Talep: number; Onaylanan: number; Oran: number }[];
   ticketsByPriority: { name: string; value: number; color: string }[];
   orderCompletion: { name: string; Tamamlanan: number; Hedef: number }[];
+  recentActivity: ActivityItem[];
+};
+
+/* ── Animation variants ── */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
 };
 
 const DashboardHome = () => {
