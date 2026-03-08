@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense, Fragment } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Loader2, Check, Upload } from "lucide-react";
+import { FileText, Loader2, Check, Upload, Paperclip, ChevronDown, ChevronUp } from "lucide-react";
 import { TableSkeleton } from "./MusteriSkeletons";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
 
 interface RFQ {
   id: string;
@@ -20,9 +22,12 @@ interface RFQ {
   customer_approved: boolean | null;
   rejection_reason: string | null;
   created_at: string;
+  files: string[] | null;
+  user_id: string | null;
 }
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const CAD_EXTS = ["stl", "obj", "step", "stp", "iges", "igs"];
 
 const getDisplayStatus = (r: RFQ): string => {
   const s = r.status;
@@ -52,7 +57,7 @@ const TekliflerimTab = () => {
   const fetchRfqs = async () => {
     const { data } = await supabase
       .from("rfqs")
-      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at")
+      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at, files, user_id")
       .order("created_at", { ascending: false });
     setRfqs((data as RFQ[]) || []);
     setLoading(false);
@@ -99,6 +104,33 @@ const TekliflerimTab = () => {
   }
 
   const RfqTable = ({ items }: { items: RFQ[] }) => {
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+    const loadSignedUrls = async (rfq: RFQ) => {
+      if (!rfq.files?.length || signedUrls[rfq.id]) return;
+      const urls: Record<string, string> = {};
+      for (const filePath of rfq.files) {
+        const rawPath = filePath.replace(/^\/+/, "").replace(/^cad-uploads\//, "").split("?")[0];
+        const { data } = await supabase.storage.from("cad-uploads").createSignedUrl(rawPath, 3600);
+        if (data?.signedUrl) urls[filePath] = data.signedUrl;
+        else {
+          // Try user/rfq folder
+          const baseName = rawPath.split("/").pop() || rawPath;
+          const dirs = [rfq.user_id ? `${rfq.user_id}/${rfq.id}` : null, `anonymous/${rfq.id}`].filter(Boolean) as string[];
+          for (const dir of dirs) {
+            const { data: files } = await supabase.storage.from("cad-uploads").list(dir, { limit: 200 });
+            const match = files?.find((f) => f.name === baseName || f.name.includes(baseName.replace(/^\d+_/, "")));
+            if (match) {
+              const { data: sd } = await supabase.storage.from("cad-uploads").createSignedUrl(`${dir}/${match.name}`, 3600);
+              if (sd?.signedUrl) { urls[filePath] = sd.signedUrl; break; }
+            }
+          }
+        }
+      }
+      setSignedUrls((prev) => ({ ...prev, [rfq.id]: "loaded", ...Object.fromEntries(Object.entries(urls).map(([k, v]) => [`${rfq.id}:${k}`, v])) }));
+    };
+
     if (items.length === 0) return <p className="text-sm text-muted-foreground py-8 text-center">Bu kategoride teklif bulunmuyor.</p>;
     return (
       <div className="overflow-x-auto">
@@ -118,37 +150,72 @@ const TekliflerimTab = () => {
           <tbody>
               {items.map((r) => {
                 const displayStatus = getDisplayStatus(r);
+                const cadFiles = (r.files || []).filter((f) => {
+                  const ext = f.split(".").pop()?.toLowerCase() || "";
+                  return CAD_EXTS.includes(ext);
+                });
+                const isExpanded = expandedId === r.id;
+
                 return (
-                  <tr key={r.id} className="border-b border-border/50 last:border-0">
-                    <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
-                    <td className="py-3 pr-4">{r.service || "—"}</td>
-                    <td className="py-3 pr-4">{r.material || "—"}</td>
-                    <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
-                    <td className="py-3 pr-4 font-mono font-semibold">
-                      {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
-                    </td>
-                    <td className="py-3 pr-4">
-                      <Badge variant="outline" className={statusColor(displayStatus)}>{displayStatus}</Badge>
-                      {r.status === "Reddedildi" && r.rejection_reason && (
-                        <p className="text-[10px] text-destructive mt-1 max-w-[200px]">Sebep: {r.rejection_reason}</p>
-                      )}
-                    </td>
-                    <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
-                    <td className="py-3">
-                      {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="gap-1.5 text-xs h-8"
-                          disabled={approving === r.id}
-                          onClick={() => handleApprove(r.id)}
-                        >
-                          {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-                          Onayla
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
+                  <Fragment key={r.id}>
+                    <tr className="border-b border-border/50 last:border-0">
+                      <td className="py-3 pr-4 font-mono text-xs">{r.id.slice(0, 8)}</td>
+                      <td className="py-3 pr-4">{r.service || "—"}</td>
+                      <td className="py-3 pr-4">{r.material || "—"}</td>
+                      <td className="py-3 pr-4 font-mono">{r.quantity ?? "—"}</td>
+                      <td className="py-3 pr-4 font-mono font-semibold">
+                        {r.quoted_price ? `₺${r.quoted_price.toLocaleString("tr-TR")}` : "Bekleniyor"}
+                      </td>
+                      <td className="py-3 pr-4">
+                        <Badge variant="outline" className={statusColor(displayStatus)}>{displayStatus}</Badge>
+                        {r.status === "Reddedildi" && r.rejection_reason && (
+                          <p className="text-[10px] text-destructive mt-1 max-w-[200px]">Sebep: {r.rejection_reason}</p>
+                        )}
+                      </td>
+                      <td className="py-3 pr-4 text-muted-foreground">{r.date || "—"}</td>
+                      <td className="py-3 flex items-center gap-1.5">
+                        {r.quoted_price && !r.customer_approved && r.status !== "Reddedildi" && (
+                          <Button size="sm" variant="default" className="gap-1.5 text-xs h-8" disabled={approving === r.id} onClick={() => handleApprove(r.id)}>
+                            {approving === r.id ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} Onayla
+                          </Button>
+                        )}
+                        {cadFiles.length > 0 && (
+                          <Button size="sm" variant="ghost" className="h-8 gap-1 text-xs text-primary" onClick={() => {
+                            if (isExpanded) { setExpandedId(null); } else { setExpandedId(r.id); loadSignedUrls(r); }
+                          }}>
+                            <Paperclip size={13} /> {cadFiles.length}
+                            {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                    {isExpanded && cadFiles.length > 0 && (
+                      <tr>
+                        <td colSpan={8} className="px-4 pb-4 pt-1">
+                          <div className="space-y-2">
+                            {cadFiles.map((filePath, idx) => {
+                              const url = signedUrls[`${r.id}:${filePath}`];
+                              const fileName = filePath.split("/").pop() || filePath;
+                              return (
+                                <div key={idx}>
+                                  <p className="text-[11px] font-medium text-muted-foreground mb-1">{fileName}</p>
+                                  {url ? (
+                                    <Suspense fallback={<div className="flex justify-center py-3"><Loader2 className="w-4 h-4 animate-spin text-primary" /></div>}>
+                                      <CustomerCadPreview signedUrl={url} fileName={fileName} />
+                                    </Suspense>
+                                  ) : (
+                                    <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
+                                      <Loader2 size={14} className="animate-spin" /> URL yükleniyor…
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 );
               })}
           </tbody>
