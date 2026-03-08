@@ -50,7 +50,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <p className="text-[10px] font-black dark:text-slate-400 text-slate-500 mb-1.5 uppercase tracking-wider">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2 py-0.5">
-          <div className="w-2 h-2 rounded-full ring-2 ring-offset-1 dark:ring-offset-[#0F172A] ring-offset-white" style={{ backgroundColor: p.color, ringColor: p.color }} />
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
           <span className="text-[11px] dark:text-slate-400 text-slate-500">{p.name}:</span>
           <span className="text-[11px] font-black dark:text-white text-slate-800 font-mono">
             {typeof p.value === "number" ? p.value.toLocaleString("tr-TR") : p.value}
