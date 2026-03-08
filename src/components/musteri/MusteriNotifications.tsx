@@ -16,7 +16,11 @@ interface Notification {
 const iconMap = { rfq: FileText, order: Package, quality: ClipboardCheck, finance: Wallet };
 const colorMap = { rfq: "text-cyan-500", order: "text-blue-500", quality: "text-purple-500", finance: "text-emerald-500" };
 
-const MusteriNotifications = () => {
+interface Props {
+  onTabChange?: (tab: string) => void;
+}
+
+const MusteriNotifications = ({ onTabChange }: Props = {}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const initialized = useRef(false);
@@ -193,10 +197,23 @@ const MusteriNotifications = () => {
               ) : (
                 notifications.map((n) => {
                   const Icon = iconMap[n.type];
+                  const tabMap: Record<string, string> = {
+                    rfq: "teklifler",
+                    order: "siparisler",
+                    quality: "kalite",
+                    finance: "finans",
+                  };
+                  const targetTab = tabMap[n.type];
                   return (
-                    <div
+                    <button
                       key={n.id}
-                      className={`flex gap-3 px-4 py-3 border-b border-border/50 last:border-0 transition-colors ${
+                      onClick={() => {
+                        if (onTabChange && targetTab) {
+                          onTabChange(targetTab);
+                          setOpen(false);
+                        }
+                      }}
+                      className={`w-full text-left flex gap-3 px-4 py-3 border-b border-border/50 last:border-0 transition-colors hover:bg-accent/50 cursor-pointer ${
                         !n.read ? "dark:bg-[#1E293B]/50 bg-primary/5" : ""
                       }`}
                     >
@@ -209,7 +226,7 @@ const MusteriNotifications = () => {
                         </p>
                       </div>
                       {!n.read && <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1" />}
-                    </div>
+                    </button>
                   );
                 })
               )}

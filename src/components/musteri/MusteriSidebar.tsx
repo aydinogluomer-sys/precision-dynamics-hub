@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, Package, Factory, FolderArchive,
   ShieldCheck, DollarSign, CreditCard, MessageSquare, Bell, Settings, LogOut
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const menuItems = [
   { id: "genel", label: "Genel Bakış", icon: LayoutDashboard },
@@ -29,6 +30,29 @@ interface Props {
 
 const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
   ({ activeTab, onTabChange, collapsed, displayName, userEmail, onLogout }, ref) => {
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+      const fetchUnread = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { count } = await supabase
+          .from("notifications")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("read", false);
+        setUnreadCount(count || 0);
+      };
+      fetchUnread();
+
+      const channel = supabase
+        .channel("sidebar-notif-count")
+        .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, () => fetchUnread())
+        .subscribe();
+
+      return () => { supabase.removeChannel(channel); };
+    }, []);
+
     return (
       <aside
         ref={ref}
@@ -62,7 +86,14 @@ const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
                 }`}
               >
                 <item.icon className="w-5 h-5 shrink-0" />
-                {!collapsed && <span className="font-medium">{item.label}</span>}
+                {!collapsed && (
+                  <span className="font-medium flex-1 text-left">{item.label}</span>
+                )}
+                {item.id === "bildirimler" && unreadCount > 0 && (
+                  <span className="ml-auto w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
               </button>
             );
           })}
