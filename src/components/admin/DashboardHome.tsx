@@ -797,6 +797,7 @@ const DashboardHome = () => {
           </div>
         )}
       </motion.div>
+      <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
     </motion.div>
   );
 };
