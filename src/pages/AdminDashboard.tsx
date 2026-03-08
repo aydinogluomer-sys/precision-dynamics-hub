@@ -92,12 +92,137 @@ const AdminDashboard = () => {
 
       switch (activeTab) {
         case "dashboard": {
-          const [r1, r2, r3] = await Promise.all([
-            supabase.from("rfqs").select("id", { count: "exact", head: true }),
-            supabase.from("orders").select("id", { count: "exact", head: true }),
-            supabase.from("issues").select("id", { count: "exact", head: true }).eq("status", "Açık"),
+          const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll] = await Promise.all([
+            supabase.from("rfqs").select("*"),
+            supabase.from("orders").select("*"),
+            supabase.from("issues").select("*"),
+            supabase.from("financial_documents").select("*"),
+            supabase.from("customers").select("*"),
+            supabase.from("pipeline_leads").select("*"),
+            supabase.from("maintenance_logs").select("*"),
+            supabase.from("machine_schedule").select("*"),
+            supabase.from("raw_materials").select("*"),
+            supabase.from("tool_inventory").select("*"),
+            supabase.from("support_tickets").select("*"),
           ]);
-          csv = `Metrik;Değer\nToplam RFQ;${r1.count ?? 0}\nToplam Sipariş;${r2.count ?? 0}\nAçık Sorun;${r3.count ?? 0}`;
+
+          const rfqs = rfqAll.data || [];
+          const orders = ordersAll.data || [];
+          const issues = issuesAll.data || [];
+          const fins = finAll.data || [];
+          const custs = custAll.data || [];
+          const pipes = pipeAll.data || [];
+          const maints = maintAll.data || [];
+          const scheds = schedAll.data || [];
+          const raws = rawMatAll.data || [];
+          const tools = toolAll.data || [];
+          const tickets = supportAll.data || [];
+
+          // RFQ istatistikleri
+          const rfqByStatus: Record<string, number> = {};
+          rfqs.forEach(r => { rfqByStatus[r.status || "Belirsiz"] = (rfqByStatus[r.status || "Belirsiz"] || 0) + 1; });
+          const totalQuoted = rfqs.reduce((s, r) => s + (Number(r.quoted_price) || 0), 0);
+
+          // Sipariş istatistikleri
+          const orderByStatus: Record<string, number> = {};
+          orders.forEach(o => { orderByStatus[o.status || "Belirsiz"] = (orderByStatus[o.status || "Belirsiz"] || 0) + 1; });
+          const avgProgress = orders.length ? Math.round(orders.reduce((s, o) => s + (o.progress || 0), 0) / orders.length) : 0;
+          const overdueOrders = orders.filter(o => o.deadline && new Date(o.deadline) < new Date() && o.status !== "Tamamlandı").length;
+
+          // Finansal
+          const totalIncome = fins.filter(f => f.doc_type === "fatura" || f.doc_type === "gelir").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
+          const totalExpense = fins.filter(f => f.doc_type === "gider" || f.doc_type === "masraf").reduce((s, f) => s + (Number(f.total_amount) || 0), 0);
+          const unpaidDocs = fins.filter(f => f.payment_status === "ödenmedi").length;
+          const totalVat = fins.reduce((s, f) => s + (Number(f.vat_amount) || 0), 0);
+
+          // Pipeline
+          const totalPipeValue = pipes.reduce((s, p) => s + (Number(p.value) || 0), 0);
+          const weightedPipe = pipes.reduce((s, p) => s + (Number(p.value) || 0) * ((p.probability || 0) / 100), 0);
+          const pipeByStage: Record<string, number> = {};
+          pipes.forEach(p => { pipeByStage[p.stage || "Belirsiz"] = (pipeByStage[p.stage || "Belirsiz"] || 0) + 1; });
+
+          // Sorunlar
+          const openIssues = issues.filter(i => i.status === "Açık").length;
+          const issueCost = issues.reduce((s, i) => s + (Number(i.cost) || 0), 0);
+          const issueBySev: Record<string, number> = {};
+          issues.forEach(i => { issueBySev[i.severity || "Belirsiz"] = (issueBySev[i.severity || "Belirsiz"] || 0) + 1; });
+
+          // Bakım
+          const maintCost = maints.reduce((s, m) => s + (Number(m.cost) || 0), 0);
+          const maintByType: Record<string, number> = {};
+          maints.forEach(m => { maintByType[m.type || "Belirsiz"] = (maintByType[m.type || "Belirsiz"] || 0) + 1; });
+
+          // Envanter
+          const rawValue = raws.reduce((s, r) => s + (Number(r.stock) || 0) * (Number(r.unit_cost) || 0), 0);
+          const toolValue = tools.reduce((s, t) => s + (Number(t.stock) || 0) * (Number(t.unit_cost) || 0), 0);
+          const lowStockTools = tools.filter(t => (t.stock || 0) <= (t.min_stock || 5)).length;
+
+          // Destek
+          const openTickets = tickets.filter(t => t.status === "open").length;
+
+          // Müşteri
+          const totalBalance = custs.reduce((s, c) => s + (Number(c.balance) || 0), 0);
+
+          const lines: string[] = ["Kategori;Metrik;Değer"];
+
+          // Genel Özet
+          lines.push(`Genel;Toplam RFQ Talebi;${rfqs.length}`);
+          lines.push(`Genel;Toplam Sipariş;${orders.length}`);
+          lines.push(`Genel;Toplam Müşteri;${custs.length}`);
+          lines.push(`Genel;Açık Sorun;${openIssues}`);
+          lines.push(`Genel;Açık Destek Talebi;${openTickets}`);
+          lines.push("");
+
+          // RFQ Detay
+          lines.push(`RFQ;Toplam Teklif Tutarı (₺);${fmtNum(totalQuoted)}`);
+          Object.entries(rfqByStatus).forEach(([k, v]) => lines.push(`RFQ;Durum: ${k};${v}`));
+          lines.push("");
+
+          // Sipariş Detay
+          lines.push(`Sipariş;Ortalama İlerleme (%);${avgProgress}`);
+          lines.push(`Sipariş;Geciken Sipariş;${overdueOrders}`);
+          Object.entries(orderByStatus).forEach(([k, v]) => lines.push(`Sipariş;Durum: ${k};${v}`));
+          lines.push("");
+
+          // Finansal
+          lines.push(`Finansal;Toplam Gelir (₺);${fmtNum(totalIncome)}`);
+          lines.push(`Finansal;Toplam Gider (₺);${fmtNum(totalExpense)}`);
+          lines.push(`Finansal;Net (₺);${fmtNum(totalIncome - totalExpense)}`);
+          lines.push(`Finansal;Toplam KDV (₺);${fmtNum(totalVat)}`);
+          lines.push(`Finansal;Ödenmemiş Belge;${unpaidDocs}`);
+          lines.push("");
+
+          // Pipeline
+          lines.push(`Pipeline;Toplam Değer (₺);${fmtNum(totalPipeValue)}`);
+          lines.push(`Pipeline;Ağırlıklı Değer (₺);${fmtNum(Math.round(weightedPipe))}`);
+          Object.entries(pipeByStage).forEach(([k, v]) => lines.push(`Pipeline;Aşama: ${k};${v}`));
+          lines.push("");
+
+          // Sorunlar
+          lines.push(`Sorunlar;Toplam Sorun;${issues.length}`);
+          lines.push(`Sorunlar;Toplam Maliyet (₺);${fmtNum(issueCost)}`);
+          Object.entries(issueBySev).forEach(([k, v]) => lines.push(`Sorunlar;Ciddiyet: ${k};${v}`));
+          lines.push("");
+
+          // Bakım
+          lines.push(`Bakım;Toplam Kayıt;${maints.length}`);
+          lines.push(`Bakım;Toplam Maliyet (₺);${fmtNum(maintCost)}`);
+          Object.entries(maintByType).forEach(([k, v]) => lines.push(`Bakım;Tür: ${k};${v}`));
+          lines.push("");
+
+          // Envanter
+          lines.push(`Envanter;Hammadde Çeşidi;${raws.length}`);
+          lines.push(`Envanter;Hammadde Toplam Değer (₺);${fmtNum(Math.round(rawValue))}`);
+          lines.push(`Envanter;Takım Çeşidi;${tools.length}`);
+          lines.push(`Envanter;Takım Toplam Değer (₺);${fmtNum(Math.round(toolValue))}`);
+          lines.push(`Envanter;Kritik Stok Takım;${lowStockTools}`);
+          lines.push("");
+
+          // Müşteri & Destek
+          lines.push(`Müşteri;Toplam Bakiye (₺);${fmtNum(Math.round(totalBalance))}`);
+          lines.push(`Planlama;Aktif Çizelge Kaydı;${scheds.length}`);
+
+          csv = lines.map(l => l ? `"${l.split(";").join('";"')}"` : "").join("\n");
           break;
         }
         case "rfq": {
