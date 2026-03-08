@@ -658,6 +658,15 @@ const FinanceDocsView = () => {
                 </div>
               </div>
               <div>
+                <label className="text-[10px] uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold block mb-1">Müşteri (Bildirim İçin)</label>
+                <select value={formData.user_id} onChange={e => setFormData({ ...formData, user_id: e.target.value })} className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800">
+                  <option value="">Müşteri seçiniz (opsiyonel)</option>
+                  {customerProfiles.map(p => (
+                    <option key={p.id} value={p.id}>{p.full_name || "İsimsiz"}{p.company ? ` — ${p.company}` : ""}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="text-[10px] uppercase tracking-wider dark:text-slate-400 text-slate-500 font-bold block mb-1">Başlık</label>
                 <input value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800" />
               </div>
