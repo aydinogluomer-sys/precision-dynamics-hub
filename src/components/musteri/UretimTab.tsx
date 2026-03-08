@@ -101,6 +101,8 @@ const UretimTab = () => {
         const progress = item.progress || 0;
         const activeStep = getActiveStep(progress);
 
+        const estimated = estimateCompletion(progress, item.created_at, item.deadline);
+
         return (
           <div key={item.id} className="border border-border bg-background p-5">
             <div className="flex items-center justify-between mb-4">
@@ -111,9 +113,17 @@ const UretimTab = () => {
                   {item.deadline && ` · Termin: ${item.deadline}`}
                 </p>
               </div>
-              <Badge variant="outline" className={statusBadgeClass(item.status)}>
-                {item.status}
-              </Badge>
+              <div className="flex items-center gap-2">
+                {estimated && !item.deadline && (
+                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3" />
+                    Tah. {estimated}
+                  </span>
+                )}
+                <Badge variant="outline" className={statusBadgeClass(item.status)}>
+                  {item.status}
+                </Badge>
+              </div>
             </div>
 
             {/* Step Progress */}
