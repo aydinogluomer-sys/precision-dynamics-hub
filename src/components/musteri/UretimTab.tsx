@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Activity } from "lucide-react";
+import { Activity, Clock } from "lucide-react";
 import { ProductionSkeleton } from "./MusteriSkeletons";
 
 interface OrderProduction {
@@ -11,6 +11,7 @@ interface OrderProduction {
   progress: number | null;
   quantity: number | null;
   deadline: string | null;
+  created_at: string;
 }
 
 const STEPS = [
@@ -40,6 +41,19 @@ const statusBadgeClass = (s: string | null) => {
 
 const ACTIVE_STATUSES = ["Hazırlık", "Üretimde", "Kalite Kontrol", "Paketleme"];
 
+const estimateCompletion = (progress: number, createdAt: string, deadline: string | null): string | null => {
+  if (progress >= 100) return "Tamamlandı";
+  if (deadline) return deadline;
+  if (progress <= 0) return null;
+  const start = new Date(createdAt).getTime();
+  const now = Date.now();
+  const elapsed = now - start;
+  if (elapsed <= 0) return null;
+  const totalEstimate = elapsed / (progress / 100);
+  const estimatedEnd = new Date(start + totalEstimate);
+  return estimatedEnd.toISOString().split("T")[0];
+};
+
 const UretimTab = () => {
   const [items, setItems] = useState<OrderProduction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +61,7 @@ const UretimTab = () => {
   const fetchOrders = async () => {
     const { data } = await supabase
       .from("orders")
-      .select("id, part_name, status, progress, quantity, deadline")
+      .select("id, part_name, status, progress, quantity, deadline, created_at")
       .in("status", ACTIVE_STATUSES)
       .order("created_at", { ascending: false });
     setItems((data as OrderProduction[]) || []);
@@ -87,6 +101,8 @@ const UretimTab = () => {
         const progress = item.progress || 0;
         const activeStep = getActiveStep(progress);
 
+        const estimated = estimateCompletion(progress, item.created_at, item.deadline);
+
         return (
           <div key={item.id} className="border border-border bg-background p-5">
             <div className="flex items-center justify-between mb-4">
@@ -97,9 +113,17 @@ const UretimTab = () => {
                   {item.deadline && ` · Termin: ${item.deadline}`}
                 </p>
               </div>
-              <Badge variant="outline" className={statusBadgeClass(item.status)}>
-                {item.status}
-              </Badge>
+              <div className="flex items-center gap-2">
+                {estimated && !item.deadline && (
+                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3" />
+                    Tah. {estimated}
+                  </span>
+                )}
+                <Badge variant="outline" className={statusBadgeClass(item.status)}>
+                  {item.status}
+                </Badge>
+              </div>
             </div>
 
             {/* Step Progress */}
