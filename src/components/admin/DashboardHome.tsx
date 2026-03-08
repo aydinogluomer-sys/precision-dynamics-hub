@@ -134,6 +134,7 @@ type DashData = {
   recentActivity: ActivityItem[];
   expenseByCategory: { name: string; value: number; color: string }[];
   paymentStatus: { name: string; value: number; color: string }[];
+  customerFinancials: { name: string; income: number; expense: number; net: number; balance: number; orders: number }[];
 };
 
 /* ── Animation variants ── */
@@ -240,6 +241,48 @@ const DashboardHome = () => {
       .slice(0, 6)
       .map((c: any) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
 
+    // Customer-based financial breakdown
+    const custFinMap: Record<string, { income: number; expense: number; orders: number; balance: number }> = {};
+    // Map orders per customer
+    orders.forEach((o: any) => {
+      const cName = o.customer || "Belirsiz";
+      if (!custFinMap[cName]) custFinMap[cName] = { income: 0, expense: 0, orders: 0, balance: 0 };
+      custFinMap[cName].orders++;
+    });
+    // Map financial docs — use vendor for expenses, title-match or general for income
+    fins.forEach((f: any) => {
+      const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
+      const vendor = f.vendor || "Belirsiz";
+      // Try to match income to a customer from orders
+      if (isIncome) {
+        // Match by title containing customer name or use vendor
+        let matched = false;
+        for (const cName of Object.keys(custFinMap)) {
+          if (cName !== "Belirsiz" && (f.title?.includes(cName) || f.notes?.includes(cName))) {
+            custFinMap[cName].income += Number(f.total_amount) || 0;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          if (!custFinMap[vendor]) custFinMap[vendor] = { income: 0, expense: 0, orders: 0, balance: 0 };
+          custFinMap[vendor].income += Number(f.total_amount) || 0;
+        }
+      }
+    });
+    // Merge customer balances
+    custs.forEach((c: any) => {
+      const cName = c.short_name || c.company || c.name || "?";
+      if (custFinMap[cName]) {
+        custFinMap[cName].balance = Number(c.balance) || 0;
+      }
+    });
+    const customerFinancials = Object.entries(custFinMap)
+      .map(([name, v]) => ({ name, income: v.income, expense: v.expense, net: v.income - v.expense, balance: v.balance, orders: v.orders }))
+      .filter((c) => c.income > 0 || c.orders > 0 || c.balance !== 0)
+      .sort((a, b) => b.income - a.income)
+      .slice(0, 10);
+
     const rfqByMonth: Record<string, { total: number; approved: number }> = {};
     rfqs.forEach((r: any) => {
       const m = r.date ? new Date(r.date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
@@ -301,7 +344,7 @@ const DashboardHome = () => {
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders, paidAmount, unpaidAmount, overduePayments, profitMargin, vatCollected },
       topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
-      expenseByCategory, paymentStatus,
+      expenseByCategory, paymentStatus, customerFinancials,
     };
   }, []);
 
