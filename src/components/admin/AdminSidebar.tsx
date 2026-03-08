@@ -1,6 +1,6 @@
 import { 
   LayoutDashboard, FileText, Package, GitBranch, CalendarDays, 
-  AlertTriangle, Users, Settings, LogOut, DollarSign, TrendingUp, Wrench, Boxes, Wallet, MessageSquare
+  AlertTriangle, Users, Settings, LogOut, DollarSign, TrendingUp, Wrench, Boxes, Wallet, MessageSquare, Bot
 } from "lucide-react";
 
 
@@ -16,6 +16,7 @@ const menuItems = [
   { id: "inventory", label: "Envanter & Takım", icon: Boxes },
   { id: "financedocs", label: "Nakit Akışı", icon: Wallet },
   { id: "support", label: "Destek Talepleri", icon: MessageSquare },
+  { id: "chatbot-analytics", label: "Chatbot Analitik", icon: Bot },
   { id: "issues", label: "Olay Merkezi", icon: AlertTriangle },
   { id: "customers", label: "Çözüm Ortakları", icon: Users },
   { id: "settings", label: "Sistem Ayarları", icon: Settings },
