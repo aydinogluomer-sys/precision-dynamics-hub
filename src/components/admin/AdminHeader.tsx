@@ -1,5 +1,6 @@
-import { Search, Bell, Download, Activity, Sun, Moon } from "lucide-react";
+import { Search, Download, Activity, Sun, Moon } from "lucide-react";
 import { useState, useEffect, ReactNode } from "react";
+import AdminNotifications from "./AdminNotifications";
 
 const tabTitles: Record<string, string> = {
   dashboard: "Kontrol Paneli",
