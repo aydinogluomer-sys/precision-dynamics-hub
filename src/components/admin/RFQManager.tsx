@@ -307,15 +307,21 @@ const RFQManager = () => {
               <thead className="sticky top-0 dark:bg-[#1E293B] bg-white z-10">
                 <tr className="text-[10px] font-black text-slate-500 uppercase tracking-widest dark:border-[#334155] border-slate-200 border-b">
                   <th className="text-left p-4">ID</th>
-                  <th className="text-left p-4">Müşteri</th>
+                  <th className="text-left p-4 cursor-pointer select-none hover:text-[#0AA2CD] transition-colors" onClick={() => toggleSort("customer")}>
+                    <span className="inline-flex items-center">Müşteri <SortIcon col="customer" /></span>
+                  </th>
                   <th className="text-left p-4 hidden lg:table-cell">Firma</th>
                   <th className="text-left p-4 hidden md:table-cell">Hizmet</th>
                   <th className="text-left p-4 hidden lg:table-cell">Malzeme</th>
                   <th className="text-right p-4 font-mono">Adet</th>
                   <th className="text-right p-4 font-mono hidden md:table-cell">Fiyat</th>
-                   <th className="text-left p-4 hidden md:table-cell">Tarih</th>
-                   <th className="text-left p-4 hidden md:table-cell">Dosya</th>
-                  <th className="text-left p-4">Durum</th>
+                  <th className="text-left p-4 hidden md:table-cell cursor-pointer select-none hover:text-[#0AA2CD] transition-colors" onClick={() => toggleSort("date")}>
+                    <span className="inline-flex items-center">Tarih <SortIcon col="date" /></span>
+                  </th>
+                  <th className="text-left p-4 hidden md:table-cell">Dosya</th>
+                  <th className="text-left p-4 cursor-pointer select-none hover:text-[#0AA2CD] transition-colors" onClick={() => toggleSort("status")}>
+                    <span className="inline-flex items-center">Durum <SortIcon col="status" /></span>
+                  </th>
                   <th className="text-left p-4">İşlem</th>
                   <th className="text-left p-4">Sil</th>
                 </tr>
