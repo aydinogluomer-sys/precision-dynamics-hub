@@ -152,9 +152,12 @@ const itemVariants = {
 const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashData | null>(null);
+  const [rawFins, setRawFins] = useState<any[]>([]);
+  const [rawOrders, setRawOrders] = useState<any[]>([]);
   const [realtimeActive, setRealtimeActive] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"all" | "rfq" | "order" | "ticket">("all");
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const ct = useChartTheme();
 
   const statusColors: Record<string, string> = {
