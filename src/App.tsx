@@ -90,6 +90,8 @@ const AnimatedRoutes = () => {
   );
 };
 
+import ChatBot from "@/components/ChatBot";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -98,6 +100,7 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <AnimatedRoutes />
+        <ChatBot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
