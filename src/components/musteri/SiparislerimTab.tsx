@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const statusColor = (s: string | null) => {
 };
 
 const SiparislerimTab = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,9 +49,13 @@ const SiparislerimTab = () => {
 
   const handleReorder = (order: Order) => {
     toast.info(`"${order.part_name}" için yeniden sipariş talebi oluşturuluyor...`);
-    // Navigate to teklif-al with pre-filled data would be ideal
-    // For now just toast and redirect
-    window.location.href = "/teklif-al";
+    navigate("/teklif-al", {
+      state: {
+        partName: order.part_name,
+        quantity: order.quantity,
+        reorderFrom: order.id,
+      },
+    });
   };
 
   if (loading) return <TableSkeleton rows={4} cols={6} />;

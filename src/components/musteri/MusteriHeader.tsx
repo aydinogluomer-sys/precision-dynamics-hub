@@ -1,4 +1,4 @@
-import { Search, Bell, Activity, Sun, Moon, Home } from "lucide-react";
+import { Bell, Activity, Sun, Moon, Home } from "lucide-react";
 import { useState, useEffect, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -40,16 +40,6 @@ const MusteriHeader = ({ activeTab, mobileSidebar }: Props) => {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="relative hidden md:block">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-          <input
-            type="text"
-            placeholder="Ara..."
-            disabled
-            title="Arama özelliği yakında aktif olacak"
-            className="pl-9 pr-4 py-1.5 rounded-lg dark:bg-[#1E293B] bg-slate-100 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-[#0AA2CD] w-48 opacity-60 cursor-not-allowed"
-          />
-        </div>
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="p-1.5 rounded-lg dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD] dark:hover:bg-[#1E293B] hover:bg-slate-100 transition-colors"
@@ -57,9 +47,8 @@ const MusteriHeader = ({ activeTab, mobileSidebar }: Props) => {
         >
           {darkMode ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
         </button>
-        <button className="relative dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD] opacity-60 cursor-not-allowed" title="Bildirimler yakında aktif olacak">
+        <button className="relative dark:text-slate-400 text-slate-500 opacity-60 cursor-not-allowed" title="Bildirimler yakında aktif olacak">
           <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
         </button>
         <Link
           to="/"
