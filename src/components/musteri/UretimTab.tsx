@@ -14,16 +14,17 @@ interface OrderProduction {
 }
 
 const STEPS = [
-  { key: "malzeme", label: "Malzeme Bekliyor", threshold: 0 },
-  { key: "cam", label: "CAM Hazırlığında", threshold: 20 },
-  { key: "cnc", label: "CNC Tezgahta", threshold: 40 },
-  { key: "kalite", label: "Kalite Kontrolde", threshold: 70 },
-  { key: "sevkiyat", label: "Sevkiyata Hazır", threshold: 90 },
+  { key: "malzeme", label: "Malzeme Tedarik", progress: 0 },
+  { key: "hazirlık", label: "CAM & Hazırlık", progress: 16 },
+  { key: "isleme", label: "CNC İşleme", progress: 33 },
+  { key: "final", label: "Final İşlem", progress: 50 },
+  { key: "kalite", label: "Kalite Kontrol", progress: 75 },
+  { key: "sevkiyat", label: "Tamamlandı", progress: 100 },
 ];
 
 const getActiveStep = (progress: number) => {
   for (let i = STEPS.length - 1; i >= 0; i--) {
-    if (progress >= STEPS[i].threshold) return i;
+    if (progress >= STEPS[i].progress) return i;
   }
   return 0;
 };
