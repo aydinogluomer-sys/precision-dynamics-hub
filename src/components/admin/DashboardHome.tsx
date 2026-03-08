@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList, X, CreditCard, Truck } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList, X, CreditCard, Truck, Mail, Download } from "lucide-react";
 import QuickActionModals, { type ModalType } from "./QuickActionModals";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
@@ -1076,6 +1078,58 @@ const DashboardHome = () => {
               {selectedCustomer} — Finansal Detay
             </DialogTitle>
           </DialogHeader>
+
+          {/* Action Buttons */}
+          {customerDetail && (
+            <div className="flex items-center gap-2 -mt-1">
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
+                onClick={() => {
+                  // Find customer email from rawFins or use customer name
+                  const custData = customerDetail.allFins.find((f: any) => f.vendor === selectedCustomer);
+                  const email = custData?.notes?.match(/[\w.-]+@[\w.-]+/)?.[0] || "";
+                  const subject = encodeURIComponent(`Finansal Özet — ${selectedCustomer}`);
+                  const body = encodeURIComponent(
+                    `Sayın ${selectedCustomer},\n\nToplam Fatura: ${customerDetail.invoices.length}\nÖdenen: ${customerDetail.payments.length}\nBekleyen: ${customerDetail.unpaid.length}\n\nSipariş Sayısı: ${customerDetail.custOrders.length}\n\nSaygılarımızla,\nMAS Technic`
+                  );
+                  window.open(`mailto:${email}?subject=${subject}&body=${body}`, "_blank");
+                  toast.success("E-posta istemcisi açılıyor...");
+                }}
+              >
+                <Mail className="w-3.5 h-3.5" />
+                E-posta Gönder
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
+                onClick={() => {
+                  // Generate printable HTML and trigger print/PDF
+                  const invoiceRows = customerDetail.invoices.map((inv: any) =>
+                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_number || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.title || "Fatura"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_date || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.payment_status === "ödendi" ? "✅ Ödendi" : "⏳ Bekliyor"}</td></tr>`
+                  ).join("");
+                  const orderRows = customerDetail.custOrders.map((ord: any) =>
+                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.id}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.quantity || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.status || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.deadline || "—"}</td></tr>`
+                  ).join("");
+
+                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title><style>body{font-family:system-ui,sans-serif;padding:40px;color:#1e293b}h1{font-size:18px;margin-bottom:4px}h2{font-size:14px;color:#64748b;margin-top:28px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:8px 6px;background:#f1f5f9;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}.summary{display:flex;gap:16px;margin:16px 0}.card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;flex:1}.card .num{font-size:20px;font-weight:800;font-family:monospace}.card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}@media print{body{padding:20px}}</style></head><body><h1>${selectedCustomer}</h1><p style="font-size:12px;color:#94a3b8">Finansal Rapor — ${new Date().toLocaleDateString("tr-TR")}</p><div class="summary"><div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Fatura</div></div><div class="card"><div class="num">${customerDetail.payments.length}</div><div class="lbl">Ödenen</div></div><div class="card"><div class="num">${customerDetail.unpaid.length}</div><div class="lbl">Bekleyen</div></div><div class="card"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş</div></div></div>${customerDetail.invoices.length > 0 ? `<h2>Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody></table>` : ""}${customerDetail.custOrders.length > 0 ? `<h2>Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th>Adet</th><th>Durum</th><th>Termin</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}</body></html>`;
+
+                  const printWindow = window.open("", "_blank");
+                  if (printWindow) {
+                    printWindow.document.write(html);
+                    printWindow.document.close();
+                    setTimeout(() => printWindow.print(), 300);
+                    toast.success("PDF raporu hazırlanıyor...");
+                  }
+                }}
+              >
+                <Download className="w-3.5 h-3.5" />
+                PDF Export
+              </Button>
+            </div>
+          )}
 
           {customerDetail && (
             <div className="space-y-5 mt-2">
