@@ -397,6 +397,52 @@ const FinanceDocsView = () => {
         </button>
         {showAiPanel && (
           <div className="px-4 pb-4 space-y-3">
+            {/* Chat History */}
+            {chatHistory.length > 0 && (
+              <div className="max-h-80 overflow-y-auto space-y-2 scrollbar-thin">
+                {chatHistory.map((msg, i) => (
+                  <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    {msg.role === "assistant" && (
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-1">
+                        <Bot className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    )}
+                    <div className={`rounded-lg p-3 text-sm leading-relaxed max-w-[85%] ${
+                      msg.role === "user" 
+                        ? "bg-[#0AA2CD]/10 dark:text-[#0AA2CD] text-[#0AA2CD] border border-[#0AA2CD]/20" 
+                        : "dark:bg-[#0F172A]/60 bg-white/80 dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200"
+                    }`}>
+                      <div className="whitespace-pre-wrap">{msg.content}</div>
+                    </div>
+                    {msg.role === "user" && (
+                      <div className="w-6 h-6 rounded-full bg-[#0AA2CD]/20 flex items-center justify-center flex-shrink-0 mt-1">
+                        <User className="w-3.5 h-3.5 text-[#0AA2CD]" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {aiLoading && (
+                  <div className="flex gap-2 justify-start">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-1">
+                      <Bot className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <div className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-400 text-slate-500 border dark:border-[#334155]/50 border-slate-200">
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-400 inline mr-2" />
+                      Gemini düşünüyor...
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* No history yet - loading state */}
+            {chatHistory.length === 0 && aiLoading && (
+              <div className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-4 text-sm dark:text-slate-400 text-slate-500 border dark:border-[#334155]/50 border-slate-200 text-center">
+                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-violet-400" />
+                Gemini finansal analiz yapıyor...
+              </div>
+            )}
+
             {/* Question input */}
             <div className="flex gap-2">
               <input
@@ -404,31 +450,27 @@ const FinanceDocsView = () => {
                 placeholder="AI'ya soru sor... (ör: Hangi kategoride tasarruf yapabilirim?)"
                 value={aiQuestion}
                 onChange={e => setAiQuestion(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && !aiLoading) { generateAiInsights(docs, aiQuestion); setAiQuestion(""); } }}
+                onKeyDown={e => { if (e.key === "Enter" && !aiLoading && aiQuestion.trim()) { generateAiInsights(docs, aiQuestion.trim()); setAiQuestion(""); } }}
                 className="flex-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-white border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-violet-500"
               />
               <button
-                onClick={() => { generateAiInsights(docs, aiQuestion || undefined); setAiQuestion(""); }}
+                onClick={() => { if (aiQuestion.trim()) { generateAiInsights(docs, aiQuestion.trim()); setAiQuestion(""); } else { generateAiInsights(docs); } }}
                 disabled={aiLoading}
                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-cyan-500 text-white text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
               >
-                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
-                {aiLoading ? "Analiz..." : "Analiz Et"}
+                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : aiQuestion.trim() ? <Send className="w-3.5 h-3.5" /> : <Brain className="w-3.5 h-3.5" />}
+                {aiLoading ? "Analiz..." : aiQuestion.trim() ? "Gönder" : "Analiz Et"}
               </button>
+              {chatHistory.length > 1 && (
+                <button
+                  onClick={() => { setChatHistory([]); setAiInsights([]); }}
+                  className="px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-100 dark:text-slate-400 text-slate-500 text-xs font-bold hover:text-red-400 border dark:border-[#334155] border-slate-200"
+                  title="Sohbeti temizle"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
-
-            {/* AI Response */}
-            {aiLoading && aiInsights.length === 0 && (
-              <div className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-4 text-sm dark:text-slate-400 text-slate-500 border dark:border-[#334155]/50 border-slate-200 text-center">
-                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-violet-400" />
-                Gemini finansal analiz yapıyor...
-              </div>
-            )}
-            {aiInsights.map((insight, i) => (
-              <div key={i} className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200 leading-relaxed">
-                {insight}
-              </div>
-            ))}
           </div>
         )}
       </div>
