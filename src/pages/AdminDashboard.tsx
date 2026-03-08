@@ -113,6 +113,25 @@ const AdminDashboard = () => {
             />
           }
         />
+        {/* Breadcrumb */}
+        {activeTab !== "dashboard" && (
+          <div className="px-3 sm:px-6 pt-3 pb-0 flex items-center gap-1.5 text-[11px]">
+            <button onClick={() => setActiveTab("dashboard")} className="flex items-center gap-1 dark:text-slate-500 text-slate-400 hover:text-[#0AA2CD] transition-colors">
+              <LayoutDashboard className="w-3 h-3" />
+              <span>Kontrol Paneli</span>
+            </button>
+            <ChevronRight className="w-3 h-3 dark:text-slate-600 text-slate-300" />
+            <span className="font-bold dark:text-white text-slate-700 truncate">
+              {({
+                rfq: "Talep Merkezi", orders: "Üretim Günlüğü", wbs: "İş Akış Hattı",
+                scheduling: "Kaynak Yerleşimi", financial: "Finansal Analitik", pipeline: "Satış Pipeline",
+                tpm: "TPM & Bakım", inventory: "Envanter & Takım", financedocs: "Nakit Akışı",
+                support: "Destek Talepleri", issues: "Olay Merkezi", customers: "Çözüm Ortakları",
+                settings: "Sistem Ayarları",
+              } as Record<string, string>)[activeTab] || "Dashboard"}
+            </span>
+          </div>
+        )}
         <main className="flex-1 overflow-y-auto p-3 sm:p-6">
           {renderContent()}
         </main>
