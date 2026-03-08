@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
@@ -343,7 +343,7 @@ const DashboardHome = () => {
     { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true, tab: "financial" },
   ];
 
-  const cardBase = "dark:bg-[#1E293B]/80 bg-white rounded-2xl dark:border-[#1E293B] border-slate-100 border shadow-sm hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-300";
+  const cardBase = "dark:bg-[#1E293B]/80 bg-white rounded-2xl dark:border-[#1E293B] border-slate-200 border shadow-sm hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-300";
   const clickableCard = (tab: string) => `${cardBase} cursor-pointer group p-5`;
 
   const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
@@ -364,6 +364,27 @@ const DashboardHome = () => {
         <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">
           {realtimeActive ? "CANLI VERİ AKIŞI AKTİF" : "Bağlanıyor..."}
         </span>
+      </motion.div>
+
+      {/* ── QUICK ACTIONS ── */}
+      <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: "Yeni Teklif", icon: Plus, color: C.cyan, bg: "bg-[#0AA2CD]/10", tab: "rfq" },
+          { label: "Sipariş Ekle", icon: ClipboardList, color: C.orange, bg: "bg-[#F97316]/10", tab: "orders" },
+          { label: "Destek Talebi", icon: Headphones, color: C.purple, bg: "bg-purple-500/10", tab: "support" },
+          { label: "Pipeline Ekle", icon: DollarSign, color: C.emerald, bg: "bg-emerald-400/10", tab: "pipeline" },
+        ].map((a) => (
+          <button
+            key={a.label}
+            onClick={() => navigateTo(a.tab)}
+            className="flex items-center gap-3 dark:bg-[#1E293B]/80 bg-white rounded-2xl border dark:border-[#1E293B] border-slate-200 p-4 hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-200 hover:scale-[1.02] group"
+          >
+            <div className={`w-9 h-9 rounded-xl ${a.bg} flex items-center justify-center shrink-0`}>
+              <a.icon className="w-4 h-4" style={{ color: a.color }} />
+            </div>
+            <span className="text-xs font-bold dark:text-slate-300 text-slate-700 group-hover:text-[#0AA2CD] transition-colors">{a.label}</span>
+          </button>
+        ))}
       </motion.div>
 
       {/* ── KPI CARDS ── */}
