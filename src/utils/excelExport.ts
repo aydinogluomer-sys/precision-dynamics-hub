@@ -1,16 +1,121 @@
-import * as XLSX from "xlsx";
+import XLSX from "xlsx-js-style";
 import { supabase } from "@/integrations/supabase/client";
 
-type ColDef = { key: string; label: string; num?: boolean; date?: boolean };
+/* ── Brand Colors ── */
+const BRAND = {
+  primary: "0688AD",      // teal/cyan
+  primaryDark: "056B8A",  // darker teal for headers
+  primaryLight: "E8F6FA", // very light teal for alternating rows
+  accentLight: "D0EEF5",  // light teal for sub-headers
+  white: "FFFFFF",
+  dark: "1E293B",         // slate-800
+  gray: "F1F5F9",         // slate-100
+  border: "B0D4E0",       // teal-ish border
+  red: "DC2626",
+  green: "16A34A",
+  textDark: "0F172A",
+  textLight: "FFFFFF",
+};
+
+const FONT_MAIN = "Space Grotesk";
+const FONT_MONO = "IBM Plex Mono";
+
+/* ── Style presets ── */
+const sTitle: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 16, bold: true, color: { rgb: BRAND.white } },
+  fill: { fgColor: { rgb: BRAND.primaryDark } },
+  alignment: { horizontal: "center", vertical: "center" },
+};
+
+const sSubtitle: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 10, color: { rgb: BRAND.primaryDark } },
+  fill: { fgColor: { rgb: BRAND.accentLight } },
+  alignment: { horizontal: "center", vertical: "center" },
+};
+
+const sHeader: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 11, bold: true, color: { rgb: BRAND.white } },
+  fill: { fgColor: { rgb: BRAND.primary } },
+  alignment: { horizontal: "center", vertical: "center", wrapText: true },
+  border: {
+    bottom: { style: "medium", color: { rgb: BRAND.primaryDark } },
+    right: { style: "thin", color: { rgb: BRAND.primaryDark } },
+  },
+};
+
+const sCell = (row: number): XLSX.CellStyle => ({
+  font: { name: FONT_MONO, sz: 10, color: { rgb: BRAND.textDark } },
+  fill: { fgColor: { rgb: row % 2 === 0 ? BRAND.white : BRAND.primaryLight } },
+  border: {
+    bottom: { style: "thin", color: { rgb: BRAND.border } },
+    right: { style: "thin", color: { rgb: BRAND.border } },
+  },
+  alignment: { vertical: "center" },
+});
+
+const sCellNum = (row: number): XLSX.CellStyle => ({
+  ...sCell(row),
+  alignment: { horizontal: "right", vertical: "center" },
+  numFmt: '#,##0',
+});
+
+const sCellDec = (row: number): XLSX.CellStyle => ({
+  ...sCell(row),
+  alignment: { horizontal: "right", vertical: "center" },
+  numFmt: '#,##0.00',
+});
+
+const sTotalRow: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 11, bold: true, color: { rgb: BRAND.white } },
+  fill: { fgColor: { rgb: BRAND.primaryDark } },
+  alignment: { horizontal: "right", vertical: "center" },
+  border: { top: { style: "medium", color: { rgb: BRAND.primary } } },
+  numFmt: '#,##0',
+};
+
+const sTotalLabel: XLSX.CellStyle = {
+  ...sTotalRow,
+  alignment: { horizontal: "left", vertical: "center" },
+};
+
+const sKpiCategory: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 10, bold: true, color: { rgb: BRAND.primary } },
+  fill: { fgColor: { rgb: BRAND.accentLight } },
+  alignment: { vertical: "center" },
+  border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
+};
+
+const sKpiMetric: XLSX.CellStyle = {
+  font: { name: FONT_MAIN, sz: 10, color: { rgb: BRAND.textDark } },
+  alignment: { vertical: "center" },
+  border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
+};
+
+const sKpiValue: XLSX.CellStyle = {
+  font: { name: FONT_MONO, sz: 11, bold: true, color: { rgb: BRAND.primaryDark } },
+  alignment: { horizontal: "right", vertical: "center" },
+  border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
+  numFmt: '#,##0',
+};
+
+const sCritical: XLSX.CellStyle = {
+  font: { name: FONT_MONO, sz: 10, bold: true, color: { rgb: BRAND.red } },
+  fill: { fgColor: { rgb: "FEE2E2" } },
+  alignment: { vertical: "center" },
+};
+
+const sNormal: XLSX.CellStyle = {
+  font: { name: FONT_MONO, sz: 10, color: { rgb: BRAND.green } },
+  fill: { fgColor: { rgb: "DCFCE7" } },
+  alignment: { vertical: "center" },
+};
+
+/* ── Helpers ── */
+type ColDef = { key: string; label: string; num?: boolean; date?: boolean; decimal?: boolean };
 
 const fmtDate = (v: any) => (v ? String(v).split("T")[0] : "");
 
-/* ── Pivot helper: group rows by a key, count or sum ── */
-function pivot(
-  rows: Record<string, any>[],
-  groupKey: string,
-  valueKey?: string
-): { label: string; count: number; total: number }[] {
+function pivot(rows: Record<string, any>[], groupKey: string, valueKey?: string) {
   const map: Record<string, { count: number; total: number }> = {};
   rows.forEach((r) => {
     const k = String(r[groupKey] || "Belirsiz");
@@ -21,26 +126,101 @@ function pivot(
   return Object.entries(map).map(([label, v]) => ({ label, ...v }));
 }
 
-/* ── Build a data sheet with auto-filter & column widths ── */
+function applyStyles(ws: XLSX.WorkSheet, range: XLSX.Range, styleFn: (r: number, c: number) => XLSX.CellStyle) {
+  for (let R = range.s.r; R <= range.e.r; R++) {
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const addr = XLSX.utils.encode_cell({ r: R, c: C });
+      if (!ws[addr]) ws[addr] = { v: "", t: "s" };
+      ws[addr].s = styleFn(R, C);
+    }
+  }
+}
+
 function buildSheet(rows: Record<string, any>[], cols: ColDef[]): XLSX.WorkSheet {
   const header = cols.map((c) => c.label);
   const data = rows.map((r) =>
     cols.map((c) => {
       const raw = r[c.key];
       if (c.date) return fmtDate(raw);
-      if (c.num) return raw != null ? Number(raw) : "";
+      if (c.num || c.decimal) return raw != null ? Number(raw) : "";
       return raw ?? "";
     })
   );
   const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
-  // Auto-filter
   ws["!autofilter"] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: data.length, c: cols.length - 1 } }) };
-  // Column widths
-  ws["!cols"] = cols.map((c) => ({ wch: Math.max(c.label.length + 2, c.num ? 14 : c.date ? 12 : 20) }));
+  ws["!cols"] = cols.map((c) => ({ wch: Math.max(c.label.length + 4, c.num || c.decimal ? 16 : c.date ? 14 : 22) }));
+  ws["!rows"] = [{ hpt: 28 }, ...data.map(() => ({ hpt: 22 }))];
+
+  // Style header row
+  for (let C = 0; C < cols.length; C++) {
+    const addr = XLSX.utils.encode_cell({ r: 0, c: C });
+    if (ws[addr]) ws[addr].s = sHeader;
+  }
+  // Style data rows
+  for (let R = 0; R < data.length; R++) {
+    for (let C = 0; C < cols.length; C++) {
+      const addr = XLSX.utils.encode_cell({ r: R + 1, c: C });
+      if (ws[addr]) {
+        if (cols[C].decimal) ws[addr].s = sCellDec(R);
+        else if (cols[C].num) ws[addr].s = sCellNum(R);
+        else ws[addr].s = sCell(R);
+      }
+    }
+  }
   return ws;
 }
 
-/* ── KPI card row for dashboard sheet ── */
+function buildPivotSheet(title: string, data: { label: string; count: number; total: number }[], showTotal: boolean, totalLabel: string): XLSX.WorkSheet {
+  const headers = showTotal ? [title, "", ""] : [title, ""];
+  const colHeaders = showTotal ? ["Durum / Tür", "Adet", totalLabel] : ["Durum / Tür", "Adet"];
+  const rows = data.map((d) => showTotal ? [d.label, d.count, d.total] : [d.label, d.count]);
+  const sumCount = data.reduce((s, d) => s + d.count, 0);
+  const sumTotal = data.reduce((s, d) => s + d.total, 0);
+  const totalRow = showTotal ? ["TOPLAM", sumCount, sumTotal] : ["TOPLAM", sumCount];
+
+  const allRows = [headers, colHeaders, ...rows, [], totalRow];
+  const ws = XLSX.utils.aoa_to_sheet(allRows);
+  const numCols = showTotal ? 3 : 2;
+
+  ws["!cols"] = [{ wch: 24 }, { wch: 12 }, ...(showTotal ? [{ wch: 20 }] : [])];
+  ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: numCols - 1 } }];
+  ws["!rows"] = [{ hpt: 30 }, { hpt: 26 }, ...rows.map(() => ({ hpt: 22 })), { hpt: 10 }, { hpt: 26 }];
+
+  // Title
+  const titleAddr = XLSX.utils.encode_cell({ r: 0, c: 0 });
+  if (ws[titleAddr]) ws[titleAddr].s = sTitle;
+  for (let c = 1; c < numCols; c++) {
+    const a = XLSX.utils.encode_cell({ r: 0, c });
+    if (!ws[a]) ws[a] = { v: "", t: "s" };
+    ws[a].s = sTitle;
+  }
+
+  // Column headers
+  for (let C = 0; C < numCols; C++) {
+    const addr = XLSX.utils.encode_cell({ r: 1, c: C });
+    if (ws[addr]) ws[addr].s = sHeader;
+  }
+
+  // Data rows
+  for (let R = 0; R < rows.length; R++) {
+    for (let C = 0; C < numCols; C++) {
+      const addr = XLSX.utils.encode_cell({ r: R + 2, c: C });
+      if (ws[addr]) {
+        ws[addr].s = C === 0 ? sCell(R) : (showTotal && C === 2 ? sCellDec(R) : sCellNum(R));
+      }
+    }
+  }
+
+  // Total row
+  const totalRowIdx = rows.length + 3;
+  for (let C = 0; C < numCols; C++) {
+    const addr = XLSX.utils.encode_cell({ r: totalRowIdx, c: C });
+    if (ws[addr]) ws[addr].s = C === 0 ? sTotalLabel : sTotalRow;
+  }
+
+  return ws;
+}
+
 function kpiRow(category: string, metric: string, value: number | string) {
   return [category, metric, value];
 }
@@ -51,24 +231,12 @@ export async function exportExcelReport(activeTab: string) {
   const wb = XLSX.utils.book_new();
 
   const tabTR: Record<string, string> = {
-    dashboard: "Genel Özet",
-    rfq: "Talepler",
-    orders: "Siparişler",
-    wbs: "İş Akışı",
-    scheduling: "Planlama",
-    financial: "Finansal",
-    pipeline: "Pipeline",
-    tpm: "TPM & Bakım",
-    inventory: "Envanter",
-    financedocs: "Nakit Akışı",
-    issues: "Olaylar",
-    customers: "Çözüm Ortakları",
-    support: "Destek",
+    dashboard: "Genel Özet", rfq: "Talepler", orders: "Siparişler", wbs: "İş Akışı",
+    scheduling: "Planlama", financial: "Finansal", pipeline: "Pipeline",
+    tpm: "TPM & Bakım", inventory: "Envanter", financedocs: "Nakit Akışı",
+    issues: "Olaylar", customers: "Çözüm Ortakları", support: "Destek",
   };
 
-  /* ════════════════════════════════════════════
-     DASHBOARD — multi-sheet professional report
-     ════════════════════════════════════════════ */
   if (activeTab === "dashboard") {
     const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll, wbsAll, meetAll] = await Promise.all([
       supabase.from("rfqs").select("*"),
@@ -100,10 +268,11 @@ export async function exportExcelReport(activeTab: string) {
     const wbsItems = wbsAll.data || [];
     const meetings = meetAll.data || [];
 
-    // ── SHEET 1: İÇİNDEKİLER (Table of Contents) ──
-    const tocData = [
-      ["MAS TECHNİC — YÖNETİM RAPORU"],
-      [`Rapor Tarihi: ${new Date().toLocaleString("tr-TR", { dateStyle: "long", timeStyle: "short" })}`],
+    // ── SHEET 1: İÇİNDEKİLER ──
+    const reportDate = new Date().toLocaleString("tr-TR", { dateStyle: "long", timeStyle: "short" });
+    const tocRows = [
+      ["MAS TECHNIC — YÖNETİM RAPORU"],
+      [`Rapor Tarihi: ${reportDate}`],
       [""],
       ["Sayfa No", "Sayfa Adı", "Açıklama"],
       [1, "İçindekiler", "Bu sayfa"],
@@ -121,12 +290,39 @@ export async function exportExcelReport(activeTab: string) {
       [13, "Siparişler (Ham)", "Tüm sipariş verileri"],
       [14, "Müşteriler (Ham)", "Tüm müşteri verileri"],
     ];
-    const wsToc = XLSX.utils.aoa_to_sheet(tocData);
-    wsToc["!cols"] = [{ wch: 10 }, { wch: 22 }, { wch: 42 }];
+    const wsToc = XLSX.utils.aoa_to_sheet(tocRows);
+    wsToc["!cols"] = [{ wch: 12 }, { wch: 24 }, { wch: 44 }];
     wsToc["!merges"] = [
       { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } },
       { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } },
     ];
+    wsToc["!rows"] = [{ hpt: 36 }, { hpt: 24 }, { hpt: 10 }, { hpt: 26 }, ...Array(14).fill({ hpt: 22 })];
+
+    // Style TOC
+    const tocTitle = XLSX.utils.encode_cell({ r: 0, c: 0 });
+    if (wsToc[tocTitle]) wsToc[tocTitle].s = sTitle;
+    for (let c = 1; c <= 2; c++) {
+      const a = XLSX.utils.encode_cell({ r: 0, c });
+      if (!wsToc[a]) wsToc[a] = { v: "", t: "s" };
+      wsToc[a].s = sTitle;
+    }
+    const tocSub = XLSX.utils.encode_cell({ r: 1, c: 0 });
+    if (wsToc[tocSub]) wsToc[tocSub].s = sSubtitle;
+    for (let c = 1; c <= 2; c++) {
+      const a = XLSX.utils.encode_cell({ r: 1, c });
+      if (!wsToc[a]) wsToc[a] = { v: "", t: "s" };
+      wsToc[a].s = sSubtitle;
+    }
+    for (let C = 0; C < 3; C++) {
+      const addr = XLSX.utils.encode_cell({ r: 3, c: C });
+      if (wsToc[addr]) wsToc[addr].s = sHeader;
+    }
+    for (let R = 4; R < tocRows.length; R++) {
+      for (let C = 0; C < 3; C++) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        if (wsToc[addr]) wsToc[addr].s = C === 0 ? sCellNum(R) : sCell(R);
+      }
+    }
     XLSX.utils.book_append_sheet(wb, wsToc, "İçindekiler");
 
     // ── SHEET 2: DASHBOARD KPI ──
@@ -151,131 +347,220 @@ export async function exportExcelReport(activeTab: string) {
     const confirmedMeetings = meetings.filter((m) => m.status === "confirmed").length;
     const totalQuoted = rfqs.reduce((s, r) => s + (Number(r.quoted_price) || 0), 0);
 
-    const kpiData = [
-      ["DASHBOARD — KPI TABLOSU"],
-      [""],
+    const kpiData: any[][] = [
+      ["DASHBOARD — KPI TABLOSU", "", ""],
+      ["", "", ""],
       ["Kategori", "Metrik", "Değer"],
-      ...([
-        kpiRow("Genel", "Toplam RFQ Talebi", rfqs.length),
-        kpiRow("Genel", "Toplam Sipariş", orders.length),
-        kpiRow("Genel", "Toplam Müşteri", custs.length),
-        kpiRow("Genel", "Açık Sorun", openIssues),
-        kpiRow("Genel", "Açık Destek Talebi", openTickets),
-        ["", "", ""],
-        kpiRow("RFQ", "Toplam Teklif Tutarı (₺)", totalQuoted),
-        ["", "", ""],
-        kpiRow("Sipariş", "Ortalama İlerleme (%)", avgProgress),
-        kpiRow("Sipariş", "Geciken Sipariş", overdueOrders),
-        ["", "", ""],
-        kpiRow("Finansal", "Toplam Gelir (₺)", totalIncome),
-        kpiRow("Finansal", "Toplam Gider (₺)", totalExpense),
-        kpiRow("Finansal", "Net (₺)", totalIncome - totalExpense),
-        kpiRow("Finansal", "Toplam KDV (₺)", Math.round(totalVat * 100) / 100),
-        kpiRow("Finansal", "Ödenmemiş Belge", unpaidDocs),
-        ["", "", ""],
-        kpiRow("Pipeline", "Toplam Değer (₺)", totalPipeValue),
-        kpiRow("Pipeline", "Ağırlıklı Değer (₺)", Math.round(weightedPipe)),
-        ["", "", ""],
-        kpiRow("Sorunlar", "Toplam Sorun", issues.length),
-        kpiRow("Sorunlar", "Toplam Maliyet (₺)", issueCost),
-        ["", "", ""],
-        kpiRow("Bakım", "Toplam Kayıt", maints.length),
-        kpiRow("Bakım", "Toplam Maliyet (₺)", maintCost),
-        ["", "", ""],
-        kpiRow("Envanter", "Hammadde Çeşidi", raws.length),
-        kpiRow("Envanter", "Hammadde Toplam Değer (₺)", Math.round(rawValue)),
-        kpiRow("Envanter", "Takım Çeşidi", tools.length),
-        kpiRow("Envanter", "Takım Toplam Değer (₺)", Math.round(toolValue)),
-        kpiRow("Envanter", "Kritik Stok Takım", lowStockTools),
-        ["", "", ""],
-        kpiRow("İş Akışı", "Toplam WBS Kaydı", wbsItems.length),
-        ["", "", ""],
-        kpiRow("Destek", "Toplam Talep", tickets.length),
-        kpiRow("Destek", "Açık Talep", openTickets),
-        kpiRow("Destek", "Çözülen Talep", closedTickets),
-        ["", "", ""],
-        kpiRow("Toplantı", "Toplam Toplantı", meetings.length),
-        kpiRow("Toplantı", "Bekleyen", pendingMeetings),
-        kpiRow("Toplantı", "Onaylanan", confirmedMeetings),
-        ["", "", ""],
-        kpiRow("Müşteri", "Toplam Bakiye (₺)", Math.round(totalBalance)),
-        kpiRow("Planlama", "Aktif Çizelge Kaydı", scheds.length),
-      ] as any[]),
+      kpiRow("Genel", "Toplam RFQ Talebi", rfqs.length),
+      kpiRow("Genel", "Toplam Sipariş", orders.length),
+      kpiRow("Genel", "Toplam Müşteri", custs.length),
+      kpiRow("Genel", "Açık Sorun", openIssues),
+      kpiRow("Genel", "Açık Destek Talebi", openTickets),
+      ["", "", ""],
+      kpiRow("RFQ", "Toplam Teklif Tutarı (₺)", totalQuoted),
+      ["", "", ""],
+      kpiRow("Sipariş", "Ortalama İlerleme (%)", avgProgress),
+      kpiRow("Sipariş", "Geciken Sipariş", overdueOrders),
+      ["", "", ""],
+      kpiRow("Finansal", "Toplam Gelir (₺)", totalIncome),
+      kpiRow("Finansal", "Toplam Gider (₺)", totalExpense),
+      kpiRow("Finansal", "Net (₺)", totalIncome - totalExpense),
+      kpiRow("Finansal", "Toplam KDV (₺)", Math.round(totalVat * 100) / 100),
+      kpiRow("Finansal", "Ödenmemiş Belge", unpaidDocs),
+      ["", "", ""],
+      kpiRow("Pipeline", "Toplam Değer (₺)", totalPipeValue),
+      kpiRow("Pipeline", "Ağırlıklı Değer (₺)", Math.round(weightedPipe)),
+      ["", "", ""],
+      kpiRow("Sorunlar", "Toplam Sorun", issues.length),
+      kpiRow("Sorunlar", "Toplam Maliyet (₺)", issueCost),
+      ["", "", ""],
+      kpiRow("Bakım", "Toplam Kayıt", maints.length),
+      kpiRow("Bakım", "Toplam Maliyet (₺)", maintCost),
+      ["", "", ""],
+      kpiRow("Envanter", "Hammadde Çeşidi", raws.length),
+      kpiRow("Envanter", "Hammadde Toplam Değer (₺)", Math.round(rawValue)),
+      kpiRow("Envanter", "Takım Çeşidi", tools.length),
+      kpiRow("Envanter", "Takım Toplam Değer (₺)", Math.round(toolValue)),
+      kpiRow("Envanter", "Kritik Stok Takım", lowStockTools),
+      ["", "", ""],
+      kpiRow("İş Akışı", "Toplam WBS Kaydı", wbsItems.length),
+      ["", "", ""],
+      kpiRow("Destek", "Toplam Talep", tickets.length),
+      kpiRow("Destek", "Açık Talep", openTickets),
+      kpiRow("Destek", "Çözülen Talep", closedTickets),
+      ["", "", ""],
+      kpiRow("Toplantı", "Toplam Toplantı", meetings.length),
+      kpiRow("Toplantı", "Bekleyen", pendingMeetings),
+      kpiRow("Toplantı", "Onaylanan", confirmedMeetings),
+      ["", "", ""],
+      kpiRow("Müşteri", "Toplam Bakiye (₺)", Math.round(totalBalance)),
+      kpiRow("Planlama", "Aktif Çizelge Kaydı", scheds.length),
     ];
+
     const wsKpi = XLSX.utils.aoa_to_sheet(kpiData);
-    wsKpi["!cols"] = [{ wch: 14 }, { wch: 32 }, { wch: 18 }];
+    wsKpi["!cols"] = [{ wch: 16 }, { wch: 34 }, { wch: 20 }];
     wsKpi["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 2 } }];
+    wsKpi["!rows"] = [{ hpt: 32 }, { hpt: 8 }, { hpt: 26 }, ...kpiData.slice(3).map(() => ({ hpt: 22 }))];
+
+    // Style KPI title
+    const kpiTitle = XLSX.utils.encode_cell({ r: 0, c: 0 });
+    if (wsKpi[kpiTitle]) wsKpi[kpiTitle].s = sTitle;
+    for (let c = 1; c <= 2; c++) {
+      const a = XLSX.utils.encode_cell({ r: 0, c });
+      if (!wsKpi[a]) wsKpi[a] = { v: "", t: "s" };
+      wsKpi[a].s = sTitle;
+    }
+    // Column headers
+    for (let C = 0; C < 3; C++) {
+      const addr = XLSX.utils.encode_cell({ r: 2, c: C });
+      if (wsKpi[addr]) wsKpi[addr].s = sHeader;
+    }
+    // Data rows
+    for (let R = 3; R < kpiData.length; R++) {
+      const row = kpiData[R];
+      if (!row[0] && !row[1]) continue; // skip spacer
+      for (let C = 0; C < 3; C++) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        if (wsKpi[addr]) {
+          if (C === 0) wsKpi[addr].s = sKpiCategory;
+          else if (C === 1) wsKpi[addr].s = sKpiMetric;
+          else wsKpi[addr].s = sKpiValue;
+        }
+      }
+    }
     XLSX.utils.book_append_sheet(wb, wsKpi, "Dashboard KPI");
 
     // ── PIVOT SHEETS ──
-    const addPivotSheet = (name: string, data: { label: string; count: number; total: number }[], showTotal: boolean, totalLabel: string) => {
-      const headers = showTotal ? ["Durum / Tür", "Adet", totalLabel] : ["Durum / Tür", "Adet"];
-      const rows = data.map((d) => showTotal ? [d.label, d.count, d.total] : [d.label, d.count]);
-      const sumRow = showTotal
-        ? ["TOPLAM", data.reduce((s, d) => s + d.count, 0), data.reduce((s, d) => s + d.total, 0)]
-        : ["TOPLAM", data.reduce((s, d) => s + d.count, 0)];
-      const ws = XLSX.utils.aoa_to_sheet([headers, ...rows, [], sumRow]);
-      ws["!cols"] = [{ wch: 22 }, { wch: 10 }, ...(showTotal ? [{ wch: 18 }] : [])];
-      XLSX.utils.book_append_sheet(wb, ws, name);
-    };
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("RFQ DURUM DAĞILIMI", pivot(rfqs, "status", "quoted_price"), true, "Tutar (₺)"), "RFQ Pivot");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("SİPARİŞ DURUM DAĞILIMI", pivot(orders, "status"), false, ""), "Sipariş Pivot");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("FİNANSAL BELGE DAĞILIMI", pivot(fins, "doc_type", "total_amount"), true, "Toplam (₺)"), "Finansal Özet");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("PİPELİNE AŞAMA DAĞILIMI", pivot(pipes, "stage", "value"), true, "Değer (₺)"), "Pipeline Pivot");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("SORUN CİDDİYET DAĞILIMI", pivot(issues, "severity", "cost"), true, "Maliyet (₺)"), "Sorunlar Pivot");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("BAKIM TÜR DAĞILIMI", pivot(maints, "type", "cost"), true, "Maliyet (₺)"), "Bakım Pivot");
 
-    addPivotSheet("RFQ Pivot", pivot(rfqs, "status", "quoted_price"), true, "Tutar (₺)");
-    addPivotSheet("Sipariş Pivot", pivot(orders, "status"), false, "");
-    
-    // Finansal Özet pivot
-    const finPivot = pivot(fins, "doc_type", "total_amount");
-    addPivotSheet("Finansal Özet", finPivot, true, "Toplam (₺)");
-
-    const pipePivot = pivot(pipes, "stage", "value");
-    addPivotSheet("Pipeline Pivot", pipePivot, true, "Değer (₺)");
-
-    addPivotSheet("Sorunlar Pivot", pivot(issues, "severity", "cost"), true, "Maliyet (₺)");
-    addPivotSheet("Bakım Pivot", pivot(maints, "type", "cost"), true, "Maliyet (₺)");
-
-    // Envanter özet
-    const envData = [
-      ["HAMMADDE STOK DURUMU"],
+    // Envanter Özet (custom styled)
+    const envRows: any[][] = [
+      ["ENVANTER ÖZET RAPORU", "", "", "", "", ""],
       [""],
+      ["HAMMADDE STOK DURUMU", "", "", "", "", ""],
       ["Kod", "Ad", "Stok", "Birim Fiyat (₺)", "Toplam Değer (₺)", "Birim"],
       ...raws.map((r) => [r.code, r.name, r.stock || 0, Number(r.unit_cost) || 0, (r.stock || 0) * (Number(r.unit_cost) || 0), r.unit || ""]),
-      [],
       ["TOPLAM", "", raws.reduce((s, r) => s + (r.stock || 0), 0), "", Math.round(rawValue), ""],
-      [],
-      ["TAKIM STOK DURUMU"],
       [""],
+      ["TAKIM STOK DURUMU", "", "", "", "", ""],
       ["Kod", "Ad", "Stok", "Min Stok", "Birim Fiyat (₺)", "Durum"],
       ...tools.map((t) => [t.code, t.name, t.stock || 0, t.min_stock || 5, Number(t.unit_cost) || 0, (t.stock || 0) <= (t.min_stock || 5) ? "⚠ KRİTİK" : "✓ Normal"]),
-      [],
       ["TOPLAM", "", tools.reduce((s, t) => s + (t.stock || 0), 0), "", Math.round(toolValue), ""],
     ];
-    const wsEnv = XLSX.utils.aoa_to_sheet(envData);
-    wsEnv["!cols"] = [{ wch: 14 }, { wch: 26 }, { wch: 10 }, { wch: 14 }, { wch: 18 }, { wch: 14 }];
+    const wsEnv = XLSX.utils.aoa_to_sheet(envRows);
+    wsEnv["!cols"] = [{ wch: 16 }, { wch: 28 }, { wch: 12 }, { wch: 16 }, { wch: 20 }, { wch: 14 }];
     wsEnv["!merges"] = [
       { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
-      { s: { r: raws.length + 4, c: 0 }, e: { r: raws.length + 4, c: 5 } },
+      { s: { r: 2, c: 0 }, e: { r: 2, c: 5 } },
     ];
+
+    // Style envanter title + section headers
+    for (let c = 0; c < 6; c++) {
+      const a0 = XLSX.utils.encode_cell({ r: 0, c });
+      if (!wsEnv[a0]) wsEnv[a0] = { v: "", t: "s" };
+      wsEnv[a0].s = sTitle;
+      const a2 = XLSX.utils.encode_cell({ r: 2, c });
+      if (!wsEnv[a2]) wsEnv[a2] = { v: "", t: "s" };
+      wsEnv[a2].s = { ...sSubtitle, font: { ...sSubtitle.font, sz: 12, bold: true } };
+    }
+    // Hammadde header row
+    for (let c = 0; c < 6; c++) {
+      const addr = XLSX.utils.encode_cell({ r: 3, c });
+      if (wsEnv[addr]) wsEnv[addr].s = sHeader;
+    }
+    // Hammadde data
+    for (let R = 0; R < raws.length; R++) {
+      for (let C = 0; C < 6; C++) {
+        const addr = XLSX.utils.encode_cell({ r: R + 4, c: C });
+        if (wsEnv[addr]) wsEnv[addr].s = (C >= 2 && C <= 4) ? sCellNum(R) : sCell(R);
+      }
+    }
+    // Hammadde total
+    const hmTotalRow = 4 + raws.length;
+    for (let C = 0; C < 6; C++) {
+      const addr = XLSX.utils.encode_cell({ r: hmTotalRow, c: C });
+      if (wsEnv[addr]) wsEnv[addr].s = C === 0 ? sTotalLabel : sTotalRow;
+    }
+
+    // Takım section header
+    const toolSecHeaderRow = hmTotalRow + 2;
+    const toolColHeaderRow = hmTotalRow + 3;
+    wsEnv["!merges"]!.push({ s: { r: toolSecHeaderRow, c: 0 }, e: { r: toolSecHeaderRow, c: 5 } });
+    for (let c = 0; c < 6; c++) {
+      const a = XLSX.utils.encode_cell({ r: toolSecHeaderRow, c });
+      if (!wsEnv[a]) wsEnv[a] = { v: "", t: "s" };
+      wsEnv[a].s = { ...sSubtitle, font: { ...sSubtitle.font, sz: 12, bold: true } };
+      const ah = XLSX.utils.encode_cell({ r: toolColHeaderRow, c });
+      if (wsEnv[ah]) wsEnv[ah].s = sHeader;
+    }
+    // Tool data
+    for (let R = 0; R < tools.length; R++) {
+      for (let C = 0; C < 6; C++) {
+        const addr = XLSX.utils.encode_cell({ r: toolColHeaderRow + 1 + R, c: C });
+        if (wsEnv[addr]) {
+          if (C === 5) {
+            // Status column
+            const t = tools[R];
+            wsEnv[addr].s = (t.stock || 0) <= (t.min_stock || 5) ? sCritical : sNormal;
+          } else {
+            wsEnv[addr].s = (C >= 2 && C <= 4) ? sCellNum(R) : sCell(R);
+          }
+        }
+      }
+    }
+    // Tool total
+    const toolTotalRow = toolColHeaderRow + 1 + tools.length;
+    for (let C = 0; C < 6; C++) {
+      const addr = XLSX.utils.encode_cell({ r: toolTotalRow, c: C });
+      if (wsEnv[addr]) wsEnv[addr].s = C === 0 ? sTotalLabel : sTotalRow;
+    }
+
     XLSX.utils.book_append_sheet(wb, wsEnv, "Envanter Özet");
 
     // WBS Pivot
-    addPivotSheet("WBS Pivot", pivot(wbsItems, "status"), false, "");
+    XLSX.utils.book_append_sheet(wb, buildPivotSheet("İŞ AKIŞI DURUM DAĞILIMI", pivot(wbsItems, "status"), false, ""), "WBS Pivot");
 
-    // Destek & Toplantı
-    const destekData = [
-      ["DESTEK & TOPLANTI ÖZETİ"],
+    // Destek & Toplantı (styled)
+    const destekRows: any[][] = [
+      ["DESTEK & TOPLANTI ÖZETİ", ""],
       [""],
       ["Destek Metrikleri", "Değer"],
       ["Toplam Talep", tickets.length],
       ["Açık", openTickets],
       ["Çözülen", closedTickets],
-      [],
+      [""],
       ["Toplantı Metrikleri", "Değer"],
       ["Toplam", meetings.length],
       ["Bekleyen", pendingMeetings],
       ["Onaylanan", confirmedMeetings],
     ];
-    const wsDestek = XLSX.utils.aoa_to_sheet(destekData);
-    wsDestek["!cols"] = [{ wch: 24 }, { wch: 14 }];
+    const wsDestek = XLSX.utils.aoa_to_sheet(destekRows);
+    wsDestek["!cols"] = [{ wch: 26 }, { wch: 16 }];
     wsDestek["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } }];
+    for (let c = 0; c < 2; c++) {
+      const a = XLSX.utils.encode_cell({ r: 0, c });
+      if (!wsDestek[a]) wsDestek[a] = { v: "", t: "s" };
+      wsDestek[a].s = sTitle;
+    }
+    for (const hRow of [2, 7]) {
+      for (let c = 0; c < 2; c++) {
+        const a = XLSX.utils.encode_cell({ r: hRow, c });
+        if (wsDestek[a]) wsDestek[a].s = sHeader;
+      }
+    }
+    for (const dataRange of [[3, 5], [8, 10]]) {
+      for (let R = dataRange[0]; R <= dataRange[1]; R++) {
+        for (let C = 0; C < 2; C++) {
+          const addr = XLSX.utils.encode_cell({ r: R, c: C });
+          if (wsDestek[addr]) wsDestek[addr].s = C === 0 ? sKpiMetric : sKpiValue;
+        }
+      }
+    }
     XLSX.utils.book_append_sheet(wb, wsDestek, "Destek & Toplantı");
 
     // ── RAW DATA SHEETS ──
@@ -300,9 +585,7 @@ export async function exportExcelReport(activeTab: string) {
     ]), "Müşteriler (Ham)");
 
   } else {
-    /* ════════════════════════════════════════════
-       SINGLE-TAB EXPORT — data sheet + pivot
-       ════════════════════════════════════════════ */
+    /* ── SINGLE-TAB EXPORT ── */
     switch (activeTab) {
       case "rfq": {
         const { data } = await supabase.from("rfqs").select("*").order("created_at", { ascending: false });
@@ -313,15 +596,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "quantity", label: "Miktar", num: true }, { key: "status", label: "Durum" },
           { key: "date", label: "Tarih", date: true }, { key: "quoted_price", label: "Fiyat (₺)", num: true },
         ]), "Talepler");
-        // Pivot: status
-        const pv = pivot(rows, "status", "quoted_price");
-        const pvWs = XLSX.utils.aoa_to_sheet([
-          ["Durum", "Adet", "Toplam Tutar (₺)"],
-          ...pv.map((p) => [p.label, p.count, p.total]),
-          [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)],
-        ]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 10 }, { wch: 18 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Durum Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("RFQ DURUM DAĞILIMI", pivot(rows, "status", "quoted_price"), true, "Tutar (₺)"), "Durum Pivot");
         break;
       }
       case "orders": {
@@ -333,10 +608,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "progress", label: "İlerleme (%)", num: true }, { key: "machine", label: "Makine" },
           { key: "deadline", label: "Termin", date: true },
         ]), "Siparişler");
-        const pv = pivot(rows, "status");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Durum", "Adet"], ...pv.map((p) => [p.label, p.count]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0)]]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 10 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Durum Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("SİPARİŞ DURUM DAĞILIMI", pivot(rows, "status"), false, ""), "Durum Pivot");
         break;
       }
       case "wbs": {
@@ -356,11 +628,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "week_start", label: "Hafta Başı", date: true }, { key: "job_name", label: "İş Adı" },
           { key: "hours", label: "Saat", num: true },
         ]), "Planlama");
-        // Pivot by machine
-        const pv = pivot(rows, "machine", "hours");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Makine", "İş Sayısı", "Toplam Saat"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 22 }, { wch: 12 }, { wch: 14 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Makine Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("MAKİNE DAĞILIMI", pivot(rows, "machine", "hours"), true, "Toplam Saat"), "Makine Pivot");
         break;
       }
       case "financial": {
@@ -368,20 +636,12 @@ export async function exportExcelReport(activeTab: string) {
         const rows = data || [];
         XLSX.utils.book_append_sheet(wb, buildSheet(rows, [
           { key: "doc_number", label: "Belge No" }, { key: "doc_type", label: "Tür" },
-          { key: "title", label: "Başlık" }, { key: "amount", label: "Tutar (₺)", num: true },
-          { key: "vat_amount", label: "KDV (₺)", num: true }, { key: "total_amount", label: "Toplam (₺)", num: true },
+          { key: "title", label: "Başlık" }, { key: "amount", label: "Tutar (₺)", decimal: true },
+          { key: "vat_amount", label: "KDV (₺)", decimal: true }, { key: "total_amount", label: "Toplam (₺)", decimal: true },
           { key: "payment_status", label: "Ödeme Durumu" }, { key: "due_date", label: "Vade", date: true },
         ]), "Finansal");
-        // Pivot by type
-        const pv = pivot(rows, "doc_type", "total_amount");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Tür", "Adet", "Toplam (₺)"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 10 }, { wch: 18 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Tür Pivot");
-        // Pivot by payment status
-        const pv2 = pivot(rows, "payment_status", "total_amount");
-        const pvWs2 = XLSX.utils.aoa_to_sheet([["Ödeme Durumu", "Adet", "Toplam (₺)"], ...pv2.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv2.reduce((s, p) => s + p.count, 0), pv2.reduce((s, p) => s + p.total, 0)]]);
-        pvWs2["!cols"] = [{ wch: 20 }, { wch: 10 }, { wch: 18 }];
-        XLSX.utils.book_append_sheet(wb, pvWs2, "Ödeme Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("BELGE TÜRÜ DAĞILIMI", pivot(rows, "doc_type", "total_amount"), true, "Toplam (₺)"), "Tür Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("ÖDEME DURUMU DAĞILIMI", pivot(rows, "payment_status", "total_amount"), true, "Toplam (₺)"), "Ödeme Pivot");
         break;
       }
       case "pipeline": {
@@ -392,10 +652,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "stage", label: "Aşama" }, { key: "value", label: "Değer (₺)", num: true },
           { key: "probability", label: "Olasılık (%)", num: true },
         ]), "Pipeline");
-        const pv = pivot(rows, "stage", "value");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Aşama", "Adet", "Toplam Değer (₺)"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 10 }, { wch: 18 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Aşama Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("AŞAMA DAĞILIMI", pivot(rows, "stage", "value"), true, "Değer (₺)"), "Aşama Pivot");
         break;
       }
       case "tpm": {
@@ -414,10 +671,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "oil_level", label: "Yağ (%)", num: true },
           { key: "filter_life", label: "Filtre (%)", num: true },
         ]), "Makine Sağlığı");
-        const pv = pivot(m.data || [], "type", "cost");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Tür", "Adet", "Maliyet (₺)"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 10 }, { wch: 16 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Bakım Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("BAKIM TÜR DAĞILIMI", pivot(m.data || [], "type", "cost"), true, "Maliyet (₺)"), "Bakım Pivot");
         break;
       }
       case "inventory": {
@@ -427,12 +681,12 @@ export async function exportExcelReport(activeTab: string) {
         ]);
         XLSX.utils.book_append_sheet(wb, buildSheet(r.data || [], [
           { key: "code", label: "Kod" }, { key: "name", label: "Ad" },
-          { key: "stock", label: "Stok", num: true }, { key: "unit_cost", label: "Birim Fiyat (₺)", num: true },
+          { key: "stock", label: "Stok", num: true }, { key: "unit_cost", label: "Birim Fiyat (₺)", decimal: true },
           { key: "unit", label: "Birim" },
         ]), "Hammaddeler");
         XLSX.utils.book_append_sheet(wb, buildSheet(t.data || [], [
           { key: "code", label: "Kod" }, { key: "name", label: "Ad" },
-          { key: "stock", label: "Stok", num: true }, { key: "unit_cost", label: "Birim Fiyat (₺)", num: true },
+          { key: "stock", label: "Stok", num: true }, { key: "unit_cost", label: "Birim Fiyat (₺)", decimal: true },
           { key: "category", label: "Kategori" },
         ]), "Takımlar");
         break;
@@ -445,10 +699,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "category", label: "Kategori" }, { key: "severity", label: "Ciddiyet" },
           { key: "status", label: "Durum" }, { key: "cost", label: "Maliyet (₺)", num: true },
         ]), "Olaylar");
-        const pv = pivot(rows, "severity", "cost");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Ciddiyet", "Adet", "Maliyet (₺)"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 16 }, { wch: 10 }, { wch: 16 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Ciddiyet Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("CİDDİYET DAĞILIMI", pivot(rows, "severity", "cost"), true, "Maliyet (₺)"), "Ciddiyet Pivot");
         break;
       }
       case "customers": {
@@ -459,17 +710,14 @@ export async function exportExcelReport(activeTab: string) {
           { key: "phone", label: "Telefon" }, { key: "email", label: "Email" },
           { key: "balance", label: "Bakiye (₺)", num: true },
         ]), "Müşteriler");
-        const pv = pivot(rows, "city", "balance");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Şehir", "Müşteri Sayısı", "Toplam Bakiye (₺)"], ...pv.map((p) => [p.label, p.count, p.total]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0), pv.reduce((s, p) => s + p.total, 0)]]);
-        pvWs["!cols"] = [{ wch: 20 }, { wch: 16 }, { wch: 18 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Şehir Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("ŞEHİR DAĞILIMI", pivot(rows, "city", "balance"), true, "Toplam Bakiye (₺)"), "Şehir Pivot");
         break;
       }
       case "financedocs": {
         const { data } = await supabase.from("financial_documents").select("*").order("created_at", { ascending: false });
         XLSX.utils.book_append_sheet(wb, buildSheet(data || [], [
           { key: "doc_number", label: "Belge No" }, { key: "doc_type", label: "Tür" },
-          { key: "total_amount", label: "Tutar (₺)", num: true }, { key: "payment_status", label: "Ödeme Durumu" },
+          { key: "total_amount", label: "Tutar (₺)", decimal: true }, { key: "payment_status", label: "Ödeme Durumu" },
         ]), "Nakit Akışı");
         break;
       }
@@ -480,10 +728,7 @@ export async function exportExcelReport(activeTab: string) {
           { key: "subject", label: "Konu" }, { key: "priority", label: "Öncelik" },
           { key: "status", label: "Durum" }, { key: "created_at", label: "Tarih", date: true },
         ]), "Destek");
-        const pv = pivot(rows, "priority");
-        const pvWs = XLSX.utils.aoa_to_sheet([["Öncelik", "Adet"], ...pv.map((p) => [p.label, p.count]), [], ["TOPLAM", pv.reduce((s, p) => s + p.count, 0)]]);
-        pvWs["!cols"] = [{ wch: 16 }, { wch: 10 }];
-        XLSX.utils.book_append_sheet(wb, pvWs, "Öncelik Pivot");
+        XLSX.utils.book_append_sheet(wb, buildPivotSheet("ÖNCELİK DAĞILIMI", pivot(rows, "priority"), false, ""), "Öncelik Pivot");
         break;
       }
       default: {
