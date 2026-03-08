@@ -130,6 +130,16 @@ const RFQManager = () => {
       user_id: rfq.user_id,
     } as any);
 
+    // Notify customer
+    if (rfq.user_id) {
+      await supabase.from("notifications").insert({
+        user_id: rfq.user_id,
+        type: "rfq",
+        title: "Teklifiniz Onaylandı ✅",
+        message: `${rfq.id} numaralı teklifiniz onaylanarak siparişe dönüştürüldü.`,
+      });
+    }
+
     toast.success("Teklif onaylandı, sipariş ve iş akışı oluşturuldu!");
     fetchRFQs();
     setSelectedRFQ(null);
@@ -142,6 +152,17 @@ const RFQManager = () => {
       rejection_reason: rejectReason || null,
     }).eq("id", rejectModal.id);
     if (error) { toast.error("Red işlemi hatası"); return; }
+
+    // Notify customer
+    if (rejectModal.user_id) {
+      await supabase.from("notifications").insert({
+        user_id: rejectModal.user_id,
+        type: "rfq",
+        title: "Teklif Reddedildi",
+        message: `${rejectModal.id} numaralı teklifiniz reddedildi.${rejectReason ? ` Sebep: ${rejectReason}` : ""}`,
+      });
+    }
+
     toast.success("Teklif reddedildi");
     setRejectModal(null);
     setRejectReason("");
@@ -162,6 +183,17 @@ const RFQManager = () => {
     }).eq("id", priceModal.id);
 
     if (error) { toast.error("Fiyat gönderilemedi"); return; }
+
+    // Notify customer about price
+    if (priceModal.user_id) {
+      await supabase.from("notifications").insert({
+        user_id: priceModal.user_id,
+        type: "rfq",
+        title: "Teklif Fiyatı Belirlendi 💰",
+        message: `${priceModal.id} numaralı teklifinize ₺${price.toLocaleString("tr-TR")} fiyat verildi.`,
+      });
+    }
+
     toast.success("Teklif fiyatı gönderildi!");
     setPriceModal(null);
     setPriceForm({ price: "", days: "7", notes: "" });
