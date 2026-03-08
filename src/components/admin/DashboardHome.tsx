@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Area, AreaChart,
 } from "recharts";
 
 /* ── Colors ── */
@@ -139,6 +139,7 @@ type DashData = {
   expenseByCategory: { name: string; value: number; color: string }[];
   paymentStatus: { name: string; value: number; color: string }[];
   customerFinancials: { name: string; income: number; expense: number; net: number; balance: number; orders: number }[];
+  cashFlowForecast: { month: string; Gelir: number; Gider: number; Net: number; Kümülatif: number; Bütçe: number }[];
 };
 
 /* ── Animation variants ── */
@@ -346,12 +347,61 @@ const DashboardHome = () => {
      .slice(0, 12)
      .map((a) => ({ ...a, time: timeAgo(a.time) }));
 
+    // Cash flow forecast — actual months + 3 month projection
+    const monthNames = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+    const now = new Date();
+    const cfMap: Record<string, { income: number; expense: number }> = {};
+    fins.forEach((f: any) => {
+      if (!f.doc_date) return;
+      const d = new Date(f.doc_date);
+      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, "0")}`;
+      if (!cfMap[key]) cfMap[key] = { income: 0, expense: 0 };
+      const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
+      if (isIncome) cfMap[key].income += Number(f.total_amount) || 0;
+      else cfMap[key].expense += Number(f.total_amount) || 0;
+    });
+    const sortedMonths = Object.keys(cfMap).sort();
+    const avgIncome = sortedMonths.length > 0 ? sortedMonths.reduce((s, k) => s + cfMap[k].income, 0) / sortedMonths.length : 50000;
+    const avgExpense = sortedMonths.length > 0 ? sortedMonths.reduce((s, k) => s + cfMap[k].expense, 0) / sortedMonths.length : 30000;
+    let cumulative = 0;
+    const cashFlowForecast: DashData["cashFlowForecast"] = [];
+    // Actual months
+    sortedMonths.forEach((key) => {
+      const [y, m] = key.split("-").map(Number);
+      const net = cfMap[key].income - cfMap[key].expense;
+      cumulative += net;
+      cashFlowForecast.push({
+        month: `${monthNames[m]} ${String(y).slice(2)}`,
+        Gelir: Math.round(cfMap[key].income),
+        Gider: Math.round(cfMap[key].expense),
+        Net: Math.round(net),
+        Kümülatif: Math.round(cumulative),
+        Bütçe: Math.round(avgIncome * 0.85), // budget target at 85% of avg income
+      });
+    });
+    // 3 month forecast
+    for (let i = 1; i <= 3; i++) {
+      const futureDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const projIncome = Math.round(avgIncome * (1 + (Math.random() - 0.4) * 0.2));
+      const projExpense = Math.round(avgExpense * (1 + (Math.random() - 0.4) * 0.15));
+      const net = projIncome - projExpense;
+      cumulative += net;
+      cashFlowForecast.push({
+        month: `${monthNames[futureDate.getMonth()]} ${String(futureDate.getFullYear()).slice(2)}*`,
+        Gelir: projIncome,
+        Gider: projExpense,
+        Net: Math.round(net),
+        Kümülatif: Math.round(cumulative),
+        Bütçe: Math.round(avgIncome * 0.85),
+      });
+    }
+
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders, paidAmount, unpaidAmount, overduePayments, profitMargin, vatCollected },
       topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
-      expenseByCategory, paymentStatus, customerFinancials,
+      expenseByCategory, paymentStatus, customerFinancials, cashFlowForecast,
     };
   }, []);
 
@@ -821,6 +871,69 @@ const DashboardHome = () => {
         </motion.div>
       )}
 
+      {/* ── CASH FLOW FORECAST ── */}
+      {data.cashFlowForecast.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className={`${cardBase} p-5`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-[#0AA2CD]" />
+                <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Aylık Nakit Akışı Tahmini & Bütçe Karşılaştırması</h3>
+              </div>
+              <span className="text-[9px] px-2 py-0.5 rounded-full dark:bg-amber-500/10 bg-amber-500/10 text-amber-500 font-bold">* Tahmin</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              {[
+                { label: "Son Ay Net", value: data.cashFlowForecast.filter(c => !c.month.includes("*")).slice(-1)[0]?.Net || 0, color: C.emerald, prefix: "₺" },
+                { label: "Kümülatif", value: data.cashFlowForecast[data.cashFlowForecast.length - 1]?.Kümülatif || 0, color: C.cyan, prefix: "₺" },
+                { label: "Ort. Gelir", value: Math.round(data.cashFlowForecast.reduce((s, c) => s + c.Gelir, 0) / data.cashFlowForecast.length), color: C.primary, prefix: "₺" },
+                { label: "Bütçe Sapma", value: Math.round(((data.cashFlowForecast.filter(c => !c.month.includes("*")).slice(-1)[0]?.Gelir || 0) / (data.cashFlowForecast[0]?.Bütçe || 1) - 1) * 100), color: C.orange, prefix: "%", suffix: "" },
+              ].map((m) => (
+                <div key={m.label} className="dark:bg-[#0F172A]/50 bg-slate-50 rounded-xl p-3 border dark:border-[#334155] border-slate-200">
+                  <p className="text-[9px] dark:text-slate-500 text-slate-400 font-semibold uppercase tracking-wider mb-1">{m.label}</p>
+                  <p className="text-lg font-black font-mono tabular-nums" style={{ color: m.color }}>
+                    {m.prefix}{Math.abs(m.value).toLocaleString("tr-TR")}{m.suffix || ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={data.cashFlowForecast} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="cashGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={C.cyan} stopOpacity={0.15} />
+                      <stop offset="95%" stopColor={C.cyan} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} strokeOpacity={ct.gridOpacity} />
+                  <XAxis dataKey="month" tick={{ fontSize: 9, fill: ct.tick }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 9, fill: ct.tick }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="Kümülatif" fill="url(#cashGradient)" stroke={C.cyan} strokeWidth={2} dot={false} />
+                  <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.8} />
+                  <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.6} />
+                  <Line type="monotone" dataKey="Bütçe" name="Bütçe Hedefi" stroke={C.amber} strokeWidth={2} strokeDasharray="6 3" dot={false} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-4 mt-2">
+              {[
+                { label: "Gelir", color: C.emerald },
+                { label: "Gider", color: C.red },
+                { label: "Kümülatif", color: C.cyan },
+                { label: "Bütçe Hedefi", color: C.amber, dashed: true },
+              ].map((l) => (
+                <div key={l.label} className="flex items-center gap-1.5">
+                  <div className="w-3 h-0.5 rounded" style={{ backgroundColor: l.color, borderBottom: l.dashed ? `2px dashed ${l.color}` : undefined }} />
+                  <span className="text-[9px] dark:text-slate-500 text-slate-400">{l.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
@@ -1106,15 +1219,65 @@ const DashboardHome = () => {
                 variant="outline"
                 className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
                 onClick={() => {
-                  // Generate printable HTML and trigger print/PDF
-                  const invoiceRows = customerDetail.invoices.map((inv: any) =>
-                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_number || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.title || "Fatura"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.doc_date || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${inv.payment_status === "ödendi" ? "✅ Ödendi" : "⏳ Bekliyor"}</td></tr>`
-                  ).join("");
-                  const orderRows = customerDetail.custOrders.map((ord: any) =>
-                    `<tr><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.id}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.quantity || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.status || "—"}</td><td style="padding:6px;border-bottom:1px solid #e2e8f0">${ord.deadline || "—"}</td></tr>`
+                  const totalInvoiceAmount = customerDetail.invoices.reduce((s: number, inv: any) => s + (Number(inv.total_amount) || 0), 0);
+                  const totalPaidAmount = customerDetail.payments.reduce((s: number, p: any) => s + (Number(p.total_amount) || 0), 0);
+                  const totalUnpaidAmount = customerDetail.unpaid.reduce((s: number, u: any) => s + (Number(u.total_amount) || 0), 0);
+
+                  const invoiceRows = customerDetail.invoices.map((inv: any, idx: number) =>
+                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#64748b">${inv.doc_number || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:600">${inv.title || "Fatura"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.due_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;font-weight:700">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${inv.payment_status === "ödendi" ? "background:#dcfce7;color:#16a34a" : "background:#fef2f2;color:#dc2626"}">${inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}</span></td></tr>`
                   ).join("");
 
-                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title><style>body{font-family:system-ui,sans-serif;padding:40px;color:#1e293b}h1{font-size:18px;margin-bottom:4px}h2{font-size:14px;color:#64748b;margin-top:28px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:8px 6px;background:#f1f5f9;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}.summary{display:flex;gap:16px;margin:16px 0}.card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;flex:1}.card .num{font-size:20px;font-weight:800;font-family:monospace}.card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}@media print{body{padding:20px}}</style></head><body><h1>${selectedCustomer}</h1><p style="font-size:12px;color:#94a3b8">Finansal Rapor — ${new Date().toLocaleDateString("tr-TR")}</p><div class="summary"><div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Fatura</div></div><div class="card"><div class="num">${customerDetail.payments.length}</div><div class="lbl">Ödenen</div></div><div class="card"><div class="num">${customerDetail.unpaid.length}</div><div class="lbl">Bekleyen</div></div><div class="card"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş</div></div></div>${customerDetail.invoices.length > 0 ? `<h2>Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody></table>` : ""}${customerDetail.custOrders.length > 0 ? `<h2>Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th>Adet</th><th>Durum</th><th>Termin</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}</body></html>`;
+                  const orderRows = customerDetail.custOrders.map((ord: any, idx: number) => {
+                    const sColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? "#16a34a" : ord.status === "Üretimde" ? "#0688AD" : ord.status === "İptal" ? "#dc2626" : "#ea580c";
+                    return `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;font-weight:600">${ord.id}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace">${ord.quantity || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;background:${sColor}15;color:${sColor}">${ord.status || "—"}</span></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.order_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.deadline || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center"><div style="background:#e2e8f0;border-radius:4px;height:6px;width:60px;overflow:hidden"><div style="background:${sColor};height:100%;width:${ord.progress || 0}%"></div></div></td></tr>`;
+                  }).join("");
+
+                  const paymentRows = customerDetail.payments.map((pay: any, idx: number) =>
+                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f0fdf4"}"><td style="padding:8px 10px;border-bottom:1px solid #dcfce7">✅</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;font-weight:600">${pay.title || pay.doc_number || "Ödeme"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;color:#64748b">${pay.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;text-align:right;font-family:monospace;font-weight:700;color:#16a34a">₺${(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</td></tr>`
+                  ).join("");
+
+                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1e293b;background:#fff}
+  .header{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:white;padding:32px 40px;display:flex;align-items:center;gap:20px}
+  .logo-box{width:56px;height:56px;background:#0AA2CD;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:white;letter-spacing:-1px}
+  .header h1{font-size:20px;font-weight:800;margin-bottom:2px}
+  .header p{font-size:11px;color:#94a3b8}
+  .content{padding:32px 40px}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 28px}
+  .card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+  .card .num{font-size:22px;font-weight:800;font-family:'Courier New',monospace}
+  .card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+  .card.green .num{color:#16a34a} .card.red .num{color:#dc2626} .card.blue .num{color:#0688AD}
+  h2{font-size:13px;color:#475569;margin:24px 0 10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+  th{text-align:left;padding:10px;background:#f1f5f9;font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#64748b;border-bottom:2px solid #e2e8f0}
+  .footer{margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between}
+  @media print{body{padding:0}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<div class="header">
+  <div class="logo-box">MT</div>
+  <div>
+    <h1>${selectedCustomer}</h1>
+    <p>MAS Technic Precision — Finansal Rapor • ${new Date().toLocaleDateString("tr-TR")} • Rapor No: FR-${Date.now().toString(36).toUpperCase()}</p>
+  </div>
+</div>
+<div class="content">
+  <div class="summary">
+    <div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Toplam Fatura</div></div>
+    <div class="card green"><div class="num">₺${totalPaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Ödenen Tutar</div></div>
+    <div class="card red"><div class="num">₺${totalUnpaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Bekleyen Tutar</div></div>
+    <div class="card blue"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş Adedi</div></div>
+  </div>
+  ${customerDetail.invoices.length > 0 ? `<h2>📄 Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th>Vade</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody><tfoot><tr style="background:#f1f5f9"><td colspan="4" style="padding:10px;font-weight:700;font-size:11px">TOPLAM</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px">₺${totalInvoiceAmount.toLocaleString("tr-TR")}</td><td></td></tr></tfoot></table>` : ""}
+  ${customerDetail.payments.length > 0 ? `<h2>💰 Ödeme Geçmişi</h2><table><thead><tr><th style="width:30px"></th><th>Açıklama</th><th>Tarih</th><th style="text-align:right">Tutar</th></tr></thead><tbody>${paymentRows}</tbody><tfoot><tr style="background:#f0fdf4"><td></td><td colspan="2" style="padding:10px;font-weight:700;font-size:11px;color:#16a34a">TOPLAM ÖDENEN</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px;color:#16a34a">₺${totalPaidAmount.toLocaleString("tr-TR")}</td></tr></tfoot></table>` : ""}
+  ${customerDetail.custOrders.length > 0 ? `<h2>📦 Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th style="text-align:center">Adet</th><th>Durum</th><th>Sipariş Tarihi</th><th>Termin</th><th style="text-align:center">İlerleme</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}
+  <div class="footer">
+    <span>MAS Technic Precision Manufacturing • Bu rapor otomatik olarak oluşturulmuştur.</span>
+    <span>${new Date().toLocaleDateString("tr-TR")} ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</span>
+  </div>
+</div></body></html>`;
 
                   const printWindow = window.open("", "_blank");
                   if (printWindow) {
