@@ -101,6 +101,7 @@ const FinanceDocsView = () => {
   const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
   const [parasutSyncing, setParasutSyncing] = useState(false);
+  const [customerProfiles, setCustomerProfiles] = useState<CustomerProfile[]>([]);
 
   const fetchDocs = async () => {
     const { data, error } = await supabase
@@ -122,6 +123,10 @@ const FinanceDocsView = () => {
 
   useEffect(() => {
     fetchDocs();
+    // Fetch customer profiles for dropdown
+    supabase.from("profiles").select("id, full_name, company").then(({ data }) => {
+      if (data) setCustomerProfiles(data as CustomerProfile[]);
+    });
     const channel = supabase
       .channel("financial_documents_realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, () => fetchDocs())
