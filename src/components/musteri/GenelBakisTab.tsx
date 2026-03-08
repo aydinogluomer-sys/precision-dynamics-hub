@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, Package, Clock, MessageSquare, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { StatsSkeleton, CardListSkeleton } from "./MusteriSkeletons";
