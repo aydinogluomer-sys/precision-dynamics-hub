@@ -2,7 +2,7 @@ import {
   LayoutDashboard, FileText, Package, Factory, FolderArchive,
   ShieldCheck, DollarSign, CreditCard, MessageSquare, LogOut
 } from "lucide-react";
-import masLogo from "@/assets/mas-technic-logo.png";
+
 
 const menuItems = [
   { id: "genel", label: "Genel Bakış", icon: LayoutDashboard },
@@ -30,7 +30,9 @@ const MusteriSidebar = ({ activeTab, onTabChange, collapsed, displayName, userEm
     <aside className={`${collapsed ? "w-0 lg:w-16 overflow-hidden" : "w-64"} dark:bg-[#0F172A] bg-white border-r dark:border-[#334155] border-slate-200 flex flex-col transition-all duration-300 shrink-0 fixed lg:relative inset-y-0 left-0 z-40 ${collapsed ? "lg:overflow-visible" : ""}`}>
       {/* Brand */}
       <div className="p-4 border-b dark:border-[#334155] border-slate-200 flex items-center gap-3">
-        <img src={masLogo} alt="MAS TECHNIC" className="w-9 h-9 rounded-xl object-contain shrink-0" />
+        <div className="w-9 h-9 bg-primary flex items-center justify-center rounded shrink-0">
+          <span className="text-primary-foreground font-bold text-sm">MT</span>
+        </div>
         {!collapsed && (
           <div>
             <h1 className="font-black dark:text-white text-slate-800 text-sm tracking-widest">MAS TECHNIC</h1>
