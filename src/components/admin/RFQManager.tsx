@@ -294,7 +294,7 @@ const RFQManager = () => {
               ))}
             </div>
             {/* CAD Files */}
-            {selectedRFQ.files && selectedRFQ.files.length > 0 && (
+            {selectedRFQ.files && selectedRFQ.files.length > 0 ? (
               <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
                 <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
                 <div className="mt-2 space-y-1.5">
@@ -302,23 +302,34 @@ const RFQManager = () => {
                     <button
                       key={idx}
                       onClick={async () => {
-                        // Try direct path first
+                        toast.loading("Dosya hazırlanıyor...", { id: "file-dl" });
+                        // Try direct path
                         let { data } = await supabase.storage.from("cad-uploads").createSignedUrl(filePath, 3600);
                         
-                        // If not found and path has no slashes, search in bucket
-                        if (!data?.signedUrl && !filePath.includes("/")) {
-                          const { data: listData } = await supabase.storage.from("cad-uploads").list("", { search: filePath.replace(/^\d+_/, "") });
-                          if (!listData?.length) {
-                            // Search recursively in known prefixes
-                            const prefixes = ["anonymous"];
-                            for (const prefix of prefixes) {
-                              const { data: folders } = await supabase.storage.from("cad-uploads").list(prefix);
-                              if (folders) {
-                                for (const folder of folders) {
-                                  const { data: files } = await supabase.storage.from("cad-uploads").list(`${prefix}/${folder.name}`);
-                                  const match = files?.find(f => f.name.includes(filePath.replace(/^\d+_/, "")));
+                        // If not found, search in bucket recursively
+                        if (!data?.signedUrl) {
+                          const fileName = filePath.split("/").pop() || filePath;
+                          const baseName = fileName.replace(/^\d+_/, "");
+                          
+                          // Search root level
+                          const { data: rootFiles } = await supabase.storage.from("cad-uploads").list("", { limit: 200 });
+                          const rootMatch = rootFiles?.find(f => f.name === fileName || f.name.includes(baseName));
+                          if (rootMatch) {
+                            const res = await supabase.storage.from("cad-uploads").createSignedUrl(rootMatch.name, 3600);
+                            data = res.data;
+                          }
+                          
+                          // Search in subfolders
+                          if (!data?.signedUrl && rootFiles) {
+                            const folders = rootFiles.filter(f => !f.metadata);
+                            for (const folder of folders) {
+                              const { data: subFiles } = await supabase.storage.from("cad-uploads").list(folder.name, { limit: 200 });
+                              if (subFiles) {
+                                for (const sub of subFiles) {
+                                  const { data: deepFiles } = await supabase.storage.from("cad-uploads").list(`${folder.name}/${sub.name}`, { limit: 200 });
+                                  const match = deepFiles?.find(f => f.name.includes(baseName));
                                   if (match) {
-                                    const fullPath = `${prefix}/${folder.name}/${match.name}`;
+                                    const fullPath = `${folder.name}/${sub.name}/${match.name}`;
                                     const res = await supabase.storage.from("cad-uploads").createSignedUrl(fullPath, 3600);
                                     data = res.data;
                                     break;
@@ -331,12 +342,13 @@ const RFQManager = () => {
                         }
 
                         if (data?.signedUrl) {
+                          toast.success("Dosya indiriliyor", { id: "file-dl" });
                           window.open(data.signedUrl, "_blank");
                         } else {
-                          toast.error("Dosya bulunamadı. Eski kayıtlarda dosya yolu eksik olabilir.");
+                          toast.error("Dosya storage'da bulunamadı.", { id: "file-dl" });
                         }
                       }}
-                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-[#0AA2CD] transition-colors"
+                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 dark:border-[#334155] border-slate-200 border text-left hover:border-primary transition-colors"
                     >
                       <Download size={14} className="text-primary shrink-0" />
                       <span className="text-xs font-medium truncate dark:text-white text-slate-800">
@@ -345,6 +357,11 @@ const RFQManager = () => {
                     </button>
                   ))}
                 </div>
+              </div>
+            ) : (
+              <div className="mt-4 pt-3 border-t dark:border-[#334155] border-slate-200">
+                <span className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest">CAD Dosyaları</span>
+                <p className="mt-2 text-xs dark:text-slate-500 text-slate-400">Bu talep için dosya yüklenmemiş.</p>
               </div>
             )}
             <div className="flex gap-2 mt-6">
