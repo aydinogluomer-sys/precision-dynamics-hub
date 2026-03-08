@@ -20,6 +20,7 @@ interface Order {
   packed_qty: number;
   machine: string | null;
   notes: string | null;
+  user_id: string | null;
 }
 
 const statusColors: Record<string, string> = {
