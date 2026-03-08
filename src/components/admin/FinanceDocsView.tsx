@@ -104,7 +104,10 @@ const FinanceDocsView = () => {
       console.error(error);
     } else {
       setDocs((data as any) || []);
-      generateAiInsights((data as any) || []);
+      // Only auto-generate on first load when no chat history exists
+      if (chatHistory.length === 0) {
+        generateAiInsights((data as any) || []);
+      }
     }
     setLoading(false);
   };
@@ -121,6 +124,12 @@ const FinanceDocsView = () => {
   const generateAiInsights = async (data: FinDoc[], question?: string) => {
     if (!data.length && !question) return;
     setAiLoading(true);
+    
+    // Add user message to chat history if question exists
+    if (question) {
+      setChatHistory(prev => [...prev, { role: "user", content: question }]);
+    }
+    
     try {
       const docsSummary = data.map(d => ({
         doc_type: d.doc_type,
@@ -132,8 +141,11 @@ const FinanceDocsView = () => {
         status: d.status,
       }));
 
+      // Build history for contextual conversation
+      const historyForApi = question ? chatHistory.map(h => ({ role: h.role, content: h.content })) : [];
+
       const { data: result, error } = await supabase.functions.invoke("finance-ai", {
-        body: { documents: docsSummary, question: question || null },
+        body: { documents: docsSummary, question: question || null, history: historyForApi },
       });
 
       if (error) throw error;
@@ -147,10 +159,17 @@ const FinanceDocsView = () => {
       const analysis = result?.analysis || "";
       const lines = analysis.split("\n").filter((l: string) => l.trim().length > 0);
       setAiInsights(lines);
+      
+      // Add assistant response to chat history
+      if (question) {
+        setChatHistory(prev => [...prev, { role: "assistant", content: analysis }]);
+      } else if (chatHistory.length === 0) {
+        // Initial analysis - add as first assistant message
+        setChatHistory([{ role: "assistant", content: analysis }]);
+      }
     } catch (e: any) {
       console.error("AI insights error:", e);
       toast.error("AI analizi yapılamadı");
-      // Fallback to basic insights
       const insights: string[] = [];
       const totalSpend = data.reduce((s, d) => s + (d.total_amount || 0), 0);
       const unpaid = data.filter(d => d.payment_status === "ödenmedi");
