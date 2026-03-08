@@ -5,7 +5,8 @@ import {
   FileText, Upload, Plus, Download, Search, Filter, Brain,
   Receipt, CreditCard, FileCheck, Building2, TrendingUp, TrendingDown,
   CheckCircle2, Clock, AlertTriangle, X, Eye, Trash2, Edit3,
-  FileSpreadsheet, FileUp, RefreshCw, Sparkles, ChevronDown, Calendar, ScanLine, Loader2
+  FileSpreadsheet, FileUp, RefreshCw, Sparkles, ChevronDown, Calendar, ScanLine, Loader2,
+  MessageSquare, Send, User, Bot
 } from "lucide-react";
 
 const DOC_TYPES = [
@@ -89,6 +90,7 @@ const FinanceDocsView = () => {
   const [showAiPanel, setShowAiPanel] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiQuestion, setAiQuestion] = useState("");
+  const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
   const [parasutSyncing, setParasutSyncing] = useState(false);
 
