@@ -23,6 +23,7 @@ interface Props {
 
 const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const [saving, setSaving] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // RFQ form
@@ -38,10 +39,9 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const inputCls = "w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0AA2CD] focus:ring-1 focus:ring-[#0AA2CD]/30";
   const labelCls = "text-[11px] font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-1 block";
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files || []);
+  const addFiles = useCallback((files: File[]) => {
     const valid: UploadedFile[] = [];
-    for (const file of selected) {
+    for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
         toast.error(`${file.name} çok büyük (maks 50 MB)`);
         continue;
@@ -52,9 +52,33 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
       }
       valid.push({ file, uploading: false });
     }
-    setRfqFiles((prev) => [...prev, ...valid]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (valid.length > 0) setRfqFiles((prev) => [...prev, ...valid]);
   }, [rfqFiles.length]);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    addFiles(Array.from(e.target.files || []));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [addFiles]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) addFiles(files);
+  }, [addFiles]);
 
   const removeFile = (idx: number) => {
     setRfqFiles((prev) => prev.filter((_, i) => i !== idx));
@@ -192,11 +216,22 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
               <label className={labelCls}>CAD Dosyaları</label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed dark:border-[#334155] border-slate-200 rounded-xl p-4 text-center cursor-pointer dark:hover:border-[#0AA2CD]/40 hover:border-[#0AA2CD]/40 dark:hover:bg-[#0AA2CD]/5 hover:bg-[#0AA2CD]/5 transition-all group"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all group ${
+                  dragging
+                    ? "border-[#0AA2CD] dark:bg-[#0AA2CD]/10 bg-[#0AA2CD]/10 scale-[1.02]"
+                    : "dark:border-[#334155] border-slate-200 dark:hover:border-[#0AA2CD]/40 hover:border-[#0AA2CD]/40 dark:hover:bg-[#0AA2CD]/5 hover:bg-[#0AA2CD]/5"
+                }`}
               >
-                <Upload className="w-6 h-6 mx-auto mb-2 dark:text-slate-500 text-slate-400 group-hover:text-[#0AA2CD] transition-colors" />
+                <Upload className={`w-6 h-6 mx-auto mb-2 transition-colors ${dragging ? "text-[#0AA2CD] animate-bounce" : "dark:text-slate-500 text-slate-400 group-hover:text-[#0AA2CD]"}`} />
                 <p className="text-xs dark:text-slate-400 text-slate-500">
-                  <span className="font-bold text-[#0AA2CD]">Dosya seçin</span> veya sürükleyin
+                  {dragging ? (
+                    <span className="font-bold text-[#0AA2CD]">Dosyaları bırakın...</span>
+                  ) : (
+                    <><span className="font-bold text-[#0AA2CD]">Dosya seçin</span> veya sürükleyip bırakın</>
+                  )}
                 </p>
                 <p className="text-[10px] dark:text-slate-600 text-slate-400 mt-1">
                   STEP, IGES, STL, DXF, DWG, PDF, ZIP — maks 50 MB, en fazla 5 dosya
