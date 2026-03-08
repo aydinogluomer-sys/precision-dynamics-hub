@@ -83,7 +83,7 @@ const RFQManager = () => {
         status: "onaylandı",
         doc_date: new Date().toISOString().split("T")[0],
         due_date: validUntil.toISOString().split("T")[0],
-        doc_number: `FTR-${rfq.id.slice(0, 6).toUpperCase()}`,
+        doc_number: `FTR-${rfq.id.replace(/[^a-zA-Z0-9]/g, "").slice(-8).toUpperCase()}`,
         notes: `RFQ ${rfq.id} onayı ile oluşturuldu`,
       });
     }
