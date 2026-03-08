@@ -723,16 +723,36 @@ const DashboardHome = () => {
             <Activity className="w-4 h-4 text-[#0AA2CD]" />
             <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Son Aktiviteler</h3>
           </div>
-          <span className="text-[10px] dark:text-slate-600 text-slate-300 font-mono">{data.recentActivity.length} kayıt</span>
+          <div className="flex items-center gap-1.5">
+            {([
+              { key: "all", label: "Tümü" },
+              { key: "rfq", label: "Teklifler" },
+              { key: "order", label: "Siparişler" },
+              { key: "ticket", label: "Destek" },
+            ] as const).map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setActivityFilter(f.key)}
+                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+                  activityFilter === f.key
+                    ? "bg-[#0AA2CD]/15 text-[#0AA2CD]"
+                    : "dark:text-slate-500 text-slate-400 dark:hover:bg-white/5 hover:bg-slate-50"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+            <span className="text-[10px] dark:text-slate-600 text-slate-300 font-mono ml-2">{filteredActivity.length}</span>
+          </div>
         </div>
-        {data.recentActivity.length === 0 ? (
+        {filteredActivity.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 gap-2">
             <Activity className="w-8 h-8 dark:text-slate-700 text-slate-200" />
-            <span className="text-[11px] dark:text-slate-600 text-slate-400">Henüz aktivite yok</span>
+            <span className="text-[11px] dark:text-slate-600 text-slate-400">Aktivite bulunamadı</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {data.recentActivity.map((a, i) => (
+            {filteredActivity.map((a, i) => (
               <motion.div
                 key={a.id}
                 initial={{ opacity: 0, x: -8 }}
