@@ -8,25 +8,39 @@ import {
   PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
-/* ── Theme-aware Colors ── */
-const useThemeColors = () => {
-  const isDark = document.documentElement.classList.contains("dark");
+/* ── Colors ── */
+const C = {
+  primary: "#0688AD",
+  cyan: "#0AA2CD",
+  orange: "#F97316",
+  amber: "#FBBF24",
+  emerald: "#34D399",
+  red: "#EF4444",
+  purple: "#A855F7",
+  pink: "#EC4899",
+  slate: "#64748B",
+  indigo: "#6366F1",
+  teal: "#14B8A6",
+  lime: "#84CC16",
+};
+
+/* ── Theme-aware chart palette ── */
+const useChartTheme = () => {
+  const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
+  useEffect(() => {
+    const observer = new MutationObserver(() => setIsDark(document.documentElement.classList.contains("dark")));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
   return {
-    primary: "#0688AD",
-    cyan: "#0AA2CD",
-    orange: isDark ? "#F97316" : "#EA580C",
-    amber: isDark ? "#FBBF24" : "#D97706",
+    grid: isDark ? "#334155" : "#CBD5E1",
+    gridOpacity: isDark ? 0.2 : 0.5,
+    tick: isDark ? "#94A3B8" : "#475569",
+    tooltipBg: isDark ? "#0F172A" : "#FFFFFF",
     emerald: isDark ? "#34D399" : "#059669",
     red: isDark ? "#EF4444" : "#DC2626",
-    purple: isDark ? "#A855F7" : "#7C3AED",
-    pink: isDark ? "#EC4899" : "#DB2777",
+    orange: isDark ? "#F97316" : "#EA580C",
     slate: isDark ? "#64748B" : "#94A3B8",
-    indigo: isDark ? "#6366F1" : "#4F46E5",
-    teal: isDark ? "#14B8A6" : "#0D9488",
-    lime: isDark ? "#84CC16" : "#65A30D",
-    grid: isDark ? "#334155" : "#E2E8F0",
-    gridOpacity: isDark ? 0.2 : 0.6,
-    axisTick: isDark ? "#94A3B8" : "#64748B",
   };
 };
 
