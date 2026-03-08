@@ -2,16 +2,31 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { findBestFaqMatch } from "@/data/chatFaqData";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+const AI_DAILY_LIMIT = 5;
+const AI_LIMIT_KEY = "mas_chat_ai_count";
+
+function getAiUsageToday(): number {
+  try {
+    const raw = localStorage.getItem(AI_LIMIT_KEY);
+    if (!raw) return 0;
+    const { count, date } = JSON.parse(raw);
+    if (date !== new Date().toDateString()) return 0;
+    return count;
+  } catch { return 0; }
+}
+
+function incrementAiUsage() {
+  const current = getAiUsageToday();
+  localStorage.setItem(AI_LIMIT_KEY, JSON.stringify({ count: current + 1, date: new Date().toDateString() }));
+}
 
 async function streamChat({
-  messages,
-  onDelta,
-  onDone,
-  onError,
+  messages, onDelta, onDone, onError,
 }: {
   messages: Msg[];
   onDelta: (t: string) => void;
@@ -73,21 +88,26 @@ export default function ChatBot() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pendingAiPrompt, setPendingAiPrompt] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs]);
 
-  const send = useCallback(
-    async (text: string) => {
-      if (!text.trim() || loading) return;
-      const userMsg: Msg = { role: "user", content: text.trim() };
-      const newMsgs = [...msgs, userMsg];
-      setMsgs(newMsgs);
-      setInput("");
-      setLoading(true);
+  const addAssistantMsg = useCallback((content: string) => {
+    setMsgs((prev) => [...prev, { role: "assistant", content }]);
+  }, []);
 
+  const callAi = useCallback(
+    async (text: string, history: Msg[]) => {
+      if (getAiUsageToday() >= AI_DAILY_LIMIT) {
+        addAssistantMsg("⚠️ Günlük AI kullanım limitine ulaştınız. Lütfen yarın tekrar deneyin veya [Teklif Al](/teklif-al) sayfamızdan bize ulaşın.");
+        setLoading(false);
+        return;
+      }
+      incrementAiUsage();
+      setLoading(true);
       let assistantSoFar = "";
       const upsert = (chunk: string) => {
         assistantSoFar += chunk;
@@ -99,23 +119,72 @@ export default function ChatBot() {
           return [...prev, { role: "assistant", content: assistantSoFar }];
         });
       };
-
       try {
         await streamChat({
-          messages: newMsgs,
+          messages: history,
           onDelta: upsert,
           onDone: () => setLoading(false),
           onError: (e) => {
-            setMsgs((prev) => [...prev, { role: "assistant", content: `⚠️ ${e}` }]);
+            addAssistantMsg(`⚠️ ${e}`);
             setLoading(false);
           },
         });
       } catch {
-        setMsgs((prev) => [...prev, { role: "assistant", content: "⚠️ Bağlantı hatası. Lütfen tekrar deneyin." }]);
+        addAssistantMsg("⚠️ Bağlantı hatası. Lütfen tekrar deneyin.");
         setLoading(false);
       }
     },
-    [msgs, loading]
+    [addAssistantMsg]
+  );
+
+  const send = useCallback(
+    async (text: string) => {
+      if (!text.trim() || loading) return;
+
+      // Kullanıcı AI onayına "Evet" dedi
+      if (pendingAiPrompt && (text.trim().toLowerCase() === "evet" || text.trim() === "👍")) {
+        const userMsg: Msg = { role: "user", content: pendingAiPrompt };
+        const newMsgs = [...msgs, { role: "user" as const, content: text.trim() }];
+        setMsgs(newMsgs);
+        setInput("");
+        setPendingAiPrompt(null);
+        // AI'ya orijinal soruyu gönder
+        await callAi(pendingAiPrompt, [...msgs.filter(m => m.content !== "🤖 Bu soruyu daha detaylı yanıtlamak için AI asistanı kullanmamı ister misiniz? (Günlük limit: " + AI_DAILY_LIMIT + " mesaj)\n\n**Evet** yazarak onaylayabilirsiniz."), userMsg]);
+        return;
+      }
+
+      // Hayır/iptal
+      if (pendingAiPrompt && (text.trim().toLowerCase() === "hayır" || text.trim().toLowerCase() === "iptal")) {
+        setPendingAiPrompt(null);
+        setMsgs((prev) => [...prev, { role: "user", content: text.trim() }, { role: "assistant", content: "Tamam! Başka bir sorunuz varsa yardımcı olmaktan memnuniyet duyarım. 😊" }]);
+        setInput("");
+        return;
+      }
+
+      setPendingAiPrompt(null);
+      const userMsg: Msg = { role: "user", content: text.trim() };
+      const newMsgs = [...msgs, userMsg];
+      setMsgs(newMsgs);
+      setInput("");
+
+      // 1. Yerel FAQ eşleştirme
+      const match = findBestFaqMatch(text);
+      if (match) {
+        addAssistantMsg(match.entry.answer);
+        return;
+      }
+
+      // 2. Eşleşme yok → AI onayı iste
+      const remaining = AI_DAILY_LIMIT - getAiUsageToday();
+      if (remaining <= 0) {
+        addAssistantMsg("⚠️ Günlük AI kullanım limitine ulaştınız. Lütfen yarın tekrar deneyin veya [Teklif Al](/teklif-al) sayfamızdan bize ulaşın.");
+        return;
+      }
+
+      setPendingAiPrompt(text.trim());
+      addAssistantMsg(`🤖 Bu soruyu daha detaylı yanıtlamak için AI asistanı kullanmamı ister misiniz? (Kalan: ${remaining} mesaj)\n\n**Evet** veya **Hayır** yazarak yanıtlayın.`);
+    },
+    [msgs, loading, pendingAiPrompt, addAssistantMsg, callAi]
   );
 
   return (
@@ -169,7 +238,7 @@ export default function ChatBot() {
                       <Bot className="w-4 h-4 text-primary" />
                     </div>
                     <div className="bg-muted rounded-xl rounded-tl-sm px-3 py-2 text-sm text-foreground">
-                      Merhaba! 👋 MAS Technic AI asistanıyım. CNC işleme, imalat ve hizmetlerimiz hakkında sorularınızı yanıtlayabilirim.
+                      Merhaba! 👋 MAS Technic asistanıyım. CNC işleme, imalat ve hizmetlerimiz hakkında sorularınızı yanıtlayabilirim.
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 ml-9">
@@ -221,6 +290,24 @@ export default function ChatBot() {
                   <div className="bg-muted rounded-xl rounded-tl-sm px-3 py-2">
                     <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
                   </div>
+                </div>
+              )}
+
+              {/* AI onay butonları */}
+              {pendingAiPrompt && !loading && (
+                <div className="flex gap-2 ml-9">
+                  <button
+                    onClick={() => send("Evet")}
+                    className="text-xs px-4 py-1.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    ✅ Evet
+                  </button>
+                  <button
+                    onClick={() => send("Hayır")}
+                    className="text-xs px-4 py-1.5 rounded-full border border-border bg-background hover:bg-accent text-foreground transition-colors"
+                  >
+                    ❌ Hayır
+                  </button>
                 </div>
               )}
             </div>
