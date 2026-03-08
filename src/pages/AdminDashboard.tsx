@@ -92,7 +92,7 @@ const AdminDashboard = () => {
 
       switch (activeTab) {
         case "dashboard": {
-          const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll] = await Promise.all([
+          const [rfqAll, ordersAll, issuesAll, finAll, custAll, pipeAll, maintAll, schedAll, rawMatAll, toolAll, supportAll, wbsAll, meetAll] = await Promise.all([
             supabase.from("rfqs").select("*"),
             supabase.from("orders").select("*"),
             supabase.from("issues").select("*"),
@@ -104,6 +104,8 @@ const AdminDashboard = () => {
             supabase.from("raw_materials").select("*"),
             supabase.from("tool_inventory").select("*"),
             supabase.from("support_tickets").select("*"),
+            supabase.from("wbs").select("*"),
+            supabase.from("meetings").select("*"),
           ]);
 
           const rfqs = rfqAll.data || [];
@@ -117,6 +119,8 @@ const AdminDashboard = () => {
           const raws = rawMatAll.data || [];
           const tools = toolAll.data || [];
           const tickets = supportAll.data || [];
+          const wbsItems = wbsAll.data || [];
+          const meetings = meetAll.data || [];
 
           // RFQ istatistikleri
           const rfqByStatus: Record<string, number> = {};
@@ -159,11 +163,26 @@ const AdminDashboard = () => {
 
           // Destek
           const openTickets = tickets.filter(t => t.status === "open").length;
+          const closedTickets = tickets.filter(t => t.status === "closed" || t.status === "resolved").length;
 
           // Müşteri
           const totalBalance = custs.reduce((s, c) => s + (Number(c.balance) || 0), 0);
 
-          const lines: string[] = ["Kategori;Metrik;Değer"];
+          // WBS
+          const wbsByStatus: Record<string, number> = {};
+          wbsItems.forEach(w => { wbsByStatus[w.status || "Belirsiz"] = (wbsByStatus[w.status || "Belirsiz"] || 0) + 1; });
+
+          // Toplantılar
+          const pendingMeetings = meetings.filter(m => m.status === "pending").length;
+          const confirmedMeetings = meetings.filter(m => m.status === "confirmed").length;
+
+          const reportDate = new Date().toLocaleString("tr-TR", { dateStyle: "long", timeStyle: "short" });
+          const lines: string[] = [
+            `MAS TECHNİC — GENEL ÖZET RAPORU;;`,
+            `Rapor Tarihi: ${reportDate};;`,
+            `;;`,
+            `Kategori;Metrik;Değer`,
+          ];
 
           // Genel Özet
           lines.push(`Genel;Toplam RFQ Talebi;${rfqs.length}`);
@@ -218,7 +237,24 @@ const AdminDashboard = () => {
           lines.push(`Envanter;Kritik Stok Takım;${lowStockTools}`);
           lines.push("");
 
-          // Müşteri & Destek
+          // İş Akışı (WBS)
+          lines.push(`İş Akışı;Toplam Kayıt;${wbsItems.length}`);
+          Object.entries(wbsByStatus).forEach(([k, v]) => lines.push(`İş Akışı;Durum: ${k};${v}`));
+          lines.push("");
+
+          // Destek Detay
+          lines.push(`Destek;Toplam Talep;${tickets.length}`);
+          lines.push(`Destek;Açık Talep;${openTickets}`);
+          lines.push(`Destek;Çözülen Talep;${closedTickets}`);
+          lines.push("");
+
+          // Toplantılar
+          lines.push(`Toplantı;Toplam Toplantı;${meetings.length}`);
+          lines.push(`Toplantı;Bekleyen;${pendingMeetings}`);
+          lines.push(`Toplantı;Onaylanan;${confirmedMeetings}`);
+          lines.push("");
+
+          // Müşteri & Planlama
           lines.push(`Müşteri;Toplam Bakiye (₺);${fmtNum(Math.round(totalBalance))}`);
           lines.push(`Planlama;Aktif Çizelge Kaydı;${scheds.length}`);
 
