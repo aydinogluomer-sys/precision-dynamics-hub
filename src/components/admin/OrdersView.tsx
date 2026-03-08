@@ -86,9 +86,9 @@ const OrdersView = () => {
     if (error) { toast.error("Güncelleme hatası"); return; }
 
     // Send notification to customer if status changed and order has user_id
-    if (oldStatus !== form.status && (selected as any).user_id) {
+    if (oldStatus !== form.status && selected.user_id) {
       await supabase.from("notifications").insert({
-        user_id: (selected as any).user_id,
+        user_id: selected.user_id,
         type: "order",
         title: `Sipariş Durumu: ${form.status}`,
         message: `${selected.id} numaralı siparişiniz "${oldStatus}" → "${form.status}" olarak güncellendi. İlerleme: %${progress}`,
