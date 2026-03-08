@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Legend,
 } from "recharts";
 
 /* ── Colors ── */
@@ -46,13 +46,13 @@ const oeeMetrics = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200 rounded-lg p-3 shadow-xl">
-      <p className="text-xs font-bold dark:text-slate-300 text-slate-600 mb-1">{label}</p>
+    <div className="dark:bg-[#0F172A]/95 bg-white/95 backdrop-blur-xl border dark:border-[#334155] border-slate-200 rounded-xl p-3 shadow-2xl">
+      <p className="text-[10px] font-black dark:text-slate-400 text-slate-500 mb-1.5 uppercase tracking-wider">{label}</p>
       {payload.map((p: any, i: number) => (
-        <div key={i} className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+        <div key={i} className="flex items-center gap-2 py-0.5">
+          <div className="w-2 h-2 rounded-full ring-2 ring-offset-1 dark:ring-offset-[#0F172A] ring-offset-white" style={{ backgroundColor: p.color, ringColor: p.color }} />
           <span className="text-[11px] dark:text-slate-400 text-slate-500">{p.name}:</span>
-          <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono">
+          <span className="text-[11px] font-black dark:text-white text-slate-800 font-mono">
             {typeof p.value === "number" ? p.value.toLocaleString("tr-TR") : p.value}
           </span>
         </div>
@@ -68,7 +68,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
   if (percent < 0.05) return null;
   return (
-    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={11} fontWeight={700}>
+    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={800}>
       {`${(percent * 100).toFixed(0)}%`}
     </text>
   );
@@ -88,14 +88,16 @@ const REALTIME_TABLES = [
 type DashData = {
   rfqByStatus: { name: string; value: number; color: string }[];
   orderByStatus: { name: string; value: number; color: string }[];
-  financialSummary: { name: string; Gelir: number; Gider: number }[];
+  financialSummary: { name: string; Gelir: number; Gider: number; Net: number }[];
   issuesBySeverity: { name: string; value: number; color: string }[];
   maintByType: { name: string; Adet: number; Maliyet: number }[];
   pipelineByStage: { name: string; value: number; color: string }[];
   inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
   kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number };
   topCustomers: { name: string; Bakiye: number }[];
-  monthlyRfqs: { month: string; Talep: number; Onaylanan: number }[];
+  monthlyRfqs: { month: string; Talep: number; Onaylanan: number; Oran: number }[];
+  ticketsByPriority: { name: string; value: number; color: string }[];
+  orderCompletion: { name: string; Tamamlanan: number; Hedef: number }[];
 };
 
 const DashboardHome = () => {
@@ -110,6 +112,7 @@ const DashboardHome = () => {
   };
   const severityColors: Record<string, string> = { "high": C.red, "normal": C.amber, "low": C.emerald, "critical": C.pink };
   const stageColors: Record<string, string> = { "prospect": C.slate, "qualified": C.cyan, "proposal": C.orange, "negotiation": C.purple, "closed_won": C.emerald, "closed_lost": C.red };
+  const priorityColors: Record<string, string> = { "urgent": C.red, "high": C.orange, "normal": C.cyan, "low": C.emerald };
 
   const group = (arr: any[], key: string, colorMap: Record<string, string>) => {
     const map: Record<string, number> = {};
@@ -128,7 +131,7 @@ const DashboardHome = () => {
       if (f.doc_type === "fatura" || f.doc_type === "gelir") finByMonth[m].Gelir += Number(f.total_amount) || 0;
       else finByMonth[m].Gider += Number(f.total_amount) || 0;
     });
-    const financialSummary = Object.entries(finByMonth).map(([name, v]) => ({ name, ...v }));
+    const financialSummary = Object.entries(finByMonth).map(([name, v]) => ({ name, ...v, Net: v.Gelir - v.Gider }));
 
     const issuesBySeverity = group(issues, "severity", severityColors);
 
@@ -174,13 +177,31 @@ const DashboardHome = () => {
       rfqByMonth[m].total++;
       if (r.status === "Onaylandı") rfqByMonth[m].approved++;
     });
-    const monthlyRfqs = Object.entries(rfqByMonth).map(([month, v]) => ({ month, Talep: v.total, Onaylanan: v.approved }));
+    const monthlyRfqs = Object.entries(rfqByMonth).map(([month, v]) => ({
+      month, Talep: v.total, Onaylanan: v.approved,
+      Oran: v.total > 0 ? Math.round((v.approved / v.total) * 100) : 0,
+    }));
+
+    // Tickets by priority
+    const ticketsByPriority = group(tickets, "priority", priorityColors);
+
+    // Order completion by month
+    const orderByMonth: Record<string, { completed: number; total: number }> = {};
+    orders.forEach((o: any) => {
+      const m = o.order_date ? new Date(o.order_date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
+      if (!orderByMonth[m]) orderByMonth[m] = { completed: 0, total: 0 };
+      orderByMonth[m].total++;
+      if (o.status === "Tamamlandı" || o.status === "Teslim Edildi") orderByMonth[m].completed++;
+    });
+    const orderCompletion = Object.entries(orderByMonth).map(([name, v]) => ({
+      name, Tamamlanan: v.completed, Hedef: v.total,
+    }));
 
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
-      topCustomers, monthlyRfqs,
+      topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion,
     };
   }, []);
 
@@ -207,10 +228,8 @@ const DashboardHome = () => {
     setLoading(false);
   }, [buildData]);
 
-  // Initial fetch + Realtime subscriptions
   useEffect(() => {
     fetchAll();
-
     const channel = supabase
       .channel("dashboard-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "rfqs" }, () => fetchAll())
@@ -223,24 +242,19 @@ const DashboardHome = () => {
       .on("postgres_changes", { event: "*", schema: "public", table: "raw_materials" }, () => fetchAll())
       .on("postgres_changes", { event: "*", schema: "public", table: "tool_inventory" }, () => fetchAll())
       .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, () => fetchAll())
-      .subscribe((status) => {
-        setRealtimeActive(status === "SUBSCRIBED");
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      .subscribe((status) => { setRealtimeActive(status === "SUBSCRIBED"); });
+    return () => { supabase.removeChannel(channel); };
   }, [fetchAll]);
 
   if (loading || !data) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => <div key={i} className="h-28 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />)}
+      <div className="space-y-6 animate-pulse p-1">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="h-24 dark:bg-[#1E293B] bg-white rounded-2xl border dark:border-[#334155] border-slate-200" />)}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 h-72 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />
-          <div className="h-72 dark:bg-[#1E293B] bg-white rounded-xl border dark:border-[#334155] border-slate-200" />
+          <div className="lg:col-span-2 h-72 dark:bg-[#1E293B] bg-white rounded-2xl border dark:border-[#334155] border-slate-200" />
+          <div className="h-72 dark:bg-[#1E293B] bg-white rounded-2xl border dark:border-[#334155] border-slate-200" />
         </div>
       </div>
     );
@@ -251,77 +265,84 @@ const DashboardHome = () => {
     { label: "Aktif Sipariş", value: data.kpis.orders, icon: Package, color: C.orange, bg: "bg-[#F97316]/10", tab: "orders" },
     { label: "Çözüm Ortağı", value: data.kpis.customers, icon: Users, color: C.emerald, bg: "bg-emerald-400/10", tab: "customers" },
     { label: "Açık Sorun", value: data.kpis.openIssues, icon: AlertTriangle, color: data.kpis.openIssues > 0 ? C.red : C.emerald, bg: data.kpis.openIssues > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "issues" },
-    { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Wrench, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "orders" },
+    { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Clock, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "orders" },
     { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true, tab: "financial" },
   ];
 
-  const cardClass = "dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border p-4 sm:p-5 hover:shadow-xl hover:border-[#0AA2CD]/30 transition-all";
-  const clickableCard = (tab: string) => `${cardClass} cursor-pointer group`;
+  const cardBase = "dark:bg-[#1E293B]/80 bg-white rounded-2xl dark:border-[#1E293B] border-slate-100 border shadow-sm hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-300";
+  const clickableCard = (tab: string) => `${cardBase} cursor-pointer group p-5`;
+
+  const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
 
   return (
-    <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">
+    <div className="space-y-5 animate-[fadeInUp_0.4s_ease-out] p-1">
       {/* ── Realtime indicator ── */}
       <div className="flex items-center gap-2">
-        <Radio className={`w-3.5 h-3.5 ${realtimeActive ? "text-emerald-400 animate-pulse" : "text-slate-500"}`} />
-        <span className="text-[10px] font-medium dark:text-slate-400 text-slate-500">
-          {realtimeActive ? "Canlı veri akışı aktif" : "Bağlanıyor..."}
+        <div className="relative">
+          <Radio className={`w-3.5 h-3.5 ${realtimeActive ? "text-emerald-400" : "text-slate-500"}`} />
+          {realtimeActive && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />}
+        </div>
+        <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">
+          {realtimeActive ? "CANLI VERİ AKIŞI AKTİF" : "Bağlanıyor..."}
         </span>
       </div>
 
       {/* ── KPI CARDS ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {kpiCards.map((k) => (
-          <div key={k.label} className={`${cardClass} cursor-pointer hover:scale-[1.02]`} onClick={() => navigateTo(k.tab)}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight">{k.label}</span>
-              <div className={`w-7 h-7 rounded-lg ${k.bg} flex items-center justify-center`}>
-                <k.icon className="w-3.5 h-3.5" style={{ color: k.color }} />
+          <div key={k.label} className={`${cardBase} cursor-pointer hover:scale-[1.02] p-4 relative overflow-hidden`} onClick={() => navigateTo(k.tab)}>
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-[0.04]" style={{ backgroundColor: k.color, transform: "translate(30%, -30%)" }} />
+            <div className="flex items-center justify-between mb-3">
+              <div className={`w-8 h-8 rounded-xl ${k.bg} flex items-center justify-center`}>
+                <k.icon className="w-4 h-4" style={{ color: k.color }} />
               </div>
+              <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <p className="text-xl sm:text-2xl font-black dark:text-white text-slate-800 font-mono tabular-nums">
+            <p className="text-2xl font-black dark:text-white text-slate-800 font-mono tabular-nums leading-none mb-1">
               {k.fmt ? Number(k.value).toLocaleString("tr-TR") : k.value}
             </p>
+            <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">{k.label}</span>
           </div>
         ))}
       </div>
 
       {/* ── OEE METRICS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {oeeMetrics.map((m) => (
-          <div key={m.label} className={`${cardClass} cursor-pointer`} onClick={() => navigateTo("tpm")}>
+          <div key={m.label} className={`${cardBase} cursor-pointer p-4`} onClick={() => navigateTo("tpm")}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{m.label}</span>
-              <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center`}>
-                <m.icon className={`w-4 h-4 ${m.color}`} />
+              <span className="text-[10px] font-bold dark:text-slate-500 text-slate-400 uppercase tracking-widest">{m.label}</span>
+              <div className={`w-7 h-7 rounded-lg ${m.bg} flex items-center justify-center`}>
+                <m.icon className={`w-3.5 h-3.5 ${m.color}`} />
               </div>
             </div>
             <p className="text-2xl font-black dark:text-white text-slate-800 mb-3">{m.value}</p>
-            <div className="flex items-end gap-0.5 h-8 mb-2">
+            <div className="flex items-end gap-[3px] h-7 mb-2">
               {m.bars.map((v, i) => (
-                <div key={i} className={`flex-1 rounded-sm ${m.bg}`} style={{ height: `${v}%` }} />
+                <div key={i} className="flex-1 rounded-sm transition-all" style={{ height: `${v}%`, backgroundColor: `color-mix(in srgb, ${m.color === "text-[#0AA2CD]" ? C.cyan : m.color === "text-[#F97316]" ? C.orange : m.color === "text-amber-400" ? C.amber : C.emerald} ${30 + i * 7}%, transparent)` }} />
               ))}
             </div>
             <div className="flex items-center gap-1">
               {m.up ? <TrendingUp className="w-3 h-3 text-emerald-400" /> : <TrendingDown className="w-3 h-3 text-red-400" />}
-              <span className={`text-xs font-bold ${m.up ? "text-emerald-400" : "text-red-400"}`}>{m.trend}</span>
-              <span className="text-[10px] text-slate-500 ml-1">son 30 gün</span>
+              <span className={`text-[11px] font-bold ${m.up ? "text-emerald-400" : "text-red-400"}`}>{m.trend}</span>
+              <span className="text-[10px] text-slate-500 ml-1">son 30g</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* ── ROW 1: OEE Trend + RFQ Pie ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className={`lg:col-span-2 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
+      {/* ── ROW 1: OEE Trend + RFQ Status (Redesigned as horizontal bars) ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className={`lg:col-span-3 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={oeeHistory} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.2} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} domain={[70, 100]} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Line type="monotone" dataKey="oee" name="OEE" stroke={C.cyan} strokeWidth={3} dot={{ r: 4, fill: C.cyan }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="oee" name="OEE" stroke={C.cyan} strokeWidth={3} dot={{ r: 4, fill: C.cyan, strokeWidth: 0 }} activeDot={{ r: 6, stroke: C.cyan, strokeWidth: 2, fill: "#0F172A" }} />
                 <Line type="monotone" dataKey="availability" name="Kullanılabilirlik" stroke={C.orange} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
                 <Line type="monotone" dataKey="performance" name="Performans" stroke={C.amber} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
                 <Line type="monotone" dataKey="quality" name="Kalite" stroke={C.emerald} strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
@@ -329,92 +350,97 @@ const DashboardHome = () => {
             </ResponsiveContainer>
           </div>
           <div className="flex flex-wrap gap-4 mt-3">
-            {[{ label: "OEE", color: C.cyan }, { label: "Kullanılabilirlik", color: C.orange }, { label: "Performans", color: C.amber }, { label: "Kalite", color: C.emerald }].map((l) => (
+            {[{ label: "OEE", color: C.cyan, dash: false }, { label: "Kullanılabilirlik", color: C.orange, dash: true }, { label: "Performans", color: C.amber, dash: true }, { label: "Kalite", color: C.emerald, dash: true }].map((l) => (
               <div key={l.label} className="flex items-center gap-1.5">
-                <div className="w-3 h-0.5 rounded-full" style={{ backgroundColor: l.color }} />
-                <span className="text-[10px] dark:text-slate-400 text-slate-500 font-medium">{l.label}</span>
+                <div className={`w-4 h-0.5 rounded-full ${l.dash ? "border-t border-dashed" : ""}`} style={{ backgroundColor: l.dash ? "transparent" : l.color, borderColor: l.color }} />
+                <span className="text-[10px] dark:text-slate-500 text-slate-400 font-medium">{l.label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* RFQ Status Pie */}
-        <div className={clickableCard("rfq")} onClick={() => navigateTo("rfq")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">RFQ Durum Dağılımı</h3>
-          <div className="h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={data.rfqByStatus} cx="50%" cy="50%" innerRadius={40} outerRadius={72} paddingAngle={3} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
-                  {data.rfqByStatus.map((e, i) => <Cell key={i} fill={e.color} />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+        {/* RFQ Status — Redesigned as progress bars */}
+        <div className={`lg:col-span-2 ${clickableCard("rfq")}`} onClick={() => navigateTo("rfq")}>
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">RFQ Durum Dağılımı</h3>
+            <span className="text-lg font-black dark:text-white text-slate-800 font-mono">{totalRfq}</span>
           </div>
-          <div className="space-y-1.5 mt-2">
-            {data.rfqByStatus.map((item) => (
-              <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-[11px] dark:text-slate-300 text-slate-600">{item.name}</span>
+          <div className="space-y-3">
+            {data.rfqByStatus.sort((a, b) => b.value - a.value).map((item) => {
+              const pct = totalRfq > 0 ? (item.value / totalRfq) * 100 : 0;
+              return (
+                <div key={item.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold dark:text-slate-300 text-slate-600">{item.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black dark:text-white text-slate-800 font-mono">{item.value}</span>
+                      <span className="text-[10px] dark:text-slate-500 text-slate-400 font-mono w-9 text-right">{pct.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  <div className="h-2 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                  </div>
                 </div>
-                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* ── ROW 2: Financial Area + Order Bar ── */}
+      {/* ── ROW 2: Financial (Redesigned as ComposedChart) + Order Status ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Finansal Akış (Aylık)</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Gelir & Gider Analizi</h3>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-[9px] dark:text-slate-500 text-slate-400">Net Kar</p>
+                <p className={`text-sm font-black font-mono ${(data.kpis.totalIncome - data.kpis.totalExpense) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                  {(data.kpis.totalIncome - data.kpis.totalExpense).toLocaleString("tr-TR")} ₺
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+              <ComposedChart data={data.financialSummary} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <defs>
-                  <linearGradient id="gradGelir" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={C.emerald} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={C.emerald} stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="gradGider" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={C.red} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={C.red} stopOpacity={0} />
+                  <linearGradient id="gradGelir2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={C.emerald} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={C.emerald} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="Gelir" stroke={C.emerald} strokeWidth={2} fill="url(#gradGelir)" />
-                <Area type="monotone" dataKey="Gider" stroke={C.red} strokeWidth={2} fill="url(#gradGider)" />
-              </AreaChart>
+                <Bar dataKey="Gelir" name="Gelir" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.8} />
+                <Bar dataKey="Gider" name="Gider" fill={C.red} radius={[4, 4, 0, 0]} barSize={24} fillOpacity={0.6} />
+                <Line type="monotone" dataKey="Net" name="Net Kar" stroke={C.cyan} strokeWidth={2.5} dot={{ r: 3, fill: C.cyan, strokeWidth: 0 }} />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex gap-6 mt-3">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.emerald }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Gelir</span>
-              <span className="text-xs font-bold dark:text-white text-slate-800 font-mono">{data.kpis.totalIncome.toLocaleString("tr-TR")} ₺</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.red }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Gider</span>
-              <span className="text-xs font-bold dark:text-white text-slate-800 font-mono">{data.kpis.totalExpense.toLocaleString("tr-TR")} ₺</span>
-            </div>
+          <div className="flex gap-5 mt-3">
+            {[{ label: "Gelir", color: C.emerald, val: data.kpis.totalIncome }, { label: "Gider", color: C.red, val: data.kpis.totalExpense }].map((l) => (
+              <div key={l.label} className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: l.color }} />
+                <span className="text-[10px] dark:text-slate-500 text-slate-400">{l.label}</span>
+                <span className="text-[11px] font-bold dark:text-slate-300 text-slate-600 font-mono">{l.val.toLocaleString("tr-TR")} ₺</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className={clickableCard("orders")} onClick={() => navigateTo("orders")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Durum Dağılımı</h3>
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Durum Dağılımı</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.orderByStatus} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} horizontal={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={90} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" name="Adet" radius={[0, 6, 6, 0]} barSize={20}>
+                <Bar dataKey="value" name="Adet" radius={[0, 8, 8, 0]} barSize={18}>
                   {data.orderByStatus.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Bar>
               </BarChart>
@@ -423,98 +449,126 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      {/* ── ROW 3: Pipeline + Issues + Maintenance ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Pipeline Aşamaları</h3>
-          <div className="h-52">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Pipeline Aşamaları</h3>
+          <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.pipelineByStage} cx="50%" cy="50%" outerRadius={70} paddingAngle={2} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
+                <Pie data={data.pipelineByStage} cx="50%" cy="50%" outerRadius={60} paddingAngle={2} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
                   {data.pipelineByStage.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="space-y-1.5 mt-2">
+          <div className="space-y-1 mt-1">
             {data.pipelineByStage.map((item) => (
               <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-[11px] dark:text-slate-300 text-slate-600">{item.name}</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-[10px] dark:text-slate-400 text-slate-500 truncate max-w-[80px]">{item.name}</span>
                 </div>
-                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
+                <span className="text-[10px] font-bold dark:text-white text-slate-800 font-mono">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div className={clickableCard("issues")} onClick={() => navigateTo("issues")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Sorun Ciddiyet Dağılımı</h3>
-          <div className="h-52">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Sorun Ciddiyet Dağılımı</h3>
+          <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={data.issuesBySeverity} cx="50%" cy="50%" innerRadius={35} outerRadius={70} paddingAngle={4} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
+                <Pie data={data.issuesBySeverity} cx="50%" cy="50%" innerRadius={30} outerRadius={60} paddingAngle={4} dataKey="value" stroke="none" labelLine={false} label={renderCustomLabel}>
                   {data.issuesBySeverity.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="space-y-1.5 mt-2">
+          <div className="space-y-1 mt-1">
             {data.issuesBySeverity.map((item) => (
               <div key={item.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-[11px] dark:text-slate-300 text-slate-600 capitalize">{item.name}</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-[10px] dark:text-slate-400 text-slate-500 capitalize">{item.name}</span>
                 </div>
-                <span className="text-[11px] font-bold dark:text-white text-slate-800 font-mono tabular-nums">{item.value}</span>
+                <span className="text-[10px] font-bold dark:text-white text-slate-800 font-mono">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div className={clickableCard("tpm")} onClick={() => navigateTo("tpm")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Bakım Türleri & Maliyetleri</h3>
-          <div className="h-52">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Bakım Türleri & Maliyet</h3>
+          <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.maintByType} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+              <BarChart data={data.maintByType} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
+                <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="Adet" fill={C.cyan} radius={[4, 4, 0, 0]} barSize={22} />
-                <Bar dataKey="Maliyet" fill={C.orange} radius={[4, 4, 0, 0]} barSize={22} />
+                <Bar dataKey="Adet" fill={C.cyan} radius={[3, 3, 0, 0]} barSize={16} />
+                <Bar dataKey="Maliyet" fill={C.orange} radius={[3, 3, 0, 0]} barSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex gap-4 mt-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Adet</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.orange }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Maliyet (₺)</span>
+          <div className="flex gap-3 mt-1">
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.cyan }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Adet</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.orange }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Maliyet</span></div>
+          </div>
+        </div>
+
+        {/* NEW: Destek Talepleri by Priority */}
+        <div className={clickableCard("support")} onClick={() => navigateTo("support")}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Destek Talepleri</h3>
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0AA2CD]/10">
+              <MessageSquare className="w-3 h-3 text-[#0AA2CD]" />
+              <span className="text-[10px] font-bold text-[#0AA2CD] font-mono">{data.kpis.openTickets}</span>
             </div>
           </div>
+          <div className="space-y-3">
+            {data.ticketsByPriority.sort((a, b) => b.value - a.value).map((item) => {
+              const total = data.ticketsByPriority.reduce((s, t) => s + t.value, 0);
+              const pct = total > 0 ? (item.value / total) * 100 : 0;
+              return (
+                <div key={item.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-semibold dark:text-slate-300 text-slate-600 capitalize">{item.name}</span>
+                    <span className="text-[10px] font-bold dark:text-white text-slate-800 font-mono">{item.value}</span>
+                  </div>
+                  <div className="h-1.5 dark:bg-[#0F172A] bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: item.color }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {data.ticketsByPriority.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-44 gap-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-400/30" />
+              <span className="text-[11px] dark:text-slate-500 text-slate-400">Açık talep yok</span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── ROW 4: Top Customers + Inventory Radar + RFQ Trend ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* ── ROW 4: Top Customers + Radar + RFQ Trend + Order Completion ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("customers")} onClick={() => navigateTo("customers")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">En Yüksek Bakiyeli Müşteriler</h3>
-          <div className="h-56">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">En Yüksek Bakiye</h3>
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.topCustomers} margin={{ top: 5, right: 10, left: -10, bottom: 5 }} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={70} />
+              <BarChart data={data.topCustomers} margin={{ top: 5, right: 5, left: -15, bottom: 5 }} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={55} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="Bakiye" name="Bakiye (₺)" radius={[0, 6, 6, 0]} barSize={16}>
-                  {data.topCustomers.map((_, i) => <Cell key={i} fill={i === 0 ? C.primary : i === 1 ? C.cyan : C.teal} opacity={1 - i * 0.1} />)}
+                <Bar dataKey="Bakiye" name="Bakiye (₺)" radius={[0, 6, 6, 0]} barSize={12}>
+                  {data.topCustomers.map((_, i) => <Cell key={i} fill={[C.primary, C.cyan, C.teal, C.emerald, C.indigo, C.purple][i] || C.slate} />)}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -522,54 +576,63 @@ const DashboardHome = () => {
         </div>
 
         <div className={clickableCard("inventory")} onClick={() => navigateTo("inventory")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Envanter Radar Analizi</h3>
-          <div className="h-56">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Envanter Radar</h3>
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={data.inventoryRadar} cx="50%" cy="50%" outerRadius="70%">
-                <PolarGrid stroke="#334155" strokeOpacity={0.5} />
-                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: "#94A3B8" }} />
+              <RadarChart data={data.inventoryRadar} cx="50%" cy="50%" outerRadius="65%">
+                <PolarGrid stroke="#334155" strokeOpacity={0.3} />
+                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 9, fill: "#94A3B8" }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name="Hammadde" dataKey="Hammadde" stroke={C.cyan} fill={C.cyan} fillOpacity={0.2} strokeWidth={2} />
-                <Radar name="Takım" dataKey="Takım" stroke={C.orange} fill={C.orange} fillOpacity={0.15} strokeWidth={2} />
+                <Radar name="Hammadde" dataKey="Hammadde" stroke={C.cyan} fill={C.cyan} fillOpacity={0.15} strokeWidth={2} />
+                <Radar name="Takım" dataKey="Takım" stroke={C.orange} fill={C.orange} fillOpacity={0.1} strokeWidth={2} />
                 <Tooltip content={<CustomTooltip />} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex gap-4 mt-2 justify-center">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Hammadde</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.orange }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Takım</span>
-            </div>
+          <div className="flex gap-3 mt-1 justify-center">
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.cyan }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Hammadde</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.orange }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Takım</span></div>
           </div>
         </div>
 
         <div className={clickableCard("rfq")} onClick={() => navigateTo("rfq")}>
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 group-hover:text-[#0AA2CD] transition-colors">Aylık Teklif Trendi</h3>
-          <div className="h-56">
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Aylık Teklif Trendi</h3>
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.monthlyRfqs} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.3} />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+              <BarChart data={data.monthlyRfqs} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
+                <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="Talep" fill={C.cyan} radius={[4, 4, 0, 0]} barSize={18} />
-                <Bar dataKey="Onaylanan" fill={C.emerald} radius={[4, 4, 0, 0]} barSize={18} />
+                <Bar dataKey="Talep" fill={C.cyan} radius={[3, 3, 0, 0]} barSize={14} />
+                <Bar dataKey="Onaylanan" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex gap-4 mt-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.cyan }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Toplam Talep</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: C.emerald }} />
-              <span className="text-[10px] dark:text-slate-400 text-slate-500">Onaylanan</span>
-            </div>
+          <div className="flex gap-3 mt-1">
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.cyan }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Talep</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.emerald }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Onay</span></div>
+          </div>
+        </div>
+
+        {/* NEW: Sipariş Tamamlanma Oranı */}
+        <div className={clickableCard("orders")} onClick={() => navigateTo("orders")}>
+          <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Tamamlanma</h3>
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={data.orderCompletion} margin={{ top: 5, right: 5, left: -15, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" strokeOpacity={0.15} />
+                <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="Hedef" name="Toplam" fill={C.slate} radius={[3, 3, 0, 0]} barSize={14} fillOpacity={0.3} />
+                <Bar dataKey="Tamamlanan" name="Tamamlanan" fill={C.emerald} radius={[3, 3, 0, 0]} barSize={14} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex gap-3 mt-1">
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.slate, opacity: 0.3 }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Toplam</span></div>
+            <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.emerald }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Tamamlanan</span></div>
           </div>
         </div>
       </div>
