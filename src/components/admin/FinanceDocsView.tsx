@@ -87,6 +87,8 @@ const FinanceDocsView = () => {
   const [uploading, setUploading] = useState(false);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
   const [showAiPanel, setShowAiPanel] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState("");
   const [ocrProcessing, setOcrProcessing] = useState<string | null>(null);
   const [parasutSyncing, setParasutSyncing] = useState(false);
 
@@ -114,38 +116,48 @@ const FinanceDocsView = () => {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const generateAiInsights = (data: FinDoc[]) => {
-    if (!data.length) return;
-    const insights: string[] = [];
-    const totalSpend = data.reduce((s, d) => s + (d.total_amount || 0), 0);
-    const unpaid = data.filter(d => d.payment_status === "ödenmedi");
-    const unpaidTotal = unpaid.reduce((s, d) => s + (d.total_amount || 0), 0);
-    const categories = data.reduce((acc, d) => {
-      const cat = d.category || "Diğer";
-      acc[cat] = (acc[cat] || 0) + (d.total_amount || 0);
-      return acc;
-    }, {} as Record<string, number>);
-    const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
+  const generateAiInsights = async (data: FinDoc[], question?: string) => {
+    if (!data.length && !question) return;
+    setAiLoading(true);
+    try {
+      const docsSummary = data.map(d => ({
+        doc_type: d.doc_type,
+        vendor: d.vendor,
+        total_amount: d.total_amount,
+        category: d.category,
+        payment_status: d.payment_status,
+        doc_date: d.doc_date,
+        status: d.status,
+      }));
 
-    insights.push(`📊 Toplam belge tutarı: ₺${totalSpend.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — ${data.length} belge işlendi.`);
-    if (unpaid.length > 0) {
-      insights.push(`⚠️ ${unpaid.length} adet ödenmemiş belge tespit edildi. Toplam: ₺${unpaidTotal.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}. Nakit akışınızı olumsuz etkileyebilir.`);
+      const { data: result, error } = await supabase.functions.invoke("finance-ai", {
+        body: { documents: docsSummary, question: question || null },
+      });
+
+      if (error) throw error;
+      if (result?.error) {
+        if (result.error.includes("hız limiti")) toast.error(result.error);
+        else if (result.error.includes("kredi")) toast.error(result.error);
+        else throw new Error(result.error);
+        return;
+      }
+
+      const analysis = result?.analysis || "";
+      const lines = analysis.split("\n").filter((l: string) => l.trim().length > 0);
+      setAiInsights(lines);
+    } catch (e: any) {
+      console.error("AI insights error:", e);
+      toast.error("AI analizi yapılamadı");
+      // Fallback to basic insights
+      const insights: string[] = [];
+      const totalSpend = data.reduce((s, d) => s + (d.total_amount || 0), 0);
+      const unpaid = data.filter(d => d.payment_status === "ödenmedi");
+      insights.push(`📊 Toplam belge tutarı: ₺${totalSpend.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — ${data.length} belge.`);
+      if (unpaid.length > 0) insights.push(`⚠️ ${unpaid.length} adet ödenmemiş belge tespit edildi.`);
+      setAiInsights(insights);
+    } finally {
+      setAiLoading(false);
     }
-    if (topCategory) {
-      const pct = ((topCategory[1] / totalSpend) * 100).toFixed(1);
-      insights.push(`🏷️ En yüksek gider kalemi: "${topCategory[0]}" — toplam harcamanın %${pct}'i bu kategoride.`);
-    }
-    const vatTotal = data.reduce((s, d) => s + (d.vat_amount || 0), 0);
-    insights.push(`💰 Toplam KDV yükü: ₺${vatTotal.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} — KDV iade potansiyeli değerlendirilebilir.`);
-    const pending = data.filter(d => d.status === "beklemede");
-    if (pending.length > 0) {
-      insights.push(`🔄 ${pending.length} belge henüz onay bekliyor. Hızlı onay süreci nakit akışını iyileştirir.`);
-    }
-    const vendors = [...new Set(data.map(d => d.vendor).filter(Boolean))];
-    if (vendors.length > 5) {
-      insights.push(`🤝 ${vendors.length} farklı tedarikçi ile çalışıyorsunuz. Konsolidasyon ile fiyat avantajı sağlanabilir.`);
-    }
-    setAiInsights(insights);
   };
 
   const handleAddDoc = async () => {
@@ -351,16 +363,48 @@ const FinanceDocsView = () => {
               <Sparkles className="w-5 h-5 text-violet-400" />
             </div>
             <div className="text-left">
-              <h3 className="text-sm font-bold dark:text-white text-slate-800">AI Finansal Asistan</h3>
-              <p className="text-[10px] dark:text-slate-400 text-slate-500">{aiInsights.length} öneri hazır</p>
+              <h3 className="text-sm font-bold dark:text-white text-slate-800">AI Finansal Asistan <span className="text-[10px] font-normal text-violet-400">(Gemini)</span></h3>
+              <p className="text-[10px] dark:text-slate-400 text-slate-500">
+                {aiLoading ? "Analiz yapılıyor..." : aiInsights.length > 0 ? `${aiInsights.length} satır analiz hazır` : "Paneli açın ve analiz başlatın"}
+              </p>
             </div>
           </div>
-          <ChevronDown className={`w-5 h-5 dark:text-slate-400 text-slate-500 transition-transform ${showAiPanel ? "rotate-180" : ""}`} />
+          <div className="flex items-center gap-2">
+            {aiLoading && <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />}
+            <ChevronDown className={`w-5 h-5 dark:text-slate-400 text-slate-500 transition-transform ${showAiPanel ? "rotate-180" : ""}`} />
+          </div>
         </button>
         {showAiPanel && (
-          <div className="px-4 pb-4 space-y-2">
+          <div className="px-4 pb-4 space-y-3">
+            {/* Question input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="AI'ya soru sor... (ör: Hangi kategoride tasarruf yapabilirim?)"
+                value={aiQuestion}
+                onChange={e => setAiQuestion(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !aiLoading) { generateAiInsights(docs, aiQuestion); setAiQuestion(""); } }}
+                className="flex-1 px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-white border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-violet-500"
+              />
+              <button
+                onClick={() => { generateAiInsights(docs, aiQuestion || undefined); setAiQuestion(""); }}
+                disabled={aiLoading}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-cyan-500 text-white text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
+                {aiLoading ? "Analiz..." : "Analiz Et"}
+              </button>
+            </div>
+
+            {/* AI Response */}
+            {aiLoading && aiInsights.length === 0 && (
+              <div className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-4 text-sm dark:text-slate-400 text-slate-500 border dark:border-[#334155]/50 border-slate-200 text-center">
+                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-violet-400" />
+                Gemini finansal analiz yapıyor...
+              </div>
+            )}
             {aiInsights.map((insight, i) => (
-              <div key={i} className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200">
+              <div key={i} className="dark:bg-[#0F172A]/60 bg-white/80 rounded-lg p-3 text-sm dark:text-slate-300 text-slate-600 border dark:border-[#334155]/50 border-slate-200 leading-relaxed">
                 {insight}
               </div>
             ))}

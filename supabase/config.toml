@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.parasut-sync]
 verify_jwt = false
+
+[functions.finance-ai]
+verify_jwt = false
