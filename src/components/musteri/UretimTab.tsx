@@ -41,6 +41,19 @@ const statusBadgeClass = (s: string | null) => {
 
 const ACTIVE_STATUSES = ["Hazırlık", "Üretimde", "Kalite Kontrol", "Paketleme"];
 
+const estimateCompletion = (progress: number, createdAt: string, deadline: string | null): string | null => {
+  if (progress >= 100) return "Tamamlandı";
+  if (deadline) return deadline;
+  if (progress <= 0) return null;
+  const start = new Date(createdAt).getTime();
+  const now = Date.now();
+  const elapsed = now - start;
+  if (elapsed <= 0) return null;
+  const totalEstimate = elapsed / (progress / 100);
+  const estimatedEnd = new Date(start + totalEstimate);
+  return estimatedEnd.toISOString().split("T")[0];
+};
+
 const UretimTab = () => {
   const [items, setItems] = useState<OrderProduction[]>([]);
   const [loading, setLoading] = useState(true);
