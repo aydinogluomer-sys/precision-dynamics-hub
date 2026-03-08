@@ -65,24 +65,20 @@ const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange }: Props) => {
 
       {/* Breadcrumb */}
       <nav className="h-9 px-4 flex items-center gap-1.5 text-[11px] dark:bg-[#0B1120] bg-slate-50 border-b dark:border-[#1E293B] border-slate-100">
-        <button
-          onClick={() => onTabChange?.("genel")}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
-          Müşteri Paneli
-        </button>
-        {activeTab !== "genel" && (
+        {activeTab === "genel" ? (
+          <span className="text-foreground font-medium">Genel Bakış</span>
+        ) : (
           <>
+            <button
+              onClick={() => onTabChange?.("genel")}
+              className="text-muted-foreground hover:text-foreground transition-colors hover:underline"
+            >
+              Genel Bakış
+            </button>
             <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
             <span className="text-foreground font-medium">
               {tabTitles[activeTab] || activeTab}
             </span>
-          </>
-        )}
-        {activeTab === "genel" && (
-          <>
-            <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
-            <span className="text-foreground font-medium">Genel Bakış</span>
           </>
         )}
       </nav>
