@@ -237,7 +237,24 @@ const AdminDashboard = () => {
           lines.push(`Envanter;Kritik Stok Takım;${lowStockTools}`);
           lines.push("");
 
-          // Müşteri & Destek
+          // İş Akışı (WBS)
+          lines.push(`İş Akışı;Toplam Kayıt;${wbsItems.length}`);
+          Object.entries(wbsByStatus).forEach(([k, v]) => lines.push(`İş Akışı;Durum: ${k};${v}`));
+          lines.push("");
+
+          // Destek Detay
+          lines.push(`Destek;Toplam Talep;${tickets.length}`);
+          lines.push(`Destek;Açık Talep;${openTickets}`);
+          lines.push(`Destek;Çözülen Talep;${closedTickets}`);
+          lines.push("");
+
+          // Toplantılar
+          lines.push(`Toplantı;Toplam Toplantı;${meetings.length}`);
+          lines.push(`Toplantı;Bekleyen;${pendingMeetings}`);
+          lines.push(`Toplantı;Onaylanan;${confirmedMeetings}`);
+          lines.push("");
+
+          // Müşteri & Planlama
           lines.push(`Müşteri;Toplam Bakiye (₺);${fmtNum(Math.round(totalBalance))}`);
           lines.push(`Planlama;Aktif Çizelge Kaydı;${scheds.length}`);
 
