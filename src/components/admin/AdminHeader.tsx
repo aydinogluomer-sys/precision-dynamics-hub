@@ -27,8 +27,6 @@ interface Props {
 }
 
 const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar }: Props) => {
-
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, mobileSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
