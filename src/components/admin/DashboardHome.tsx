@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, AreaChart, Area, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Legend,
+  PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart,
 } from "recharts";
 
 /* ── Colors ── */
@@ -85,6 +86,17 @@ const REALTIME_TABLES = [
   "pipeline_leads", "maintenance_logs", "raw_materials", "tool_inventory", "support_tickets",
 ] as const;
 
+type ActivityItem = {
+  id: string;
+  type: "rfq" | "order" | "ticket";
+  title: string;
+  subtitle: string;
+  time: string;
+  color: string;
+  icon: any;
+  tab: string;
+};
+
 type DashData = {
   rfqByStatus: { name: string; value: number; color: string }[];
   orderByStatus: { name: string; value: number; color: string }[];
@@ -98,6 +110,17 @@ type DashData = {
   monthlyRfqs: { month: string; Talep: number; Onaylanan: number; Oran: number }[];
   ticketsByPriority: { name: string; value: number; color: string }[];
   orderCompletion: { name: string; Tamamlanan: number; Hedef: number }[];
+  recentActivity: ActivityItem[];
+};
+
+/* ── Animation variants ── */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
 };
 
 const DashboardHome = () => {
@@ -197,11 +220,40 @@ const DashboardHome = () => {
       name, Tamamlanan: v.completed, Hedef: v.total,
     }));
 
+    // Recent activity feed
+    const timeAgo = (d: string) => {
+      const diff = Date.now() - new Date(d).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}dk önce`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}sa önce`;
+      return `${Math.floor(hrs / 24)}g önce`;
+    };
+    const recentActivity: ActivityItem[] = [
+      ...rfqs.slice(-8).map((r: any) => ({
+        id: `rfq-${r.id}`, type: "rfq" as const, title: `Teklif: ${r.id}`,
+        subtitle: `${r.customer || "—"} • ${r.service || "—"}`,
+        time: r.created_at, color: C.cyan, icon: FileText, tab: "rfq",
+      })),
+      ...orders.slice(-8).map((o: any) => ({
+        id: `ord-${o.id}`, type: "order" as const, title: `Sipariş: ${o.id}`,
+        subtitle: `${o.part_name || "—"} • ${o.customer || "—"}`,
+        time: o.created_at, color: C.orange, icon: Package, tab: "orders",
+      })),
+      ...tickets.slice(-8).map((t: any) => ({
+        id: `tkt-${t.id}`, type: "ticket" as const, title: t.subject || "Destek Talebi",
+        subtitle: `${t.priority || "normal"} öncelik`,
+        time: t.created_at, color: C.purple, icon: MessageSquare, tab: "support",
+      })),
+    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+     .slice(0, 12)
+     .map((a) => ({ ...a, time: timeAgo(a.time) }));
+
     return {
       rfqByStatus, orderByStatus, financialSummary, issuesBySeverity,
       maintByType, pipelineByStage, inventoryRadar,
       kpis: { rfqs: rfqs.length, orders: orders.length, customers: custs.length, openIssues, openTickets, totalIncome, totalExpense, overdueOrders },
-      topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion,
+      topCustomers, monthlyRfqs, ticketsByPriority, orderCompletion, recentActivity,
     };
   }, []);
 
@@ -275,9 +327,9 @@ const DashboardHome = () => {
   const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
 
   return (
-    <div className="space-y-5 animate-[fadeInUp_0.4s_ease-out] p-1">
+    <motion.div className="space-y-5 p-1" variants={containerVariants} initial="hidden" animate="visible">
       {/* ── Realtime indicator ── */}
-      <div className="flex items-center gap-2">
+      <motion.div variants={itemVariants} className="flex items-center gap-2">
         <div className="relative">
           <Radio className={`w-3.5 h-3.5 ${realtimeActive ? "text-emerald-400" : "text-slate-500"}`} />
           {realtimeActive && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full animate-ping" />}
@@ -285,10 +337,10 @@ const DashboardHome = () => {
         <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">
           {realtimeActive ? "CANLI VERİ AKIŞI AKTİF" : "Bağlanıyor..."}
         </span>
-      </div>
+      </motion.div>
 
       {/* ── KPI CARDS ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {kpiCards.map((k) => (
           <div key={k.label} className={`${cardBase} cursor-pointer hover:scale-[1.02] p-4 relative overflow-hidden`} onClick={() => navigateTo(k.tab)}>
             <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-[0.04]" style={{ backgroundColor: k.color, transform: "translate(30%, -30%)" }} />
@@ -304,10 +356,10 @@ const DashboardHome = () => {
             <span className="text-[10px] font-semibold dark:text-slate-500 text-slate-400 tracking-wide">{k.label}</span>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── OEE METRICS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {oeeMetrics.map((m) => (
           <div key={m.label} className={`${cardBase} cursor-pointer p-4`} onClick={() => navigateTo("tpm")}>
             <div className="flex items-center justify-between mb-3">
@@ -329,10 +381,10 @@ const DashboardHome = () => {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* ── ROW 1: OEE Trend + RFQ Status (Redesigned as horizontal bars) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className={`lg:col-span-3 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
           <div className="h-64">
@@ -385,10 +437,10 @@ const DashboardHome = () => {
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 2: Financial (Redesigned as ComposedChart) + Order Status ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Gelir & Gider Analizi</h3>
@@ -447,10 +499,10 @@ const DashboardHome = () => {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 3: Pipeline + Issues + Maintenance + Tickets ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("pipeline")} onClick={() => navigateTo("pipeline")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Pipeline Aşamaları</h3>
           <div className="h-44">
@@ -554,10 +606,10 @@ const DashboardHome = () => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ── ROW 4: Top Customers + Radar + RFQ Trend + Order Completion ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className={clickableCard("customers")} onClick={() => navigateTo("customers")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">En Yüksek Bakiye</h3>
           <div className="h-48">
@@ -635,8 +687,47 @@ const DashboardHome = () => {
             <div className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: C.emerald }} /><span className="text-[9px] dark:text-slate-500 text-slate-400">Tamamlanan</span></div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+
+      {/* ── ROW 5: Activity Feed ── */}
+      <motion.div variants={itemVariants} className={`${cardBase} p-5`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#0AA2CD]" />
+            <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em]">Son Aktiviteler</h3>
+          </div>
+          <span className="text-[10px] dark:text-slate-600 text-slate-300 font-mono">{data.recentActivity.length} kayıt</span>
+        </div>
+        {data.recentActivity.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <Activity className="w-8 h-8 dark:text-slate-700 text-slate-200" />
+            <span className="text-[11px] dark:text-slate-600 text-slate-400">Henüz aktivite yok</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {data.recentActivity.map((a, i) => (
+              <motion.div
+                key={a.id}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.03, duration: 0.3 }}
+                className="flex items-center gap-3 p-2.5 rounded-xl dark:hover:bg-white/[0.03] hover:bg-slate-50 cursor-pointer transition-colors"
+                onClick={() => navigateTo(a.tab)}
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${a.color}15` }}>
+                  <a.icon className="w-3.5 h-3.5" style={{ color: a.color }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold dark:text-slate-200 text-slate-700 truncate">{a.title}</p>
+                  <p className="text-[10px] dark:text-slate-500 text-slate-400 truncate">{a.subtitle}</p>
+                </div>
+                <span className="text-[9px] dark:text-slate-600 text-slate-300 font-mono shrink-0">{a.time}</span>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
   );
 };
 
