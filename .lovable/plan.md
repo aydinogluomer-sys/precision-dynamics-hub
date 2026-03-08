@@ -1,36 +1,71 @@
 
 
-## Sohbet Botunu Ücretsiz Hale Getirme Planı
+# "Teklif Al" + "CAD Dashboard" Birleştirme Planı
 
-### Mevcut Durum
-- FAQ eşleştirme sistemi zaten mevcut (`chatFaqData.ts`) — sorularının çoğu burada yakalanıyor (maliyet: 0)
-- AI fallback Lovable AI Gateway üzerinden çalışıyor — **her çağrı kredi harcıyor**
-- Günlük 5 mesaj limiti var ama yine de maliyet oluşuyor
+## Mevcut Durum
 
-### Çözüm: Google Gemini API Free Tier Kullanımı
+- **TeklifAl** (`/teklif-al`): 4 adımlı wizard (Dosya Yükle → Özellikler → İncele → Gönder). Sol kolon adım içeriği, sağ kolon özet/destek kartları. Basit 3D önizleme (sabit ComplexPart modeli). Header + Footer var.
+- **CADDashboard** (`/cad-dashboard`): Parça tablosu (arama, sıralama, sayfalama) + 3D Viewer (STL/OBJ/STEP yükleme, wireframe, renk, grid, fullscreen) + Sağ panel sekmeler (Parça Bilgileri, Benzer Parçalar, RFQ formu). Header var, Footer yok.
 
-Google, Gemini API için **ücretsiz katman** sunuyor (günlük 1500 istek, dakikada 15 istek). Edge function'ı Lovable AI Gateway yerine doğrudan Google Gemini API'ye yönlendireceğiz.
+## Birleştirme Fikri
 
-### Değişiklikler
+**Tek sayfa (`/teklif-al`)** üzerinden ikisini entegre etmek. Önerilen yaklaşım:
 
-**1. Google Gemini API Anahtarı Ekleme**
-- Google AI Studio'dan (aistudio.google.com) ücretsiz API key alınacak
-- Supabase secrets'a `GOOGLE_GEMINI_API_KEY` olarak eklenecek
+### Yapı: Adım 1'de CAD Dashboard'u Göm
 
-**2. Edge Function Güncelleme (`supabase/functions/chat/index.ts`)**
-- Lovable AI Gateway yerine `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent` endpoint'i kullanılacak
-- Google'ın API formatına uygun istek yapısı (messages → contents dönüşümü)
-- SSE stream parse mantığı Google formatına uyarlanacak
+```text
+┌─────────────────────────────────────────────────────┐
+│  Header + Stepper (4 adım)                          │
+├────────────────────────────┬────────────────────────┤
+│  ADIM 1: CAD YÜKLEME      │  Sağ Panel             │
+│  ┌──────────────────────┐  │  ┌──────────────────┐  │
+│  │ Dosya yükleme alanı  │  │  │ Tabs:            │  │
+│  │ (drag & drop)        │  │  │ - Parça Bilgileri │  │
+│  ├──────────────────────┤  │  │ - 3D Ayarları     │  │
+│  │ 3D Viewer            │  │  │ - Kalite Güvence  │  │
+│  │ (toolbar, grid,      │  │  └──────────────────┘  │
+│  │  wireframe, renk,    │  │                        │
+│  │  fullscreen, gizmo)  │  │                        │
+│  └──────────────────────┘  │                        │
+│  ┌──────────────────────┐  │                        │
+│  │ Parça Tablosu        │  │                        │
+│  │ (çoklu dosya/parça)  │  │                        │
+│  └──────────────────────┘  │                        │
+├────────────────────────────┴────────────────────────┤
+│  ADIM 2-4: Mevcut haliyle (Özellikler/İncele/Gönder)│
+└─────────────────────────────────────────────────────┘
+```
 
-**3. ChatBot.tsx Güncelleme**
-- Stream parse mantığı Google'ın response formatına uyarlanacak (Google farklı SSE formatı kullanıyor)
-- Mevcut FAQ + AI fallback + günlük limit mantığı aynen kalacak
+### Detaylar
 
-### Maliyet Özeti
-- FAQ eşleştirme: **Ücretsiz** (soruların ~%70-80'i)
-- Google Gemini Free Tier: **Ücretsiz** (günlük 1500 istek)
-- Lovable AI Gateway: **Devre dışı** — artık kredi harcamaz
+1. **Adım 1 — Gelişmiş CAD Yükleme**:
+   - Mevcut basit dosya yükleme alanını CAD Dashboard'un gelişmiş 3D viewer'ı ile değiştir
+   - STL/OBJ/STEP dosya yükleme + gerçek zamanlı 3D görüntüleme (toolbar, wireframe, renk, grid, fullscreen, gizmo)
+   - Dosya yüklenmeden önce: drag-drop alanı göster
+   - Dosya yüklendikten sonra: tam 3D viewer + toolbar göster
+   - Parça tablosunu opsiyonel olarak göster (çoklu parça yüklenince)
 
-### Gerekli Adım (Sizden)
-Google AI Studio'dan ücretsiz API key almanız gerekecek. Onay verirseniz sizi yönlendiririm.
+2. **Adım 2-4 — Mevcut akış korunur**:
+   - Özellikler, İnceleme, Gönderim adımları aynen kalır
+   - Sağ kolondaki "Canlı Teklif Özeti" kartı korunur
+
+3. **Sağ panel adaptasyonu**:
+   - Adım 1'de: Parça bilgileri sekmesi + 3D ayarları (renk/wireframe/grid toggle)
+   - Adım 2+'de: Mevcut teklif özeti + kalite güvence kartları
+
+4. **CADDashboard sayfasını kaldır veya `/teklif-al`'a yönlendir**:
+   - `/cad-dashboard` rotası → `/teklif-al`'a redirect
+
+### Teknik Değişiklikler
+
+| Dosya | İşlem |
+|-------|-------|
+| `src/pages/TeklifAl.tsx` | CAD Dashboard'un 3D viewer bileşenlerini (STL/OBJ/STEP loader, toolbar, canvas) buraya taşı. Adım 1'i genişlet. |
+| `src/pages/CADDashboard.tsx` | Silinecek veya redirect bileşenine dönüştürülecek |
+| `src/App.tsx` | `/cad-dashboard` rotasını `/teklif-al`'a redirect olarak güncelle |
+
+### Avantajlar
+- Kullanıcı tek bir akışta hem dosya yükleyip 3D görüntüleyebilir hem teklif gönderebilir
+- Gereksiz sayfa duplikasyonu ortadan kalkar
+- Profesyonel CAD viewer deneyimi doğrudan teklif sürecine entegre olur
 
