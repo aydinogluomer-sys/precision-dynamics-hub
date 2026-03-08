@@ -16,7 +16,11 @@ interface Notification {
 const iconMap = { rfq: FileText, order: Package, quality: ClipboardCheck, finance: Wallet };
 const colorMap = { rfq: "text-cyan-500", order: "text-blue-500", quality: "text-purple-500", finance: "text-emerald-500" };
 
-const MusteriNotifications = () => {
+interface Props {
+  onTabChange?: (tab: string) => void;
+}
+
+const MusteriNotifications = ({ onTabChange }: Props = {}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const initialized = useRef(false);
