@@ -1,6 +1,6 @@
 import { Canvas, useThree, useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls, Center, Grid, GizmoHelper, GizmoViewport } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { Suspense, useEffect, useMemo, useState, useCallback } from "react";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
@@ -38,7 +38,7 @@ const COLOR_PRESETS = [
   { label: "Siyah", color: "#1e293b" },
 ];
 
-const PREVIEWABLE_EXTS = ["stl", "obj"];
+const PREVIEWABLE_EXTS = ["stl", "obj", "step", "stp", "iges", "igs"];
 
 // ── Helpers ──
 const formatFileSize = (bytes: number) => {
@@ -96,7 +96,50 @@ const getFileMetadata = async (storagePath: string) => {
   } : { size: 0, created: "" };
 };
 
-// ── 3D Components ──
+/** Parse STEP/IGES file from a URL using occt-import-js */
+const parseStepFromUrl = async (url: string, ext: string): Promise<THREE.BufferGeometry | null> => {
+  try {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const fileBuffer = new Uint8Array(arrayBuffer);
+
+    const occtimportjs = (await import("occt-import-js")).default;
+    const occt = await occtimportjs();
+
+    const isStep = ext === "step" || ext === "stp";
+    const result = isStep
+      ? occt.ReadStepFile(fileBuffer, null)
+      : occt.ReadIgesFile
+        ? occt.ReadIgesFile(fileBuffer, null)
+        : occt.ReadStepFile(fileBuffer, null); // fallback
+
+    const geo = new THREE.BufferGeometry();
+    const vertices: number[] = [];
+    const indices: number[] = [];
+
+    for (const mesh of result.meshes) {
+      const offset = vertices.length / 3;
+      for (let i = 0; i < mesh.attributes.position.array.length; i++) {
+        vertices.push(mesh.attributes.position.array[i]);
+      }
+      if (mesh.index) {
+        for (let i = 0; i < mesh.index.array.length; i++) {
+          indices.push(mesh.index.array[i] + offset);
+        }
+      }
+    }
+
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    if (indices.length > 0) geo.setIndex(indices);
+    geo.computeVertexNormals();
+    return geo;
+  } catch (err) {
+    console.error("STEP/IGES parse error:", err);
+    return null;
+  }
+};
+
+// ── 3D Model Components ──
 
 const MeasurementPoints = ({ points, distance }: { points: THREE.Vector3[]; distance: number | null }) => {
   if (points.length === 0) return null;
@@ -241,8 +284,46 @@ const OBJModel = ({ url, clipping, clipValue, wireframe, modelColor, onDimension
   return <primitive object={obj} />;
 };
 
+/** STEP/IGES model rendered from pre-parsed BufferGeometry */
+const STEPModelRenderer = ({ geometry, clipping, clipValue, wireframe, modelColor, onDimensions }: {
+  geometry: THREE.BufferGeometry; clipping: boolean; clipValue: number; wireframe: boolean; modelColor: string; onDimensions: (d: Dimensions) => void;
+}) => {
+  const { camera } = useThree();
+  const clippingPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, -1, 0), 0), []);
+
+  useEffect(() => {
+    if (!geometry) return;
+    geometry.center();
+    geometry.computeBoundingBox();
+    const size = new THREE.Vector3();
+    geometry.boundingBox!.getSize(size);
+    onDimensions({ x: +size.x.toFixed(2), y: +size.y.toFixed(2), z: +size.z.toFixed(2) });
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const dist = maxDim * 2;
+    camera.position.set(dist * 0.6, dist * 0.5, dist * 0.8);
+    (camera as THREE.PerspectiveCamera).near = 0.01;
+    (camera as THREE.PerspectiveCamera).far = maxDim * 20;
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+  }, [geometry, camera, onDimensions]);
+
+  useFrame(() => {
+    if (clipping && geometry.boundingBox) {
+      const box = geometry.boundingBox;
+      const size = box.max.y - box.min.y;
+      clippingPlane.constant = box.min.y + size * clipValue;
+    }
+  });
+
+  return (
+    <mesh geometry={geometry}>
+      <meshStandardMaterial color={modelColor} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} clippingPlanes={clipping ? [clippingPlane] : []} clipShadows />
+    </mesh>
+  );
+};
+
 // ── Viewer Toolbar + Canvas ──
-const CadViewer = ({ signedUrl, extension }: { signedUrl: string; extension: string }) => {
+const CadViewer = ({ signedUrl, extension, stepGeometry }: { signedUrl: string; extension: string; stepGeometry?: THREE.BufferGeometry | null }) => {
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
   const [showGrid, setShowGrid] = useState(true);
   const [clipping, setClipping] = useState(false);
@@ -274,6 +355,8 @@ const CadViewer = ({ signedUrl, extension }: { signedUrl: string; extension: str
     setMeasurePoints([]);
     setMeasureDistance(null);
   };
+
+  const isStepType = ["step", "stp", "iges", "igs"].includes(extension);
 
   const ToolBtn = ({ active, onClick, icon, label }: { active?: boolean; onClick: () => void; icon: React.ReactNode; label: string }) => (
     <button
@@ -343,7 +426,6 @@ const CadViewer = ({ signedUrl, extension }: { signedUrl: string; extension: str
         )}
       </div>
 
-      {/* Measuring hint */}
       {measuring && (
         <div className="px-2 py-1 bg-destructive/10 border-b border-destructive/20 text-[10px] text-destructive font-bold text-center">
           Ölçüm modu — Model üzerinde 2 noktaya tıklayın
@@ -368,6 +450,9 @@ const CadViewer = ({ signedUrl, extension }: { signedUrl: string; extension: str
               )}
               {extension === "obj" && (
                 <OBJModel url={signedUrl} clipping={clipping} clipValue={clipValue} wireframe={wireframe} modelColor={modelColor} onDimensions={handleDimensions} />
+              )}
+              {isStepType && stepGeometry && (
+                <STEPModelRenderer geometry={stepGeometry} clipping={clipping} clipValue={clipValue} wireframe={wireframe} modelColor={modelColor} onDimensions={handleDimensions} />
               )}
             </Center>
 
@@ -423,10 +508,13 @@ const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewPro
   const [loading, setLoading] = useState(true);
   const [meta, setMeta] = useState<FileMetadata | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [stepGeometry, setStepGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [stepLoading, setStepLoading] = useState(false);
 
   const baseName = filePath.split("/").pop() || filePath;
   const extension = baseName.split(".").pop()?.toLowerCase() || "";
   const canPreview = PREVIEWABLE_EXTS.includes(extension);
+  const isStepType = ["step", "stp", "iges", "igs"].includes(extension);
 
   useEffect(() => {
     let cancelled = false;
@@ -446,6 +534,18 @@ const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewPro
     })();
     return () => { cancelled = true; };
   }, [filePath, rfqId, userId]);
+
+  const handleOpenPreview = async () => {
+    setShowPreview(true);
+
+    // For STEP/IGES, parse the file on demand
+    if (isStepType && meta?.signedUrl && !stepGeometry) {
+      setStepLoading(true);
+      const geo = await parseStepFromUrl(meta.signedUrl, extension);
+      setStepGeometry(geo);
+      setStepLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -492,20 +592,29 @@ const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewPro
         <div>
           {!showPreview ? (
             <button
-              onClick={() => setShowPreview(true)}
+              onClick={handleOpenPreview}
               className="w-full py-2 text-xs font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-center gap-1.5"
             >
               <Box size={14} /> 3D Önizleme — Boyut Analizi, Kesit, Ölçüm
             </button>
           ) : (
             <div className="relative">
-              <CadViewer signedUrl={meta.signedUrl} extension={extension} />
-              <button
-                onClick={() => setShowPreview(false)}
-                className="absolute top-1.5 right-1.5 z-10 text-[10px] px-2 py-0.5 rounded bg-black/50 text-white/70 hover:text-white"
-              >
-                Kapat
-              </button>
+              {stepLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 rounded-lg border dark:border-[#334155] border-slate-200 bg-gradient-to-b from-slate-900 to-slate-800">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary mb-2" />
+                  <p className="text-xs text-slate-400 font-bold">STEP/IGES dosyası işleniyor…</p>
+                </div>
+              ) : (
+                <>
+                  <CadViewer signedUrl={meta.signedUrl} extension={extension} stepGeometry={stepGeometry} />
+                  <button
+                    onClick={() => setShowPreview(false)}
+                    className="absolute top-1.5 right-1.5 z-10 text-[10px] px-2 py-0.5 rounded bg-black/50 text-white/70 hover:text-white"
+                  >
+                    Kapat
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -513,7 +622,7 @@ const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewPro
 
       {!canPreview && (
         <p className="text-[10px] dark:text-slate-500 text-slate-400">
-          STEP/IGES dosyaları için önizleme desteklenmiyor, dosyayı indirip yerel CAD yazılımında açabilirsiniz.
+          Bu dosya formatı için önizleme desteklenmiyor, dosyayı indirip yerel CAD yazılımında açabilirsiniz.
         </p>
       )}
     </div>
