@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { FileText, Package, Headphones, DollarSign, Loader2 } from "lucide-react";
+import { FileText, Package, Headphones, DollarSign, Loader2, Upload, X, File } from "lucide-react";
 
 type ModalType = "rfq" | "order" | "support" | "pipeline" | null;
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const ACCEPTED_EXTENSIONS = ".step,.stp,.iges,.igs,.stl,.obj,.3mf,.dxf,.dwg,.pdf,.zip,.rar";
+
+interface UploadedFile {
+  file: File;
+  uploading: boolean;
+  url?: string;
+  error?: string;
+}
 
 interface Props {
   activeModal: ModalType;
@@ -13,9 +23,11 @@ interface Props {
 
 const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // RFQ form
   const [rfq, setRfq] = useState({ customer: "", service: "", material: "", quantity: "", notes: "" });
+  const [rfqFiles, setRfqFiles] = useState<UploadedFile[]>([]);
   // Order form
   const [order, setOrder] = useState({ id: "", part_name: "", customer: "", quantity: "", machine: "" });
   // Support form  
@@ -26,19 +38,86 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const inputCls = "w-full px-3 py-2 rounded-lg dark:bg-[#0F172A] bg-slate-50 border dark:border-[#334155] border-slate-200 text-sm dark:text-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0AA2CD] focus:ring-1 focus:ring-[#0AA2CD]/30";
   const labelCls = "text-[11px] font-bold dark:text-slate-400 text-slate-500 uppercase tracking-wider mb-1 block";
 
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files || []);
+    const valid: UploadedFile[] = [];
+    for (const file of selected) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`${file.name} çok büyük (maks 50 MB)`);
+        continue;
+      }
+      if (rfqFiles.length + valid.length >= 5) {
+        toast.error("En fazla 5 dosya yüklenebilir");
+        break;
+      }
+      valid.push({ file, uploading: false });
+    }
+    setRfqFiles((prev) => [...prev, ...valid]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [rfqFiles.length]);
+
+  const removeFile = (idx: number) => {
+    setRfqFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const uploadFiles = async (rfqId: string): Promise<string[]> => {
+    const urls: string[] = [];
+    const updated = [...rfqFiles];
+
+    for (let i = 0; i < updated.length; i++) {
+      const f = updated[i];
+      updated[i] = { ...f, uploading: true };
+      setRfqFiles([...updated]);
+
+      const ext = f.file.name.split(".").pop() || "bin";
+      const path = `admin/${rfqId}/${Date.now()}-${f.file.name}`;
+
+      const { error } = await supabase.storage
+        .from("cad-uploads")
+        .upload(path, f.file, { contentType: f.file.type || `application/octet-stream` });
+
+      if (error) {
+        updated[i] = { ...f, uploading: false, error: error.message };
+        setRfqFiles([...updated]);
+        toast.error(`${f.file.name} yüklenemedi`);
+        continue;
+      }
+
+      urls.push(path);
+      updated[i] = { ...f, uploading: false, url: path };
+      setRfqFiles([...updated]);
+    }
+    return urls;
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
   const handleSaveRfq = async () => {
     if (!rfq.customer.trim()) { toast.error("Müşteri adı zorunlu"); return; }
     setSaving(true);
     const id = `RFQ-${Date.now().toString(36).toUpperCase()}`;
+
+    // Upload files first
+    let fileUrls: string[] = [];
+    if (rfqFiles.length > 0) {
+      fileUrls = await uploadFiles(id);
+    }
+
     const { error } = await supabase.from("rfqs").insert({
       id, customer: rfq.customer, service: rfq.service, material: rfq.material,
       quantity: rfq.quantity ? parseInt(rfq.quantity) : null, notes: rfq.notes,
+      files: fileUrls.length > 0 ? fileUrls : null,
       status: "Yeni", date: new Date().toISOString().split("T")[0],
     });
     setSaving(false);
     if (error) { toast.error("Kayıt başarısız: " + error.message); return; }
-    toast.success(`${id} oluşturuldu`);
+    toast.success(`${id} oluşturuldu${fileUrls.length > 0 ? ` (${fileUrls.length} dosya)` : ""}`);
     setRfq({ customer: "", service: "", material: "", quantity: "", notes: "" });
+    setRfqFiles([]);
     onClose();
   };
 
@@ -91,7 +170,7 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
     <>
       {/* RFQ Modal */}
       <Dialog open={activeModal === "rfq"} onOpenChange={(o) => !o && onClose()}>
-        <DialogContent className="dark:bg-[#1E293B] bg-white dark:border-[#334155] border-slate-200 max-w-md">
+        <DialogContent className="dark:bg-[#1E293B] bg-white dark:border-[#334155] border-slate-200 max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 dark:text-white text-slate-800">
               <div className="w-8 h-8 rounded-lg bg-[#0AA2CD]/10 flex items-center justify-center">
@@ -107,12 +186,65 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
               <div><label className={labelCls}>Malzeme</label><input className={inputCls} value={rfq.material} onChange={(e) => setRfq({ ...rfq, material: e.target.value })} placeholder="Al 6061, Çelik..." /></div>
               <div><label className={labelCls}>Adet</label><input className={inputCls} type="number" value={rfq.quantity} onChange={(e) => setRfq({ ...rfq, quantity: e.target.value })} placeholder="100" /></div>
             </div>
+
+            {/* File Upload Area */}
+            <div>
+              <label className={labelCls}>CAD Dosyaları</label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed dark:border-[#334155] border-slate-200 rounded-xl p-4 text-center cursor-pointer dark:hover:border-[#0AA2CD]/40 hover:border-[#0AA2CD]/40 dark:hover:bg-[#0AA2CD]/5 hover:bg-[#0AA2CD]/5 transition-all group"
+              >
+                <Upload className="w-6 h-6 mx-auto mb-2 dark:text-slate-500 text-slate-400 group-hover:text-[#0AA2CD] transition-colors" />
+                <p className="text-xs dark:text-slate-400 text-slate-500">
+                  <span className="font-bold text-[#0AA2CD]">Dosya seçin</span> veya sürükleyin
+                </p>
+                <p className="text-[10px] dark:text-slate-600 text-slate-400 mt-1">
+                  STEP, IGES, STL, DXF, DWG, PDF, ZIP — maks 50 MB, en fazla 5 dosya
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept={ACCEPTED_EXTENSIONS}
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+
+              {/* File list */}
+              {rfqFiles.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  {rfqFiles.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg dark:bg-[#0F172A]/60 bg-slate-50 border dark:border-[#334155]/50 border-slate-100">
+                      <File className="w-4 h-4 dark:text-slate-400 text-slate-500 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-bold dark:text-slate-300 text-slate-700 truncate">{f.file.name}</p>
+                        <p className="text-[10px] dark:text-slate-500 text-slate-400">{formatFileSize(f.file.size)}</p>
+                      </div>
+                      {f.uploading ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0AA2CD] shrink-0" />
+                      ) : f.error ? (
+                        <span className="text-[9px] text-red-400 font-bold shrink-0">Hata</span>
+                      ) : f.url ? (
+                        <span className="text-[9px] text-emerald-400 font-bold shrink-0">✓</span>
+                      ) : (
+                        <button onClick={(e) => { e.stopPropagation(); removeFile(i); }} className="p-0.5 rounded dark:hover:bg-white/5 hover:bg-slate-100">
+                          <X className="w-3.5 h-3.5 dark:text-slate-500 text-slate-400" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div><label className={labelCls}>Notlar</label><textarea className={`${inputCls} resize-none h-16`} value={rfq.notes} onChange={(e) => setRfq({ ...rfq, notes: e.target.value })} placeholder="Ek bilgi..." /></div>
           </div>
           <DialogFooter className="mt-4">
             <button onClick={onClose} className="px-4 py-2 text-xs font-bold dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD]">İptal</button>
             <button onClick={handleSaveRfq} disabled={saving} className="px-5 py-2 rounded-lg bg-[#0AA2CD] text-white text-xs font-bold hover:bg-[#0AA2CD]/90 disabled:opacity-50 flex items-center gap-2">
-              {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Kaydet
+              {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {rfqFiles.length > 0 ? `Kaydet (${rfqFiles.length} dosya)` : "Kaydet"}
             </button>
           </DialogFooter>
         </DialogContent>
