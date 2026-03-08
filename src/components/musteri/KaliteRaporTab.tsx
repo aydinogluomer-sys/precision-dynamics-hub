@@ -37,16 +37,22 @@ const KaliteRaporTab = () => {
   const [reports, setReports] = useState<QualityReport[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchReports = async () => {
+    const { data } = await supabase
+      .from("quality_reports")
+      .select("id, title, report_type, file_url, order_id, notes, created_at")
+      .order("created_at", { ascending: false });
+    setReports((data as QualityReport[]) || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("quality_reports")
-        .select("id, title, report_type, file_url, order_id, notes, created_at")
-        .order("created_at", { ascending: false });
-      setReports((data as QualityReport[]) || []);
-      setLoading(false);
-    };
-    fetch();
+    fetchReports();
+    const channel = supabase
+      .channel("customer-quality-tab")
+      .on("postgres_changes", { event: "*", schema: "public", table: "quality_reports" }, () => fetchReports())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   if (loading) return <CardListSkeleton count={3} />;

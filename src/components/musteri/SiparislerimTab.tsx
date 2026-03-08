@@ -35,16 +35,22 @@ const SiparislerimTab = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchOrders = async () => {
+    const { data } = await supabase
+      .from("orders")
+      .select("id, part_name, status, progress, quantity, order_date, deadline, rfq_ref")
+      .order("created_at", { ascending: false });
+    setOrders((data as Order[]) || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("orders")
-        .select("id, part_name, status, progress, quantity, order_date, deadline, rfq_ref")
-        .order("created_at", { ascending: false });
-      setOrders((data as Order[]) || []);
-      setLoading(false);
-    };
-    fetch();
+    fetchOrders();
+    const channel = supabase
+      .channel("customer-orders-tab")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => fetchOrders())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const handleReorder = (order: Order) => {

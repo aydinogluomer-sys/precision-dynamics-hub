@@ -1,4 +1,5 @@
-import { Bell, Activity, Sun, Moon, Home } from "lucide-react";
+import { Activity, Sun, Moon, Home } from "lucide-react";
+import MusteriNotifications from "./MusteriNotifications";
 import { useState, useEffect, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -47,9 +48,7 @@ const MusteriHeader = ({ activeTab, mobileSidebar }: Props) => {
         >
           {darkMode ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
         </button>
-        <button className="relative dark:text-slate-400 text-slate-500 opacity-60 cursor-not-allowed" title="Bildirimler yakında aktif olacak">
-          <Bell className="w-5 h-5" />
-        </button>
+        <MusteriNotifications />
         <Link
           to="/"
           className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0AA2CD]/10 text-[#0AA2CD] text-xs font-bold hover:bg-[#0AA2CD]/20 transition-colors"
