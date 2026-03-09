@@ -77,9 +77,39 @@ const StickyIntroReveal = () => {
             <span>{"en zorlu mühendislik ihtiyaçlarına çözüm sunar."}</span>
           </motion.p>
 
+          {/* İmalat kabiliyetleri ikon grubu */}
+          <motion.div
+            className="flex justify-center items-center gap-8 mt-8 mb-6"
+            style={{ opacity: badgeOpacity, y: badgeY }}>
+            
+            <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+              </svg>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>CNC FREZE</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m0 10v6m11-7h-6M7 12H1m15.07-5.07l-4.24 4.24m-5.66 0L1.93 6.93m15.07 10.14l-4.24-4.24m-5.66 0L1.93 17.07"/>
+              </svg>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>CNC TORNA</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>TALAŞLI İMALAT</span>
+            </div>
+          </motion.div>
+
           {/* Badge */}
           <motion.div
-            className="flex justify-center mt-10"
+            className="flex justify-center mt-4"
             style={{ opacity: badgeOpacity, y: badgeY }}>
             
             <span
