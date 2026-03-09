@@ -95,7 +95,6 @@ const CapabilitiesSection = () => {
               transition={{ delay: i * 0.1 }}
               style={{
                 backfaceVisibility: 'hidden',
-                transform: 'translateZ(0)',
                 willChange: 'opacity'
               }}>
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border">
@@ -132,7 +131,6 @@ const CapabilitiesSection = () => {
             style={{ 
               opacity: headerOpacity,
               backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
               willChange: 'opacity'
             }}>
             <div>
@@ -167,7 +165,6 @@ const CapabilityCard = ({ cap, anim }: CardProps) => {
       style={{ 
         opacity: anim.opacity,
         backfaceVisibility: 'hidden',
-        transform: 'translateZ(0)',
         willChange: 'opacity'
       }}>
       
