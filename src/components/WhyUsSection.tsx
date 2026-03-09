@@ -66,14 +66,25 @@ const WhyUsSection = () => {
     return (
       <section id="neden-biz" className="py-16 px-4 bg-[#f0f4f8] dark:bg-[#0f1a2a]">
         <div className="max-w-7xl mx-auto">
-          <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <motion.div className="text-center mb-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block text-primary">Avantajlar</span>
             <h2 className="text-2xl font-bold mb-3 text-foreground">Neden Mas Technic?</h2>
             <p className="text-sm max-w-lg mx-auto text-foreground/80">Hassasiyet, güvenilirlik ve mühendislik mükemmelliği ile fark yaratıyoruz</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-3 mb-8">
             {values.map((value, i) =>
-            <motion.div key={value.title} className="relative p-4 text-center overflow-hidden group bg-background border border-border" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+            <motion.div 
+              key={value.title} 
+              className="relative p-4 text-center overflow-hidden group bg-background border border-border text-rendering-fix" 
+              initial={{ opacity: 0 }} 
+              whileInView={{ opacity: 1 }} 
+              viewport={{ once: true }} 
+              transition={{ delay: i * 0.1 }}
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: 'translateZ(0)',
+                willChange: 'opacity'
+              }}>
                 <div className="flex flex-col items-center">
                   <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
                     <value.icon className="w-8 h-8" />
@@ -85,7 +96,7 @@ const WhyUsSection = () => {
               </motion.div>
             )}
           </div>
-          <motion.div className="mt-6 p-4 flex items-center gap-4 bg-background border border-border" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <motion.div className="mt-6 p-4 flex items-center gap-4 bg-background border border-border text-rendering-fix" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
@@ -114,7 +125,14 @@ const WhyUsSection = () => {
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center bg-[#f0f4f8] dark:bg-[#0f1a2a]">
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8" style={{ opacity: headerOpacity }}>
+          <motion.div 
+            className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 md:mb-8 text-rendering-fix" 
+            style={{ 
+              opacity: headerOpacity,
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              willChange: 'opacity'
+            }}>
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">Avantajlar</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Neden Mas Technic?</h2>
@@ -129,7 +147,14 @@ const WhyUsSection = () => {
             <WhyUsCard key={value.title} value={value} index={i} anim={cardAnimations[i]} />
             )}
           </div>
-          <motion.div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border" style={{ opacity: badgesOpacity }}>
+          <motion.div 
+            className="mt-4 p-4 flex items-center gap-4 bg-background border border-border text-rendering-fix" 
+            style={{ 
+              opacity: badgesOpacity,
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              willChange: 'opacity'
+            }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
             <div className="flex-1">
               <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
@@ -139,7 +164,14 @@ const WhyUsSection = () => {
               Daha Fazla →
             </Link>
           </motion.div>
-          <motion.div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" style={{ opacity: badgesOpacity }}>
+          <motion.div 
+            className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-2 border-t border-border" 
+            style={{ 
+              opacity: badgesOpacity,
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              willChange: 'opacity'
+            }}>
             {badges.map((badge, i) =>
             <span key={badge.label} className="inline-flex items-center gap-2 text-sm text-foreground/80">
                 <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />{badge.label}
@@ -162,8 +194,13 @@ interface CardProps {
 const WhyUsCard = ({ value, index, anim }: CardProps) => {
   return (
     <motion.div
-      className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors bg-background border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg"
-      style={{ opacity: anim.opacity }}>
+      className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden group transition-colors bg-background border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg text-rendering-fix"
+      style={{ 
+        opacity: anim.opacity,
+        backfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+        willChange: 'opacity'
+      }}>
       
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -179,8 +216,8 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
           {value.description}
         </p>
       </div>
-    </motion.div>);
-
+    </motion.div>
+  );
 };
 
 export default WhyUsSection;
