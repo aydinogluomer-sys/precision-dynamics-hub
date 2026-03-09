@@ -126,31 +126,33 @@ const StickyIntroReveal = () => {
             </span>
           </motion.div>
 
-          {/* Stats row */}
+          {/* CTA Buttons */}
           <motion.div
-            className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-14"
+            className="flex gap-6 justify-center mt-14"
             style={{ opacity: statsOpacity, y: statsY }}>
             
-            {[
-            { value: "35+", label: "CNC Tezgâh" },
-            { value: "±0.005mm", label: "Hassasiyet" },
-            { value: "15+", label: "Yıl Tecrübe" }].
-            map((stat) =>
-            <div key={stat.label} className="text-center">
-                <div
-                className="text-2xl md:text-3xl font-bold text-primary mb-1"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                
-                  {stat.value}
-                </div>
-                <div
-                className="text-[10px] uppercase tracking-[0.2em]"
-                style={{ color: "rgba(255, 255, 255, 0.4)" }}>
-                
-                  {stat.label}
-                </div>
-              </div>
-            )}
+            <Link
+              to="/teklif-al"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold border border-primary"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              
+              <span className="w-2 h-2 bg-primary-foreground rounded-full" />
+              Teklif Al
+            </Link>
+
+            <button
+              onClick={() => {
+                const servicesSection = document.getElementById('hizmetler');
+                if (servicesSection) {
+                  servicesSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-primary text-primary hover:bg-primary/10 transition-colors font-semibold bg-transparent"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              
+              <span className="w-2 h-2 border border-primary rounded-full" />
+              Hizmetlerimizi İncele
+            </button>
           </motion.div>
         </div>
 
