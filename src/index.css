@@ -114,6 +114,15 @@
   a, button, [role="button"] {
     cursor: pointer;
   }
+
+  /* Text rendering fixes for GPU acceleration */
+  .text-rendering-fix {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
 }
 
 @layer components {
