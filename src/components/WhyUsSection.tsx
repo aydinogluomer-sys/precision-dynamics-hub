@@ -82,7 +82,6 @@ const WhyUsSection = () => {
               transition={{ delay: i * 0.1 }}
               style={{
                 backfaceVisibility: 'hidden',
-                transform: 'translateZ(0)',
                 willChange: 'opacity'
               }}>
                 <div className="flex flex-col items-center">
@@ -130,7 +129,6 @@ const WhyUsSection = () => {
             style={{ 
               opacity: headerOpacity,
               backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
               willChange: 'opacity'
             }}>
             <div>
@@ -152,7 +150,6 @@ const WhyUsSection = () => {
             style={{ 
               opacity: badgesOpacity,
               backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
               willChange: 'opacity'
             }}>
             <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
@@ -169,7 +166,6 @@ const WhyUsSection = () => {
             style={{ 
               opacity: badgesOpacity,
               backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
               willChange: 'opacity'
             }}>
             {badges.map((badge, i) =>
@@ -198,7 +194,6 @@ const WhyUsCard = ({ value, index, anim }: CardProps) => {
       style={{ 
         opacity: anim.opacity,
         backfaceVisibility: 'hidden',
-        transform: 'translateZ(0)',
         willChange: 'opacity'
       }}>
       

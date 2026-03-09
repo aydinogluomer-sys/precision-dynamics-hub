@@ -3,22 +3,22 @@ import { useLocation } from "react-router-dom";
 import { type ReactNode } from "react";
 
 const pageVariants = {
-  initial: { opacity: 0, rotateY: 6, scale: 0.97, transformPerspective: 1200 },
+  initial: { opacity: 0 },
   enter: {
     opacity: 1,
-    rotateY: 0,
-    scale: 1,
-    transformPerspective: 1200,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
+    transition: {
+      duration: 0.35,
+      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+    },
   },
   exit: {
     opacity: 0,
-    rotateY: -6,
-    scale: 0.97,
-    transformPerspective: 1200,
-    transition: { duration: 0.3, ease: [0.55, 0.06, 0.68, 0.19] as [number, number, number, number] },
+    transition: {
+      duration: 0.2,
+      ease: [0.55, 0.06, 0.68, 0.19] as [number, number, number, number],
+    },
   },
-};
+} as const;
 
 const PageTransition = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
@@ -31,6 +31,7 @@ const PageTransition = ({ children }: { children: ReactNode }) => {
         initial="initial"
         animate="enter"
         exit="exit"
+        style={{ willChange: "opacity" }}
       >
         {children}
       </motion.div>
