@@ -126,16 +126,77 @@ const StickyIntroReveal = () => {
             </span>
           </motion.div>
 
+          {/* NEXUS Admin Panel Promo */}
+          <motion.div
+            className="mt-12 mx-auto max-w-2xl"
+            style={{ opacity: statsOpacity, y: statsY }}>
+            
+            <Link
+              to="/admin/login"
+              className="group block relative overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-500 p-6 sm:p-8"
+              style={{ background: "rgba(6, 136, 173, 0.04)" }}>
+              
+              {/* Corner accents */}
+              <div className="absolute top-0 left-0 w-6 h-6">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/40" />
+                <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/40" />
+              </div>
+              <div className="absolute bottom-0 right-0 w-6 h-6">
+                <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/40" />
+                <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/40" />
+              </div>
+
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                <span className="text-[10px] tracking-[0.3em] uppercase text-emerald-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  NEXUS — Aktif
+                </span>
+              </div>
+
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2 text-left">
+                Endüstriyel Yönetim Paneli
+              </h3>
+              <p className="text-sm text-white/50 text-left mb-5 leading-relaxed">
+                Teklif yönetimi, üretim takibi, finansal analitik, TPM & bakım, envanter kontrolü ve AI destekli asistan — tek ekrandan.
+              </p>
+
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                {[
+                  { val: "14", label: "Modül" },
+                  { val: "AI", label: "Asistan" },
+                  { val: "∞", label: "Entegrasyon" },
+                ].map((s) => (
+                  <div key={s.label} className="text-center py-2 border border-primary/10" style={{ background: "rgba(6, 136, 173, 0.06)" }}>
+                    <div className="text-lg font-bold text-primary" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-primary group-hover:tracking-wider transition-all duration-300" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  Panele Giriş →
+                </span>
+                <div className="flex gap-1.5">
+                  {["Talep", "Üretim", "Finans", "TPM"].map((t) => (
+                    <span key={t} className="text-[9px] px-2 py-0.5 border border-white/10 text-white/30" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
           {/* CTA Buttons */}
           <motion.div
-            className="flex gap-6 justify-center mt-14"
+            className="flex gap-6 justify-center mt-8"
             style={{ opacity: statsOpacity, y: statsY }}>
             
             <Link
               to="/teklif-al"
               className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold border border-primary"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              
               <span className="w-2 h-2 bg-primary-foreground rounded-full" />
               Teklif Al
             </Link>
@@ -149,7 +210,6 @@ const StickyIntroReveal = () => {
               }}
               className="inline-flex items-center gap-2 px-8 py-4 border border-primary text-primary hover:bg-primary/10 transition-colors font-semibold bg-transparent"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              
               <span className="w-2 h-2 border border-primary rounded-full" />
               Hizmetlerimizi İncele
             </button>
