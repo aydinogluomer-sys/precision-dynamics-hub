@@ -100,20 +100,38 @@ const UretimTab = () => {
       {items.map((item) => {
         const progress = item.progress || 0;
         const activeStep = getActiveStep(progress);
-
         const estimated = estimateCompletion(progress, item.created_at, item.deadline);
+        
+        // Gecikme kontrolü: termin geçmiş ve henüz tamamlanmamış
+        const isOverdue = item.deadline && progress < 100 && new Date(item.deadline) < new Date();
 
         return (
-          <div key={item.id} className="border border-border bg-background p-5">
+          <div 
+            key={item.id} 
+            className={`border p-5 transition-all ${
+              isOverdue 
+                ? "border-destructive bg-destructive/5" 
+                : "border-border bg-background"
+            }`}
+          >
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-semibold text-sm">{item.part_name || "İsimsiz Parça"}</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {item.quantity && `${item.quantity} adet`}
-                  {item.deadline && ` · Termin: ${item.deadline}`}
+                  {item.deadline && (
+                    <span className={isOverdue ? "text-destructive font-medium" : ""}>
+                      {" · Termin: "}{item.deadline}{isOverdue && " ⚠️ GECİKMİŞ"}
+                    </span>
+                  )}
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                {isOverdue && (
+                  <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30 animate-pulse">
+                    GECİKMİŞ
+                  </Badge>
+                )}
                 {estimated && !item.deadline && (
                   <span className="flex items-center gap-1 text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
                     <Clock className="w-3 h-3" />
@@ -136,14 +154,14 @@ const UretimTab = () => {
                   <div key={step.key} className="flex items-center flex-1">
                     <div className="flex flex-col items-center flex-1">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                        isCompleted ? "bg-primary text-primary-foreground" :
-                        isActive ? "bg-primary text-primary-foreground ring-4 ring-primary/20" :
+                        isCompleted ? (isOverdue ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground") :
+                        isActive ? (isOverdue ? "bg-destructive text-destructive-foreground ring-4 ring-destructive/20" : "bg-primary text-primary-foreground ring-4 ring-primary/20") :
                         "bg-muted text-muted-foreground"
                       }`}>
                         {isCompleted ? "✓" : i + 1}
                       </div>
                       <span className={`text-[10px] mt-1.5 text-center leading-tight ${
-                        isActive ? "font-bold text-primary" :
+                        isActive ? (isOverdue ? "font-bold text-destructive" : "font-bold text-primary") :
                         isCompleted ? "text-foreground" :
                         "text-muted-foreground"
                       }`}>
@@ -151,7 +169,7 @@ const UretimTab = () => {
                       </span>
                     </div>
                     {i < STEPS.length - 1 && (
-                      <div className={`h-0.5 flex-1 mx-1 ${isCompleted ? "bg-primary" : "bg-border"}`} />
+                      <div className={`h-0.5 flex-1 mx-1 ${isCompleted ? (isOverdue ? "bg-destructive" : "bg-primary") : "bg-border"}`} />
                     )}
                   </div>
                 );
@@ -162,11 +180,11 @@ const UretimTab = () => {
             <div className="mt-4 flex items-center gap-3">
               <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-primary rounded-full transition-all duration-500"
+                  className={`h-full rounded-full transition-all duration-500 ${isOverdue ? "bg-destructive" : "bg-primary"}`}
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <span className="text-xs font-mono font-semibold text-muted-foreground">{progress}%</span>
+              <span className={`text-xs font-mono font-semibold ${isOverdue ? "text-destructive" : "text-muted-foreground"}`}>{progress}%</span>
             </div>
           </div>
         );
