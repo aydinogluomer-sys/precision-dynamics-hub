@@ -202,7 +202,7 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group relative overflow-hidden border border-border cursor-pointer bg-background"
+                  className="group relative overflow-hidden border border-border cursor-pointer bg-[#FAFAF9] dark:bg-muted/50"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
