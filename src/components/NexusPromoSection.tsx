@@ -299,7 +299,7 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-background"
+                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-[#FAFAF9] dark:bg-muted/50"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
