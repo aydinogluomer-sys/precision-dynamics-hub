@@ -146,7 +146,7 @@ const MaterialsSection = () => {
       <section
         id="malzemeler"
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20"
-        style={{ backgroundColor: "#020617" }}>
+style={{ backgroundColor: "#0F172A" }}>
         
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 70%, rgba(6, 136, 173, 0.12) 0%, transparent 50%)" }} />
