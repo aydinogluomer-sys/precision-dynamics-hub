@@ -14,7 +14,7 @@ const descriptionWords = "Teklif yönetimi, üretim takibi, finansal analitik, T
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative overflow-hidden py-16 md:py-24" style={{ backgroundColor: "hsl(var(--industrial-dark))" }}>
+    <section className="relative overflow-hidden py-16 md:py-24" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)" }}>
       {/* Grid pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
