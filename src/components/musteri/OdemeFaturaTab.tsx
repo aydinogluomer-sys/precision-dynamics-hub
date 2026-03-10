@@ -221,7 +221,7 @@ const OdemeFaturaTab = () => {
       {/* Payment Methods */}
       <div>
         <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider text-muted-foreground">Ödeme Yöntemleri</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             onClick={() => { setSelectedPayment(null); setShowIyzicoDialog(true); }}
             className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
@@ -232,6 +232,17 @@ const OdemeFaturaTab = () => {
               <p className="text-xs text-muted-foreground">İyzico ile güvenli ödeme</p>
             </div>
             <IyzicoLogo className="h-6 w-auto shrink-0" />
+          </button>
+          <button
+            onClick={() => { setSelectedPayment(null); setShowStripeDialog(true); }}
+            className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
+          >
+            <Zap size={20} className="text-[#635BFF] shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Stripe</p>
+              <p className="text-xs text-muted-foreground">Uluslararası kart ödemesi</p>
+            </div>
+            <StripeLogo className="h-6 w-auto shrink-0" />
           </button>
           <button
             onClick={() => { setSelectedPayment(null); setShowHavaleDialog(true); }}
