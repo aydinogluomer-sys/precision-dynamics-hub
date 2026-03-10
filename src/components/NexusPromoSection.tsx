@@ -35,18 +35,18 @@ const stats = [
 ];
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  hidden: { opacity: 0, y: 40, scale: 0.95 } as const,
   visible: (i: number) => ({
     opacity: 1, y: 0, scale: 1,
-    transition: { delay: 0.08 * i, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { delay: 0.08 * i, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] },
   }),
 };
 
 const listVariants = {
-  hidden: { opacity: 0, x: -30 },
+  hidden: { opacity: 0, x: -30 } as const,
   visible: (i: number) => ({
     opacity: 1, x: 0,
-    transition: { delay: 0.05 * i, duration: 0.4, ease: "easeOut" },
+    transition: { delay: 0.05 * i, duration: 0.4, ease: "easeOut" as const },
   }),
 };
 
