@@ -349,15 +349,15 @@ const NexusPromoSection = () => {
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-start gap-3">
-              <Lock className="w-5 h-5 mt-0.5 shrink-0" style={{ color: "rgba(255,255,255,0.6)" }} />
+              <Lock className="w-5 h-5 mt-0.5 shrink-0 text-muted-foreground" />
               <div>
                 <h4 className="font-bold text-sm mb-1">
-                  <span className="text-white">Verilerinizi </span>
-                  <span className="text-accent">Güvence Altına Alın</span>
+                  <span className="text-foreground">Verilerinizi </span>
+                  <span className="text-primary">Güvence Altına Alın</span>
                 </h4>
-                <p className="text-xs max-w-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <p className="text-xs max-w-lg leading-relaxed text-muted-foreground">
                   Bulut tabanlı altyapımız ile tüm üretim verileriniz{" "}
-                  <span className="text-primary-foreground font-medium">uçtan uca şifrelenir</span>.
+                  <span className="text-foreground font-medium">uçtan uca şifrelenir</span>.
                   256-bit SSL koruması ve günlük yedekleme.
                 </p>
               </div>
