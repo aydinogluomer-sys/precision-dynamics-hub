@@ -1,0 +1,134 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { TextReveal } from "./ScrollReveal";
+
+const modules = ["Teklif", "Üretim", "Finans", "TPM", "Envanter", "Planlama"];
+
+const stats = [
+  { val: "14", label: "Modül" },
+  { val: "AI", label: "Asistan" },
+  { val: "∞", label: "Entegrasyon" },
+];
+
+const NexusPromoSection = () => {
+  return (
+    <section className="relative overflow-hidden py-16 md:py-24" style={{ backgroundColor: "hsl(var(--industrial-dark))" }}>
+      {/* Grid pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, hsl(var(--primary) / 0.04) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary) / 0.04) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 60%)",
+        }}
+      />
+
+      <div className="container-industrial relative z-10 max-w-4xl mx-auto px-6">
+        <TextReveal>
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span
+                className="text-[10px] tracking-[0.3em] uppercase text-emerald-400"
+                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                NEXUS — Aktif
+              </span>
+            </div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3">
+              Endüstriyel Yönetim Paneli
+            </h2>
+            <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto leading-relaxed">
+              Teklif yönetimi, üretim takibi, finansal analitik, TPM & bakım, envanter kontrolü ve AI destekli asistan — tek ekrandan.
+            </p>
+          </div>
+        </TextReveal>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Link
+            to="/admin/login"
+            className="group block relative overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-500 p-6 sm:p-8"
+            style={{ background: "hsl(var(--primary) / 0.04)" }}
+          >
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-6 h-6">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/40" />
+              <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/40" />
+            </div>
+            <div className="absolute bottom-0 right-0 w-6 h-6">
+              <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/40" />
+              <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/40" />
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {stats.map((s) => (
+                <div
+                  key={s.label}
+                  className="text-center py-3 border border-primary/10"
+                  style={{ background: "hsl(var(--primary) / 0.06)" }}
+                >
+                  <div
+                    className="text-xl font-bold text-primary"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    {s.val}
+                  </div>
+                  <div className="text-[10px] text-white/40 uppercase tracking-wider">{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Module tags */}
+            <div className="flex flex-wrap gap-2 mb-6 justify-center">
+              {modules.map((t) => (
+                <span
+                  key={t}
+                  className="text-[10px] px-3 py-1 border border-white/10 text-white/40"
+                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div className="flex items-center justify-center">
+              <span
+                className="text-sm text-primary font-semibold group-hover:tracking-wider transition-all duration-300"
+                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                Panele Giriş →
+              </span>
+            </div>
+          </Link>
+        </motion.div>
+      </div>
+
+      {/* Corner decorations */}
+      <div className="absolute top-8 left-8 w-12 h-12 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20" />
+        <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/20" />
+      </div>
+      <div className="absolute bottom-8 right-8 w-12 h-12 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/20" />
+        <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/20" />
+      </div>
+    </section>
+  );
+};
+
+export default NexusPromoSection;

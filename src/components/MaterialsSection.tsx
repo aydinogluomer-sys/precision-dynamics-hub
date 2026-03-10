@@ -96,7 +96,7 @@ const MaterialsSection = () => {
 
   if (isMobile) {
     return (
-      <section id="malzemeler" className="py-16 px-4" style={{ backgroundColor: "#020617" }}>
+      <section id="malzemeler" className="py-16 px-4" style={{ backgroundColor: "#0F172A" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block" style={{ color: "hsl(var(--primary))" }}>Malzeme</span>
