@@ -1,156 +1,20 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList, X, CreditCard, Truck, Mail, Download } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge, Power, Zap, ShieldCheck, AlertTriangle, Package, FileText, Users, Wrench, DollarSign, Radio, MessageSquare, CheckCircle2, Clock, ArrowUpRight, Activity, Plus, Headphones, ClipboardList } from "lucide-react";
 import QuickActionModals, { type ModalType } from "./QuickActionModals";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar, RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Area, AreaChart,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, ComposedChart, Area,
 } from "recharts";
 
-/* ── Colors ── */
-const C = {
-  primary: "#0688AD",
-  cyan: "#0AA2CD",
-  orange: "#F97316",
-  amber: "#FBBF24",
-  emerald: "#34D399",
-  red: "#EF4444",
-  purple: "#A855F7",
-  pink: "#EC4899",
-  slate: "#64748B",
-  indigo: "#6366F1",
-  teal: "#14B8A6",
-  lime: "#84CC16",
-};
-
-/* ── Theme-aware chart palette ── */
-const useChartTheme = () => {
-  const [isDark, setIsDark] = useState(document.documentElement.classList.contains("dark"));
-  useEffect(() => {
-    const observer = new MutationObserver(() => setIsDark(document.documentElement.classList.contains("dark")));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
-  return {
-    grid: isDark ? "#334155" : "#CBD5E1",
-    gridOpacity: isDark ? 0.2 : 0.5,
-    tick: isDark ? "#94A3B8" : "#475569",
-    tooltipBg: isDark ? "#0F172A" : "#FFFFFF",
-    emerald: isDark ? "#34D399" : "#059669",
-    red: isDark ? "#EF4444" : "#DC2626",
-    orange: isDark ? "#F97316" : "#EA580C",
-    slate: isDark ? "#64748B" : "#94A3B8",
-  };
-};
-
-const RADIAN = Math.PI / 180;
-
-/* ── Static OEE data ── */
-const oeeHistory = [
-  { month: "Eyl", oee: 76, availability: 85, performance: 90, quality: 97 },
-  { month: "Eki", oee: 78, availability: 87, performance: 91, quality: 97 },
-  { month: "Kas", oee: 80, availability: 88, performance: 92, quality: 98 },
-  { month: "Ara", oee: 79, availability: 86, performance: 93, quality: 97 },
-  { month: "Oca", oee: 82, availability: 90, performance: 93, quality: 98 },
-  { month: "Şub", oee: 84, availability: 91, performance: 95, quality: 98 },
-];
-
-const oeeMetrics = [
-  { label: "Genel OEE", value: "84.2%", icon: Gauge, color: "text-[#0AA2CD]", bg: "bg-[#0AA2CD]/10", trend: "+2.1%", up: true, bars: [60, 70, 65, 80, 75, 85, 78, 84, 82, 84] },
-  { label: "Kullanılabilirlik", value: "91.5%", icon: Power, color: "text-[#F97316]", bg: "bg-[#F97316]/10", trend: "+0.8%", up: true, bars: [85, 88, 90, 87, 91, 89, 92, 90, 91, 92] },
-  { label: "Performans", value: "94.8%", icon: Zap, color: "text-amber-400", bg: "bg-amber-400/10", trend: "+1.2%", up: true, bars: [90, 92, 91, 93, 94, 92, 95, 93, 94, 95] },
-  { label: "Kalite Oranı", value: "98.1%", icon: ShieldCheck, color: "text-emerald-400", bg: "bg-emerald-400/10", trend: "-0.2%", up: false, bars: [97, 98, 99, 98, 97, 98, 99, 98, 98, 98] },
-];
-
-/* ── Custom Tooltip ── */
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="dark:bg-[#0F172A]/95 bg-white/95 backdrop-blur-xl border dark:border-[#334155] border-slate-200 rounded-xl p-3 shadow-2xl">
-      <p className="text-[10px] font-black dark:text-slate-400 text-slate-500 mb-1.5 uppercase tracking-wider">{label}</p>
-      {payload.map((p: any, i: number) => (
-        <div key={i} className="flex items-center gap-2 py-0.5">
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-          <span className="text-[11px] dark:text-slate-400 text-slate-500">{p.name}:</span>
-          <span className="text-[11px] font-black dark:text-white text-slate-800 font-mono">
-            {typeof p.value === "number" ? p.value.toLocaleString("tr-TR") : p.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-/* ── Custom Pie Label ── */
-const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  if (percent < 0.05) return null;
-  return (
-    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={800}>
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
-
-/* ── Navigate helper ── */
-const navigateTo = (tab: string) => {
-  window.dispatchEvent(new CustomEvent("nexus-navigate", { detail: tab }));
-};
-
-/* ── Realtime tables ── */
-const REALTIME_TABLES = [
-  "rfqs", "orders", "issues", "financial_documents", "customers",
-  "pipeline_leads", "maintenance_logs", "raw_materials", "tool_inventory", "support_tickets",
-] as const;
-
-type ActivityItem = {
-  id: string;
-  type: "rfq" | "order" | "ticket";
-  title: string;
-  subtitle: string;
-  time: string;
-  color: string;
-  icon: any;
-  tab: string;
-};
-
-type DashData = {
-  rfqByStatus: { name: string; value: number; color: string }[];
-  orderByStatus: { name: string; value: number; color: string }[];
-  financialSummary: { name: string; Gelir: number; Gider: number; Net: number }[];
-  issuesBySeverity: { name: string; value: number; color: string }[];
-  maintByType: { name: string; Adet: number; Maliyet: number }[];
-  pipelineByStage: { name: string; value: number; color: string }[];
-  inventoryRadar: { subject: string; Hammadde: number; Takım: number }[];
-  kpis: { rfqs: number; orders: number; customers: number; openIssues: number; openTickets: number; totalIncome: number; totalExpense: number; overdueOrders: number; paidAmount: number; unpaidAmount: number; overduePayments: number; profitMargin: number; vatCollected: number };
-  topCustomers: { name: string; Bakiye: number }[];
-  monthlyRfqs: { month: string; Talep: number; Onaylanan: number; Oran: number }[];
-  ticketsByPriority: { name: string; value: number; color: string }[];
-  orderCompletion: { name: string; Tamamlanan: number; Hedef: number }[];
-  recentActivity: ActivityItem[];
-  expenseByCategory: { name: string; value: number; color: string }[];
-  paymentStatus: { name: string; value: number; color: string }[];
-  customerFinancials: { name: string; income: number; expense: number; net: number; balance: number; orders: number }[];
-  cashFlowForecast: { month: string; Gelir: number; Gider: number; Net: number; Kümülatif: number; Bütçe: number }[];
-};
-
-/* ── Animation variants ── */
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
-};
+import {
+  C, useChartTheme, oeeHistory, oeeMetrics, CustomTooltip, renderCustomLabel,
+  navigateTo, containerVariants, itemVariants, cardBase, clickableCard,
+  type DashData, type ActivityItem,
+} from "./dashboardConstants";
+import DashboardCustomerModal from "./DashboardCustomerModal";
 
 const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
@@ -225,7 +89,6 @@ const DashboardHome = () => {
     const vatCollected = fins.reduce((s: number, f: any) => s + (Number(f.vat_amount) || 0), 0);
     const profitMargin = totalIncome > 0 ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : 0;
 
-    // Expense by category
     const expCatMap: Record<string, number> = {};
     const catColors: Record<string, string> = { "hammadde": C.orange, "işçilik": C.cyan, "bakım": C.amber, "lojistik": C.purple, "genel gider": C.pink, "Belirsiz": C.slate };
     fins.filter((f: any) => f.doc_type === "gider" || f.doc_type === "masraf").forEach((f: any) => {
@@ -234,7 +97,6 @@ const DashboardHome = () => {
     });
     const expenseByCategory = Object.entries(expCatMap).map(([name, value]) => ({ name, value, color: catColors[name] || C.slate }));
 
-    // Payment status pie
     const paymentStatus = [
       { name: "Ödendi", value: paidAmount, color: C.emerald },
       { name: "Ödenmedi", value: unpaidAmount, color: C.red },
@@ -249,21 +111,16 @@ const DashboardHome = () => {
       .slice(0, 6)
       .map((c: any) => ({ name: c.short_name || c.company || c.name || "?", Bakiye: Number(c.balance) || 0 }));
 
-    // Customer-based financial breakdown
     const custFinMap: Record<string, { income: number; expense: number; orders: number; balance: number }> = {};
-    // Map orders per customer
     orders.forEach((o: any) => {
       const cName = o.customer || "Belirsiz";
       if (!custFinMap[cName]) custFinMap[cName] = { income: 0, expense: 0, orders: 0, balance: 0 };
       custFinMap[cName].orders++;
     });
-    // Map financial docs — use vendor for expenses, title-match or general for income
     fins.forEach((f: any) => {
       const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
       const vendor = f.vendor || "Belirsiz";
-      // Try to match income to a customer from orders
       if (isIncome) {
-        // Match by title containing customer name or use vendor
         let matched = false;
         for (const cName of Object.keys(custFinMap)) {
           if (cName !== "Belirsiz" && (f.title?.includes(cName) || f.notes?.includes(cName))) {
@@ -278,7 +135,6 @@ const DashboardHome = () => {
         }
       }
     });
-    // Merge customer balances
     custs.forEach((c: any) => {
       const cName = c.short_name || c.company || c.name || "?";
       if (custFinMap[cName]) {
@@ -303,10 +159,8 @@ const DashboardHome = () => {
       Oran: v.total > 0 ? Math.round((v.approved / v.total) * 100) : 0,
     }));
 
-    // Tickets by priority
     const ticketsByPriority = group(tickets, "priority", priorityColors);
 
-    // Order completion by month
     const orderByMonth: Record<string, { completed: number; total: number }> = {};
     orders.forEach((o: any) => {
       const m = o.order_date ? new Date(o.order_date).toLocaleString("tr-TR", { month: "short" }) : "N/A";
@@ -318,7 +172,6 @@ const DashboardHome = () => {
       name, Tamamlanan: v.completed, Hedef: v.total,
     }));
 
-    // Recent activity feed
     const timeAgo = (d: string) => {
       const diff = Date.now() - new Date(d).getTime();
       const mins = Math.floor(diff / 60000);
@@ -347,7 +200,6 @@ const DashboardHome = () => {
      .slice(0, 12)
      .map((a) => ({ ...a, time: timeAgo(a.time) }));
 
-    // Cash flow forecast — actual months + 3 month projection
     const monthNames = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
     const now = new Date();
     const cfMap: Record<string, { income: number; expense: number }> = {};
@@ -356,8 +208,8 @@ const DashboardHome = () => {
       const d = new Date(f.doc_date);
       const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, "0")}`;
       if (!cfMap[key]) cfMap[key] = { income: 0, expense: 0 };
-      const isIncome = f.doc_type === "fatura" || f.doc_type === "gelir";
-      if (isIncome) cfMap[key].income += Number(f.total_amount) || 0;
+      const isInc = f.doc_type === "fatura" || f.doc_type === "gelir";
+      if (isInc) cfMap[key].income += Number(f.total_amount) || 0;
       else cfMap[key].expense += Number(f.total_amount) || 0;
     });
     const sortedMonths = Object.keys(cfMap).sort();
@@ -365,21 +217,17 @@ const DashboardHome = () => {
     const avgExpense = sortedMonths.length > 0 ? sortedMonths.reduce((s, k) => s + cfMap[k].expense, 0) / sortedMonths.length : 30000;
     let cumulative = 0;
     const cashFlowForecast: DashData["cashFlowForecast"] = [];
-    // Actual months
     sortedMonths.forEach((key) => {
       const [y, m] = key.split("-").map(Number);
       const net = cfMap[key].income - cfMap[key].expense;
       cumulative += net;
       cashFlowForecast.push({
         month: `${monthNames[m]} ${String(y).slice(2)}`,
-        Gelir: Math.round(cfMap[key].income),
-        Gider: Math.round(cfMap[key].expense),
-        Net: Math.round(net),
-        Kümülatif: Math.round(cumulative),
-        Bütçe: Math.round(avgIncome * 0.85), // budget target at 85% of avg income
+        Gelir: Math.round(cfMap[key].income), Gider: Math.round(cfMap[key].expense),
+        Net: Math.round(net), Kümülatif: Math.round(cumulative),
+        Bütçe: Math.round(avgIncome * 0.85),
       });
     });
-    // 3 month forecast
     for (let i = 1; i <= 3; i++) {
       const futureDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
       const projIncome = Math.round(avgIncome * (1 + (Math.random() - 0.4) * 0.2));
@@ -388,10 +236,8 @@ const DashboardHome = () => {
       cumulative += net;
       cashFlowForecast.push({
         month: `${monthNames[futureDate.getMonth()]} ${String(futureDate.getFullYear()).slice(2)}*`,
-        Gelir: projIncome,
-        Gider: projExpense,
-        Net: Math.round(net),
-        Kümülatif: Math.round(cumulative),
+        Gelir: projIncome, Gider: projExpense,
+        Net: Math.round(net), Kümülatif: Math.round(cumulative),
         Bütçe: Math.round(avgIncome * 0.85),
       });
     }
@@ -418,7 +264,6 @@ const DashboardHome = () => {
       supabase.from("tool_inventory").select("*"),
       supabase.from("support_tickets").select("*"),
     ]);
-
     setRawFins(finR.data || []);
     setRawOrders(ordR.data || []);
     const result = buildData(
@@ -448,11 +293,10 @@ const DashboardHome = () => {
     return () => { supabase.removeChannel(channel); };
   }, [fetchAll]);
 
-  // Customer detail modal data — must be before early return to preserve hook order
   const customerDetail = useMemo(() => {
     if (!selectedCustomer) return null;
     const custOrders = rawOrders.filter((o: any) => o.customer === selectedCustomer);
-    const custFins = rawFins.filter((f: any) => 
+    const custFins = rawFins.filter((f: any) =>
       f.vendor === selectedCustomer || f.title?.includes(selectedCustomer) || f.notes?.includes(selectedCustomer)
     );
     const invoices = custFins.filter((f: any) => f.doc_type === "fatura" || f.doc_type === "gelir");
@@ -483,9 +327,6 @@ const DashboardHome = () => {
     { label: "Geciken Sipariş", value: data.kpis.overdueOrders, icon: Clock, color: data.kpis.overdueOrders > 0 ? C.red : C.emerald, bg: data.kpis.overdueOrders > 0 ? "bg-red-500/10" : "bg-emerald-400/10", tab: "orders" },
     { label: "Net Gelir (₺)", value: data.kpis.totalIncome - data.kpis.totalExpense, icon: DollarSign, color: C.primary, bg: "bg-[#0688AD]/10", fmt: true, tab: "financial" },
   ];
-
-  const cardBase = "dark:bg-[#1E293B]/80 bg-white rounded-2xl dark:border-[#1E293B] border-slate-200 border shadow-sm hover:shadow-lg hover:shadow-[#0AA2CD]/5 transition-all duration-300";
-  const clickableCard = (tab: string) => `${cardBase} cursor-pointer group p-5`;
 
   const totalRfq = data.rfqByStatus.reduce((s, r) => s + r.value, 0);
   const grd = { stroke: ct.grid, strokeOpacity: ct.gridOpacity };
@@ -572,7 +413,7 @@ const DashboardHome = () => {
         ))}
       </motion.div>
 
-      {/* ── ROW 1: OEE Trend + RFQ Status (Redesigned as horizontal bars) ── */}
+      {/* ── ROW 1: OEE Trend + RFQ Status ── */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className={`lg:col-span-3 ${clickableCard("tpm")}`} onClick={() => navigateTo("tpm")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">OEE Trend Analizi (6 Ay)</h3>
@@ -600,7 +441,6 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* RFQ Status — Redesigned as progress bars */}
         <div className={`lg:col-span-2 ${clickableCard("rfq")}`} onClick={() => navigateTo("rfq")}>
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">RFQ Durum Dağılımı</h3>
@@ -628,9 +468,8 @@ const DashboardHome = () => {
         </div>
       </motion.div>
 
-      {/* ── ROW 2: Financial KPIs + Gelir/Gider Chart + Payment & Expense Breakdown ── */}
+      {/* ── ROW 2: Financial KPIs + Chart + Payment & Expense ── */}
       <motion.div variants={itemVariants}>
-        {/* Financial mini KPIs */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
           {[
             { label: "Toplam Gelir", val: data.kpis.totalIncome, color: C.emerald, icon: TrendingUp },
@@ -655,7 +494,6 @@ const DashboardHome = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {/* Main chart — 3 col */}
           <div className={`lg:col-span-3 ${clickableCard("financial")}`} onClick={() => navigateTo("financial")}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Aylık Gelir & Gider Analizi</h3>
@@ -703,9 +541,7 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          {/* Payment status + Expense category — 2 col */}
           <div className="lg:col-span-2 grid grid-rows-2 gap-4">
-            {/* Payment Status */}
             <div className={clickableCard("financedocs")} onClick={() => navigateTo("financedocs")}>
               <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-3 group-hover:text-[#0AA2CD] transition-colors">Ödeme Durumu</h3>
               {data.paymentStatus.length > 0 ? (
@@ -744,7 +580,6 @@ const DashboardHome = () => {
               )}
             </div>
 
-            {/* Expense by Category */}
             <div className={clickableCard("financial")} onClick={() => navigateTo("financial")}>
               <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-3 group-hover:text-[#0AA2CD] transition-colors">Gider Dağılımı</h3>
               {data.expenseByCategory.length > 0 ? (
@@ -1006,7 +841,6 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* NEW: Destek Talepleri by Priority */}
         <div className={clickableCard("support")} onClick={() => navigateTo("support")}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] group-hover:text-[#0AA2CD] transition-colors">Destek Talepleri</h3>
@@ -1100,7 +934,6 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* NEW: Sipariş Tamamlanma Oranı */}
         <div className={clickableCard("orders")} onClick={() => navigateTo("orders")}>
           <h3 className="text-[10px] font-black dark:text-slate-500 text-slate-400 uppercase tracking-[0.15em] mb-4 group-hover:text-[#0AA2CD] transition-colors">Sipariş Tamamlanma</h3>
           <div className="h-48">
@@ -1180,223 +1013,13 @@ const DashboardHome = () => {
           </div>
         )}
       </motion.div>
+
       <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
-
-      {/* ── CUSTOMER DETAIL MODAL ── */}
-      <Dialog open={!!selectedCustomer} onOpenChange={(open) => !open && setSelectedCustomer(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto dark:bg-[#0F172A] dark:border-[#334155]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-base">
-              <Users className="w-4 h-4 text-[#0AA2CD]" />
-              {selectedCustomer} — Finansal Detay
-            </DialogTitle>
-          </DialogHeader>
-
-          {/* Action Buttons */}
-          {customerDetail && (
-            <div className="flex items-center gap-2 -mt-1">
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
-                onClick={() => {
-                  // Find customer email from rawFins or use customer name
-                  const custData = customerDetail.allFins.find((f: any) => f.vendor === selectedCustomer);
-                  const email = custData?.notes?.match(/[\w.-]+@[\w.-]+/)?.[0] || "";
-                  const subject = encodeURIComponent(`Finansal Özet — ${selectedCustomer}`);
-                  const body = encodeURIComponent(
-                    `Sayın ${selectedCustomer},\n\nToplam Fatura: ${customerDetail.invoices.length}\nÖdenen: ${customerDetail.payments.length}\nBekleyen: ${customerDetail.unpaid.length}\n\nSipariş Sayısı: ${customerDetail.custOrders.length}\n\nSaygılarımızla,\nMAS Technic`
-                  );
-                  window.open(`mailto:${email}?subject=${subject}&body=${body}`, "_blank");
-                  toast.success("E-posta istemcisi açılıyor...");
-                }}
-              >
-                <Mail className="w-3.5 h-3.5" />
-                E-posta Gönder
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-[11px] h-8 gap-1.5 dark:border-[#334155] dark:hover:bg-white/5"
-                onClick={() => {
-                  const totalInvoiceAmount = customerDetail.invoices.reduce((s: number, inv: any) => s + (Number(inv.total_amount) || 0), 0);
-                  const totalPaidAmount = customerDetail.payments.reduce((s: number, p: any) => s + (Number(p.total_amount) || 0), 0);
-                  const totalUnpaidAmount = customerDetail.unpaid.reduce((s: number, u: any) => s + (Number(u.total_amount) || 0), 0);
-
-                  const invoiceRows = customerDetail.invoices.map((inv: any, idx: number) =>
-                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;color:#64748b">${inv.doc_number || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:600">${inv.title || "Fatura"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${inv.due_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;font-weight:700">₺${(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${inv.payment_status === "ödendi" ? "background:#dcfce7;color:#16a34a" : "background:#fef2f2;color:#dc2626"}">${inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}</span></td></tr>`
-                  ).join("");
-
-                  const orderRows = customerDetail.custOrders.map((ord: any, idx: number) => {
-                    const sColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? "#16a34a" : ord.status === "Üretimde" ? "#0688AD" : ord.status === "İptal" ? "#dc2626" : "#ea580c";
-                    return `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f8fafc"}"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;font-size:11px;font-weight:600">${ord.id}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0">${ord.part_name || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace">${ord.quantity || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;background:${sColor}15;color:${sColor}">${ord.status || "—"}</span></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.order_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">${ord.deadline || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center"><div style="background:#e2e8f0;border-radius:4px;height:6px;width:60px;overflow:hidden"><div style="background:${sColor};height:100%;width:${ord.progress || 0}%"></div></div></td></tr>`;
-                  }).join("");
-
-                  const paymentRows = customerDetail.payments.map((pay: any, idx: number) =>
-                    `<tr style="background:${idx % 2 === 0 ? "#ffffff" : "#f0fdf4"}"><td style="padding:8px 10px;border-bottom:1px solid #dcfce7">✅</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;font-weight:600">${pay.title || pay.doc_number || "Ödeme"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;color:#64748b">${pay.doc_date || "—"}</td><td style="padding:8px 10px;border-bottom:1px solid #dcfce7;text-align:right;font-family:monospace;font-weight:700;color:#16a34a">₺${(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</td></tr>`
-                  ).join("");
-
-                  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${selectedCustomer} — Finansal Rapor</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1e293b;background:#fff}
-  .header{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:white;padding:32px 40px;display:flex;align-items:center;gap:20px}
-  .logo-box{width:56px;height:56px;background:#0AA2CD;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:white;letter-spacing:-1px}
-  .header h1{font-size:20px;font-weight:800;margin-bottom:2px}
-  .header p{font-size:11px;color:#94a3b8}
-  .content{padding:32px 40px}
-  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 28px}
-  .card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
-  .card .num{font-size:22px;font-weight:800;font-family:'Courier New',monospace}
-  .card .lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
-  .card.green .num{color:#16a34a} .card.red .num{color:#dc2626} .card.blue .num{color:#0688AD}
-  h2{font-size:13px;color:#475569;margin:24px 0 10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
-  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
-  th{text-align:left;padding:10px;background:#f1f5f9;font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#64748b;border-bottom:2px solid #e2e8f0}
-  .footer{margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between}
-  @media print{body{padding:0}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>
-<div class="header">
-  <div class="logo-box">MT</div>
-  <div>
-    <h1>${selectedCustomer}</h1>
-    <p>MAS Technic Precision — Finansal Rapor • ${new Date().toLocaleDateString("tr-TR")} • Rapor No: FR-${Date.now().toString(36).toUpperCase()}</p>
-  </div>
-</div>
-<div class="content">
-  <div class="summary">
-    <div class="card"><div class="num">${customerDetail.invoices.length}</div><div class="lbl">Toplam Fatura</div></div>
-    <div class="card green"><div class="num">₺${totalPaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Ödenen Tutar</div></div>
-    <div class="card red"><div class="num">₺${totalUnpaidAmount.toLocaleString("tr-TR")}</div><div class="lbl">Bekleyen Tutar</div></div>
-    <div class="card blue"><div class="num">${customerDetail.custOrders.length}</div><div class="lbl">Sipariş Adedi</div></div>
-  </div>
-  ${customerDetail.invoices.length > 0 ? `<h2>📄 Fatura Listesi</h2><table><thead><tr><th>Belge No</th><th>Başlık</th><th>Tarih</th><th>Vade</th><th style="text-align:right">Tutar</th><th>Durum</th></tr></thead><tbody>${invoiceRows}</tbody><tfoot><tr style="background:#f1f5f9"><td colspan="4" style="padding:10px;font-weight:700;font-size:11px">TOPLAM</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px">₺${totalInvoiceAmount.toLocaleString("tr-TR")}</td><td></td></tr></tfoot></table>` : ""}
-  ${customerDetail.payments.length > 0 ? `<h2>💰 Ödeme Geçmişi</h2><table><thead><tr><th style="width:30px"></th><th>Açıklama</th><th>Tarih</th><th style="text-align:right">Tutar</th></tr></thead><tbody>${paymentRows}</tbody><tfoot><tr style="background:#f0fdf4"><td></td><td colspan="2" style="padding:10px;font-weight:700;font-size:11px;color:#16a34a">TOPLAM ÖDENEN</td><td style="padding:10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px;color:#16a34a">₺${totalPaidAmount.toLocaleString("tr-TR")}</td></tr></tfoot></table>` : ""}
-  ${customerDetail.custOrders.length > 0 ? `<h2>📦 Sipariş Geçmişi</h2><table><thead><tr><th>Sipariş No</th><th>Parça</th><th style="text-align:center">Adet</th><th>Durum</th><th>Sipariş Tarihi</th><th>Termin</th><th style="text-align:center">İlerleme</th></tr></thead><tbody>${orderRows}</tbody></table>` : ""}
-  <div class="footer">
-    <span>MAS Technic Precision Manufacturing • Bu rapor otomatik olarak oluşturulmuştur.</span>
-    <span>${new Date().toLocaleDateString("tr-TR")} ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</span>
-  </div>
-</div></body></html>`;
-
-                  const printWindow = window.open("", "_blank");
-                  if (printWindow) {
-                    printWindow.document.write(html);
-                    printWindow.document.close();
-                    setTimeout(() => printWindow.print(), 300);
-                    toast.success("PDF raporu hazırlanıyor...");
-                  }
-                }}
-              >
-                <Download className="w-3.5 h-3.5" />
-                PDF Export
-              </Button>
-            </div>
-          )}
-
-          {customerDetail && (
-            <div className="space-y-5 mt-2">
-              {/* Summary mini cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[
-                  { label: "Sipariş", value: customerDetail.custOrders.length, icon: Package, color: C.orange },
-                  { label: "Fatura", value: customerDetail.invoices.length, icon: FileText, color: C.cyan },
-                  { label: "Ödenen", value: customerDetail.payments.length, icon: CreditCard, color: C.emerald },
-                  { label: "Bekleyen", value: customerDetail.unpaid.length, icon: Clock, color: C.red },
-                ].map((s) => (
-                  <div key={s.label} className="dark:bg-[#1E293B] bg-slate-50 rounded-xl p-3 border dark:border-[#334155] border-slate-200">
-                    <s.icon className="w-3.5 h-3.5 mb-1" style={{ color: s.color }} />
-                    <p className="text-lg font-black dark:text-white text-slate-800 font-mono">{s.value}</p>
-                    <p className="text-[9px] dark:text-slate-500 text-slate-400 font-semibold uppercase tracking-wider">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Invoices */}
-              <div>
-                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                  <FileText className="w-3 h-3" /> Fatura Listesi
-                </h4>
-                {customerDetail.invoices.length === 0 ? (
-                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Fatura kaydı bulunamadı.</p>
-                ) : (
-                  <div className="space-y-1.5">
-                    {customerDetail.invoices.map((inv: any) => (
-                      <div key={inv.id} className="flex items-center justify-between dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{inv.title || inv.doc_number || "Fatura"}</p>
-                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{inv.doc_date || "—"} • {inv.doc_number || "—"}</p>
-                        </div>
-                        <div className="text-right ml-3">
-                          <p className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(inv.total_amount) || 0).toLocaleString("tr-TR")}</p>
-                          <Badge variant="outline" className={`text-[8px] px-1.5 py-0 ${inv.payment_status === "ödendi" ? "border-emerald-300 text-emerald-500" : "border-red-300 text-red-500"}`}>
-                            {inv.payment_status === "ödendi" ? "Ödendi" : "Bekliyor"}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Payment History */}
-              <div>
-                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                  <CreditCard className="w-3 h-3" /> Ödeme Geçmişi
-                </h4>
-                {customerDetail.payments.length === 0 ? (
-                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Ödeme kaydı bulunamadı.</p>
-                ) : (
-                  <div className="space-y-1.5">
-                    {customerDetail.payments.map((pay: any) => (
-                      <div key={pay.id} className="flex items-center gap-3 dark:bg-emerald-500/5 bg-emerald-50 rounded-lg p-2.5 border dark:border-emerald-500/20 border-emerald-200">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] font-bold dark:text-white text-slate-800 truncate">{pay.title || pay.doc_number || "Ödeme"}</p>
-                          <p className="text-[9px] dark:text-slate-500 text-slate-400">{pay.doc_date || "—"}</p>
-                        </div>
-                        <span className="text-[11px] font-black dark:text-emerald-400 text-emerald-600 font-mono">₺{(Number(pay.total_amount) || 0).toLocaleString("tr-TR")}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Order Timeline */}
-              <div>
-                <h4 className="text-[10px] font-black dark:text-slate-400 text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                  <Truck className="w-3 h-3" /> Sipariş Timeline
-                </h4>
-                {customerDetail.custOrders.length === 0 ? (
-                  <p className="text-[11px] dark:text-slate-500 text-slate-400 italic">Sipariş bulunamadı.</p>
-                ) : (
-                  <div className="relative pl-4 border-l-2 dark:border-[#334155] border-slate-200 space-y-3">
-                    {customerDetail.custOrders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((ord: any) => {
-                      const statusColor = ord.status === "Tamamlandı" || ord.status === "Teslim Edildi" ? C.emerald : ord.status === "Üretimde" ? C.cyan : ord.status === "İptal" ? C.red : C.orange;
-                      return (
-                        <div key={ord.id} className="relative">
-                          <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 dark:border-[#0F172A] border-white" style={{ backgroundColor: statusColor }} />
-                          <div className="dark:bg-[#1E293B] bg-slate-50 rounded-lg p-2.5 border dark:border-[#334155] border-slate-200">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[11px] font-bold dark:text-white text-slate-800">{ord.id}</span>
-                              <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: `${statusColor}20`, color: statusColor }}>{ord.status || "—"}</span>
-                            </div>
-                            <p className="text-[10px] dark:text-slate-400 text-slate-500">{ord.part_name || "—"} • Adet: {ord.quantity || "—"}</p>
-                            <div className="flex items-center gap-3 mt-1 text-[9px] dark:text-slate-500 text-slate-400">
-                              <span>Sipariş: {ord.order_date || "—"}</span>
-                              <span>Termin: {ord.deadline || "—"}</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <DashboardCustomerModal
+        selectedCustomer={selectedCustomer}
+        onClose={() => setSelectedCustomer(null)}
+        customerDetail={customerDetail}
+      />
     </motion.div>
   );
 };
