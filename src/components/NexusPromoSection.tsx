@@ -321,10 +321,10 @@ const NexusPromoSection = () => {
                     <img src={m.img} alt={m.label} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-sm" style={{ color: m.highlight ? m.accent : "white", fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <h4 className="font-bold text-sm" style={{ color: m.highlight ? m.accent : "hsl(var(--foreground))", fontFamily: "'Space Grotesk', sans-serif" }}>
                       {m.label}
                     </h4>
-                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.5)" }}>{m.desc}</p>
+                    <p className="text-xs truncate text-muted-foreground">{m.desc}</p>
                   </div>
                   {m.highlight && (
                     <div className="flex items-center gap-1.5">
