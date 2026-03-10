@@ -213,7 +213,7 @@ const NexusPromoSection = () => {
                   variants={cardVariants}
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
-                  whileHover={{ y: -6, borderColor: "rgba(255,255,255,0.25)" }}
+                  whileHover={{ y: -6, borderColor: "hsl(var(--primary))" }}
                   transition={{ duration: 0.3 }}
                 >
                   {/* Image */}
