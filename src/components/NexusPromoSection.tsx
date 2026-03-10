@@ -381,8 +381,8 @@ const NexusPromoSection = () => {
                 ))}
               </div>
               <div>
-                <div className="text-sm font-bold text-white">+250 Şirket</div>
-                <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.5)" }}>Tarafından güveniliyor</div>
+                <div className="text-sm font-bold text-foreground">+250 Şirket</div>
+                <div className="text-[10px] text-muted-foreground">Tarafından güveniliyor</div>
               </div>
             </div>
           </div>
