@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2, Download, Wallet, Receipt } from "lucide-react";
+import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2, Download, Wallet, Receipt, Zap } from "lucide-react";
 import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
