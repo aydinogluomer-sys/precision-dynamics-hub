@@ -142,12 +142,12 @@ const NexusPromoSection = () => {
 
       {/* Corner decorations */}
       <div className="absolute top-8 left-8 w-12 h-12 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20" />
-        <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/20" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-white/20" />
+        <div className="absolute top-0 left-0 h-full w-[1px] bg-white/20" />
       </div>
       <div className="absolute bottom-8 right-8 w-12 h-12 pointer-events-none">
-        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/20" />
-        <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/20" />
+        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-white/20" />
+        <div className="absolute bottom-0 right-0 h-full w-[1px] bg-white/20" />
       </div>
     </section>
   );
