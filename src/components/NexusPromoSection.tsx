@@ -130,9 +130,9 @@ const NexusPromoSection = () => {
                 <span className="text-[10px] uppercase tracking-[0.15em] font-mono text-muted-foreground">
                   {s.label}
                 </span>
-                <s.icon className="w-5 h-5" style={{ color: "rgba(255,255,255,0.35)" }} />
+                <s.icon className="w-5 h-5 text-muted-foreground" />
               </div>
-              <div className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className="text-xl md:text-2xl font-bold text-foreground" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 {s.val}
               </div>
               {s.sub && (
