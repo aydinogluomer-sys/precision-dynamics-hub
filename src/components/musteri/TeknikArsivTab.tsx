@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, FolderOpen, Upload, FileCode, FileText, Download } from "lucide-react";
+import { Loader2, FolderOpen, Upload, FileCode, FileText, Download, Filter, Search } from "lucide-react";
 import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 import { lazy, Suspense } from "react";
@@ -19,6 +19,8 @@ interface CustomerFile {
   notes: string | null;
   created_at: string;
   signedUrl?: string;
+  source: "upload" | "rfq";
+  rfqId?: string;
 }
 
 const fileIcon = (type: string | null) => {
@@ -34,27 +36,79 @@ const isCadFile = (name: string) => {
   return CAD_EXTS.includes(ext);
 };
 
+type FilterType = "all" | "upload" | "rfq";
+
 const TeknikArsivTab = () => {
   const [files, setFiles] = useState<CustomerFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchFiles = async () => {
-    const { data } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setLoading(false); return; }
+
+    // Fetch customer_files (manual uploads)
+    const { data: customerFiles } = await supabase
       .from("customer_files")
       .select("id, file_name, file_url, file_type, version, notes, created_at")
       .order("created_at", { ascending: false });
 
-    const filesWithUrls = await Promise.all(
-      ((data as CustomerFile[]) || []).map(async (file) => {
+    const uploadedFiles: CustomerFile[] = await Promise.all(
+      ((customerFiles as any[]) || []).map(async (file) => {
         const { data: urlData } = await supabase.storage
           .from("customer-files")
           .createSignedUrl(file.file_url, 3600);
-        return { ...file, signedUrl: urlData?.signedUrl };
+        return { ...file, signedUrl: urlData?.signedUrl, source: "upload" as const };
       })
     );
 
-    setFiles(filesWithUrls);
+    // Fetch RFQ files (from teklif submissions)
+    const { data: rfqs } = await supabase
+      .from("rfqs")
+      .select("id, files, created_at, service")
+      .eq("user_id", user.id)
+      .not("files", "is", null)
+      .order("created_at", { ascending: false });
+
+    const rfqFiles: CustomerFile[] = [];
+    if (rfqs) {
+      for (const rfq of rfqs) {
+        if (!rfq.files || rfq.files.length === 0) continue;
+        for (const filePath of rfq.files) {
+          const fileName = filePath.split("/").pop() || filePath;
+          const ext = fileName.split(".").pop()?.toLowerCase() || "";
+          const fileType = ["step", "stp", "iges", "igs"].includes(ext) ? "cad" :
+                          ["stl", "obj"].includes(ext) ? "cad" :
+                          ["pdf"].includes(ext) ? "pdf" : "other";
+
+          const { data: urlData } = await supabase.storage
+            .from("cad-uploads")
+            .createSignedUrl(filePath, 3600);
+
+          rfqFiles.push({
+            id: `rfq-${rfq.id}-${fileName}`,
+            file_name: fileName,
+            file_url: filePath,
+            file_type: fileType,
+            version: null,
+            notes: rfq.service ? `Teklif: ${rfq.service}` : null,
+            created_at: rfq.created_at,
+            signedUrl: urlData?.signedUrl,
+            source: "rfq",
+            rfqId: rfq.id,
+          });
+        }
+      }
+    }
+
+    // Merge and sort by date
+    const allFiles = [...uploadedFiles, ...rfqFiles].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    setFiles(allFiles);
     setLoading(false);
   };
 
@@ -94,12 +148,26 @@ const TeknikArsivTab = () => {
 
   if (loading) return <CardListSkeleton count={4} />;
 
+  // Apply filters
+  const filteredFiles = files.filter(f => {
+    if (filter === "upload" && f.source !== "upload") return false;
+    if (filter === "rfq" && f.source !== "rfq") return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return f.file_name.toLowerCase().includes(q) || (f.notes || "").toLowerCase().includes(q);
+    }
+    return true;
+  });
+
+  const uploadCount = files.filter(f => f.source === "upload").length;
+  const rfqCount = files.filter(f => f.source === "rfq").length;
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <h3 className="font-semibold text-sm">Teknik Dosyalarım</h3>
         <label>
-          <Input type="file" className="hidden" accept=".step,.stp,.iges,.igs,.pdf,.dxf,.dwg,.png,.jpg" onChange={handleUpload} />
+          <Input type="file" className="hidden" accept=".step,.stp,.iges,.igs,.stl,.obj,.pdf,.dxf,.dwg,.png,.jpg" onChange={handleUpload} />
           <Button size="sm" variant="outline" className="gap-2 text-xs cursor-pointer" asChild disabled={uploading}>
             <span>
               {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -109,15 +177,55 @@ const TeknikArsivTab = () => {
         </label>
       </div>
 
-      {files.length === 0 ? (
+      {/* Filter & Search */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center border border-border rounded overflow-hidden text-xs">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-3 py-1.5 transition-colors ${filter === "all" ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}
+          >
+            Tümü ({files.length})
+          </button>
+          <button
+            onClick={() => setFilter("upload")}
+            className={`px-3 py-1.5 transition-colors border-l border-border ${filter === "upload" ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}
+          >
+            Yüklediğim ({uploadCount})
+          </button>
+          <button
+            onClick={() => setFilter("rfq")}
+            className={`px-3 py-1.5 transition-colors border-l border-border ${filter === "rfq" ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}
+          >
+            Teklif Dosyaları ({rfqCount})
+          </button>
+        </div>
+        <div className="relative flex-1 max-w-xs">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Dosya ara..."
+            className="w-full bg-background border border-border pl-9 pr-3 py-1.5 text-xs focus:outline-none focus:border-primary transition-colors rounded"
+          />
+        </div>
+      </div>
+
+      {filteredFiles.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <FolderOpen size={40} className="mb-3 opacity-30" />
-          <p className="text-sm font-medium">Henüz dosya yüklenmemiş.</p>
-          <p className="text-xs mt-1">Teknik çizimlerinizi ve CAD dosyalarınızı buradan yönetin.</p>
+          <p className="text-sm font-medium">
+            {files.length === 0 ? "Henüz dosya yüklenmemiş." : "Aramanızla eşleşen dosya bulunamadı."}
+          </p>
+          <p className="text-xs mt-1">
+            {files.length === 0
+              ? "Teknik çizimlerinizi ve CAD dosyalarınızı buradan yönetin. Teklif talebi ile gönderilen dosyalar da burada görünür."
+              : "Farklı bir arama terimi deneyin veya filtreyi değiştirin."}
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
-          {files.map((f) => {
+          {filteredFiles.map((f) => {
             const Icon = fileIcon(f.file_type);
             return (
               <div key={f.id} className="border border-border bg-background hover:border-primary/20 transition-colors rounded-lg overflow-hidden">
@@ -125,15 +233,20 @@ const TeknikArsivTab = () => {
                   <Icon size={20} className="text-muted-foreground shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{f.file_name}</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {new Date(f.created_at).toLocaleDateString("tr-TR")}
-                      {f.version && f.version > 1 && ` · v${f.version}`}
-                    </p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>{new Date(f.created_at).toLocaleDateString("tr-TR")}</span>
+                      {f.version && f.version > 1 && <span>· v{f.version}</span>}
+                      {f.notes && <span>· {f.notes}</span>}
+                    </div>
                   </div>
-                  <Badge variant="outline" className="text-[10px] uppercase">{f.file_type || "dosya"}</Badge>
-                  <a href={f.signedUrl || "#"} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" variant="ghost" className="h-8 w-8 p-0" disabled={!f.signedUrl}><Download size={14} /></Button>
-                  </a>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Badge variant="outline" className={`text-[10px] uppercase ${f.source === "rfq" ? "border-primary/30 text-primary" : ""}`}>
+                      {f.source === "rfq" ? "Teklif" : f.file_type || "dosya"}
+                    </Badge>
+                    <a href={f.signedUrl || "#"} target="_blank" rel="noopener noreferrer">
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0" disabled={!f.signedUrl}><Download size={14} /></Button>
+                    </a>
+                  </div>
                 </div>
                 {f.signedUrl && isCadFile(f.file_name) && (
                   <div className="px-3 pb-3">

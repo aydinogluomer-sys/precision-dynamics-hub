@@ -10,6 +10,8 @@ const stats = [
   { val: "∞", label: "Entegrasyon" },
 ];
 
+const descriptionWords = "Teklif yönetimi, üretim takibi, finansal analitik, TPM & bakım, envanter kontrolü ve AI destekli asistan — tek ekrandan.".split(" ");
+
 const NexusPromoSection = () => {
   return (
     <section className="relative overflow-hidden py-16 md:py-24" style={{ backgroundColor: "hsl(var(--industrial-dark))" }}>
@@ -43,11 +45,27 @@ const NexusPromoSection = () => {
                 NEXUS — Aktif
               </span>
             </div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-5">
               Endüstriyel Yönetim Paneli
             </h2>
-            <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto leading-relaxed">
-              Teklif yönetimi, üretim takibi, finansal analitik, TPM & bakım, envanter kontrolü ve AI destekli asistan — tek ekrandan.
+            {/* Word-by-word animated description */}
+            <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed flex flex-wrap justify-center gap-x-1.5 gap-y-0.5">
+              {descriptionWords.map((word, i) => (
+                <motion.span
+                  key={i}
+                  className="text-white/70"
+                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.1 + i * 0.04,
+                    ease: "easeOut",
+                  }}
+                >
+                  {word}
+                </motion.span>
+              ))}
             </p>
           </div>
         </TextReveal>
@@ -94,14 +112,18 @@ const NexusPromoSection = () => {
 
             {/* Module tags */}
             <div className="flex flex-wrap gap-2 mb-6 justify-center">
-              {modules.map((t) => (
-                <span
+              {modules.map((t, i) => (
+                <motion.span
                   key={t}
-                  className="text-[10px] px-3 py-1 border border-white/10 text-white/40"
+                  className="text-[10px] px-3 py-1 border border-white/10 text-white/50"
                   style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: 0.5 + i * 0.06 }}
                 >
                   {t}
-                </span>
+                </motion.span>
               ))}
             </div>
 
