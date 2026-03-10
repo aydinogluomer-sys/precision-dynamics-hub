@@ -79,7 +79,7 @@ const NexusPromoSection = () => {
           <Link
             to="/admin/login"
             className="group block relative overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-500 p-6 sm:p-8"
-            style={{ background: "hsl(var(--primary) / 0.04)" }}
+            style={{ background: "rgba(255,255,255,0.08)" }}
           >
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6">
