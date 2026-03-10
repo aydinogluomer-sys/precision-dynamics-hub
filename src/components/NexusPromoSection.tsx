@@ -127,7 +127,7 @@ const NexusPromoSection = () => {
               transition={{ duration: 0.25 }}
             >
               <div className="flex items-start justify-between mb-3">
-                <span className="text-[10px] uppercase tracking-[0.15em] font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <span className="text-[10px] uppercase tracking-[0.15em] font-mono text-muted-foreground">
                   {s.label}
                 </span>
                 <s.icon className="w-5 h-5" style={{ color: "rgba(255,255,255,0.35)" }} />
