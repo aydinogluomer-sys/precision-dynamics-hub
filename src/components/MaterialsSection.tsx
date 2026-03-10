@@ -96,7 +96,7 @@ const MaterialsSection = () => {
 
   if (isMobile) {
     return (
-      <section id="malzemeler" className="py-16 px-4" style={{ backgroundColor: "#020617" }}>
+      <section id="malzemeler" className="py-16 px-4" style={{ backgroundColor: "#0F172A" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-3 block" style={{ color: "hsl(var(--primary))" }}>Malzeme</span>
@@ -146,7 +146,7 @@ const MaterialsSection = () => {
       <section
         id="malzemeler"
         className="sticky top-0 h-screen overflow-hidden flex flex-col justify-start pt-16 md:pt-20"
-        style={{ backgroundColor: "#020617" }}>
+style={{ backgroundColor: "#0F172A" }}>
         
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 70%, rgba(6, 136, 173, 0.12) 0%, transparent 50%)" }} />
