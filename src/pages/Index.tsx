@@ -22,6 +22,7 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <main>
         <HeroSection />
+        <NexusPromoSection />
         <HowWeWorkSection />
         <CertificationsSection />
         <VideoScrollSection />
