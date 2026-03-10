@@ -417,7 +417,32 @@ const OdemeFaturaTab = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Havale Dialog */}
+      {/* Stripe Dialog */}
+      <Dialog open={showStripeDialog} onOpenChange={setShowStripeDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Stripe ile Ödeme</DialogTitle>
+            <DialogDescription>{paymentInfoText}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div className="flex items-center justify-center">
+              <StripeLogo className="h-10 w-auto" />
+            </div>
+            <div className="bg-muted/50 border border-border p-4 text-center space-y-2">
+              <Zap size={28} className="mx-auto text-[#635BFF]" />
+              <p className="text-sm font-medium">Stripe Entegrasyonu</p>
+              <p className="text-xs text-muted-foreground">
+                Stripe altyapısı ile uluslararası kart ödemesi yakında aktif olacaktır.
+                Şimdilik havale/EFT veya çek ile ödeme yapabilirsiniz.
+              </p>
+            </div>
+            <Button variant="outline" className="w-full" onClick={() => setShowStripeDialog(false)}>
+              Kapat
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showHavaleDialog} onOpenChange={setShowHavaleDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
