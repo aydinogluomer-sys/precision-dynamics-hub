@@ -262,7 +262,7 @@ const NexusPromoSection = () => {
                     >
                       {m.label}
                     </h4>
-                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
                       {m.desc}
                     </p>
                     {m.highlight && (
