@@ -120,7 +120,7 @@ const NexusPromoSection = () => {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              className="relative p-5 border border-border overflow-hidden group cursor-default bg-background"
+              className="relative p-5 border border-border overflow-hidden group cursor-default bg-[#FAFAF9] dark:bg-muted/50"
               whileHover={{ borderColor: "hsl(var(--primary))", y: -2 }}
               transition={{ duration: 0.25 }}
             >
@@ -202,7 +202,7 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group relative overflow-hidden border border-border cursor-pointer bg-background"
+                  className="group relative overflow-hidden border border-border cursor-pointer bg-[#FAFAF9] dark:bg-muted/50"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
@@ -299,7 +299,7 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-background"
+                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-[#FAFAF9] dark:bg-muted/50"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
@@ -338,7 +338,7 @@ const NexusPromoSection = () => {
 
         {/* Bottom Security Bar */}
         <motion.div
-          className="relative p-6 border border-border overflow-hidden bg-background"
+          className="relative p-6 border border-border overflow-hidden bg-[#FAFAF9] dark:bg-muted/50"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
