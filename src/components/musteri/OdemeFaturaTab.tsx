@@ -66,11 +66,12 @@ const OdemeFaturaTab = () => {
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<FinDoc | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"iyzico" | "havale" | "cek" | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"iyzico" | "stripe" | "havale" | "cek" | null>(null);
   const [showMethodDialog, setShowMethodDialog] = useState(false);
   const [showHavaleDialog, setShowHavaleDialog] = useState(false);
   const [showCekDialog, setShowCekDialog] = useState(false);
   const [showIyzicoDialog, setShowIyzicoDialog] = useState(false);
+  const [showStripeDialog, setShowStripeDialog] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
   // Çek form state
