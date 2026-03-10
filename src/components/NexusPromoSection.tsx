@@ -1,27 +1,38 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { TextReveal } from "./ScrollReveal";
+import {
+  LayoutDashboard, FileText, Package, Factory, FolderArchive,
+  ShieldCheck, Receipt, MessageSquare
+} from "lucide-react";
 
-const modules = ["Teklif", "Üretim", "Finans", "TPM", "Envanter", "Planlama"];
+const modules = [
+  { label: "Genel Bakış", icon: LayoutDashboard },
+  { label: "Tekliflerim", icon: FileText },
+  { label: "Siparişlerim", icon: Package },
+  { label: "Üretim Takip", icon: Factory },
+  { label: "Teknik Arşiv", icon: FolderArchive },
+  { label: "Kalite Raporları", icon: ShieldCheck },
+  { label: "Ödeme & Faturalar", icon: Receipt },
+  { label: "Destek (AI)", icon: MessageSquare },
+];
 
 const stats = [
-  { val: "14", label: "Modül" },
+  { val: "8", label: "Modül" },
   { val: "AI", label: "Asistan" },
   { val: "∞", label: "Entegrasyon" },
 ];
 
-const descriptionWords = "Teklif yönetimi, üretim takibi, finansal analitik, TPM & bakım, envanter kontrolü ve AI destekli asistan — tek ekrandan.".split(" ");
+const descriptionWords = "Teklif yönetimi, üretim takibi, kalite kontrol, teknik arşiv, ödeme & fatura ve AI destekli destek — tek ekrandan yönetin.".split(" ");
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative overflow-hidden py-16 md:py-24" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)" }}>
-      {/* Grid pattern */}
+    <section className="relative overflow-hidden py-16 md:py-24 bg-primary">
+      {/* Top gradient transition from hero */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
         style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          background: "linear-gradient(to bottom, hsl(var(--background)), hsl(var(--primary)))",
         }}
       />
 
@@ -29,22 +40,13 @@ const NexusPromoSection = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)",
         }}
       />
 
       <div className="container-industrial relative z-10 max-w-4xl mx-auto px-6">
         <TextReveal>
           <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span
-                className="text-[10px] tracking-[0.3em] uppercase text-emerald-400"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                NEXUS — Aktif
-              </span>
-            </div>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-5">
               Endüstriyel Yönetim Paneli
             </h2>
@@ -53,7 +55,7 @@ const NexusPromoSection = () => {
               {descriptionWords.map((word, i) => (
                 <motion.span
                   key={i}
-                  className="text-white/70"
+                  className="text-white/80"
                   initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
                   whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   viewport={{ once: true }}
@@ -78,8 +80,8 @@ const NexusPromoSection = () => {
         >
           <Link
             to="/admin/login"
-            className="group block relative overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-500 p-6 sm:p-8"
-            style={{ background: "rgba(255,255,255,0.08)" }}
+            className="group block relative overflow-hidden border border-white/15 hover:border-white/30 transition-all duration-500 p-6 sm:p-8"
+            style={{ background: "#0F172A" }}
           >
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6">
@@ -97,7 +99,7 @@ const NexusPromoSection = () => {
                 <div
                   key={s.label}
                   className="text-center py-3 border border-white/15"
-                  style={{ background: "rgba(255,255,255,0.1)" }}
+                  style={{ background: "rgba(255,255,255,0.05)" }}
                 >
                   <div
                     className="text-xl font-bold text-primary"
@@ -110,20 +112,26 @@ const NexusPromoSection = () => {
               ))}
             </div>
 
-            {/* Module tags */}
-            <div className="flex flex-wrap gap-2 mb-6 justify-center">
-              {modules.map((t, i) => (
-                <motion.span
-                  key={t}
-                  className="text-[10px] px-3 py-1 border border-white/20 text-white/70"
-                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            {/* Module tags with icons */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+              {modules.map((m, i) => (
+                <motion.div
+                  key={m.label}
+                  className="flex items-center gap-2 px-3 py-2 border border-white/10 text-white/70 hover:text-white hover:border-white/25 transition-colors"
+                  style={{ background: "rgba(255,255,255,0.03)" }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: 0.5 + i * 0.06 }}
                 >
-                  {t}
-                </motion.span>
+                  <m.icon className="w-3.5 h-3.5 shrink-0 text-primary" />
+                  <span
+                    className="text-[10px] font-medium truncate"
+                    style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    {m.label}
+                  </span>
+                </motion.div>
               ))}
             </div>
 
