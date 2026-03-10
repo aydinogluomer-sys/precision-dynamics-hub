@@ -115,7 +115,7 @@ const NexusPromoSection = () => {
               {modules.map((t, i) => (
                 <motion.span
                   key={t}
-                  className="text-[10px] px-3 py-1 border border-white/10 text-white/50"
+                  className="text-[10px] px-3 py-1 border border-white/20 text-white/70"
                   style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
