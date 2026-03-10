@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2, Download, Wallet, Receipt } from "lucide-react";
+import { Loader2, CreditCard, AlertCircle, Landmark, FileCheck, Copy, CheckCircle2, Download, Wallet, Receipt, Zap } from "lucide-react";
 import { SummarySkeleton, TableSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 
@@ -53,16 +53,25 @@ const IyzicoLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Stripe Logo SVG
+const StripeLogo = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 120 32" className={className} xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="32" rx="4" fill="#635BFF" />
+    <text x="12" y="22" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold" fill="#FFFFFF">stripe</text>
+  </svg>
+);
+
 const OdemeFaturaTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<FinDoc | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"iyzico" | "havale" | "cek" | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"iyzico" | "stripe" | "havale" | "cek" | null>(null);
   const [showMethodDialog, setShowMethodDialog] = useState(false);
   const [showHavaleDialog, setShowHavaleDialog] = useState(false);
   const [showCekDialog, setShowCekDialog] = useState(false);
   const [showIyzicoDialog, setShowIyzicoDialog] = useState(false);
+  const [showStripeDialog, setShowStripeDialog] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
   // Çek form state
@@ -100,6 +109,8 @@ const OdemeFaturaTab = () => {
     setShowMethodDialog(false);
     if (paymentMethod === "iyzico") {
       setShowIyzicoDialog(true);
+    } else if (paymentMethod === "stripe") {
+      setShowStripeDialog(true);
     } else if (paymentMethod === "havale") {
       setShowHavaleDialog(true);
     } else if (paymentMethod === "cek") {
@@ -210,7 +221,7 @@ const OdemeFaturaTab = () => {
       {/* Payment Methods */}
       <div>
         <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider text-muted-foreground">Ödeme Yöntemleri</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             onClick={() => { setSelectedPayment(null); setShowIyzicoDialog(true); }}
             className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
@@ -221,6 +232,17 @@ const OdemeFaturaTab = () => {
               <p className="text-xs text-muted-foreground">İyzico ile güvenli ödeme</p>
             </div>
             <IyzicoLogo className="h-6 w-auto shrink-0" />
+          </button>
+          <button
+            onClick={() => { setSelectedPayment(null); setShowStripeDialog(true); }}
+            className="flex items-center gap-3 border border-border bg-background p-4 hover:border-primary/40 transition-colors text-left"
+          >
+            <Zap size={20} className="text-[#635BFF] shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Stripe</p>
+              <p className="text-xs text-muted-foreground">Uluslararası kart ödemesi</p>
+            </div>
+            <StripeLogo className="h-6 w-auto shrink-0" />
           </button>
           <button
             onClick={() => { setSelectedPayment(null); setShowHavaleDialog(true); }}
@@ -329,13 +351,21 @@ const OdemeFaturaTab = () => {
             <DialogTitle>Ödeme Yöntemi Seçin</DialogTitle>
             <DialogDescription>{paymentInfoText}</DialogDescription>
           </DialogHeader>
-          <RadioGroup value={paymentMethod || ""} onValueChange={(v) => setPaymentMethod(v as "iyzico" | "havale" | "cek")} className="space-y-3 mt-2">
+          <RadioGroup value={paymentMethod || ""} onValueChange={(v) => setPaymentMethod(v as "iyzico" | "stripe" | "havale" | "cek")} className="space-y-3 mt-2">
             <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
               <RadioGroupItem value="iyzico" id="iyzico" />
               <CreditCard size={18} className="text-primary shrink-0" />
               <div>
                 <p className="text-sm font-medium">Kredi / Banka Kartı</p>
                 <p className="text-xs text-muted-foreground">İyzico ile güvenli ödeme</p>
+              </div>
+            </label>
+            <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
+              <RadioGroupItem value="stripe" id="stripe" />
+              <Zap size={18} className="text-[#635BFF] shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Stripe</p>
+                <p className="text-xs text-muted-foreground">Uluslararası kart ödemesi</p>
               </div>
             </label>
             <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
@@ -387,7 +417,32 @@ const OdemeFaturaTab = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Havale Dialog */}
+      {/* Stripe Dialog */}
+      <Dialog open={showStripeDialog} onOpenChange={setShowStripeDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Stripe ile Ödeme</DialogTitle>
+            <DialogDescription>{paymentInfoText}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div className="flex items-center justify-center">
+              <StripeLogo className="h-10 w-auto" />
+            </div>
+            <div className="bg-muted/50 border border-border p-4 text-center space-y-2">
+              <Zap size={28} className="mx-auto text-[#635BFF]" />
+              <p className="text-sm font-medium">Stripe Entegrasyonu</p>
+              <p className="text-xs text-muted-foreground">
+                Stripe altyapısı ile uluslararası kart ödemesi yakında aktif olacaktır.
+                Şimdilik havale/EFT veya çek ile ödeme yapabilirsiniz.
+              </p>
+            </div>
+            <Button variant="outline" className="w-full" onClick={() => setShowStripeDialog(false)}>
+              Kapat
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showHavaleDialog} onOpenChange={setShowHavaleDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
