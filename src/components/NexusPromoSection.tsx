@@ -120,7 +120,7 @@ const NexusPromoSection = () => {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              className="relative p-5 border border-border overflow-hidden group cursor-default bg-background"
+              className="relative p-5 border border-border overflow-hidden group cursor-default bg-[#FAFAF9] dark:bg-muted/50"
               whileHover={{ borderColor: "hsl(var(--primary))", y: -2 }}
               transition={{ duration: 0.25 }}
             >
