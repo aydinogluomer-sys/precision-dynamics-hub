@@ -83,12 +83,12 @@ const NexusPromoSection = () => {
           >
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/40" />
-              <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/40" />
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-white/40" />
+              <div className="absolute top-0 left-0 h-full w-[1px] bg-white/40" />
             </div>
             <div className="absolute bottom-0 right-0 w-6 h-6">
-              <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/40" />
-              <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/40" />
+              <div className="absolute bottom-0 right-0 w-full h-[1px] bg-white/40" />
+              <div className="absolute bottom-0 right-0 h-full w-[1px] bg-white/40" />
             </div>
 
             {/* Stats */}
