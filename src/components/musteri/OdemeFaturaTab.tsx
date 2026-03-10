@@ -53,6 +53,14 @@ const IyzicoLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Stripe Logo SVG
+const StripeLogo = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 120 32" className={className} xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="32" rx="4" fill="#635BFF" />
+    <text x="12" y="22" fontFamily="Arial, sans-serif" fontSize="15" fontWeight="bold" fill="#FFFFFF">stripe</text>
+  </svg>
+);
+
 const OdemeFaturaTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [loading, setLoading] = useState(true);
