@@ -122,31 +122,29 @@ const NexusPromoSection = () => {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              className="relative p-5 border border-white/15 overflow-hidden group cursor-default"
-              style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}
-              whileHover={{ borderColor: "rgba(255,255,255,0.3)", y: -2 }}
+              className="relative p-5 border border-border overflow-hidden group cursor-default bg-background"
+              whileHover={{ borderColor: "hsl(var(--primary))", y: -2 }}
               transition={{ duration: 0.25 }}
             >
               <div className="flex items-start justify-between mb-3">
-                <span className="text-[10px] uppercase tracking-[0.15em] font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <span className="text-[10px] uppercase tracking-[0.15em] font-mono text-muted-foreground">
                   {s.label}
                 </span>
-                <s.icon className="w-5 h-5" style={{ color: "rgba(255,255,255,0.35)" }} />
+                <s.icon className="w-5 h-5 text-muted-foreground" />
               </div>
-              <div className="text-xl md:text-2xl font-bold text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className="text-xl md:text-2xl font-bold text-foreground" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 {s.val}
               </div>
               {s.sub && (
                 <div className="flex items-center gap-2 mt-1.5">
                   {s.online && (
                     <motion.span
-                      className="w-2 h-2 rounded-full"
-                      style={{ background: "hsl(142, 71%, 55%)" }}
+                      className="w-2 h-2 rounded-full bg-green-500"
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     />
                   )}
-                  <span className={`text-xs ${s.online ? "text-green-400" : ""}`} style={!s.online ? { color: "rgba(255,255,255,0.5)" } : {}}>
+                  <span className={`text-xs ${s.online ? "text-green-600" : "text-muted-foreground"}`}>
                     {s.sub}
                   </span>
                 </div>
@@ -206,8 +204,7 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group relative overflow-hidden border border-white/10 cursor-pointer"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
+                  className="group relative overflow-hidden border border-border cursor-pointer bg-background"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
@@ -215,7 +212,7 @@ const NexusPromoSection = () => {
                   variants={cardVariants}
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
-                  whileHover={{ y: -6, borderColor: "rgba(255,255,255,0.25)" }}
+                  whileHover={{ y: -6, borderColor: "hsl(var(--primary))" }}
                   transition={{ duration: 0.3 }}
                 >
                   {/* Image */}
@@ -260,11 +257,11 @@ const NexusPromoSection = () => {
                   <div className="p-4">
                     <h4
                       className="font-bold text-sm mb-1"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: m.highlight ? m.accent : "white" }}
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: m.highlight ? m.accent : "hsl(var(--foreground))" }}
                     >
                       {m.label}
                     </h4>
-                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
                       {m.desc}
                     </p>
                     {m.highlight && (
@@ -304,14 +301,13 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group flex items-center gap-4 p-4 border border-white/10 cursor-pointer"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
+                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-background"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
                   variants={listVariants}
-                  whileHover={{ x: 6, borderColor: "rgba(255,255,255,0.25)", background: "rgba(255,255,255,0.08)" }}
+                  whileHover={{ x: 6, borderColor: "hsl(var(--primary))" }}
                   transition={{ duration: 0.25 }}
                 >
                   <div
@@ -324,10 +320,10 @@ const NexusPromoSection = () => {
                     <img src={m.img} alt={m.label} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-sm" style={{ color: m.highlight ? m.accent : "white", fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <h4 className="font-bold text-sm" style={{ color: m.highlight ? m.accent : "hsl(var(--foreground))", fontFamily: "'Space Grotesk', sans-serif" }}>
                       {m.label}
                     </h4>
-                    <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.5)" }}>{m.desc}</p>
+                    <p className="text-xs truncate text-muted-foreground">{m.desc}</p>
                   </div>
                   {m.highlight && (
                     <div className="flex items-center gap-1.5">
@@ -335,7 +331,7 @@ const NexusPromoSection = () => {
                       <span className="text-[10px] uppercase tracking-wider text-primary font-bold">AKTİF</span>
                     </div>
                   )}
-                  <ChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/70 transition-colors shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
                 </motion.div>
               ))}
             </motion.div>
@@ -344,8 +340,7 @@ const NexusPromoSection = () => {
 
         {/* Bottom Security Bar */}
         <motion.div
-          className="relative p-6 border border-white/10 overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(10px)" }}
+          className="relative p-6 border border-border overflow-hidden bg-background"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -353,15 +348,15 @@ const NexusPromoSection = () => {
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-start gap-3">
-              <Lock className="w-5 h-5 mt-0.5 shrink-0" style={{ color: "rgba(255,255,255,0.6)" }} />
+              <Lock className="w-5 h-5 mt-0.5 shrink-0 text-muted-foreground" />
               <div>
                 <h4 className="font-bold text-sm mb-1">
-                  <span className="text-white">Verilerinizi </span>
-                  <span className="text-accent">Güvence Altına Alın</span>
+                  <span className="text-foreground">Verilerinizi </span>
+                  <span className="text-primary">Güvence Altına Alın</span>
                 </h4>
-                <p className="text-xs max-w-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <p className="text-xs max-w-lg leading-relaxed text-muted-foreground">
                   Bulut tabanlı altyapımız ile tüm üretim verileriniz{" "}
-                  <span className="text-primary-foreground font-medium">uçtan uca şifrelenir</span>.
+                  <span className="text-foreground font-medium">uçtan uca şifrelenir</span>.
                   256-bit SSL koruması ve günlük yedekleme.
                 </p>
               </div>
@@ -385,8 +380,8 @@ const NexusPromoSection = () => {
                 ))}
               </div>
               <div>
-                <div className="text-sm font-bold text-white">+250 Şirket</div>
-                <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.5)" }}>Tarafından güveniliyor</div>
+                <div className="text-sm font-bold text-foreground">+250 Şirket</div>
+                <div className="text-[10px] text-muted-foreground">Tarafından güveniliyor</div>
               </div>
             </div>
           </div>
