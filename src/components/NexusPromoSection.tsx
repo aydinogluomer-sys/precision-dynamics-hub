@@ -258,7 +258,7 @@ const NexusPromoSection = () => {
                   <div className="p-4">
                     <h4
                       className="font-bold text-sm mb-1"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: m.highlight ? m.accent : "white" }}
+                      style={{ fontFamily: "'Space Grotesk', sans-serif", color: m.highlight ? m.accent : "hsl(var(--foreground))" }}
                     >
                       {m.label}
                     </h4>
