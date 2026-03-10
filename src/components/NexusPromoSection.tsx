@@ -55,12 +55,10 @@ const NexusPromoSection = () => {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   return (
-    <section className="relative overflow-hidden py-16 md:py-24 bg-primary">
-      {/* Top gradient transition */}
-      <div
-        className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-10"
-        style={{ background: "linear-gradient(to bottom, hsl(var(--background)), hsl(var(--primary)))" }}
-      />
+    <section
+      className="relative overflow-hidden py-16 md:py-24"
+      style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--primary) / 0.15) 35%, hsl(var(--primary) / 0.25) 65%, hsl(var(--primary)) 100%)" }}
+    >
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         {/* Header */}
