@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   LayoutDashboard, FileText, Package, Factory, FolderArchive,
-  ShieldCheck, DollarSign, CreditCard, MessageSquare, Bell, Settings, LogOut
+  ShieldCheck, Receipt, MessageSquare, Bell, Settings, LogOut
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -12,8 +12,7 @@ const menuItems = [
   { id: "uretim", label: "Üretim Takip", icon: Factory },
   { id: "arsiv", label: "Teknik Arşiv", icon: FolderArchive },
   { id: "kalite", label: "Kalite Raporları", icon: ShieldCheck },
-  { id: "finans", label: "Finans", icon: DollarSign },
-  { id: "odeme", label: "Ödeme", icon: CreditCard },
+  { id: "odeme-fatura", label: "Ödeme & Faturalar", icon: Receipt },
   { id: "destek", label: "Destek", icon: MessageSquare },
   { id: "bildirimler", label: "Bildirim Tercihleri", icon: Bell },
   { id: "profil", label: "Profil Ayarları", icon: Settings },
