@@ -147,7 +147,6 @@ const NexusPromoSection = () => {
                   <span className={`text-xs ${s.online ? "text-green-600" : "text-muted-foreground"}`}>
                     {s.sub}
                   </span>
-                  </span>
                 </div>
               )}
               {i === 0 && (
