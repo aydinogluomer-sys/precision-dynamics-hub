@@ -122,9 +122,8 @@ const NexusPromoSection = () => {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              className="relative p-5 border border-white/15 overflow-hidden group cursor-default"
-              style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}
-              whileHover={{ borderColor: "rgba(255,255,255,0.3)", y: -2 }}
+              className="relative p-5 border border-border overflow-hidden group cursor-default bg-background"
+              whileHover={{ borderColor: "hsl(var(--primary))", y: -2 }}
               transition={{ duration: 0.25 }}
             >
               <div className="flex items-start justify-between mb-3">
