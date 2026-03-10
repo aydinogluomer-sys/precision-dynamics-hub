@@ -302,14 +302,13 @@ const NexusPromoSection = () => {
               {modules.map((m, i) => (
                 <motion.div
                   key={m.label}
-                  className="group flex items-center gap-4 p-4 border border-white/10 cursor-pointer"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
+                  className="group flex items-center gap-4 p-4 border border-border cursor-pointer bg-background"
                   custom={i}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
                   variants={listVariants}
-                  whileHover={{ x: 6, borderColor: "rgba(255,255,255,0.25)", background: "rgba(255,255,255,0.08)" }}
+                  whileHover={{ x: 6, borderColor: "hsl(var(--primary))" }}
                   transition={{ duration: 0.25 }}
                 >
                   <div
