@@ -139,14 +139,14 @@ const NexusPromoSection = () => {
                 <div className="flex items-center gap-2 mt-1.5">
                   {s.online && (
                     <motion.span
-                      className="w-2 h-2 rounded-full"
-                      style={{ background: "hsl(142, 71%, 55%)" }}
+                      className="w-2 h-2 rounded-full bg-green-500"
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     />
                   )}
-                  <span className={`text-xs ${s.online ? "text-green-400" : ""}`} style={!s.online ? { color: "rgba(255,255,255,0.5)" } : {}}>
+                  <span className={`text-xs ${s.online ? "text-green-600" : "text-muted-foreground"}`}>
                     {s.sub}
+                  </span>
                   </span>
                 </div>
               )}
