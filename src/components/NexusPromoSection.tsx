@@ -29,7 +29,7 @@ const NexusPromoSection = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)",
         }}
       />
 
