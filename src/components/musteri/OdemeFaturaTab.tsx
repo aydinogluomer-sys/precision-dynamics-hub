@@ -109,6 +109,8 @@ const OdemeFaturaTab = () => {
     setShowMethodDialog(false);
     if (paymentMethod === "iyzico") {
       setShowIyzicoDialog(true);
+    } else if (paymentMethod === "stripe") {
+      setShowStripeDialog(true);
     } else if (paymentMethod === "havale") {
       setShowHavaleDialog(true);
     } else if (paymentMethod === "cek") {
