@@ -332,7 +332,7 @@ const NexusPromoSection = () => {
                       <span className="text-[10px] uppercase tracking-wider text-primary font-bold">AKTİF</span>
                     </div>
                   )}
-                  <ChevronRight className="w-4 h-4 text-white/30 group-hover:text-white/70 transition-colors shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
                 </motion.div>
               ))}
             </motion.div>
