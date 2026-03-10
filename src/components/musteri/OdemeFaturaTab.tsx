@@ -351,13 +351,21 @@ const OdemeFaturaTab = () => {
             <DialogTitle>Ödeme Yöntemi Seçin</DialogTitle>
             <DialogDescription>{paymentInfoText}</DialogDescription>
           </DialogHeader>
-          <RadioGroup value={paymentMethod || ""} onValueChange={(v) => setPaymentMethod(v as "iyzico" | "havale" | "cek")} className="space-y-3 mt-2">
+          <RadioGroup value={paymentMethod || ""} onValueChange={(v) => setPaymentMethod(v as "iyzico" | "stripe" | "havale" | "cek")} className="space-y-3 mt-2">
             <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
               <RadioGroupItem value="iyzico" id="iyzico" />
               <CreditCard size={18} className="text-primary shrink-0" />
               <div>
                 <p className="text-sm font-medium">Kredi / Banka Kartı</p>
                 <p className="text-xs text-muted-foreground">İyzico ile güvenli ödeme</p>
+              </div>
+            </label>
+            <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
+              <RadioGroupItem value="stripe" id="stripe" />
+              <Zap size={18} className="text-[#635BFF] shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Stripe</p>
+                <p className="text-xs text-muted-foreground">Uluslararası kart ödemesi</p>
               </div>
             </label>
             <label className="flex items-center gap-3 border border-border p-4 cursor-pointer hover:border-primary/40 transition-colors">
