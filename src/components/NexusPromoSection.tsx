@@ -341,8 +341,7 @@ const NexusPromoSection = () => {
 
         {/* Bottom Security Bar */}
         <motion.div
-          className="relative p-6 border border-white/10 overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(10px)" }}
+          className="relative p-6 border border-border overflow-hidden bg-background"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
