@@ -130,7 +130,7 @@ const NexusPromoSection = () => {
             {/* CTA */}
             <div className="flex items-center justify-center">
               <span
-                className="text-sm text-primary font-semibold group-hover:tracking-wider transition-all duration-300"
+                className="text-sm text-white font-semibold group-hover:tracking-wider transition-all duration-300"
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
                 Panele Giriş →
