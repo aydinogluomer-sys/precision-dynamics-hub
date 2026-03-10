@@ -96,8 +96,8 @@ const NexusPromoSection = () => {
               {stats.map((s) => (
                 <div
                   key={s.label}
-                  className="text-center py-3 border border-primary/10"
-                  style={{ background: "hsl(var(--primary) / 0.06)" }}
+                  className="text-center py-3 border border-white/15"
+                  style={{ background: "rgba(255,255,255,0.1)" }}
                 >
                   <div
                     className="text-xl font-bold text-primary"
