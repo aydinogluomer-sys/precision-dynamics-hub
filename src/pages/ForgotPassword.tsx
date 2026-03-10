@@ -87,8 +87,8 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={loading} className="w-full h-12 font-semibold uppercase tracking-wider text-sm text-white">
-                  {loading ? <Loader2 size={16} className="animate-spin" /> : "Sıfırlama Bağlantısı Gönder"}
+                <Button type="submit" disabled={loading} className="w-full h-12 font-semibold tracking-wider text-sm text-white">
+                  {loading ? <Loader2 size={16} className="animate-spin" /> : "Sıfırlama Bağlantısını Gönder"}
                 </Button>
               </form>
             </>

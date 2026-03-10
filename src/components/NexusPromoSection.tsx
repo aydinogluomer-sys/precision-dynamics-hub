@@ -14,13 +14,13 @@ const descriptionWords = "Teklif yönetimi, üretim takibi, finansal analitik, T
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative overflow-hidden py-16 md:py-24" style={{ backgroundColor: "hsl(var(--industrial-dark))" }}>
+    <section className="relative overflow-hidden py-16 md:py-24" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)" }}>
       {/* Grid pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, hsl(var(--primary) / 0.04) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary) / 0.04) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
@@ -29,7 +29,7 @@ const NexusPromoSection = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)",
         }}
       />
 
@@ -79,16 +79,16 @@ const NexusPromoSection = () => {
           <Link
             to="/admin/login"
             className="group block relative overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-500 p-6 sm:p-8"
-            style={{ background: "hsl(var(--primary) / 0.04)" }}
+            style={{ background: "rgba(255,255,255,0.08)" }}
           >
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/40" />
-              <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/40" />
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-white/40" />
+              <div className="absolute top-0 left-0 h-full w-[1px] bg-white/40" />
             </div>
             <div className="absolute bottom-0 right-0 w-6 h-6">
-              <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/40" />
-              <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/40" />
+              <div className="absolute bottom-0 right-0 w-full h-[1px] bg-white/40" />
+              <div className="absolute bottom-0 right-0 h-full w-[1px] bg-white/40" />
             </div>
 
             {/* Stats */}
@@ -96,8 +96,8 @@ const NexusPromoSection = () => {
               {stats.map((s) => (
                 <div
                   key={s.label}
-                  className="text-center py-3 border border-primary/10"
-                  style={{ background: "hsl(var(--primary) / 0.06)" }}
+                  className="text-center py-3 border border-white/15"
+                  style={{ background: "rgba(255,255,255,0.1)" }}
                 >
                   <div
                     className="text-xl font-bold text-primary"
@@ -115,7 +115,7 @@ const NexusPromoSection = () => {
               {modules.map((t, i) => (
                 <motion.span
                   key={t}
-                  className="text-[10px] px-3 py-1 border border-white/10 text-white/50"
+                  className="text-[10px] px-3 py-1 border border-white/20 text-white/70"
                   style={{ fontFamily: "'JetBrains Mono', monospace" }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -130,7 +130,7 @@ const NexusPromoSection = () => {
             {/* CTA */}
             <div className="flex items-center justify-center">
               <span
-                className="text-sm text-primary font-semibold group-hover:tracking-wider transition-all duration-300"
+                className="text-sm text-white font-semibold group-hover:tracking-wider transition-all duration-300"
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
                 Panele Giriş →
@@ -142,12 +142,12 @@ const NexusPromoSection = () => {
 
       {/* Corner decorations */}
       <div className="absolute top-8 left-8 w-12 h-12 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20" />
-        <div className="absolute top-0 left-0 h-full w-[1px] bg-primary/20" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-white/20" />
+        <div className="absolute top-0 left-0 h-full w-[1px] bg-white/20" />
       </div>
       <div className="absolute bottom-8 right-8 w-12 h-12 pointer-events-none">
-        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-primary/20" />
-        <div className="absolute bottom-0 right-0 h-full w-[1px] bg-primary/20" />
+        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-white/20" />
+        <div className="absolute bottom-0 right-0 h-full w-[1px] bg-white/20" />
       </div>
     </section>
   );
