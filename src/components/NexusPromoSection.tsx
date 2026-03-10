@@ -20,7 +20,7 @@ const NexusPromoSection = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, hsl(var(--primary) / 0.04) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary) / 0.04) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
