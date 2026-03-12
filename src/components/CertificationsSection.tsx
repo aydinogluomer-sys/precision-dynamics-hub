@@ -1,82 +1,37 @@
-import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 const certifications = [
-  { name: "ISO 9001:2015", description: "Kalite Yönetim Sistemi" },
-  { name: "AS9100D", description: "Havacılık Kalite Standardı" },
-  { name: "ISO 14001", description: "Çevre Yönetim Sistemi" },
-  { name: "IATF 16949", description: "Otomotiv Kalite Standardı" },
-  { name: "CE", description: "Avrupa Uygunluk Belgesi" },
+  "ISO 9001:2015",
+  "AS9100D",
+  "IATF 16949",
+  "ISO 13485",
+  "NIST 800-171",
 ];
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: -40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] as const } },
-};
 
 const CertificationsSection = () => {
   return (
-    <section
-      id="sertifikalar"
-      className="py-16 bg-[#f8fafc] dark:bg-[#0a1628] border-t border-border"
-    >
+    <section id="sertifikalar" className="py-10 md:py-14 bg-background border-y border-border">
       <div className="container-industrial">
         <motion.div
-          className="flex flex-col items-center mb-8"
-          initial={{ opacity: 0, y: 16 }}
+          className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <span
-            className="text-xs font-bold uppercase tracking-[0.4em] mb-3 block"
-            style={{ color: "hsl(var(--primary))" }}
-          >
-            Sertifikalar
-          </span>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">
-            Kalite Standartlarımız
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Uluslararası standartlarda sertifikalı üretim
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="flex flex-wrap justify-center gap-4"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {certifications.map((cert) => (
-            <motion.div
-              key={cert.name}
-              variants={itemVariants}
-              className="inline-flex items-center gap-3 px-6 py-4 bg-[#FAFAF9] dark:bg-muted/50 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
-              style={{
-                border: "1px solid hsl(var(--border))",
-                minWidth: "220px",
-              }}
+          {certifications.map((cert, i) => (
+            <motion.span
+              key={cert}
+              className="text-sm md:text-base font-semibold tracking-wide text-foreground/40 hover:text-primary transition-colors duration-300 cursor-default font-mono"
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.08 * i, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
             >
-              <Check className="w-[18px] h-[18px] text-primary flex-shrink-0" strokeWidth={3} />
-              <div>
-                <span className="font-semibold text-sm block font-mono">{cert.name}</span>
-                <span className="text-xs text-muted-foreground">{cert.description}</span>
-              </div>
-            </motion.div>
+              {cert}
+            </motion.span>
           ))}
         </motion.div>
-
-        {/* Bottom border line aligned with last badge */}
-        <div className="flex justify-center mt-8">
-          <div className="w-full max-w-4xl h-px" style={{ background: "hsl(var(--border))" }} />
-        </div>
       </div>
     </section>
   );
