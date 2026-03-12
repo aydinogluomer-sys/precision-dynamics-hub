@@ -1,52 +1,31 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
-import { TextReveal, StaggerContainer, StaggerItem, SlideIn } from "./ScrollReveal";
+import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 
 const services = [
   {
     image: serviceFrze,
-    badge: "KOMPLEKS GEOMETRİ",
-    title: "CNC Freze",
-    description:
-      "3,4 ve 5 eksenli CNC işleme teknolojimizle karmaşık formlarda üstün yüzey kalitesi; enerji ve havacılık standartlarında hatasız imalat ve teknik raporlama.",
-    capabilities: ["5 Eksen İşleme", "Yüzey Kalitesi Ra 0.8"],
+    title: "5 Eksen CNC Frezeleme",
+    description: "Karmaşık geometrilerde üstün yüzey kalitesi; havacılık ve enerji standartlarında hassas imalat.",
+    link: "/hizmetler/cnc-frezeleme",
   },
   {
     image: serviceTorna,
-    badge: "NİTELİKLİ İŞLEME",
-    title: "CNC Torna",
-    description:
-      "İleri teknoloji CNC torna sistemleri ile mikron düzeyinde tolerans sınırlarını yakalayan yüksek nitelikli parça işleme.",
-    capabilities: ["Çift Kafa İşleme", "Otomatik KK Entegrasyonu"],
-  },
-  {
-    image: serviceLazer,
-    badge: "HIZLI PROTOTİPLEME",
-    title: "Lazer Kesim",
-    description:
-      "Optimize edilmiş lazer kesim operasyonları ile endüstriyel tasarımlarınızda boyutsal doğruluk ve hızlı prototipleme desteği.",
-    capabilities: ["Fiber Lazer 6kW", "Otomatik Yükleme"],
-  },
-  {
-    image: serviceKalip,
-    badge: "TASARIM OPTİMİZASYONU",
-    title: "Kalıp & Döküm",
-    description:
-      "Enjeksiyon, basınçlı döküm ve prototip kalıp mühendisliği ile endüstriyel standartlarda yüksek ömürlü ve hassas seri üretim çözümleri.",
-    capabilities: ["Enjeksiyon Kalıp", "Alüminyum Döküm"],
+    title: "CNC Torna İşleme",
+    description: "Mikron düzeyinde tolerans sınırlarını yakalayan yüksek nitelikli silindirik parça işleme.",
+    link: "/hizmetler/cnc-tornalama",
   },
   {
     image: serviceImalat,
-    badge: "UÇTAN UCA ENTEGRASYON",
     title: "Talaşlı İmalat",
-    description:
-      "Talaşlı imalat kabiliyetlerimizi hidrolik ve pnömatik sistem entegrasyonlarıyla birleştirerek tam işlevsel modüller ve üretim hatları geliştiriyoruz.",
-    capabilities: ["Modüler Sistemler", "Elektromekanik Test"],
+    description: "Hidrolik ve pnömatik sistem entegrasyonlarıyla tam işlevsel modüller ve üretim hatları.",
+    link: "/hizmetler/talasli-imalat",
   },
 ];
 
@@ -55,53 +34,44 @@ const ServicesSection = () => {
     <section id="hizmetler" className="section-industrial bg-background">
       <div className="container-industrial">
         {/* Section Header */}
-        <div className="text-center mb-14">
-            <SlideIn direction="left">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="w-8 h-px bg-border" />
-                <span className="text-technical text-muted-foreground uppercase tracking-widest text-sm">
-                  Kabiliyetler
-                </span>
-              </div>
-            </SlideIn>
-            <TextReveal delay={0.1}>
-              <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
-                Mühendislik Hizmetlerimiz
-              </h2>
-            </TextReveal>
-            <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+        <motion.div
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-px bg-primary" />
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
+                Kabiliyetler
+              </span>
+            </div>
+            <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
+              Üretim Hizmetlerimiz
+            </h2>
+            <p className="text-sm text-foreground/60 max-w-lg">
               Tasarımdan seri üretime kadar her adımda mühendislik odaklı çözümler sunuyoruz
             </p>
-        </div>
+          </div>
+          <Link
+            to="/hizmetler/cnc-frezeleme"
+            className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors whitespace-nowrap"
+          >
+            Tüm Hizmetler <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
 
-        {/* Mobile layout: 2-col grid, last item spans 2 */}
-        <StaggerContainer className="grid grid-cols-2 gap-4 mb-12 lg:hidden">
-          {services.map((s, i) => (
-            <StaggerItem key={s.title} className={i === services.length - 1 ? "col-span-2" : ""}>
+        {/* Service Cards - 3 columns */}
+        <StaggerContainer className="grid md:grid-cols-3 gap-6 mb-12">
+          {services.map((s) => (
+            <StaggerItem key={s.title}>
               <ServiceCard service={s} />
             </StaggerItem>
           ))}
         </StaggerContainer>
 
-        {/* Desktop layout: 3+2 */}
-        <div className="hidden lg:block">
-          <StaggerContainer className="grid lg:grid-cols-3 gap-6 mb-6">
-            {services.slice(0, 3).map((s) => (
-              <StaggerItem key={s.title}>
-                <ServiceCard service={s} />
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-          <StaggerContainer className="grid lg:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
-            {services.slice(3).map((s) => (
-              <StaggerItem key={s.title}>
-                <ServiceCard service={s} />
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-
-        {/* Bottom CTA Banner */}
+        {/* Bottom CTA */}
         <motion.div
           className="border border-border bg-card p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
           initial={{ opacity: 0, y: 16 }}
@@ -113,17 +83,17 @@ const ServicesSection = () => {
             <h3 className="heading-industrial text-xl mb-1">
               Üretim hattınızı optimize etmeye hazır mısınız?
             </h3>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-foreground/60 text-sm">
               Kapsamlı teknik danışmanlık için baş mühendislerimizle görüşün.
             </p>
           </div>
           <div className="flex gap-4 shrink-0">
-            <a href="/teklif-al" className="btn-industrial-primary whitespace-nowrap">
+            <Link to="/teklif-al" className="btn-industrial-primary whitespace-nowrap">
               Danışmanlık Al
-            </a>
-            <a href="/iletisim" className="btn-industrial-secondary whitespace-nowrap">
+            </Link>
+            <Link to="/iletisim" className="btn-industrial-secondary whitespace-nowrap">
               Bize Ulaşın
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>
@@ -133,48 +103,35 @@ const ServicesSection = () => {
 
 const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
   <motion.div
-    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-xl h-full"
-    whileHover={{ y: -6, scale: 1.01 }}
+    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 h-full"
+    whileHover={{ y: -4 }}
     transition={{ type: "spring", stiffness: 300 }}
   >
-    {/* Service Image with parallax zoom */}
-    <div className="relative h-48 overflow-hidden">
+    {/* Image */}
+    <div className="relative h-52 overflow-hidden">
       <motion.img
         src={service.image}
         alt={service.title}
         className="w-full h-full object-cover"
         loading="lazy"
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.6 }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
-      <span className="absolute top-4 left-4 text-technical text-[11px] font-semibold text-primary-foreground bg-primary px-3 py-1 uppercase tracking-widest">
-        {service.badge}
-      </span>
+      <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
     </div>
 
-    <div className="p-8">
-      <h3 className="heading-industrial text-xl mb-3">{service.title}</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed mb-6">{service.description}</p>
+    {/* Content */}
+    <div className="p-6">
+      <h3 className="heading-industrial text-lg mb-3">{service.title}</h3>
+      <p className="text-foreground/60 text-sm leading-relaxed mb-6">{service.description}</p>
 
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
-        {service.capabilities.map((cap) => (
-          <span key={cap} className="text-sm text-muted-foreground flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-primary inline-block shrink-0" />
-            {cap}
-          </span>
-        ))}
-      </div>
-
-      <div className="pt-5 border-t border-border">
-        <a
-          href="#teklif"
-          className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1.5 transition-colors"
-        >
-          Teknik Özellikler
-          <ArrowRight className="w-3.5 h-3.5" />
-        </a>
-      </div>
+      <Link
+        to={service.link}
+        className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
+      >
+        Teknik Detaylar
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+      </Link>
     </div>
   </motion.div>
 );

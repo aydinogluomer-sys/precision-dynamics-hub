@@ -1,125 +1,145 @@
-import {
-  Target,
-  RefreshCw,
-  Clock,
-  Wrench,
-  ShieldCheck,
-  FileSearch,
-  Building2,
-  ArrowUpRight,
-} from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { TextReveal } from "./ScrollReveal";
+import cncWorkshop from "@/assets/cnc-workshop.jpg";
+import qualityControl from "@/assets/quality-control.jpg";
 
-const values = [
+const advantages = [
   {
-    icon: Target,
-    title: "Dijital Şeffaflık",
-    subtitle: "100%",
-    description:
-      "Üretim sürecinizi, size özel kontrol paneli üzerinden gerçek zamanlı olarak izleyin ve tüm aşamalara tam şeffaflıkla erişin.",
+    title: "Akıllı Üretim Yönetimi",
+    desc: "IoT sensörleri ile gerçek zamanlı makine izleme ve otomatik proses optimizasyonu.",
   },
   {
-    icon: RefreshCw,
-    title: "RFQ Süreci",
-    subtitle: "4 Adım",
-    description:
-      "CAD Yükleme, teknik özellik belirleme, önizleme ve teklif gönderme adımlarından oluşan 4 aşamalı hızlı RFQ sistemi.",
+    title: "Tasarımdan Üretime Entegrasyon",
+    desc: "DFM analizi ile tasarım doğrulama, maliyet düşürme ve üretim süresini kısaltma.",
   },
   {
-    icon: Clock,
-    title: "Anlık Model İzleme",
-    subtitle: "3D",
-    description:
-      "Projelerinizi sistem üzerinden 3D ortamda görüntüleyin, teknik detayları analiz edin ve üretim öncesi doğrulama yapın.",
+    title: "Hızlı Prototipleme",
+    desc: "48 saat içinde prototip üretim ve iteratif tasarım geliştirme desteği.",
   },
   {
-    icon: Wrench,
-    title: "Bütünsel Yönetim",
-    subtitle: "360°",
-    description:
-      "Teklif aşamasından kalite raporlarına, cari takipten teslimat sürecine kadar tüm operasyonları tek platform üzerinden yönetin.",
+    title: "Sürdürülebilir Üretim",
+    desc: "ISO 14001 uyumlu çevresel yönetim ve malzeme atık minimizasyonu.",
   },
-] as const;
+];
 
-const badges = [
-  { label: "Proses Kontrollü Üretim", icon: ShieldCheck },
-  { label: "Teknik Güvence Protokolü", icon: FileSearch },
-  { label: "DFM Analizi Desteği", icon: Wrench },
-  { label: "Zamanında Teslimat Garantisi", icon: Clock },
-] as const;
+const stats = [
+  { value: "45+", label: "CNC Tezgâh" },
+  { value: "24/7", label: "Kesintisiz Üretim" },
+  { value: "3500+", label: "Tamamlanan Proje" },
+  { value: "15+", label: "Yıl Tecrübe" },
+];
 
 const WhyUsSection = () => {
   return (
-    <section id="neden-biz" className="py-16 px-4 bg-muted/20">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">
-              Avantajlar
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Neden Mas Technic?</h2>
-            <p className="text-sm max-w-lg text-foreground/80">
-              Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç
-              yönetimiyle müşterilerimize sunuyoruz
-            </p>
-          </div>
-          <a
-            href="#teklif"
-            className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1.5 transition-colors whitespace-nowrap"
-          >
-            Kontrol Paneline Git <ArrowUpRight className="w-4 h-4" />
-          </a>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {values.map((value) => (
-            <div
-              key={value.title}
-              className="relative p-6 text-center h-[300px] md:h-[320px] overflow-hidden transition-colors bg-background border border-border hover:border-primary"
-            >
-              <div className="flex flex-col items-center justify-center h-full">
-                <div className="w-10 h-10 mb-3 flex items-center justify-center text-primary">
-                  <value.icon className="w-10 h-10" />
+    <section id="neden-biz" className="relative overflow-hidden" style={{ backgroundColor: "#0F172A" }}>
+      {/* Stats Bar */}
+      <div className="border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                className="text-center py-8 md:py-10"
+                style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1 font-mono">
+                  {stat.value}
                 </div>
-
-                <h4 className="font-bold text-base mb-1 text-foreground">{value.title}</h4>
-                <span className="text-sm font-semibold text-primary font-mono block mb-3">
-                  {value.subtitle}
-                </span>
-
-                <p className="text-xs leading-relaxed text-foreground/80">{value.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 p-4 flex items-center gap-4 bg-background border border-border">
-          <Building2 className="w-8 h-8 text-primary flex-shrink-0" />
-          <div className="flex-1">
-            <h4 className="font-bold text-sm mb-0.5 text-foreground">Hakkımızda</h4>
-            <p className="text-xs text-foreground/80">
-              Hassas üretim, güvenilir süreçler ve mühendislik odaklı yaklaşımımızla en zorlu teknik
-              spesifikasyonlara ve global üretim standartlarına endüstriyel çözümler sunuyoruz.
-            </p>
+                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
-          <Link
-            to="/hakkimizda"
-            className="text-xs font-semibold text-primary hover:underline whitespace-nowrap"
-          >
-            Daha Fazla →
-          </Link>
         </div>
+      </div>
 
-        <div className="flex flex-wrap justify-center items-center gap-6 pt-4 mt-4 border-t border-border">
-          {badges.map((badge) => (
-            <span
-              key={badge.label}
-              className="inline-flex items-center gap-2 text-sm text-foreground/80"
-            >
-              <badge.icon className="w-4 h-4 text-primary flex-shrink-0" />
-              {badge.label}
-            </span>
-          ))}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Left: Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-px bg-primary" />
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
+                Avantajlar
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+              Endüstri Liderlerinin<br />
+              Mas Technic'i<br />
+              Tercih Etme Nedenleri.
+            </h2>
+            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz.
+            </p>
+
+            <div className="space-y-6">
+              {advantages.map((adv, i) => (
+                <motion.div
+                  key={adv.title}
+                  className="flex items-start gap-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 * i }}
+                >
+                  <div className="w-5 h-5 mt-0.5 flex items-center justify-center shrink-0" style={{ background: "rgba(6,136,173,0.15)" }}>
+                    <Check className="w-3 h-3 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
+                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{adv.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: Images */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <div className="relative">
+              <img
+                src={cncWorkshop}
+                alt="CNC Üretim Atölyesi"
+                className="w-full h-[350px] md:h-[450px] object-cover"
+                loading="lazy"
+              />
+              {/* Overlapping smaller image */}
+              <motion.div
+                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 shadow-2xl"
+                style={{ borderColor: "#0F172A" }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+              >
+                <img
+                  src={qualityControl}
+                  alt="Kalite Kontrol"
+                  className="w-full h-32 md:h-40 object-cover"
+                  loading="lazy"
+                />
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
