@@ -59,6 +59,18 @@ export default {
           "accent-dark": "hsl(var(--industrial-accent-dark))",
           "accent-light": "hsl(var(--industrial-accent-light))",
         },
+        section: {
+          teal: "hsl(var(--section-teal))",
+          warm: "hsl(var(--section-warm))",
+          cool: "hsl(var(--section-cool))",
+          dark: "hsl(var(--section-dark))",
+        },
+        "accent-warm": {
+          DEFAULT: "hsl(var(--accent-warm))",
+          foreground: "hsl(var(--accent-warm-foreground))",
+        },
+        "accent-copper": "hsl(var(--accent-copper))",
+        "accent-slate": "hsl(var(--accent-slate))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

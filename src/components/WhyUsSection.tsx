@@ -33,16 +33,15 @@ const stats = [
 
 const WhyUsSection = () => {
   return (
-    <section id="neden-biz" className="relative overflow-hidden" style={{ backgroundColor: "#0F172A" }}>
+    <section id="neden-biz" className="relative overflow-hidden bg-section-teal dark:bg-section-dark">
       {/* Stats Bar */}
-      <div className="border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+      <div className="border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className="text-center py-8 md:py-10"
-                style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
+                className={`text-center py-8 md:py-10 ${i < 3 ? "border-r border-border/30" : ""}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -51,7 +50,7 @@ const WhyUsSection = () => {
                 <div className="text-3xl md:text-4xl font-bold text-primary mb-1 font-mono">
                   {stat.value}
                 </div>
-                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-foreground/40">
                   {stat.label}
                 </div>
               </motion.div>
@@ -76,12 +75,12 @@ const WhyUsSection = () => {
                 Avantajlar
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
               Endüstri Liderlerinin<br />
               Mas Technic'i<br />
               Tercih Etme Nedenleri.
             </h2>
-            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p className="text-sm leading-relaxed mb-10 max-w-md text-foreground/60">
               Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz.
             </p>
 
@@ -95,12 +94,12 @@ const WhyUsSection = () => {
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 * i }}
                 >
-                  <div className="w-5 h-5 mt-0.5 flex items-center justify-center shrink-0" style={{ background: "rgba(6,136,173,0.15)" }}>
+                  <div className="w-5 h-5 mt-0.5 flex items-center justify-center shrink-0 bg-primary/15">
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
-                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{adv.desc}</p>
+                    <h4 className="font-semibold text-sm text-foreground mb-0.5">{adv.title}</h4>
+                    <p className="text-xs leading-relaxed text-foreground/50">{adv.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -124,8 +123,7 @@ const WhyUsSection = () => {
               />
               {/* Overlapping smaller image */}
               <motion.div
-                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 shadow-2xl"
-                style={{ borderColor: "#0F172A" }}
+                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-section-teal dark:border-section-dark shadow-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
