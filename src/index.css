@@ -51,6 +51,18 @@
     --industrial-accent-dark: 193 92% 28%;
     --industrial-accent-light: 193 40% 92%;
 
+    /* Section backgrounds for visual rhythm */
+    --section-teal: 193 30% 95%;
+    --section-warm: 30 25% 96%;
+    --section-cool: 210 20% 96%;
+    --section-dark: 220 20% 14%;
+
+    /* Extra accent colors */
+    --accent-warm: 25 95% 53%;
+    --accent-warm-foreground: 0 0% 100%;
+    --accent-copper: 20 70% 45%;
+    --accent-slate: 215 20% 55%;
+
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 10% 20%;
