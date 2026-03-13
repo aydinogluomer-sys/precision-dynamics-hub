@@ -37,10 +37,9 @@ const FinalCTASection = () => {
     <section
       ref={sectionRef}
       id="iletisim"
-      className="py-20 md:py-28 text-center relative overflow-hidden"
+      className="py-20 md:py-28 text-center relative overflow-hidden bg-primary"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ backgroundColor: "#0F172A" }}
     >
       {/* Diagonal sweep overlay */}
       <motion.div
@@ -52,8 +51,8 @@ const FinalCTASection = () => {
         onAnimationComplete={() => setSweepState("idle")}
         style={{
           background: sweepDirection === "right"
-            ? "linear-gradient(135deg, #1e293b 0%, #0F172A 100%)"
-            : "linear-gradient(135deg, #0F172A 0%, #1e293b 100%)",
+            ? "linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%)"
+            : "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)",
         }}
       />
 
@@ -61,7 +60,8 @@ const FinalCTASection = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(to right, rgba(6,136,173,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,136,173,0.03) 1px, transparent 1px)",
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
@@ -69,7 +69,7 @@ const FinalCTASection = () => {
       <div className="container-industrial relative z-10">
         <div className="max-w-3xl mx-auto">
           <motion.p
-            className="text-xs font-semibold uppercase tracking-[0.3em] text-primary mb-6 font-mono"
+            className="text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground/70 mb-6 font-mono"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -78,7 +78,7 @@ const FinalCTASection = () => {
           </motion.p>
 
           <motion.h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6"
             style={{ lineHeight: 1.15 }}
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             whileInView={{ clipPath: "inset(0 0 0% 0)" }}
@@ -89,8 +89,8 @@ const FinalCTASection = () => {
           </motion.h2>
 
           <motion.p
-            className="text-base md:text-lg mb-10 max-w-xl mx-auto"
-            style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}
+            className="text-base md:text-lg mb-10 max-w-xl mx-auto text-primary-foreground/70"
+            style={{ lineHeight: 1.7 }}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -108,7 +108,7 @@ const FinalCTASection = () => {
           >
             <MagneticButton
               href="/teklif-al"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all bg-primary text-primary-foreground hover:bg-primary/90 border-2 border-primary"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all bg-primary-foreground text-primary hover:bg-primary-foreground/90 border-2 border-primary-foreground"
               strength={0.25}
             >
               Teklif Al
@@ -116,7 +116,7 @@ const FinalCTASection = () => {
             </MagneticButton>
             <MagneticButton
               href="/iletisim"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all bg-transparent text-white hover:bg-white/10 border border-white/20"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all bg-transparent text-primary-foreground hover:bg-primary-foreground/10 border border-primary-foreground/30"
               strength={0.25}
             >
               Bize Ulaşın

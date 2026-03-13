@@ -73,24 +73,15 @@ const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-16 md:py-24"
-      style={{ backgroundColor: "#0F172A" }}
+      className="relative overflow-hidden py-16 md:py-24 bg-section-warm dark:bg-section-dark"
     >
-      {/* Blueprint grid background */}
+      {/* Subtle grid background */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(6, 136, 173, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6, 136, 173, 0.04) 1px, transparent 1px)",
+            "linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* Radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at 50% 30%, rgba(6, 136, 173, 0.12) 0%, transparent 60%)",
         }}
       />
 
@@ -104,25 +95,19 @@ const TestimonialsSection = () => {
             </span>
             <div className="w-8 h-px bg-primary" />
           </div>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
-            style={{ textShadow: "0 0 30px rgba(10, 230, 255, 0.3)" }}
-          >
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Bizi Tercih Edenler
           </h2>
-          <p
-            className="text-sm md:text-base max-w-lg mx-auto leading-relaxed"
-            style={{ color: "rgba(255, 255, 255, 0.5)" }}
-          >
+          <p className="text-sm md:text-base max-w-lg mx-auto leading-relaxed text-foreground/60">
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri.
           </p>
         </TextReveal>
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-3 mb-10 md:mb-14">
-          <div className="flex-1 max-w-[120px] h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <div className="flex-1 max-w-[120px] h-px bg-border/50" />
           <div className="w-1.5 h-1.5 rotate-45 bg-primary opacity-60" />
-          <div className="flex-1 max-w-[120px] h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
+          <div className="flex-1 max-w-[120px] h-px bg-border/50" />
         </div>
 
         {/* Logo Marquee - Row 1 */}
@@ -135,20 +120,10 @@ const TestimonialsSection = () => {
             gap={isMobile ? 48 : 80}
             pauseOnHover
             fadeOut
-            fadeOutColor="#0F172A"
             style={{ height: 50 }}
             renderItem={(item) => (
               <div
-                className="transition-all duration-300 cursor-default"
-                style={{ color: "rgba(255, 255, 255, 0.2)" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "1";
-                  e.currentTarget.style.color = "hsl(var(--primary))";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "1";
-                  e.currentTarget.style.color = "rgba(255, 255, 255, 0.2)";
-                }}
+                className="transition-all duration-300 cursor-default text-foreground/20 hover:text-primary"
               >
                 {item.node}
               </div>
@@ -157,7 +132,7 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Separator line */}
-        <div className="w-full h-px mb-4" style={{ background: "rgba(255,255,255,0.06)" }} />
+        <div className="w-full h-px mb-4 bg-border/30" />
 
         {/* Logo Marquee - Row 2 (reverse) */}
         <div className="mb-14 md:mb-20">
@@ -169,20 +144,10 @@ const TestimonialsSection = () => {
             gap={isMobile ? 48 : 80}
             pauseOnHover
             fadeOut
-            fadeOutColor="#0F172A"
             style={{ height: 50 }}
             renderItem={(item) => (
               <div
-                className="transition-all duration-300 cursor-default"
-                style={{ color: "rgba(255, 255, 255, 0.12)" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "1";
-                  e.currentTarget.style.color = "hsl(var(--primary))";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "1";
-                  e.currentTarget.style.color = "rgba(255, 255, 255, 0.12)";
-                }}
+                className="transition-all duration-300 cursor-default text-foreground/15 hover:text-primary"
               >
                 {item.node}
               </div>
@@ -196,14 +161,14 @@ const TestimonialsSection = () => {
           {!isMobile && (
             <>
               <motion.div
-                className="absolute -top-12 -left-12 text-[8rem] leading-none opacity-10 pointer-events-none select-none"
-                style={{ color: "hsl(var(--primary))", fontWeight: 200, x: bracketLeft }}
+                className="absolute -top-12 -left-12 text-[8rem] leading-none opacity-10 pointer-events-none select-none text-primary"
+                style={{ fontWeight: 200, x: bracketLeft }}
               >
                 [
               </motion.div>
               <motion.div
-                className="absolute -bottom-16 -right-12 text-[8rem] leading-none opacity-10 pointer-events-none select-none"
-                style={{ color: "hsl(var(--primary))", fontWeight: 200, x: bracketRight }}
+                className="absolute -bottom-16 -right-12 text-[8rem] leading-none opacity-10 pointer-events-none select-none text-primary"
+                style={{ fontWeight: 200, x: bracketRight }}
               >
                 ]
               </motion.div>
@@ -214,16 +179,11 @@ const TestimonialsSection = () => {
             {testimonials.map((t, i) => (
               <StaggerItem key={i}>
                 <motion.div
-                  className="relative p-6 md:p-8 transition-all duration-300 h-full group"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                  }}
+                  className="relative p-6 md:p-8 transition-all duration-300 h-full group bg-card/80 dark:bg-card/40 border border-border/50"
                   whileHover={{
                     y: -4,
-                    borderColor: "rgba(6, 136, 173, 0.4)",
-                    boxShadow: "0 12px 40px rgba(0,0,0,0.4), 0 0 20px rgba(6, 136, 173, 0.05)",
-                    background: "rgba(255, 255, 255, 0.05)",
+                    borderColor: "hsl(var(--primary) / 0.4)",
+                    boxShadow: "0 12px 40px hsl(var(--foreground) / 0.08)",
                   }}
                 >
                   {/* Top accent line on hover */}
@@ -233,39 +193,23 @@ const TestimonialsSection = () => {
                   />
 
                   {/* Quote mark */}
-                  <div
-                    className="text-4xl md:text-5xl leading-none mb-3 opacity-20 text-center md:text-left"
-                    style={{ color: "hsl(var(--primary))", fontFamily: "Georgia, serif" }}
-                  >
+                  <div className="text-4xl md:text-5xl leading-none mb-3 opacity-20 text-center md:text-left text-accent-warm">
                     "
                   </div>
 
                   {/* Quote text */}
-                  <p
-                    className="text-xs md:text-sm leading-relaxed mb-6 text-center md:text-left"
-                    style={{ color: "rgba(255, 255, 255, 0.7)" }}
-                  >
+                  <p className="text-xs md:text-sm leading-relaxed mb-6 text-center md:text-left text-foreground/70">
                     {t.quote}
                   </p>
 
                   {/* Author */}
-                  <div
-                    className="flex items-center gap-3 pt-4 flex-col md:flex-row text-center md:text-left"
-                    style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}
-                  >
-                    <div
-                      className="w-10 h-10 flex-shrink-0 flex items-center justify-center text-xs font-bold"
-                      style={{
-                        background: "rgba(6, 136, 173, 0.15)",
-                        border: "1px solid rgba(6, 136, 173, 0.3)",
-                        color: "hsl(var(--primary))",
-                      }}
-                    >
+                  <div className="flex items-center gap-3 pt-4 flex-col md:flex-row text-center md:text-left border-t border-border/50">
+                    <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center text-xs font-bold bg-primary/15 border border-primary/30 text-primary">
                       {t.initials}
                     </div>
                     <div>
-                      <div className="font-semibold text-sm text-white">{t.author}</div>
-                      <div className="text-xs" style={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                      <div className="font-semibold text-sm text-foreground">{t.author}</div>
+                      <div className="text-xs text-foreground/50">
                         {t.title}
                       </div>
                       <div
@@ -293,14 +237,9 @@ const TestimonialsSection = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="text-center py-5 md:py-6 px-4 transition-all duration-300"
-              style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                border: "1px solid rgba(255, 255, 255, 0.06)",
-              }}
+              className="text-center py-5 md:py-6 px-4 transition-all duration-300 bg-card/60 dark:bg-card/30 border border-border/40"
               whileHover={{
-                borderColor: "rgba(6, 136, 173, 0.3)",
-                background: "rgba(255, 255, 255, 0.05)",
+                borderColor: "hsl(var(--primary) / 0.3)",
               }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -313,10 +252,7 @@ const TestimonialsSection = () => {
               >
                 {stat.value}
               </div>
-              <div
-                className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium"
-                style={{ color: "rgba(255, 255, 255, 0.4)" }}
-              >
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium text-foreground/40">
                 {stat.label}
               </div>
             </motion.div>
