@@ -99,7 +99,7 @@ const Footer = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(14, 165, 233, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(14, 165, 233, 0.05) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(9, 145, 151, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(9, 145, 151, 0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
