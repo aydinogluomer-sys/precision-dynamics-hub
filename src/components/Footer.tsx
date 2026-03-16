@@ -121,7 +121,7 @@ const Footer = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-16"
           style={{
-            background: "rgba(15, 23, 42, 0.6)",
+            background: "rgba(13, 28, 67, 0.6)",
             backdropFilter: "blur(10px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
