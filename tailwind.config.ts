@@ -71,6 +71,8 @@ export default {
         },
         "accent-copper": "hsl(var(--accent-copper))",
         "accent-slate": "hsl(var(--accent-slate))",
+        "accent-orange": "hsl(var(--accent-orange))",
+        "accent-yellow": "hsl(var(--accent-yellow))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
