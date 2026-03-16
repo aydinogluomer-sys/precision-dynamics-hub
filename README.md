@@ -71,3 +71,67 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+PRD — [PROJECT NAME]
+
+> Use this to plan before prompting. Paste relevant sections into Knowledge Base or use as reference when prompting.
+
+1. Introduction
+   Product Name: [Name]
+   One-liner: [What it does in one sentence]
+   Target Users: [Primary persona + secondary]
+   Problem: [What pain point does it solve?]
+2. User Flow
+
+```
+Landing Page → Sign Up → Onboarding → Dashboard → Core Action → Settings → Logout
+```
+
+Describe each step:
+Landing: [What user sees, CTA]
+Sign Up: [Email/password? Social? Which providers?]
+Onboarding: [Any setup steps? Profile completion?]
+Dashboard: [What data is shown? What actions available?]
+Core Action: [The main thing users pay for / come to do]
+Settings: [Profile, billing, preferences] 3. Core Features
+Feature 1: [Name]
+Description: [What it does]
+User stories:
+As a [role], I want to [action] so that [benefit].
+Acceptance criteria:
+[ ] [Specific testable condition]
+[ ] [Specific testable condition]
+Feature 2: [Name]
+(same structure)
+Feature 3: [Name]
+(same structure) 4. Data Model
+Users
+Column Type Notes
+id uuid PK
+email text unique, not null
+full_name text
+role enum user, admin
+created_at timestamptz default now()
+[Resource]
+Column Type Notes
+id uuid PK
+user_id uuid FK → users.id, ON DELETE CASCADE
+title text not null
+status enum draft, active, archived
+created_at timestamptz default now()
+updated_at timestamptz trigger
+deleted_at timestamptz nullable, soft delete 5. Roles & Permissions
+Action User Admin
+View own data ✅ ✅
+Edit own data ✅ ✅
+View all data ❌ ✅
+Delete data Own only All
+Manage users ❌ ✅ 6. In Scope (MVP)
+[ ] [Feature]
+[ ] [Feature]
+[ ] [Feature] 7. Out of Scope (Post-MVP)
+[ ] [Feature — why deferred]
+[ ] [Feature — why deferred] 8. Design Notes
+Style: [minimalist / bold / playful]
+Primary color: [hex]
+Inspiration: [reference sites or screenshots]
+Dark mode: [yes / no / later]
