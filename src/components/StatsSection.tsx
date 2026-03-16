@@ -55,7 +55,7 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
       >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
-          style={{ lineHeight: 1 }}
+          style={{ lineHeight: 1, color: "#fdbf68" }}
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
