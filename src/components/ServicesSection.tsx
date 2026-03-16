@@ -31,7 +31,8 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section id="hizmetler" className="section-industrial bg-background">
+    <section id="hizmetler" className="section-industrial" style={{ backgroundColor: "#bce4e5" }}>
+      <style>{`.dark #hizmetler { background-color: hsl(var(--section-teal)) !important; }`}</style>
       <div className="container-industrial">
         {/* Section Header */}
         <motion.div
@@ -88,7 +89,7 @@ const ServicesSection = () => {
             </p>
           </div>
           <div className="flex gap-4 shrink-0">
-            <Link to="/teklif-al" className="whitespace-nowrap px-8 py-4 font-semibold uppercase tracking-wider text-sm border-2 transition-all duration-200 text-white" style={{ backgroundColor: "#f37420", borderColor: "#f37420" }}>
+            <Link to="/teklif-al" className="whitespace-nowrap px-8 py-4 font-semibold uppercase tracking-wider text-sm border-2 transition-all duration-200" style={{ backgroundColor: "#fdbf68", borderColor: "#fdbf68", color: "#0d1c43" }}>
               Danışmanlık Al
             </Link>
             <Link to="/iletisim" className="btn-industrial-secondary whitespace-nowrap">

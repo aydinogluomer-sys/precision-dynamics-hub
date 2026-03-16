@@ -77,7 +77,8 @@ const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-20 md:py-28 bg-section-warm dark:bg-section-dark"
+      className="relative overflow-hidden py-20 md:py-28 dark:bg-section-dark"
+      style={{ backgroundColor: "#f8ed43" }}
     >
       {/* Decorative corner accents */}
       <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 border-primary/10 pointer-events-none" />
@@ -220,7 +221,7 @@ const TestimonialsSection = () => {
                   {/* Star rating */}
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, si) => (
-                      <Star key={si} className="w-3.5 h-3.5 fill-accent-warm text-accent-warm" />
+                      <Star key={si} className="w-3.5 h-3.5" style={{ fill: "#f37420", color: "#f37420" }} />
                     ))}
                   </div>
 

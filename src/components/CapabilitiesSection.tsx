@@ -12,7 +12,8 @@ const equipment = [
 
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 bg-section-warm dark:bg-section-dark border-t border-border">
+    <section id="kabiliyetler" className="py-16 md:py-24 px-4 dark:bg-section-dark border-t border-border" style={{ backgroundColor: "#f8ed43" }}>
+      <style>{`.dark #kabiliyetler { background-color: hsl(var(--section-warm)) !important; }`}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -49,7 +50,7 @@ const CapabilitiesSection = () => {
           transition={{ delay: 0.1 }}
         >
           {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "rgba(180,205,194,0.2)" }}>
+          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "#b4cdc2" }}>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Kategori</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Ekipman</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Boyut</span>
@@ -70,7 +71,7 @@ const CapabilitiesSection = () => {
               <span className="text-sm font-semibold text-foreground">{eq.category}</span>
               <span className="text-sm text-foreground/70">{eq.model}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
-              <span className="text-sm text-primary font-semibold font-mono">{eq.tolerance}</span>
+              <span className="text-sm font-semibold font-mono" style={{ color: "#f37420" }}>{eq.tolerance}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
             </motion.div>
           ))}

@@ -32,7 +32,8 @@ const features = [
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative py-20 md:py-28 bg-background">
+    <section className="relative py-20 md:py-28" style={{ backgroundColor: "#b4cdc2" }}>
+      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--section-cool)) !important; }`}</style>
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
         <TextReveal>
@@ -86,8 +87,8 @@ const NexusPromoSection = () => {
 
             <Link
               to="/musteri-paneli"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground font-semibold text-sm transition-all hover:bg-primary/90"
-              style={{ transform: "skewX(-4deg)" }}
+              className="group inline-flex items-center gap-2 px-7 py-3.5 text-white font-semibold text-sm transition-all hover:brightness-110"
+              style={{ transform: "skewX(-4deg)", backgroundColor: "#f37420" }}
             >
               <span style={{ transform: "skewX(4deg)" }} className="flex items-center gap-2">
                 Paneli Keşfet
@@ -209,7 +210,8 @@ const NexusPromoSection = () => {
 
             {/* Floating badge */}
             <motion.div
-              className="absolute -bottom-4 -right-4 px-4 py-2.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider shadow-lg"
+              className="absolute -bottom-4 -right-4 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider shadow-lg"
+              style={{ backgroundColor: "#f8ed43", color: "#0d1c43" }}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
