@@ -12,7 +12,7 @@ const equipment = [
 
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 bg-background border-t border-border">
+    <section id="kabiliyetler" className="py-16 md:py-24 px-4 bg-section-warm dark:bg-section-dark border-t border-border">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

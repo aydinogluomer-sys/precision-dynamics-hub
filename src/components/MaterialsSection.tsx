@@ -198,7 +198,7 @@ const MaterialsSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section id="malzemeler" className="py-16 md:py-24 bg-section-cool dark:bg-section-dark">
+    <section id="malzemeler" className="py-16 md:py-24 bg-muted dark:bg-section-dark">
       {/* Subtle grid */}
       <div
         className="absolute inset-0 pointer-events-none"
