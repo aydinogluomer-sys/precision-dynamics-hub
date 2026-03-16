@@ -77,7 +77,8 @@ const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-20 md:py-28 bg-section-warm dark:bg-section-dark"
+      className="relative overflow-hidden py-20 md:py-28 dark:bg-section-dark"
+      style={{ backgroundColor: "#f8ed43" }}
     >
       {/* Decorative corner accents */}
       <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 border-primary/10 pointer-events-none" />
