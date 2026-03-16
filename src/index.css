@@ -16,29 +16,29 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 10% 15%;
 
-    /* Primary: #0688AD = hsl(193, 92%, 35%) */
-    --primary: 193 92% 35%;
+    /* Primary: #007190 = hsl(192, 100%, 28%) */
+    --primary: 192 100% 28%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Light industrial gray */
-    --secondary: 210 10% 96%;
+    /* Secondary: Warm beige tones from #c2ae93 */
+    --secondary: 34 25% 95%;
     --secondary-foreground: 220 10% 20%;
 
-    /* Muted: Soft gray for backgrounds */
-    --muted: 210 10% 94%;
+    /* Muted: Soft warm gray */
+    --muted: 34 18% 93%;
     --muted-foreground: 220 8% 46%;
 
-    /* Accent: Darker teal for hover states */
-    --accent: 193 92% 28%;
+    /* Accent: Deeper teal for hover states */
+    --accent: 192 100% 22%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Industrial borders - subtle but defined */
-    --border: 220 10% 88%;
-    --input: 220 10% 88%;
-    --ring: 193 92% 35%;
+    /* Industrial borders */
+    --border: 34 15% 86%;
+    --input: 34 15% 86%;
+    --ring: 192 100% 28%;
 
     /* Zero radius for industrial sharp corners */
     --radius: 0rem;
@@ -46,32 +46,32 @@
     /* Custom industrial colors */
     --industrial-dark: 220 15% 12%;
     --industrial-steel: 210 8% 35%;
-    --industrial-light: 210 10% 97%;
-    --industrial-accent: 193 92% 35%;
-    --industrial-accent-dark: 193 92% 28%;
-    --industrial-accent-light: 193 40% 92%;
+    --industrial-light: 34 20% 97%;
+    --industrial-accent: 192 100% 28%;
+    --industrial-accent-dark: 192 100% 22%;
+    --industrial-accent-light: 181 41% 82%;
 
     /* Section backgrounds for visual rhythm */
-    --section-teal: 193 30% 95%;
-    --section-warm: 220 18% 95%;
-    --section-cool: 210 20% 96%;
+    --section-teal: 181 30% 94%;
+    --section-warm: 36 40% 94%;
+    --section-cool: 34 20% 95%;
     --section-dark: 220 20% 14%;
 
-    /* Extra accent colors */
-    --accent-warm: 25 95% 53%;
-    --accent-warm-foreground: 0 0% 100%;
-    --accent-copper: 20 70% 45%;
-    --accent-slate: 215 20% 55%;
+    /* Extra accent colors — #fdbf68, #c2ae93 */
+    --accent-warm: 36 98% 70%;
+    --accent-warm-foreground: 220 15% 12%;
+    --accent-copper: 34 30% 67%;
+    --accent-slate: 181 30% 55%;
 
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 10% 20%;
-    --sidebar-primary: 193 92% 35%;
+    --sidebar-primary: 192 100% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 10% 94%;
+    --sidebar-accent: 34 18% 93%;
     --sidebar-accent-foreground: 220 10% 20%;
-    --sidebar-border: 220 10% 88%;
-    --sidebar-ring: 193 92% 35%;
+    --sidebar-border: 34 15% 86%;
+    --sidebar-ring: 192 100% 28%;
   }
 }
 
@@ -83,35 +83,35 @@
     --card-foreground: 210 10% 96%;
     --popover: 220 15% 10%;
     --popover-foreground: 210 10% 96%;
-    --primary: 193 92% 45%;
+    --primary: 192 100% 38%;
     --primary-foreground: 220 15% 8%;
-    --secondary: 220 12% 18%;
+    --secondary: 34 20% 18%;
     --secondary-foreground: 210 10% 96%;
-    --muted: 220 12% 18%;
-    --muted-foreground: 210 8% 60%;
-    --accent: 193 92% 50%;
+    --muted: 34 15% 18%;
+    --muted-foreground: 34 10% 60%;
+    --accent: 192 100% 42%;
     --accent-foreground: 220 15% 8%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 12% 20%;
-    --input: 220 12% 20%;
-    --ring: 193 92% 45%;
-    --section-teal: 200 20% 12%;
-    --section-warm: 220 15% 12%;
-    --section-cool: 215 18% 11%;
+    --border: 34 12% 20%;
+    --input: 34 12% 20%;
+    --ring: 192 100% 38%;
+    --section-teal: 181 20% 12%;
+    --section-warm: 36 15% 12%;
+    --section-cool: 34 18% 11%;
     --section-dark: 220 20% 10%;
-    --accent-warm: 25 95% 58%;
-    --accent-warm-foreground: 0 0% 100%;
-    --accent-copper: 20 70% 50%;
-    --accent-slate: 215 15% 65%;
+    --accent-warm: 36 98% 72%;
+    --accent-warm-foreground: 220 15% 8%;
+    --accent-copper: 34 30% 55%;
+    --accent-slate: 181 20% 55%;
     --sidebar-background: 220 15% 10%;
     --sidebar-foreground: 210 10% 96%;
-    --sidebar-primary: 193 92% 45%;
+    --sidebar-primary: 192 100% 38%;
     --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 12% 15%;
+    --sidebar-accent: 34 12% 15%;
     --sidebar-accent-foreground: 210 10% 96%;
-    --sidebar-border: 220 12% 20%;
-    --sidebar-ring: 193 92% 45%;
+    --sidebar-border: 34 12% 20%;
+    --sidebar-ring: 192 100% 38%;
 }
 }
 
