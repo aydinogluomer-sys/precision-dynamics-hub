@@ -49,8 +49,8 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
           border: "1px solid rgba(255, 255, 255, 0.1)",
         }}
         whileHover={{
-          borderColor: "rgba(6, 136, 173, 0.4)",
-          boxShadow: "0 0 30px rgba(6, 136, 173, 0.1)",
+          borderColor: "rgba(9, 145, 151, 0.4)",
+          boxShadow: "0 0 30px rgba(253, 191, 104, 0.1)",
         }}
       >
         <div
