@@ -6,71 +6,72 @@
 
 @layer base {
   :root {
-    /* Industrial Precision Design System - Mas Technic */
+    /* Mas Technic — Multi-tone Palette */
     --background: 0 0% 100%;
-    --foreground: 220 10% 15%;
+    --foreground: 224 71% 16%;
 
-    --card: 0 0% 98%;
-    --card-foreground: 220 10% 15%;
+    --card: 48 40% 98%;
+    --card-foreground: 224 71% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 10% 15%;
+    --popover-foreground: 224 71% 16%;
 
-    /* Primary: #007190 = hsl(192, 100%, 28%) */
+    /* Primary: #007190 deep teal */
     --primary: 192 100% 28%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Warm beige tones from #c2ae93 */
-    --secondary: 34 25% 95%;
-    --secondary-foreground: 220 10% 20%;
+    /* Secondary: #b4cdc2 sage */
+    --secondary: 156 20% 92%;
+    --secondary-foreground: 224 71% 16%;
 
-    /* Muted: Soft warm gray */
-    --muted: 34 18% 93%;
-    --muted-foreground: 220 8% 46%;
+    /* Muted: #f5ecc2 cream base */
+    --muted: 48 60% 94%;
+    --muted-foreground: 224 40% 40%;
 
-    /* Accent: Deeper teal for hover states */
-    --accent: 192 100% 22%;
+    /* Accent: #099197 teal cyan */
+    --accent: 183 88% 31%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Industrial borders */
-    --border: 34 15% 86%;
-    --input: 34 15% 86%;
+    /* Borders from #c2ae93 warm tan */
+    --border: 34 22% 86%;
+    --input: 34 22% 86%;
     --ring: 192 100% 28%;
 
-    /* Zero radius for industrial sharp corners */
     --radius: 0rem;
 
-    /* Custom industrial colors */
-    --industrial-dark: 220 15% 12%;
-    --industrial-steel: 210 8% 35%;
-    --industrial-light: 34 20% 97%;
+    /* Industrial palette */
+    --industrial-dark: 224 71% 16%;
+    --industrial-steel: 224 40% 35%;
+    --industrial-light: 48 60% 97%;
     --industrial-accent: 192 100% 28%;
-    --industrial-accent-dark: 192 100% 22%;
-    --industrial-accent-light: 181 41% 82%;
+    --industrial-accent-dark: 183 88% 31%;
+    --industrial-accent-light: 182 41% 82%;
 
-    /* Section backgrounds for visual rhythm */
-    --section-teal: 181 30% 94%;
-    --section-warm: 36 40% 94%;
-    --section-cool: 34 20% 95%;
-    --section-dark: 220 20% 14%;
+    /* Section backgrounds */
+    --section-teal: 182 35% 93%;
+    --section-warm: 48 50% 93%;
+    --section-cool: 156 18% 93%;
+    --section-dark: 224 71% 14%;
 
-    /* Extra accent colors — #fdbf68, #c2ae93 */
+    /* Accent spectrum */
     --accent-warm: 36 98% 70%;
-    --accent-warm-foreground: 220 15% 12%;
+    --accent-warm-foreground: 224 71% 16%;
     --accent-copper: 34 30% 67%;
-    --accent-slate: 181 30% 55%;
+    --accent-slate: 183 88% 31%;
+    --accent-orange: 24 90% 54%;
+    --accent-yellow: 55 93% 62%;
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 10% 20%;
+    --sidebar-background: 48 30% 98%;
+    --sidebar-foreground: 224 71% 16%;
     --sidebar-primary: 192 100% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 34 18% 93%;
-    --sidebar-accent-foreground: 220 10% 20%;
-    --sidebar-border: 34 15% 86%;
+    --sidebar-accent: 156 18% 93%;
+    --sidebar-accent-foreground: 224 71% 16%;
+    --sidebar-border: 34 22% 86%;
     --sidebar-ring: 192 100% 28%;
   }
 }
