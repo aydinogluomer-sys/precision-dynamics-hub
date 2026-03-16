@@ -47,7 +47,7 @@ const WhyUsSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-1 font-mono">
+                <div className="text-3xl md:text-4xl font-bold mb-1 font-mono" style={{ color: "#fdbf68" }}>
                   {stat.value}
                 </div>
                 <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-foreground/40">

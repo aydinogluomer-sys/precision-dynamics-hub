@@ -190,7 +190,7 @@ const IndustryCard = ({
         </div>
       </div>
 
-      <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "hsl(var(--primary) / 0.06)" }}>
+      <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "rgba(9,145,151,0.08)" }}>
         <span className="text-technical text-xs text-primary font-semibold">{industry.highlight}</span>
       </div>
     </motion.div>);

@@ -49,7 +49,7 @@ const CapabilitiesSection = () => {
           transition={{ delay: 0.1 }}
         >
           {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 px-5 py-3 bg-muted/30 border-b border-border min-w-[640px]">
+          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "rgba(180,205,194,0.2)" }}>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Kategori</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Ekipman</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Boyut</span>
