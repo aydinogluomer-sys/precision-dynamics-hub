@@ -110,7 +110,7 @@ const HeroSection = () => {
       <div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          backgroundImage: "linear-gradient(to right, rgba(6,136,172,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,136,172,0.05) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(to right, rgba(9,145,151,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(9,145,151,0.06) 1px, transparent 1px)",
           backgroundSize: "40px 40px"
         }} />
       
