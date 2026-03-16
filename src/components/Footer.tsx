@@ -93,7 +93,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "#020617" }}>
+    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "#0d1c43" }}>
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
