@@ -210,7 +210,7 @@ const HeroSection = () => {
               }}>
               
               {/* Header bar */}
-              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "rgba(6,136,172,0.15)", background: "rgba(6,136,172,0.03)" }}>
+              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "rgba(9,145,151,0.15)", background: "rgba(9,145,151,0.03)" }}>
                 <span className="text-[10px] uppercase tracking-[0.2em] font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>YÜKLEME ARAYÜZÜ V2.4.0
 
                 </span>
