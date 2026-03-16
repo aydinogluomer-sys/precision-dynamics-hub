@@ -71,7 +71,7 @@ const CapabilitiesSection = () => {
               <span className="text-sm font-semibold text-foreground">{eq.category}</span>
               <span className="text-sm text-foreground/70">{eq.model}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
-              <span className="text-sm text-primary font-semibold font-mono">{eq.tolerance}</span>
+              <span className="text-sm font-semibold font-mono" style={{ color: "#f37420" }}>{eq.tolerance}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
             </motion.div>
           ))}

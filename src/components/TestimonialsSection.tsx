@@ -221,7 +221,7 @@ const TestimonialsSection = () => {
                   {/* Star rating */}
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, si) => (
-                      <Star key={si} className="w-3.5 h-3.5 fill-accent-warm text-accent-warm" />
+                      <Star key={si} className="w-3.5 h-3.5" style={{ fill: "#f37420", color: "#f37420" }} />
                     ))}
                   </div>
 

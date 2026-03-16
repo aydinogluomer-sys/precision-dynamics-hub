@@ -23,7 +23,8 @@ const CertificationsSection = () => {
           {certifications.map((cert, i) => (
             <motion.span
               key={cert}
-              className="text-sm md:text-base font-semibold tracking-wide text-foreground/40 hover:text-primary transition-colors duration-300 cursor-default font-mono"
+              className="text-sm md:text-base font-semibold tracking-wide transition-colors duration-300 cursor-default font-mono"
+              style={{ color: "#007190" }}
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
