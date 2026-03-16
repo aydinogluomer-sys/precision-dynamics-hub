@@ -169,7 +169,7 @@ const HeroSection = () => {
             </TextReveal>
 
             <motion.div variants={fadeUpVariants} className="mb-8">
-              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)", transform: "skewX(-5deg)" }}>
+              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, #f37420 0%, #fdbf68 100%)", transform: "skewX(-5deg)" }}>
                 <span style={{ display: "block", transform: "skewX(5deg)" }}>"Disiplinli Operasyon, Güvenilir Üretim."</span>
               </span>
             </motion.div>
