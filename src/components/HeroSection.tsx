@@ -99,7 +99,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "#020617" }}>
+      style={{ backgroundColor: "#0d1c43" }}>
       
       {/* Parallax Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
