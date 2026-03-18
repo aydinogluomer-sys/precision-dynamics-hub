@@ -119,7 +119,7 @@ const HeroSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to right, rgba(22,32,56,0.92) 0%, rgba(22,32,56,0.7) 50%, rgba(22,32,56,0.85) 100%)",
+          background: "linear-gradient(to right, rgba(13,43,82,0.92) 0%, rgba(13,43,82,0.7) 50%, rgba(13,43,82,0.85) 100%)",
           opacity: overlayOpacity
         }} />
       
