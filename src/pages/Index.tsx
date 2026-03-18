@@ -39,7 +39,7 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <main>
         {/* 1 — Hero (dark) */}
-        <ParallaxSection index={1}>
+        <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection />
         </ParallaxSection>
 
