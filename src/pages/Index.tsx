@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import NexusPromoSection from "@/components/NexusPromoSection";
 import HowWeWorkSection from "@/components/HowWeWorkSection";
 import CertificationsSection from "@/components/CertificationsSection";
-import VideoScrollSection from "@/components/VideoScrollSection";
+
 import ServicesSection from "@/components/ServicesSection";
 import IndustriesSection from "@/components/IndustriesSection";
 import MaterialsSection from "@/components/MaterialsSection";
