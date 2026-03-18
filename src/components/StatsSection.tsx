@@ -49,13 +49,13 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
           border: "1px solid rgba(255, 255, 255, 0.1)",
         }}
         whileHover={{
-          borderColor: "rgba(9, 145, 151, 0.4)",
-          boxShadow: "0 0 30px rgba(253, 191, 104, 0.1)",
+          borderColor: "rgba(181, 147, 146, 0.4)",
+          boxShadow: "0 0 30px rgba(197, 97, 39, 0.15)",
         }}
       >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
-          style={{ lineHeight: 1, color: "#099197" }}
+          style={{ lineHeight: 1, color: "#c56127" }}
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
@@ -84,7 +84,7 @@ const StatsSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(9, 145, 151, 0.15) 0%, rgba(253, 191, 104, 0.05) 40%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(197, 97, 39, 0.15) 0%, rgba(181, 147, 146, 0.05) 40%, transparent 60%)",
           y: bgY,
         }}
       />

@@ -64,6 +64,13 @@
     --accent-orange: 24 90% 54%;
     --accent-yellow: 55 93% 62%;
 
+    /* Sanzo Wada Combo 4 & 5 */
+    --dusty-rose: 1 20% 64%;
+    --burnt-orange: 22 66% 46%;
+    --sage-gray: 155 6% 46%;
+    --warm-amber: 29 87% 65%;
+    --dark-slate: 198 18% 25%;
+
     /* Sidebar */
     --sidebar-background: 48 30% 98%;
     --sidebar-foreground: 224 71% 16%;
@@ -107,6 +114,13 @@
     --accent-slate: 183 70% 40%;
     --accent-orange: 24 90% 58%;
     --accent-yellow: 55 90% 65%;
+
+    /* Sanzo Wada Combo 4 & 5 dark mode */
+    --dusty-rose: 1 18% 55%;
+    --burnt-orange: 22 60% 40%;
+    --sage-gray: 155 6% 35%;
+    --warm-amber: 29 80% 58%;
+    --dark-slate: 198 18% 18%;
     --sidebar-background: 224 55% 10%;
     --sidebar-foreground: 48 40% 96%;
     --sidebar-primary: 192 100% 38%;
