@@ -1,7 +1,8 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
+import { StaggerContainer, StaggerItem } from "./ScrollReveal";
+import SectionHeader from "./SectionHeader";
 
 const stats = [
   { value: 35, suffix: "+", label: "CNC Tezgâh", isDecimal: false },
