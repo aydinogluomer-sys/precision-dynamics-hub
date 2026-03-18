@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import ParallaxSection from "@/components/ParallaxSection";
 import NexusPromoSection from "@/components/NexusPromoSection";
 import HowWeWorkSection from "@/components/HowWeWorkSection";
 import CertificationsSection from "@/components/CertificationsSection";
@@ -16,9 +15,12 @@ import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
-import ScrollStack from "@/components/ScrollStack";
+import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
+/**
+ * Thin shadow separator between consecutive dark sections.
+ */
 const DarkSeparator = () => (
   <div
     className="relative"
@@ -37,37 +39,34 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <main>
         {/* 1 — Hero (dark) */}
-        <ScrollStack index={1} variant="zoom-out-blur">
+        <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection />
-        </ScrollStack>
-
-        {/* 1.5 — Parallax Content Section */}
-        <ParallaxSection />
+        </ParallaxSection>
 
         {/* 2 — NexusPromo (dark) */}
         <DarkSeparator />
-        <ScrollStack index={2}>
+        <ParallaxSection index={2}>
           <NexusPromoSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 3 — HowWeWork (light) */}
-        <ScrollStack index={3} variant="slide-up">
+        <ParallaxSection index={3} variant="slide-up">
           <HowWeWorkSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 4 — Certifications (dark) */}
-        <ScrollStack index={4}>
+        <ParallaxSection index={4}>
           <CertificationsSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 5 — Video (dark) */}
         <DarkSeparator />
-        <ScrollStack index={5} variant="zoom-in">
+        <ParallaxSection index={5} variant="zoom-in">
           <VideoScrollSection />
-        </ScrollStack>
+        </ParallaxSection>
 
-        {/* 5.5 — Aurora transition */}
-        <ScrollStack index={6}>
+        {/* 5.5 — Aurora transition (dark→light bridge) */}
+        <ParallaxSection index={6}>
           <AuroraBackground
             className="min-h-[50vh] w-full"
             style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
@@ -81,52 +80,52 @@ const Index = () => {
               </h2>
             </div>
           </AuroraBackground>
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 6 — Services (light) */}
-        <ScrollStack index={7}>
+        <ParallaxSection index={7}>
           <ServicesSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 7 — Industries (light) */}
-        <ScrollStack index={8}>
+        <ParallaxSection index={8}>
           <IndustriesSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 8 — Materials (light) */}
-        <ScrollStack index={9} variant="slide-up">
+        <ParallaxSection index={9} variant="slide-up">
           <MaterialsSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 9 — WhyUs (dark) */}
-        <ScrollStack index={10}>
+        <ParallaxSection index={10}>
           <WhyUsSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 10 — Capabilities (light) */}
-        <ScrollStack index={11}>
+        <ParallaxSection index={11}>
           <CapabilitiesSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 11 — Stats (dark) */}
-        <ScrollStack index={12} variant="zoom-out-blur">
+        <ParallaxSection index={12} variant="zoom-out-blur">
           <StatsSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 12 — Testimonials (light) */}
-        <ScrollStack index={13}>
+        <ParallaxSection index={13}>
           <TestimonialsSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 13 — FAQ (light) */}
-        <ScrollStack index={14}>
+        <ParallaxSection index={14}>
           <FAQBlogSection />
-        </ScrollStack>
+        </ParallaxSection>
 
         {/* 14 — FinalCTA (dark, last) */}
-        <ScrollStack index={15} isLast>
+        <ParallaxSection index={15} isLast>
           <FinalCTASection />
-        </ScrollStack>
+        </ParallaxSection>
       </main>
       <Footer />
     </div>
