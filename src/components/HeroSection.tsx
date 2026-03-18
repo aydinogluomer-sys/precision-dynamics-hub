@@ -324,7 +324,7 @@ const HeroSection = () => {
                   border: "1px solid rgba(0,113,144,0.1)"
                 }}>
                 
-                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "hsl(var(--sw-sienna))" }}>
+                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "hsl(var(--forge-molten))" }}>
                     {stat.value}
                   </div>
                   <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
