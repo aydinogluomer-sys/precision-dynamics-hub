@@ -319,9 +319,9 @@ const HeroSection = () => {
                 variants={statItem}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(13,28,67,0.4)",
+                  background: "rgba(22,32,56,0.4)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(9,145,151,0.1)"
+                  border: "1px solid rgba(0,113,144,0.1)"
                 }}>
                 
                    <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "#f3a257" }}>
