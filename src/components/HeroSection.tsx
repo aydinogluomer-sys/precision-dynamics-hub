@@ -99,7 +99,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--sw-tyrian))" }}>
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
       
       {/* Parallax Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
