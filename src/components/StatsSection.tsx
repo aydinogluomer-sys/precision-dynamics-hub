@@ -84,7 +84,7 @@ const StatsSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(0,138,161,0.15) 0%, rgba(184,94,0,0.05) 40%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(10,126,140,0.15) 0%, rgba(232,97,10,0.05) 40%, transparent 60%)",
           y: bgY,
         }}
       />
