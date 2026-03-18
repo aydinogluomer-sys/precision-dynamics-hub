@@ -44,7 +44,7 @@ const NexusPromoSection = () => {
                 Dijital Platform
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-foreground max-w-2xl">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white max-w-2xl">
               Nexus Endüstriyel<br />Yönetim Paneli
             </h2>
           </div>
