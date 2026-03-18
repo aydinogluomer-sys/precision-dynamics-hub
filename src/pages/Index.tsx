@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import NexusPromoSection from "@/components/NexusPromoSection";
 import HowWeWorkSection from "@/components/HowWeWorkSection";
 import CertificationsSection from "@/components/CertificationsSection";
-import VideoScrollSection from "@/components/VideoScrollSection";
+
 import ServicesSection from "@/components/ServicesSection";
 import IndustriesSection from "@/components/IndustriesSection";
 import MaterialsSection from "@/components/MaterialsSection";
@@ -69,11 +69,6 @@ const Index = () => {
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* 5 — Video (dark) */}
-        <DarkSeparator />
-        <ParallaxSection index={5} variant="zoom-in">
-          <VideoScrollSection />
-        </ParallaxSection>
 
         {/* 5.5 — Aurora transition (dark→light bridge) */}
         <ParallaxSection index={6}>
