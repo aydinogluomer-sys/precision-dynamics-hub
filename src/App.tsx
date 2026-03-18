@@ -53,40 +53,36 @@ const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} {...pageTransition}>
-        <Suspense fallback={<PageLoader />}>
-          <Routes location={location}>
-            <Route path="/" element={<Index />} />
-            <Route path="/sss" element={<SSS />} />
-            <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
-            <Route path="/kvkk" element={<KVKK />} />
-            <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
-            <Route path="/hakkimizda" element={<Hakkimizda />} />
-            <Route path="/iletisim" element={<Iletisim />} />
-            <Route path="/malzemeler" element={<Malzemeler />} />
-            <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
-            <Route path="/hizmetler/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/kabiliyetler/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/endustriyel/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
-            <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
-            <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
-            <Route path="/giris" element={<Login />} />
-            <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
-            <Route path="/teklif-al" element={<TeklifAl />} />
-            <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </motion.div>
-    </AnimatePresence>
+    <Suspense fallback={<PageLoader />}>
+      <Routes location={location}>
+        <Route path="/" element={<Index />} />
+        <Route path="/sss" element={<SSS />} />
+        <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
+        <Route path="/kvkk" element={<KVKK />} />
+        <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
+        <Route path="/hakkimizda" element={<Hakkimizda />} />
+        <Route path="/iletisim" element={<Iletisim />} />
+        <Route path="/malzemeler" element={<Malzemeler />} />
+        <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogDetail />} />
+        <Route path="/hizmetler/kategori/:slug" element={<CategoryPage />} />
+        <Route path="/kabiliyetler/kategori/:slug" element={<CategoryPage />} />
+        <Route path="/endustriyel/kategori/:slug" element={<CategoryPage />} />
+        <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
+        <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
+        <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
+        <Route path="/giris" element={<Login />} />
+        <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
+        <Route path="/teklif-al" element={<TeklifAl />} />
+        <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
