@@ -4,6 +4,7 @@ import { lazy, Suspense, useState, useCallback, useRef } from "react";
 import { TextReveal } from "./ScrollReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IndustryType } from "./IndustryModels";
+import { BlurImage } from "./BlurImage";
 
 import imgAerospace from "@/assets/industry-aerospace.jpg";
 import imgDefense from "@/assets/industry-defense.jpg";
