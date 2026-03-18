@@ -137,7 +137,9 @@ const Index = () => {
           <FinalCTASection />
         </ParallaxSection>
       </main>
-      <Footer />
+      <div className="sticky bottom-0 z-0">
+        <Footer />
+      </div>
     </div>
   );
 };
