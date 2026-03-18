@@ -73,6 +73,11 @@ export default {
         "accent-slate": "hsl(var(--accent-slate))",
         "accent-orange": "hsl(var(--accent-orange))",
         "accent-yellow": "hsl(var(--accent-yellow))",
+        "dusty-rose": "hsl(var(--dusty-rose))",
+        "burnt-orange": "hsl(var(--burnt-orange))",
+        "sage-gray": "hsl(var(--sage-gray))",
+        "warm-amber": "hsl(var(--warm-amber))",
+        "dark-slate": "hsl(var(--dark-slate))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
