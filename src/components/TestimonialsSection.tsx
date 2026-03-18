@@ -179,7 +179,7 @@ const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(13,28,67,0.15)" }}>
+              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.15)" }}>
                 {item.node}
               </div>
             )}
