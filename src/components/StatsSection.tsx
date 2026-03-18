@@ -1,6 +1,7 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { StaggerContainer, StaggerItem } from "./ScrollReveal";
 import SectionHeader from "./SectionHeader";
 
