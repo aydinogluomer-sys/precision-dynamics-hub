@@ -1,13 +1,11 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { TextReveal } from "./ScrollReveal";
 import {
   LayoutDashboard, FileText, Package, Factory,
   ShieldCheck, ArrowRight, BarChart3,
-  Clock, CheckCircle2, Upload, Eye, SkipForward
+  Clock, CheckCircle2, Upload, Eye
 } from "lucide-react";
-import cncVideo from "@/assets/cnc-machining-video.mp4";
 
 /* Fake dashboard data for the mockup */
 const recentOrders = [
