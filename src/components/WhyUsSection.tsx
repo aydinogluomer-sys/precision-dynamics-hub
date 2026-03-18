@@ -117,11 +117,10 @@ const WhyUsSection = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="relative">
-              <img
+              <BlurImage
                 src={cncWorkshop}
                 alt="CNC Üretim Atölyesi"
                 className="w-full h-[350px] md:h-[450px] object-cover"
-                loading="lazy"
               />
               {/* Overlapping smaller image */}
               <motion.div
