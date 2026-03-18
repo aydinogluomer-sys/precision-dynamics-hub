@@ -55,6 +55,12 @@
     --forge-workshop: 38 25% 92%;        /* #f0ede8 */
     --forge-mist: 207 20% 89%;           /* #dde3e8 */
 
+    /* Hero — Forge tokens */
+    --forge-bg: 240 5% 3%;               /* #0A0A0B */
+    --forge-surface-alt: 240 8% 7%;      /* #111113 */
+    --forge-gold: 45 97% 56%;            /* #FBBF24 */
+    --forge-muted-steel: 218 11% 65%;    /* #9CA3AF */
+
     /* Sidebar */
     --sidebar-background: 38 20% 98%;
     --sidebar-foreground: 240 28% 14%;
