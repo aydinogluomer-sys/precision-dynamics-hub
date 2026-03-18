@@ -196,8 +196,8 @@ const HeroSection = () => {
             <div
               className="absolute -inset-4 sm:-inset-6 pointer-events-none z-0"
               style={{
-                background: "radial-gradient(ellipse at center, rgba(9,145,151,0.25) 0%, rgba(253,191,104,0.08) 40%, transparent 70%)",
-                filter: "blur(30px)"
+                  background: "radial-gradient(ellipse at center, rgba(0,113,144,0.25) 0%, rgba(212,165,116,0.08) 40%, transparent 70%)",
+                  filter: "blur(30px)"
               }} />
             
             <div
