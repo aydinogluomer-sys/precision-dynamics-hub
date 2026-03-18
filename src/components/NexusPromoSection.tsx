@@ -32,19 +32,19 @@ const features = [
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative py-20 md:py-28" style={{ backgroundColor: "#b4cdc2" }}>
-      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--section-cool)) !important; }`}</style>
+    <section className="relative py-20 md:py-28" style={{ backgroundColor: "#5a7a6c" }}>
+      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--section-sage)) !important; }`}</style>
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
         <TextReveal>
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-px bg-primary" />
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
+              <div className="w-8 h-px bg-white/40" />
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80 font-mono">
                 Dijital Platform
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-foreground max-w-2xl">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white max-w-2xl">
               Nexus Endüstriyel<br />Yönetim Paneli
             </h2>
           </div>
@@ -59,7 +59,7 @@ const NexusPromoSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-foreground/70 leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/70 leading-relaxed mb-8 max-w-lg">
               Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. 
               Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu.
             </p>
@@ -88,7 +88,7 @@ const NexusPromoSection = () => {
             <Link
               to="/musteri-paneli"
               className="group inline-flex items-center gap-2 px-7 py-3.5 text-white font-semibold text-sm transition-all hover:brightness-110"
-              style={{ transform: "skewX(-4deg)", backgroundColor: "#f37420" }}
+              style={{ transform: "skewX(-4deg)", backgroundColor: "#c17f59" }}
             >
               <span style={{ transform: "skewX(4deg)" }} className="flex items-center gap-2">
                 Paneli Keşfet
@@ -211,7 +211,7 @@ const NexusPromoSection = () => {
             {/* Floating badge */}
             <motion.div
               className="absolute -bottom-4 -right-4 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider shadow-lg"
-              style={{ backgroundColor: "#f8ed43", color: "#0d1c43" }}
+              style={{ backgroundColor: "#e8c872", color: "#162038" }}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}

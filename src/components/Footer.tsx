@@ -93,13 +93,13 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "#34454c" }}>
+    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "#1e2d3a" }}>
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(9, 145, 151, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(9, 145, 151, 0.05) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(0, 113, 144, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 113, 144, 0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
@@ -108,7 +108,7 @@ const Footer = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, rgba(9, 145, 151, 0.15) 0%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgba(0, 113, 144, 0.12) 0%, transparent 70%)",
         }}
       />
 
@@ -121,7 +121,7 @@ const Footer = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-16"
           style={{
-            background: "rgba(13, 28, 67, 0.6)",
+            background: "rgba(22, 32, 56, 0.4)",
             backdropFilter: "blur(10px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
@@ -315,7 +315,7 @@ const Footer = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-12"
           style={{
-            background: "rgba(13, 28, 67, 0.6)",
+            background: "rgba(22, 32, 56, 0.4)",
             backdropFilter: "blur(10px)",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",

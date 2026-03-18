@@ -198,7 +198,7 @@ const MaterialsSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section id="malzemeler" className="py-16 md:py-24 dark:bg-section-dark" style={{ backgroundColor: "rgba(194,174,147,0.2)" }}>
+    <section id="malzemeler" className="py-16 md:py-24 dark:bg-section-dark" style={{ backgroundColor: "rgba(212,165,116,0.12)" }}>
       <style>{`.dark #malzemeler { background-color: hsl(var(--section-dark)) !important; }`}</style>
       {/* Subtle grid */}
       <div

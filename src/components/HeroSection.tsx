@@ -99,7 +99,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "#0d1c43" }}>
+      style={{ backgroundColor: "#162038" }}>
       
       {/* Parallax Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
@@ -110,7 +110,7 @@ const HeroSection = () => {
       <div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          backgroundImage: "linear-gradient(to right, rgba(9,145,151,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(9,145,151,0.06) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
           backgroundSize: "40px 40px"
         }} />
       
@@ -119,7 +119,7 @@ const HeroSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to right, rgba(13,28,67,0.92) 0%, rgba(13,28,67,0.7) 50%, rgba(13,28,67,0.85) 100%)",
+          background: "linear-gradient(to right, rgba(22,32,56,0.92) 0%, rgba(22,32,56,0.7) 50%, rgba(22,32,56,0.85) 100%)",
           opacity: overlayOpacity
         }} />
       
@@ -130,7 +130,7 @@ const HeroSection = () => {
           <motion.div
             className="relative p-4 sm:p-8 rounded-2xl"
             style={{
-              background: "radial-gradient(circle at center, rgba(13,28,67,0.6) 0%, transparent 100%)",
+              background: "radial-gradient(circle at center, rgba(22,32,56,0.6) 0%, transparent 100%)",
               backdropFilter: "blur(4px)"
             }}
             variants={containerVariants}
@@ -169,7 +169,7 @@ const HeroSection = () => {
             </TextReveal>
 
             <motion.div variants={fadeUpVariants} className="mb-8">
-              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, #f37420 0%, #fdbf68 100%)", transform: "skewX(-5deg)" }}>
+              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, #c17f59 0%, #d4a574 100%)", transform: "skewX(-5deg)" }}>
                 <span style={{ display: "block", transform: "skewX(5deg)" }}>"Disiplinli Operasyon, Güvenilir Üretim."</span>
               </span>
             </motion.div>
@@ -196,21 +196,21 @@ const HeroSection = () => {
             <div
               className="absolute -inset-4 sm:-inset-6 pointer-events-none z-0"
               style={{
-                background: "radial-gradient(ellipse at center, rgba(9,145,151,0.25) 0%, rgba(253,191,104,0.08) 40%, transparent 70%)",
-                filter: "blur(30px)"
+                  background: "radial-gradient(ellipse at center, rgba(0,113,144,0.25) 0%, rgba(212,165,116,0.08) 40%, transparent 70%)",
+                  filter: "blur(30px)"
               }} />
             
             <div
               className="relative overflow-hidden z-10"
               style={{
-                background: "rgba(13,28,67,0.6)",
+                background: "rgba(22,32,56,0.6)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(9,145,151,0.15)",
-                boxShadow: "0 0 60px rgba(9,145,151,0.15), 0 0 120px rgba(253,191,104,0.05), inset 0 1px 0 rgba(9,145,151,0.1)"
+                border: "1px solid rgba(0,113,144,0.15)",
+                boxShadow: "0 0 60px rgba(0,113,144,0.15), 0 0 120px rgba(212,165,116,0.05), inset 0 1px 0 rgba(0,113,144,0.1)"
               }}>
               
               {/* Header bar */}
-              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "rgba(9,145,151,0.15)", background: "rgba(9,145,151,0.03)" }}>
+              <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "rgba(0,113,144,0.15)", background: "rgba(0,113,144,0.03)" }}>
                 <span className="text-[10px] uppercase tracking-[0.2em] font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>YÜKLEME ARAYÜZÜ V2.4.0
 
                 </span>
@@ -243,7 +243,7 @@ const HeroSection = () => {
                 <motion.div
                   className="absolute inset-4 sm:inset-6 pointer-events-none"
                   style={{
-                    border: `2px dashed ${isDragging ? "#099197" : "rgba(255,255,255,0.12)"}`,
+                    border: `2px dashed ${isDragging ? "#007190" : "rgba(255,255,255,0.12)"}`,
                     transition: "border-color 0.3s"
                   }}
                   animate={isDragging ? { scale: [1, 1.02, 1] } : {}}
@@ -264,7 +264,7 @@ const HeroSection = () => {
                     className={`w-16 h-16 rounded-full flex items-center justify-center ${
                     isDragging ? "bg-primary/20" : "bg-white/5"}`
                     }
-                    style={{ border: `1px solid ${isDragging ? "#099197" : "rgba(9,145,151,0.2)"}` }}
+                    style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
                     animate={{ y: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>
                     <Upload className="w-7 h-7 text-primary" />
@@ -280,7 +280,7 @@ const HeroSection = () => {
                   </div>
                   <div className="flex flex-wrap justify-center gap-2">
                     {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) =>
-                      <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(9,145,151,0.15)", background: "rgba(9,145,151,0.05)" }}>
+                      <span key={fmt} className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono" style={{ border: "1px solid rgba(0,113,144,0.15)", background: "rgba(0,113,144,0.05)" }}>
                         {fmt}
                       </span>
                     )}
@@ -289,7 +289,7 @@ const HeroSection = () => {
               </div>
 
               {/* Footer bar */}
-              <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(9,145,151,0.15)", background: "rgba(9,145,151,0.03)" }}>
+              <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(0,113,144,0.15)", background: "rgba(0,113,144,0.03)" }}>
                 <span className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>UÇTAN UCA ŞİFRELEME AKTİF
                   <motion.span className="w-1.5 h-1.5 rounded-full bg-green-400"
                     animate={{ opacity: [1, 0.3, 1] }}
@@ -319,12 +319,12 @@ const HeroSection = () => {
                 variants={statItem}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(13,28,67,0.4)",
+                  background: "rgba(22,32,56,0.4)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(9,145,151,0.1)"
+                  border: "1px solid rgba(0,113,144,0.1)"
                 }}>
                 
-                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "#f3a257" }}>
+                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "#d4a574" }}>
                     {stat.value}
                   </div>
                   <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>

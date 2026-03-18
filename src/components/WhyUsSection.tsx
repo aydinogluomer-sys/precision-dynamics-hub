@@ -33,7 +33,7 @@ const stats = [
 
 const WhyUsSection = () => {
   return (
-    <section id="neden-biz" className="relative overflow-hidden dark:bg-section-dark" style={{ backgroundColor: "#bce4e5" }}>
+    <section id="neden-biz" className="relative overflow-hidden dark:bg-section-dark" style={{ backgroundColor: "#e4eded" }}>
       <style>{`.dark #neden-biz { background-color: hsl(var(--section-dark)) !important; }`}</style>
       {/* Stats Bar */}
       <div className="border-b border-border/50">
@@ -48,7 +48,7 @@ const WhyUsSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-bold mb-1 font-mono" style={{ color: "#fdbf68" }}>
+                <div className="text-3xl md:text-4xl font-bold mb-1 font-mono" style={{ color: "#d4a574" }}>
                   {stat.value}
                 </div>
                 <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-foreground/40">
@@ -124,7 +124,7 @@ const WhyUsSection = () => {
               />
               {/* Overlapping smaller image */}
               <motion.div
-                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-section-teal dark:border-section-dark shadow-2xl"
+                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-section-mist dark:border-section-dark shadow-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

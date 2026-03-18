@@ -49,13 +49,13 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
           border: "1px solid rgba(255, 255, 255, 0.1)",
         }}
         whileHover={{
-          borderColor: "rgba(181, 147, 146, 0.4)",
-          boxShadow: "0 0 30px rgba(197, 97, 39, 0.15)",
+          borderColor: "rgba(193, 127, 89, 0.4)",
+          boxShadow: "0 0 30px rgba(212, 165, 116, 0.15)",
         }}
       >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
-          style={{ lineHeight: 1, color: "#c56127" }}
+          style={{ lineHeight: 1, color: "#c17f59" }}
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
@@ -80,11 +80,11 @@ const StatsSection = () => {
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
   return (
-    <section ref={sectionRef} id="rakamlar" className="py-20 relative overflow-hidden" style={{ backgroundColor: "#0d1c43" }}>
+    <section ref={sectionRef} id="rakamlar" className="py-20 relative overflow-hidden" style={{ backgroundColor: "#162038" }}>
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(197, 97, 39, 0.15) 0%, rgba(181, 147, 146, 0.05) 40%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.15) 0%, rgba(193,127,89,0.05) 40%, transparent 60%)",
           y: bgY,
         }}
       />

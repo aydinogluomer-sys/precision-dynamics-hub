@@ -6,130 +6,117 @@
 
 @layer base {
   :root {
-    /* Mas Technic — Multi-tone Palette */
+    /* Mas Technic — Industrial-Luxe Palette */
     --background: 0 0% 100%;
-    --foreground: 224 71% 16%;
+    --foreground: 228 44% 15%;
 
-    --card: 48 40% 98%;
-    --card-foreground: 224 71% 16%;
+    --card: 33 25% 98%;
+    --card-foreground: 228 44% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 16%;
+    --popover-foreground: 228 44% 15%;
 
     /* Primary: #007190 deep teal */
     --primary: 192 100% 28%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: #b4cdc2 sage */
-    --secondary: 156 20% 92%;
-    --secondary-foreground: 224 71% 16%;
+    /* Secondary */
+    --secondary: 152 12% 92%;
+    --secondary-foreground: 228 44% 15%;
 
-    /* Muted: #f5ecc2 cream base */
-    --muted: 48 60% 94%;
-    --muted-foreground: 224 40% 40%;
+    /* Muted */
+    --muted: 33 30% 94%;
+    --muted-foreground: 228 30% 40%;
 
-    /* Accent: #099197 teal cyan */
-    --accent: 183 88% 31%;
+    /* Accent: #3d5a5b moody teal */
+    --accent: 181 19% 30%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders from #c2ae93 warm tan */
-    --border: 34 22% 86%;
-    --input: 34 22% 86%;
+    --border: 30 15% 87%;
+    --input: 30 15% 87%;
     --ring: 192 100% 28%;
 
     --radius: 0rem;
 
     /* Industrial palette */
-    --industrial-dark: 224 71% 16%;
-    --industrial-steel: 224 40% 35%;
-    --industrial-light: 48 60% 97%;
+    --industrial-dark: 228 44% 15%;
+    --industrial-steel: 228 30% 35%;
+    --industrial-light: 33 38% 97%;
     --industrial-accent: 192 100% 28%;
-    --industrial-accent-dark: 183 88% 31%;
-    --industrial-accent-light: 182 41% 82%;
+    --industrial-accent-dark: 181 19% 30%;
+    --industrial-accent-light: 180 16% 91%;
 
     /* Section backgrounds */
-    --section-teal: 182 35% 93%;
-    --section-warm: 48 50% 93%;
-    --section-cool: 156 18% 93%;
-    --section-dark: 224 71% 14%;
+    --section-linen: 33 38% 92%;
+    --section-mist: 180 16% 91%;
+    --section-sage: 152 15% 41%;
+    --section-dark: 228 44% 13%;
 
     /* Accent spectrum */
-    --accent-warm: 36 98% 70%;
-    --accent-warm-foreground: 224 71% 16%;
-    --accent-copper: 34 30% 67%;
-    --accent-slate: 183 88% 31%;
-    --accent-orange: 24 90% 54%;
-    --accent-yellow: 55 93% 62%;
-
-    /* Sanzo Wada Combo 4 & 5 */
-    --dusty-rose: 1 20% 64%;
-    --burnt-orange: 22 66% 46%;
-    --sage-gray: 155 6% 46%;
-    --warm-amber: 29 87% 65%;
-    --dark-slate: 198 18% 25%;
+    --terracotta: 22 42% 55%;
+    --camel: 29 50% 64%;
+    --saffron: 43 74% 67%;
+    --forest-sage: 152 15% 41%;
+    --moody-teal: 181 19% 30%;
+    --midnight: 228 44% 15%;
+    --charcoal-slate: 208 32% 17%;
 
     /* Sidebar */
-    --sidebar-background: 48 30% 98%;
-    --sidebar-foreground: 224 71% 16%;
+    --sidebar-background: 33 20% 98%;
+    --sidebar-foreground: 228 44% 15%;
     --sidebar-primary: 192 100% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 156 18% 93%;
-    --sidebar-accent-foreground: 224 71% 16%;
-    --sidebar-border: 34 22% 86%;
+    --sidebar-accent: 152 12% 93%;
+    --sidebar-accent-foreground: 228 44% 15%;
+    --sidebar-border: 30 15% 87%;
     --sidebar-ring: 192 100% 28%;
   }
 }
 
 @layer base {
   .dark {
-    --background: 224 60% 8%;
-    --foreground: 48 40% 96%;
-    --card: 224 55% 11%;
-    --card-foreground: 48 40% 96%;
-    --popover: 224 55% 11%;
-    --popover-foreground: 48 40% 96%;
+    --background: 228 50% 8%;
+    --foreground: 33 30% 96%;
+    --card: 228 45% 11%;
+    --card-foreground: 33 30% 96%;
+    --popover: 228 45% 11%;
+    --popover-foreground: 33 30% 96%;
     --primary: 192 100% 38%;
-    --primary-foreground: 224 71% 8%;
-    --secondary: 156 15% 18%;
-    --secondary-foreground: 48 40% 96%;
-    --muted: 224 30% 18%;
-    --muted-foreground: 48 20% 60%;
-    --accent: 183 80% 36%;
-    --accent-foreground: 224 71% 8%;
+    --primary-foreground: 228 44% 8%;
+    --secondary: 152 12% 18%;
+    --secondary-foreground: 33 30% 96%;
+    --muted: 228 25% 18%;
+    --muted-foreground: 33 15% 60%;
+    --accent: 181 18% 35%;
+    --accent-foreground: 228 44% 8%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 224 25% 20%;
-    --input: 224 25% 20%;
+    --border: 228 20% 20%;
+    --input: 228 20% 20%;
     --ring: 192 100% 38%;
-    --section-teal: 182 25% 12%;
-    --section-warm: 48 20% 12%;
-    --section-cool: 156 15% 11%;
-    --section-dark: 224 60% 10%;
-    --accent-warm: 36 98% 72%;
-    --accent-warm-foreground: 224 71% 8%;
-    --accent-copper: 34 30% 55%;
-    --accent-slate: 183 70% 40%;
-    --accent-orange: 24 90% 58%;
-    --accent-yellow: 55 90% 65%;
-
-    /* Sanzo Wada Combo 4 & 5 dark mode */
-    --dusty-rose: 1 18% 55%;
-    --burnt-orange: 22 60% 40%;
-    --sage-gray: 155 6% 35%;
-    --warm-amber: 29 80% 58%;
-    --dark-slate: 198 18% 18%;
-    --sidebar-background: 224 55% 10%;
-    --sidebar-foreground: 48 40% 96%;
+    --section-linen: 33 15% 12%;
+    --section-mist: 180 10% 11%;
+    --section-sage: 152 12% 25%;
+    --section-dark: 228 50% 10%;
+    --terracotta: 22 40% 50%;
+    --camel: 29 45% 55%;
+    --saffron: 43 68% 60%;
+    --forest-sage: 152 12% 32%;
+    --moody-teal: 181 16% 28%;
+    --midnight: 228 44% 12%;
+    --charcoal-slate: 208 28% 14%;
+    --sidebar-background: 228 45% 10%;
+    --sidebar-foreground: 33 30% 96%;
     --sidebar-primary: 192 100% 38%;
-    --sidebar-primary-foreground: 224 71% 8%;
-    --sidebar-accent: 224 25% 15%;
-    --sidebar-accent-foreground: 48 40% 96%;
-    --sidebar-border: 224 25% 20%;
+    --sidebar-primary-foreground: 228 44% 8%;
+    --sidebar-accent: 228 20% 15%;
+    --sidebar-accent-foreground: 33 30% 96%;
+    --sidebar-border: 228 20% 20%;
     --sidebar-ring: 192 100% 38%;
-}
+  }
 }
 
 @layer base {
@@ -148,13 +135,10 @@
     scroll-behavior: smooth;
   }
 
-
-  /* Custom cursor for interactive elements */
   a, button, [role="button"] {
     cursor: pointer;
   }
 
-  /* Text rendering fixes for GPU acceleration */
   .text-rendering-fix {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -163,7 +147,6 @@
 }
 
 @layer components {
-  /* Industrial Button Variants */
   .btn-industrial-primary {
     @apply bg-primary text-primary-foreground font-semibold px-8 py-4 uppercase tracking-wider text-sm border-2 border-primary transition-all duration-200;
   }
@@ -180,7 +163,6 @@
     @apply bg-foreground text-background;
   }
 
-  /* Industrial Card */
   .card-industrial {
     @apply bg-card border border-border p-6 transition-all duration-200;
   }
@@ -189,17 +171,14 @@
     @apply border-primary shadow-lg;
   }
 
-  /* Section spacing */
   .section-industrial {
     @apply py-20 md:py-28;
   }
 
-  /* Container */
   .container-industrial {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Heading styles */
   .heading-industrial {
     @apply font-bold tracking-tight text-foreground;
   }
@@ -208,7 +187,6 @@
     @apply text-foreground/70 font-normal;
   }
 
-  /* Grid lines decorative */
   .grid-lines {
     background-image: 
       linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
@@ -216,12 +194,10 @@
     background-size: 40px 40px;
   }
 
-  /* Industrial accent line */
   .accent-line {
     @apply w-16 h-1 bg-primary;
   }
 
-  /* Technical mono text */
   .text-technical {
     font-family: 'IBM Plex Mono', monospace;
     @apply text-sm tracking-wide;
@@ -229,7 +205,6 @@
 }
 
 @layer utilities {
-  /* Sharp shadow for industrial feel */
   .shadow-industrial {
     box-shadow: 8px 8px 0 0 hsl(var(--border));
   }
@@ -238,71 +213,42 @@
     box-shadow: 8px 8px 0 0 hsl(var(--primary) / 0.2);
   }
 
-  /* Animated rotating text */
   @keyframes rotate-text {
-    0%, 20% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    25%, 45% {
-      opacity: 0;
-      transform: translateY(-100%);
-    }
-    50%, 70% {
-      opacity: 0;
-      transform: translateY(100%);
-    }
-    75%, 100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    0%, 20% { opacity: 1; transform: translateY(0); }
+    25%, 45% { opacity: 0; transform: translateY(-100%); }
+    50%, 70% { opacity: 0; transform: translateY(100%); }
+    75%, 100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* Counter animation */
   @keyframes count-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-count {
     animation: count-up 0.6s ease-out forwards;
   }
 
-  /* Subtle fade in */
   @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
   }
 
-  /* Stagger delays */
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
 
-  /* Fire text animation for Blog nav link */
   @keyframes fireText {
-    0%   { color: #f59e0b; text-shadow: 0 0 4px #f59e0b, 0 -5px 10px rgba(245,158,11,0.5); }
-    25%  { color: #ef4444; text-shadow: 0 0 4px #ef4444, 0 -5px 12px rgba(239,68,68,0.6); }
-    50%  { color: #fbbf24; text-shadow: 0 0 6px #fbbf24, 0 -8px 15px rgba(251,191,36,0.5); }
-    75%  { color: #f97316; text-shadow: 0 0 4px #f97316, 0 -5px 12px rgba(249,115,22,0.6); }
-    100% { color: #f59e0b; text-shadow: 0 0 4px #f59e0b, 0 -5px 10px rgba(245,158,11,0.5); }
+    0%   { color: #d4a574; text-shadow: 0 0 4px #d4a574, 0 -5px 10px rgba(212,165,116,0.5); }
+    25%  { color: #c17f59; text-shadow: 0 0 4px #c17f59, 0 -5px 12px rgba(193,127,89,0.6); }
+    50%  { color: #e8c872; text-shadow: 0 0 6px #e8c872, 0 -8px 15px rgba(232,200,114,0.5); }
+    75%  { color: #c17f59; text-shadow: 0 0 4px #c17f59, 0 -5px 12px rgba(193,127,89,0.6); }
+    100% { color: #d4a574; text-shadow: 0 0 4px #d4a574, 0 -5px 10px rgba(212,165,116,0.5); }
   }
 
   .animate-fire-text {
