@@ -1,6 +1,8 @@
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import MagneticButton from "./MagneticButton";
 
 const equipment = [
   { category: "CNC Frezeleme", model: "DMG MORI 5-Eksen", size: "1200 × 800 × 600", tolerance: "±0.005 mm", speed: "24,000 RPM" },
@@ -10,72 +12,137 @@ const equipment = [
   { category: "CMM Ölçüm", model: "Zeiss Contura", size: "900 × 1200 × 800", tolerance: "±0.001 mm", speed: "—" },
 ];
 
+/* CountUp for tolerance stat */
+const useToleranceCountUp = () => {
+  const [value, setValue] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const target = 0.001;
+          const duration = 2000;
+          const startTime = Date.now();
+          const step = () => {
+            const progress = Math.min((Date.now() - startTime) / duration, 1);
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            setValue(easeOut * target);
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  return { value, ref };
+};
+
 const CapabilitiesSection = () => {
+  const tolerance = useToleranceCountUp();
+
   return (
     <section id="kabiliyetler" className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-px bg-primary" />
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
-                Teknik Yetkinlik
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Makine Parkuru
-            </h2>
-          </div>
-          <Link
-            to="/iletisim"
-            className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors whitespace-nowrap"
-          >
-            Teknik Kapasiteyi İncele <ArrowRight className="w-4 h-4" />
-          </Link>
-        </motion.div>
-
-        {/* Table */}
-        <motion.div
-          className="border border-border overflow-x-auto"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--forge-steel))" }}>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Kategori</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Ekipman</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Boyut</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Tolerans</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Hız</span>
-          </div>
-
-          {/* Table Rows */}
-          {equipment.map((eq, i) => (
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-10">
+          {/* Left: Sticky panel */}
+          <div className="lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] flex flex-col justify-center">
             <motion.div
-              key={eq.category}
-              className="grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-muted/10 transition-colors min-w-[640px]"
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.05 * i }}
             >
-              <span className="text-sm font-semibold text-foreground">{eq.category}</span>
-              <span className="text-sm text-foreground/70">{eq.model}</span>
-              <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
-              <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>{eq.tolerance}</span>
-              <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-px bg-primary" />
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
+                  {"Teknik Yetkinlik"}
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                {"Makine Parkuru"}
+              </h2>
             </motion.div>
-          ))}
-        </motion.div>
+
+            {/* Animated tolerance stat */}
+            <motion.div
+              ref={tolerance.ref}
+              className="p-8 border border-border bg-card mb-8"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 font-mono">
+                {"Minimum Tolerans"}
+              </div>
+              <div
+                className="text-5xl md:text-6xl font-bold font-mono"
+                style={{ color: "hsl(var(--forge-molten))" }}
+              >
+                {"±"}{tolerance.value.toFixed(3)}<span className="text-2xl">{"mm"}</span>
+              </div>
+            </motion.div>
+
+            <MagneticButton
+              as="button"
+              onClick={() => {
+                const el = document.getElementById("iletisim");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
+            >
+              <span>{"Teknik Kapasiteyi İncele"}</span>
+              <ArrowRight className="w-4 h-4" />
+            </MagneticButton>
+          </div>
+
+          {/* Right: Scrolling equipment rows */}
+          <div>
+            <motion.div
+              className="border border-border overflow-x-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              {/* Table Header */}
+              <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--forge-steel))" }}>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Kategori"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Ekipman"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Boyut"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Tolerans"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Hız"}</span>
+              </div>
+
+              {/* Table Rows with stagger */}
+              {equipment.map((eq, i) => (
+                <motion.div
+                  key={eq.category}
+                  className="grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-muted/10 transition-colors min-w-[640px]"
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.05 * i }}
+                >
+                  <span className="text-sm font-semibold text-foreground">{eq.category}</span>
+                  <span className="text-sm text-foreground/70">{eq.model}</span>
+                  <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
+                  <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>{eq.tolerance}</span>
+                  <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
