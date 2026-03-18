@@ -99,8 +99,8 @@ const WhyUsSection = () => {
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-foreground mb-0.5">{adv.title}</h4>
-                    <p className="text-xs leading-relaxed text-foreground/50">{adv.desc}</p>
+                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
+                    <p className="text-xs leading-relaxed" style={{ color: "hsl(var(--forge-silver) / 0.7)" }}>{adv.desc}</p>
                   </div>
                 </motion.div>
               ))}
