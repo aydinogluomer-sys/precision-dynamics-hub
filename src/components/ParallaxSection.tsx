@@ -37,23 +37,23 @@ const ParallaxSection = ({
   });
 
   const scale = useTransform(scrollYProgress, [0, 1], isLast || prefersReduced ? [1, 1] :
-    variant === "zoom-out-blur" ? [1, 0.85] :
-    variant === "zoom-in" ? [1, 1.08] :
+    variant === "zoom-out-blur" ? [1, 0.92] :
+    variant === "zoom-in" ? [1, 1.05] :
     variant === "slide-up" ? [1, 1] :
-    variant === "depth-3d" ? [1, 0.8] :
+    variant === "depth-3d" ? [1, 0.88] :
     variant === "wipe-mask" ? [1, 1] :
-    variant === "color-fade" ? [1, 0.92] :
-    [1, 0.92]
+    variant === "color-fade" ? [1, 0.95] :
+    [1, 0.95]
   );
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast || prefersReduced ? [1, 1, 1] :
-    variant === "zoom-out-blur" ? [1, 1, 0] :
-    variant === "zoom-in" ? [1, 1, 0] :
-    variant === "slide-up" ? [1, 1, 0] :
-    variant === "color-fade" ? [1, 0.8, 0] :
-    variant === "depth-3d" ? [1, 1, 0] :
+  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], isLast || prefersReduced ? [1, 1, 1] :
+    variant === "zoom-out-blur" ? [1, 1, 0.3] :
+    variant === "zoom-in" ? [1, 1, 0.3] :
+    variant === "slide-up" ? [1, 1, 0.3] :
+    variant === "color-fade" ? [1, 0.9, 0.3] :
+    variant === "depth-3d" ? [1, 1, 0.3] :
     variant === "wipe-mask" ? [1, 1, 1] :
-    [1, 1, 0.4]
+    [1, 1, 0.6]
   );
 
   const borderRadius = useTransform(scrollYProgress, [0, 1],
@@ -61,14 +61,13 @@ const ParallaxSection = ({
   );
 
   const y = useTransform(scrollYProgress, [0, 1],
-    variant === "slide-up" && !isLast ? [0, -60] : [0, 0]
+    variant === "slide-up" && !isLast ? [0, -40] : [0, 0]
   );
 
   const blurValue = useTransform(scrollYProgress, [0, 1],
-    variant === "zoom-out-blur" && !isLast ? [0, 8] : [0, 0]
+    variant === "zoom-out-blur" && !isLast ? [0, 6] : [0, 0]
   );
 
-  // Wipe mask clip path
   const clipProgress = useTransform(scrollYProgress, [0, 1],
     variant === "wipe-mask" && !isLast ? [0, 100] : [0, 0]
   );
@@ -83,13 +82,11 @@ const ParallaxSection = ({
     <div
       ref={ref}
       className="relative"
-      style={{ height: "auto", zIndex: index }}
+      style={{ zIndex: index }}
     >
       <motion.div
         className={className}
         style={{
-          position: "sticky",
-          top: 0,
           scale,
           opacity,
           borderRadius,
@@ -97,7 +94,7 @@ const ParallaxSection = ({
           filter: useBlur ? filter : undefined,
           clipPath: useClip ? clipPath : undefined,
           transformOrigin: variant === "depth-3d" ? "center bottom" : "center center",
-          willChange: isAnimating ? "transform, opacity, filter" : "auto",
+          willChange: isAnimating ? "transform, opacity" : "auto",
           ...style,
         }}
       >
