@@ -64,7 +64,7 @@ const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="sss" className="section-industrial border-y border-border" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+    <section id="sss" className="section-industrial min-h-screen flex flex-col justify-center border-y border-border" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
       <style>{`.dark #sss { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       <div className="container-industrial">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">

@@ -63,7 +63,7 @@ const IndustriesSection = () => {
   };
 
   return (
-    <section id="endustriler" className="py-16 md:py-20 bg-background border-y border-border">
+    <section id="endustriler" className="py-16 md:py-20 min-h-screen flex flex-col justify-center bg-background border-y border-border">
       <div className="container-industrial">
         <TextReveal className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">

@@ -80,7 +80,7 @@ const StatsSection = () => {
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
   return (
-    <section ref={sectionRef} id="rakamlar" className="py-20 relative overflow-hidden" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <section ref={sectionRef} id="rakamlar" className="py-20 min-h-screen flex items-center relative overflow-hidden" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{

@@ -170,7 +170,7 @@ const VideoScrollSection = () => {
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
             opacity: exitOpacity,
-            background: "hsl(var(--background))",
+            background: "hsl(var(--forge-obsidian))",
             y: exitY
           }} />
         

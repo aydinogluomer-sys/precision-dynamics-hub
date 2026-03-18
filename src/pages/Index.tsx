@@ -16,10 +16,10 @@ import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 /**
  * Thin shadow separator between consecutive dark sections.
- * Creates visual depth where color alone cannot differentiate.
  */
 const DarkSeparator = () => (
   <div
@@ -43,7 +43,7 @@ const Index = () => {
           <HeroSection />
         </ParallaxSection>
 
-        {/* 2 — NexusPromo (dark) — shadow separator after dark→dark */}
+        {/* 2 — NexusPromo (dark) */}
         <DarkSeparator />
         <ParallaxSection index={2}>
           <NexusPromoSection />
@@ -59,54 +59,71 @@ const Index = () => {
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* 5 — Video (dark) — shadow after dark→dark */}
+        {/* 5 — Video (dark) */}
         <DarkSeparator />
         <ParallaxSection index={5} variant="zoom-in">
           <VideoScrollSection />
         </ParallaxSection>
 
-        {/* 6 — Services (light) */}
+        {/* 5.5 — Aurora transition (dark→light bridge) */}
         <ParallaxSection index={6}>
+          <AuroraBackground
+            className="min-h-[50vh] w-full"
+            style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          >
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+              <span className="text-xs uppercase tracking-[0.3em] font-mono mb-4" style={{ color: "hsl(var(--primary))" }}>
+                Mühendislik Hizmetleri
+              </span>
+              <h2 className="text-3xl md:text-5xl font-bold text-white">
+                <span>Çözümlerimizi Keşfedin</span>
+              </h2>
+            </div>
+          </AuroraBackground>
+        </ParallaxSection>
+
+        {/* 6 — Services (light) */}
+        <ParallaxSection index={7}>
           <ServicesSection />
         </ParallaxSection>
 
         {/* 7 — Industries (light) */}
-        <ParallaxSection index={7}>
+        <ParallaxSection index={8}>
           <IndustriesSection />
         </ParallaxSection>
 
         {/* 8 — Materials (light) */}
-        <ParallaxSection index={8} variant="slide-up">
+        <ParallaxSection index={9} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
 
         {/* 9 — WhyUs (dark) */}
-        <ParallaxSection index={9}>
+        <ParallaxSection index={10}>
           <WhyUsSection />
         </ParallaxSection>
 
         {/* 10 — Capabilities (light) */}
-        <ParallaxSection index={10}>
+        <ParallaxSection index={11}>
           <CapabilitiesSection />
         </ParallaxSection>
 
         {/* 11 — Stats (dark) */}
-        <ParallaxSection index={11} variant="zoom-out-blur">
+        <ParallaxSection index={12} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
 
         {/* 12 — Testimonials (light) */}
-        <ParallaxSection index={12}>
+        <ParallaxSection index={13}>
           <TestimonialsSection />
         </ParallaxSection>
 
         {/* 13 — FAQ (light) */}
-        <ParallaxSection index={13}>
+        <ParallaxSection index={14}>
           <FAQBlogSection />
         </ParallaxSection>
 
-        {/* 14 — FinalCTA (dark, last — no scale-down) */}
-        <ParallaxSection index={14} isLast>
+        {/* 14 — FinalCTA (dark, last) */}
+        <ParallaxSection index={15} isLast>
           <FinalCTASection />
         </ParallaxSection>
       </main>
