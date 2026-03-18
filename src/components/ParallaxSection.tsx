@@ -36,41 +36,53 @@ const ParallaxSection = ({
     if (active !== isAnimating) setIsAnimating(active);
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], isLast || prefersReduced ? [1, 1] :
-    variant === "zoom-out-blur" ? [1, 0.92] :
-    variant === "zoom-in" ? [1, 1.05] :
-    variant === "slide-up" ? [1, 1] :
-    variant === "depth-3d" ? [1, 0.88] :
-    variant === "wipe-mask" ? [1, 1] :
-    variant === "color-fade" ? [1, 0.95] :
-    [1, 0.95]
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    isLast || prefersReduced
+      ? [1, 1]
+      : variant === "zoom-out-blur"
+        ? [1, 0.92]
+        : variant === "zoom-in"
+          ? [1, 1.05]
+          : variant === "slide-up"
+            ? [1, 1]
+            : variant === "depth-3d"
+              ? [1, 0.88]
+              : variant === "wipe-mask"
+                ? [1, 1]
+                : variant === "color-fade"
+                  ? [1, 0.95]
+                  : [1, 0.95],
   );
 
-  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], isLast || prefersReduced ? [1, 1, 1] :
-    variant === "zoom-out-blur" ? [1, 1, 0.3] :
-    variant === "zoom-in" ? [1, 1, 0.3] :
-    variant === "slide-up" ? [1, 1, 0.3] :
-    variant === "color-fade" ? [1, 0.9, 0.3] :
-    variant === "depth-3d" ? [1, 1, 0.3] :
-    variant === "wipe-mask" ? [1, 1, 1] :
-    [1, 1, 0.6]
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.6, 1],
+    isLast || prefersReduced
+      ? [1, 1, 1]
+      : variant === "zoom-out-blur"
+        ? [1, 1, 0.3]
+        : variant === "zoom-in"
+          ? [1, 1, 0.3]
+          : variant === "slide-up"
+            ? [1, 1, 0.3]
+            : variant === "color-fade"
+              ? [1, 0.9, 0.3]
+              : variant === "depth-3d"
+                ? [1, 1, 0.3]
+                : variant === "wipe-mask"
+                  ? [1, 1, 1]
+                  : [1, 1, 0.6],
   );
 
-  const borderRadius = useTransform(scrollYProgress, [0, 1],
-    isLast || variant !== "stack" ? [0, 0] : [0, 16]
-  );
+  const borderRadius = useTransform(scrollYProgress, [0, 1], isLast || variant !== "stack" ? [0, 0] : [0, 16]);
 
-  const y = useTransform(scrollYProgress, [0, 1],
-    variant === "slide-up" && !isLast ? [0, -40] : [0, 0]
-  );
+  const y = useTransform(scrollYProgress, [0, 1], variant === "slide-up" && !isLast ? [0, -40] : [0, 0]);
 
-  const blurValue = useTransform(scrollYProgress, [0, 1],
-    variant === "zoom-out-blur" && !isLast ? [0, 6] : [0, 0]
-  );
+  const blurValue = useTransform(scrollYProgress, [0, 1], variant === "zoom-out-blur" && !isLast ? [0, 6] : [0, 0]);
 
-  const clipProgress = useTransform(scrollYProgress, [0, 1],
-    variant === "wipe-mask" && !isLast ? [0, 100] : [0, 0]
-  );
+  const clipProgress = useTransform(scrollYProgress, [0, 1], variant === "wipe-mask" && !isLast ? [0, 100] : [0, 0]);
   const clipPath = useMotionTemplate`inset(0 0 ${clipProgress}% 0)`;
 
   const filter = useMotionTemplate`blur(${blurValue}px)`;
@@ -79,11 +91,7 @@ const ParallaxSection = ({
   const useClip = variant === "wipe-mask" && !isLast;
 
   return (
-    <div
-      ref={ref}
-      className="relative"
-      style={{ zIndex: index }}
-    >
+    <div ref={ref} className="relative" style={{ zIndex: index }}>
       <motion.div
         className={className}
         style={{
