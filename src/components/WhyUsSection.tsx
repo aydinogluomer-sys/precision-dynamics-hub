@@ -51,7 +51,7 @@ const WhyUsSection = () => {
                 <div className="text-3xl md:text-4xl font-bold mb-1 font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
                   {stat.value}
                 </div>
-                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium text-foreground/40">
+                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium" style={{ color: "hsl(var(--forge-silver))" }}>
                   {stat.label}
                 </div>
               </motion.div>
