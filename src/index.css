@@ -6,128 +6,108 @@
 
 @layer base {
   :root {
-    /* Mas Technic — Industrial-Luxe Palette */
+    /* Mas Technic — Forge & Steel Palette */
     --background: 0 0% 100%;
-    --foreground: 228 44% 15%;
+    --foreground: 240 28% 14%;
 
-    --card: 33 25% 98%;
-    --card-foreground: 228 44% 15%;
+    --card: 38 25% 97%;
+    --card-foreground: 240 28% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 228 44% 15%;
+    --popover-foreground: 240 28% 14%;
 
-    /* Primary: #007190 deep teal */
-    --primary: 192 100% 28%;
+    /* Primary: Coolant Teal #0a7e8c */
+    --primary: 186 87% 29%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary */
-    --secondary: 152 12% 92%;
-    --secondary-foreground: 228 44% 15%;
+    --secondary: 210 14% 92%;
+    --secondary-foreground: 240 28% 14%;
 
     /* Muted */
-    --muted: 33 30% 94%;
-    --muted-foreground: 228 30% 40%;
+    --muted: 36 22% 94%;
+    --muted-foreground: 212 22% 40%;
 
-    /* Accent: #3d5a5b moody teal */
-    --accent: 181 19% 30%;
+    /* Accent: Brushed Steel #3a4a5c */
+    --accent: 212 22% 29%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 58% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 87%;
-    --input: 30 15% 87%;
-    --ring: 192 100% 28%;
+    --border: 210 14% 87%;
+    --input: 210 14% 87%;
+    --ring: 186 87% 29%;
 
     --radius: 0rem;
 
-    /* Industrial palette */
-    --industrial-dark: 228 44% 15%;
-    --industrial-steel: 228 30% 35%;
-    --industrial-light: 33 38% 97%;
-    --industrial-accent: 192 100% 28%;
-    --industrial-accent-dark: 181 19% 30%;
-    --industrial-accent-light: 180 16% 91%;
-
-    /* Section backgrounds */
-    --section-linen: 33 38% 92%;
-    --section-mist: 180 16% 91%;
-    --section-sage: 152 15% 41%;
-    --section-dark: 228 44% 13%;
-
-    /* Sanzo Wada — Machining Palette */
-    --sw-slate: 197 42% 19%;        /* #1b3644 */
-    --sw-tyrian: 218 73% 19%;       /* #0d2b52 */
-    --sw-antwerp: 191 100% 32%;     /* #008aa1 */
-    --sw-sienna: 31 100% 36%;       /* #b85e00 */
-    --sw-sudan: 11 32% 44%;         /* #9b5348 */
-    --sw-tawny: 18 100% 39%;        /* #c74300 */
-    --sw-neutral: 168 26% 77%;      /* #b5d1cc */
-    --sw-mineral: 148 24% 63%;      /* #9fc2b2 */
-    --sw-medici: 180 30% 36%;       /* #417777 */
-    --sw-warm-gray: 126 16% 65%;    /* #9cb29e */
-    --sw-andover: 149 21% 45%;      /* #5c8a73 */
-    --sw-linen-warm: 30 33% 94%;    /* #f5f0eb */
-    --sw-mist-cool: 160 19% 94%;    /* #eef3f1 */
+    /* Forge & Steel — Section Palette */
+    --forge-obsidian: 0 0% 6%;           /* #0f0f0f */
+    --forge-gunmetal: 240 28% 14%;       /* #1a1a2e */
+    --forge-iron: 220 46% 16%;           /* #16213e */
+    --forge-molten: 23 92% 47%;          /* #e8610a */
+    --forge-amber: 37 88% 44%;           /* #d4850e */
+    --forge-ember: 0 58% 45%;            /* #b33030 */
+    --forge-teal: 186 87% 29%;           /* #0a7e8c */
+    --forge-silver: 210 14% 70%;         /* #a8b2bc */
+    --forge-steel: 212 22% 29%;          /* #3a4a5c */
+    --forge-concrete: 36 22% 89%;        /* #e8e4de */
+    --forge-workshop: 38 25% 92%;        /* #f0ede8 */
+    --forge-mist: 207 20% 89%;           /* #dde3e8 */
 
     /* Sidebar */
-    --sidebar-background: 33 20% 98%;
-    --sidebar-foreground: 228 44% 15%;
-    --sidebar-primary: 192 100% 28%;
+    --sidebar-background: 38 20% 98%;
+    --sidebar-foreground: 240 28% 14%;
+    --sidebar-primary: 186 87% 29%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 152 12% 93%;
-    --sidebar-accent-foreground: 228 44% 15%;
-    --sidebar-border: 30 15% 87%;
-    --sidebar-ring: 192 100% 28%;
+    --sidebar-accent: 210 14% 93%;
+    --sidebar-accent-foreground: 240 28% 14%;
+    --sidebar-border: 210 14% 87%;
+    --sidebar-ring: 186 87% 29%;
   }
 }
 
 @layer base {
   .dark {
-    --background: 228 50% 8%;
-    --foreground: 33 30% 96%;
-    --card: 228 45% 11%;
-    --card-foreground: 33 30% 96%;
-    --popover: 228 45% 11%;
-    --popover-foreground: 33 30% 96%;
-    --primary: 192 100% 38%;
-    --primary-foreground: 228 44% 8%;
-    --secondary: 152 12% 18%;
-    --secondary-foreground: 33 30% 96%;
-    --muted: 228 25% 18%;
-    --muted-foreground: 33 15% 60%;
-    --accent: 181 18% 35%;
-    --accent-foreground: 228 44% 8%;
-    --destructive: 0 62% 50%;
+    --background: 240 30% 8%;
+    --foreground: 36 22% 96%;
+    --card: 240 28% 11%;
+    --card-foreground: 36 22% 96%;
+    --popover: 240 28% 11%;
+    --popover-foreground: 36 22% 96%;
+    --primary: 186 80% 35%;
+    --primary-foreground: 240 28% 8%;
+    --secondary: 212 14% 18%;
+    --secondary-foreground: 36 22% 96%;
+    --muted: 240 20% 18%;
+    --muted-foreground: 36 15% 60%;
+    --accent: 212 18% 35%;
+    --accent-foreground: 240 28% 8%;
+    --destructive: 0 55% 48%;
     --destructive-foreground: 0 0% 100%;
-    --border: 228 20% 20%;
-    --input: 228 20% 20%;
-    --ring: 192 100% 38%;
-    --section-linen: 33 15% 12%;
-    --section-mist: 180 10% 11%;
-    --section-sage: 152 12% 25%;
-    --section-dark: 228 50% 10%;
-    --sw-slate: 197 38% 14%;
-    --sw-tyrian: 218 68% 14%;
-    --sw-antwerp: 191 90% 28%;
-    --sw-sienna: 31 90% 32%;
-    --sw-sudan: 11 28% 38%;
-    --sw-tawny: 18 90% 35%;
-    --sw-neutral: 168 18% 30%;
-    --sw-mineral: 148 18% 35%;
-    --sw-medici: 180 25% 28%;
-    --sw-warm-gray: 126 12% 40%;
-    --sw-andover: 149 18% 35%;
-    --sw-linen-warm: 30 15% 12%;
-    --sw-mist-cool: 160 10% 11%;
-    --sidebar-background: 228 45% 10%;
-    --sidebar-foreground: 33 30% 96%;
-    --sidebar-primary: 192 100% 38%;
-    --sidebar-primary-foreground: 228 44% 8%;
-    --sidebar-accent: 228 20% 15%;
-    --sidebar-accent-foreground: 33 30% 96%;
-    --sidebar-border: 228 20% 20%;
-    --sidebar-ring: 192 100% 38%;
+    --border: 240 18% 20%;
+    --input: 240 18% 20%;
+    --ring: 186 80% 35%;
+    --forge-obsidian: 0 0% 4%;
+    --forge-gunmetal: 240 25% 10%;
+    --forge-iron: 220 40% 12%;
+    --forge-molten: 23 85% 42%;
+    --forge-amber: 37 80% 38%;
+    --forge-ember: 0 50% 40%;
+    --forge-teal: 186 75% 25%;
+    --forge-silver: 210 10% 50%;
+    --forge-steel: 212 18% 24%;
+    --forge-concrete: 36 12% 12%;
+    --forge-workshop: 38 12% 10%;
+    --forge-mist: 207 10% 12%;
+    --sidebar-background: 240 28% 10%;
+    --sidebar-foreground: 36 22% 96%;
+    --sidebar-primary: 186 80% 35%;
+    --sidebar-primary-foreground: 240 28% 8%;
+    --sidebar-accent: 240 18% 15%;
+    --sidebar-accent-foreground: 36 22% 96%;
+    --sidebar-border: 240 18% 20%;
+    --sidebar-ring: 186 80% 35%;
   }
 }
 
@@ -256,11 +236,11 @@
   .delay-400 { animation-delay: 400ms; }
 
   @keyframes fireText {
-    0%   { color: #d4a574; text-shadow: 0 0 4px #d4a574, 0 -5px 10px rgba(212,165,116,0.5); }
-    25%  { color: #c17f59; text-shadow: 0 0 4px #c17f59, 0 -5px 12px rgba(193,127,89,0.6); }
-    50%  { color: #e8c872; text-shadow: 0 0 6px #e8c872, 0 -8px 15px rgba(232,200,114,0.5); }
-    75%  { color: #c17f59; text-shadow: 0 0 4px #c17f59, 0 -5px 12px rgba(193,127,89,0.6); }
-    100% { color: #d4a574; text-shadow: 0 0 4px #d4a574, 0 -5px 10px rgba(212,165,116,0.5); }
+    0%   { color: #e8610a; text-shadow: 0 0 4px #e8610a, 0 -5px 10px rgba(232,97,10,0.5); }
+    25%  { color: #d4850e; text-shadow: 0 0 4px #d4850e, 0 -5px 12px rgba(212,133,14,0.6); }
+    50%  { color: #e8610a; text-shadow: 0 0 6px #e8610a, 0 -8px 15px rgba(232,97,10,0.5); }
+    75%  { color: #d4850e; text-shadow: 0 0 4px #d4850e, 0 -5px 12px rgba(212,133,14,0.6); }
+    100% { color: #e8610a; text-shadow: 0 0 4px #e8610a, 0 -5px 10px rgba(232,97,10,0.5); }
   }
 
   .animate-fire-text {

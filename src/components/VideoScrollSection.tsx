@@ -70,7 +70,7 @@ const VideoScrollSection = () => {
     <div
       ref={containerRef}
       className="relative h-[200vh]"
-      style={{ background: "hsl(var(--sw-tyrian))" }}
+      style={{ background: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
       
@@ -97,7 +97,7 @@ const VideoScrollSection = () => {
         {/* Dark overlay */}
         <div
           className="absolute inset-0"
-          style={{ background: "rgba(13, 28, 67, 0.6)" }} />
+          style={{ background: "rgba(15, 15, 15, 0.6)" }} />
         
 
         {/* ON.energy-style content layout */}

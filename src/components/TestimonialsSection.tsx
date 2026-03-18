@@ -104,9 +104,9 @@ const TestimonialsSection = () => {
       ref={sectionRef}
       id="referanslar"
       className="relative overflow-hidden py-20 md:py-28"
-      style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}
+      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <style>{`.dark #referanslar { background-color: hsl(var(--section-linen)) !important; }`}</style>
+      <style>{`.dark #referanslar { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
 
       {/* Decorative corner accents */}
       <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
@@ -122,12 +122,12 @@ const TestimonialsSection = () => {
             </span>
             <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--sw-tyrian))" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(13,43,82,0.6)" }}>
+          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
-            <span className="font-semibold" style={{ color: "hsl(var(--sw-sienna))" }}> 1000+ projeyi </span>
+            <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
@@ -153,14 +153,14 @@ const TestimonialsSection = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--sw-sienna))" }} />
+              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--forge-molten))" }} />
               <div
                 className="text-2xl md:text-3xl font-bold mb-1.5"
                 style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,43,82,0.4)" }}>
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>

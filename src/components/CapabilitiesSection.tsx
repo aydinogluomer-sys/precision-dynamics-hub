@@ -12,8 +12,8 @@ const equipment = [
 
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 dark:bg-section-dark border-t border-border" style={{ backgroundColor: "hsl(var(--sw-mist-cool))" }}>
-      <style>{`.dark #kabiliyetler { background-color: hsl(var(--sw-mist-cool)) !important; }`}</style>
+    <section id="kabiliyetler" className="py-16 md:py-24 px-4 border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+      <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -50,7 +50,7 @@ const CapabilitiesSection = () => {
           transition={{ delay: 0.1 }}
         >
           {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--sw-medici))" }}>
+          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--forge-steel))" }}>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Kategori</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Ekipman</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Boyut</span>
@@ -71,7 +71,7 @@ const CapabilitiesSection = () => {
               <span className="text-sm font-semibold text-foreground">{eq.category}</span>
               <span className="text-sm text-foreground/70">{eq.model}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
-              <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--sw-tawny))" }}>{eq.tolerance}</span>
+              <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>{eq.tolerance}</span>
               <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
             </motion.div>
           ))}

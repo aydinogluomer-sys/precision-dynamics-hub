@@ -38,7 +38,7 @@ const FinalCTASection = () => {
       ref={sectionRef}
       id="iletisim"
       className="py-20 md:py-28 text-center relative overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--sw-tyrian))" }}
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -52,8 +52,8 @@ const FinalCTASection = () => {
         onAnimationComplete={() => setSweepState("idle")}
         style={{
           background: sweepDirection === "right"
-            ? "linear-gradient(135deg, #3d5a5b 0%, #162038 100%)"
-            : "linear-gradient(135deg, #162038 0%, #3d5a5b 100%)",
+            ? "linear-gradient(135deg, #3a4a5c 0%, #0f0f0f 100%)"
+            : "linear-gradient(135deg, #0f0f0f 0%, #3a4a5c 100%)",
         }}
       />
 
@@ -109,7 +109,7 @@ const FinalCTASection = () => {
           >
             <MagneticButton
               href="/teklif-al"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 bg-sanzo-sienna border-sanzo-sienna"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 bg-forge-molten border-forge-molten"
               strength={0.25}
             >
               Teklif Al
