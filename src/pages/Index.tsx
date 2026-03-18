@@ -15,6 +15,8 @@ import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
+import ParallaxSection from "@/components/ParallaxSection";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { useState } from "react";
 
 const Index = () => {
@@ -31,25 +33,89 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <main>
-        <HeroSection isFirstVisit={isFirstVisit} />
+      <main className="relative z-10">
+        {/* 1 — Hero */}
+        <ParallaxSection index={0} variant="zoom-out-blur">
+          <HeroSection isFirstVisit={isFirstVisit} />
+        </ParallaxSection>
 
-        <div style={{ background: 'red', padding: '40px', color: 'white', fontSize: '32px' }}>
-          DEBUG: After Hero - if you see this, layout is working
-        </div>
+        {/* 2 — NexusPromo */}
+        <ParallaxSection index={1} variant="stack">
+          <NexusPromoSection />
+        </ParallaxSection>
 
-        <NexusPromoSection />
+        {/* 3 — HowWeWork — internal sticky, NOT wrapped */}
         <HowWeWorkSection />
-        <CertificationsSection />
-        <ServicesSection />
-        <MaterialsSection />
-        <WhyUsSection />
-        <StatsSection />
-        <TestimonialsSection />
-        <FAQBlogSection />
-        <FinalCTASection />
+
+        {/* 4 — Certifications */}
+        <ParallaxSection index={3} variant="slide-up">
+          <CertificationsSection />
+        </ParallaxSection>
+
+        {/* 5 — Video scroll — internal sticky, NOT wrapped */}
+        <VideoScrollSection />
+
+        {/* 5.5 — Aurora transition */}
+        <ParallaxSection index={5} variant="stack">
+          <AuroraBackground
+            className="min-h-[50vh] w-full"
+            style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          >
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+              <span className="text-xs uppercase tracking-[0.3em] font-mono mb-4" style={{ color: "hsl(var(--primary))" }}>
+                {"Mühendislik Hizmetleri"}
+              </span>
+              <h2 className="text-3xl md:text-5xl font-bold text-white">
+                <span>{"Çözümlerimizi Keşfedin"}</span>
+              </h2>
+            </div>
+          </AuroraBackground>
+        </ParallaxSection>
+
+        {/* 6 — Services */}
+        <ParallaxSection index={6} variant="wipe-mask">
+          <ServicesSection />
+        </ParallaxSection>
+
+        {/* 7 — Industries — internal sticky, NOT wrapped */}
+        <IndustriesSection />
+
+        {/* 8 — Materials */}
+        <ParallaxSection index={8} variant="color-fade">
+          <MaterialsSection />
+        </ParallaxSection>
+
+        {/* 9 — WhyUs */}
+        <ParallaxSection index={9} variant="stack">
+          <WhyUsSection />
+        </ParallaxSection>
+
+        {/* 10 — Capabilities — internal sticky, NOT wrapped */}
+        <CapabilitiesSection />
+
+        {/* 11 — Stats */}
+        <ParallaxSection index={11} variant="zoom-out-blur">
+          <StatsSection />
+        </ParallaxSection>
+
+        {/* 12 — Testimonials */}
+        <ParallaxSection index={12} variant="stack">
+          <TestimonialsSection />
+        </ParallaxSection>
+
+        {/* 13 — FAQ */}
+        <ParallaxSection index={13} variant="slide-up">
+          <FAQBlogSection />
+        </ParallaxSection>
+
+        {/* 14 — FinalCTA */}
+        <ParallaxSection index={14} isLast variant="stack">
+          <FinalCTASection />
+        </ParallaxSection>
       </main>
-      <Footer />
+      <div className="sticky bottom-0 z-0">
+        <Footer />
+      </div>
     </div>
   );
 };
