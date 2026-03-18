@@ -71,6 +71,7 @@ const steps = [
 const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const prefersReduced = usePrefersReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
