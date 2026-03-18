@@ -1,39 +1,71 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Star, Quote, ArrowRight } from "lucide-react";
-import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
+import { ArrowRight } from "lucide-react";
+import { TextReveal } from "./ScrollReveal";
 import LogoLoop from "./LogoLoop";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { TestimonialsColumn } from "./ui/testimonials-columns-1";
 
 const testimonials = [
   {
-    quote: "Mas Technic ile 5 yıldır çalışıyoruz. Havacılık parçalarımızda hiç kalite sorunu yaşamadık. Tolerans disiplinleri ve zamanında teslimatları ile güvenilir bir iş ortağı.",
-    author: "Mehmet Yılmaz",
-    title: "Satınalma Müdürü",
-    company: "TAI - Türk Havacılık ve Uzay Sanayii",
-    initials: "MY",
-    rating: 5,
-    highlight: "Tolerans Disiplini",
+    text: "Mas Technic ile 5 yıldır çalışıyoruz. Havacılık parçalarımızda hiç kalite sorunu yaşamadık. Tolerans disiplinleri ve zamanında teslimatları ile güvenilir bir iş ortağı.",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
+    name: "Mehmet Yılmaz",
+    role: "Satınalma Müdürü — TAI",
   },
   {
-    quote: "Prototip süreçlerimizde hız ve kalite dengesini mükemmel sağlıyorlar. DFM analizleri sayesinde tasarımlarımızı optimize ettik ve maliyetlerimizi düşürdük.",
-    author: "Ayşe Kaya",
-    title: "Ar-Ge Mühendisi",
-    company: "Ford Otosan",
-    initials: "AK",
-    rating: 5,
-    highlight: "DFM Analizi",
+    text: "Prototip süreçlerimizde hız ve kalite dengesini mükemmel sağlıyorlar. DFM analizleri sayesinde tasarımlarımızı optimize ettik ve maliyetlerimizi düşürdük.",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    name: "Ayşe Kaya",
+    role: "Ar-Ge Mühendisi — Ford Otosan",
   },
   {
-    quote: "Medikal implant üretiminde güvenilirlik kritik. Mas Technic'in ISO 13485 uyumlu süreçleri ve izlenebilirlik sistemi tam aradığımız standartları karşılıyor.",
-    author: "Dr. Can Öztürk",
-    title: "Üretim Direktörü",
-    company: "Medtronic Türkiye",
-    initials: "CÖ",
-    rating: 5,
-    highlight: "ISO 13485 Uyum",
+    text: "Medikal implant üretiminde güvenilirlik kritik. ISO 13485 uyumlu süreçleri ve izlenebilirlik sistemi tam aradığımız standartları karşılıyor.",
+    image: "https://randomuser.me/api/portraits/men/52.jpg",
+    name: "Dr. Can Öztürk",
+    role: "Üretim Direktörü — Medtronic",
+  },
+  {
+    text: "Savunma sanayii projelerimizde hassasiyet ve gizlilik ön planda. Mas Technic bu iki konuda da beklentilerimizi fazlasıyla karşılıyor.",
+    image: "https://randomuser.me/api/portraits/men/18.jpg",
+    name: "Ali Demir",
+    role: "Proje Yöneticisi — ASELSAN",
+  },
+  {
+    text: "Küçük partilerden seri üretime geçişte hiç aksama yaşamadık. Esnek üretim kapasiteleri ve hızlı iletişimleri çok değerli.",
+    image: "https://randomuser.me/api/portraits/women/67.jpg",
+    name: "Elif Arslan",
+    role: "Tedarik Zinciri Uzmanı — Bosch",
+  },
+  {
+    text: "Alüminyum ve paslanmaz çelik işlemede üstün kalite sunuyorlar. Yüzey işlem seçenekleri de oldukça geniş ve profesyonel.",
+    image: "https://randomuser.me/api/portraits/men/75.jpg",
+    name: "Burak Şahin",
+    role: "Kalite Müdürü — Arçelik",
+  },
+  {
+    text: "CNC torna ve frezeleme kapasiteleri Türkiye'nin en iyileri arasında. 24/7 üretim imkânı projelerin zamanında teslimini garantiliyor.",
+    image: "https://randomuser.me/api/portraits/women/23.jpg",
+    name: "Selin Yıldırım",
+    role: "Operasyon Müdürü — Vestel",
+  },
+  {
+    text: "Teknik ekipleri her zaman çözüm odaklı yaklaşıyor. Karmaşık geometrilerde bile mükemmel sonuçlar alıyoruz.",
+    image: "https://randomuser.me/api/portraits/men/41.jpg",
+    name: "Kemal Aydın",
+    role: "Mühendislik Müdürü — TUSAŞ",
+  },
+  {
+    text: "Fiyat-performans dengesi mükemmel. Kaliteden ödün vermeden rekabetçi fiyatlar sunuyorlar. Uzun vadeli çözüm ortağımız.",
+    image: "https://randomuser.me/api/portraits/women/38.jpg",
+    name: "Deniz Koç",
+    role: "Genel Müdür — Hidromek",
   },
 ];
+
+const firstColumn = testimonials.slice(0, 3);
+const secondColumn = testimonials.slice(3, 6);
+const thirdColumn = testimonials.slice(6, 9);
 
 const clients = [
   "Emir Alüminyum", "Mert Teknik", "BDM", "Akbaşlar",
@@ -45,21 +77,15 @@ const clients = [
 ];
 
 const stats = [
-  { value: "1000+", label: "Tamamlanan Proje", icon: "📐" },
-  { value: "15+", label: "Yıllık Uzmanlık", icon: "⚙️" },
-  { value: "24/7", label: "Kesintisiz Üretim", icon: "🏭" },
-  { value: "%100", label: "Zamanında Teslimat", icon: "✓" },
+  { value: "1000+", label: "Tamamlanan Proje" },
+  { value: "15+", label: "Yıllık Uzmanlık" },
+  { value: "24/7", label: "Kesintisiz Üretim" },
+  { value: "%100", label: "Zamanında Teslimat" },
 ];
 
 const TestimonialsSection = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const bracketLeft = useTransform(scrollYProgress, [0, 0.5], [-60, 0]);
-  const bracketRight = useTransform(scrollYProgress, [0, 0.5], [60, 0]);
 
   const logoItems = clients.map((name) => ({
     node: (
@@ -77,34 +103,36 @@ const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-20 md:py-28 dark:bg-section-dark"
+      className="relative overflow-hidden py-20 md:py-28"
       style={{ backgroundColor: "#f8ed43" }}
     >
+      <style>{`.dark #referanslar { background-color: hsl(var(--section-warm)) !important; }`}</style>
+
       {/* Decorative corner accents */}
-      <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 border-primary/10 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-primary/10 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
 
       <div className="container-industrial relative z-10">
         {/* Header */}
         <TextReveal className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-3 mb-5">
-            <div className="w-10 h-px bg-primary" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.5em] text-primary font-mono">
+            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
               Güvenilir Partnerler
             </span>
-            <div className="w-10 h-px bg-primary" />
+            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "#0d1c43" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed text-foreground/60">
+          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(13,28,67,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
-            <span className="text-primary font-semibold"> 1000+ projeyi </span>
+            <span className="font-semibold" style={{ color: "#f37420" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
 
-        {/* Stats Bar — moved above logos for impact */}
+        {/* Stats Bar */}
         <motion.div
           className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-12 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -115,25 +143,24 @@ const TestimonialsSection = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="relative text-center py-6 md:py-8 px-4 transition-all duration-300 bg-card/60 dark:bg-card/30 border border-border/40 group overflow-hidden"
-              whileHover={{
-                borderColor: "hsl(var(--primary) / 0.4)",
-                y: -2,
+              className="relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                borderColor: "rgba(0,113,144,0.15)",
               }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              {/* Hover gradient top line */}
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "#f37420" }} />
               <div
-                className="text-2xl md:text-3xl font-bold text-primary mb-1.5"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                className="text-2xl md:text-3xl font-bold mb-1.5"
+                style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium text-foreground/40">
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,28,67,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>
@@ -152,13 +179,13 @@ const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="transition-all duration-300 cursor-default text-foreground/15 hover:text-primary hover:scale-110">
+              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(13,28,67,0.15)" }}>
                 {item.node}
               </div>
             )}
           />
         </div>
-        <div className="w-full h-px mb-3 bg-border/20" />
+        <div className="w-full h-px mb-3" style={{ backgroundColor: "rgba(0,113,144,0.1)" }} />
         <div className="mb-16 md:mb-20">
           <LogoLoop
             logos={logoItems}
@@ -170,88 +197,39 @@ const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="transition-all duration-300 cursor-default text-foreground/10 hover:text-primary hover:scale-110">
+              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(13,28,67,0.1)" }}>
                 {item.node}
               </div>
             )}
           />
         </div>
 
-        {/* Testimonial Cards */}
+        {/* Testimonial Columns — vertical infinite scroll */}
         <div className="relative max-w-5xl mx-auto">
-          {/* Animated brackets - desktop only */}
-          {!isMobile && (
-            <>
-              <motion.div
-                className="absolute -top-10 -left-14 text-[7rem] leading-none opacity-[0.06] pointer-events-none select-none text-primary"
-                style={{ fontWeight: 200, x: bracketLeft }}
-              >
-                [
-              </motion.div>
-              <motion.div
-                className="absolute -bottom-14 -right-14 text-[7rem] leading-none opacity-[0.06] pointer-events-none select-none text-primary"
-                style={{ fontWeight: 200, x: bracketRight }}
-              >
-                ]
-              </motion.div>
-            </>
-          )}
+          <motion.div
+            className="flex justify-center gap-4 md:gap-6 max-h-[600px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <TestimonialsColumn
+              testimonials={firstColumn}
+              duration={15}
+              className="hidden md:block"
+            />
+            <TestimonialsColumn
+              testimonials={secondColumn}
+              duration={19}
+            />
+            <TestimonialsColumn
+              testimonials={thirdColumn}
+              duration={17}
+              className="hidden md:block"
+            />
+          </motion.div>
 
-          <StaggerContainer className="grid md:grid-cols-3 gap-4 md:gap-5" staggerDelay={0.15}>
-            {testimonials.map((t, i) => (
-              <StaggerItem key={i}>
-                <motion.div
-                  className="relative p-6 md:p-8 transition-all duration-300 h-full group bg-card/90 dark:bg-card/50 border border-border/40 flex flex-col"
-                  whileHover={{
-                    y: -6,
-                    borderColor: "hsl(var(--primary) / 0.5)",
-                    boxShadow: "0 16px 48px hsl(var(--foreground) / 0.1)",
-                  }}
-                >
-                  {/* Top accent line on hover */}
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-
-                  {/* Highlight badge */}
-                  <div className="mb-4">
-                    <span className="inline-block px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] border border-primary/20 text-primary bg-primary/5 font-mono">
-                      {t.highlight}
-                    </span>
-                  </div>
-
-                  {/* Star rating */}
-                  <div className="flex gap-0.5 mb-4">
-                    {Array.from({ length: t.rating }).map((_, si) => (
-                      <Star key={si} className="w-3.5 h-3.5" style={{ fill: "#f37420", color: "#f37420" }} />
-                    ))}
-                  </div>
-
-                  {/* Quote icon */}
-                  <Quote className="w-6 h-6 text-primary/20 mb-3 rotate-180" />
-
-                  {/* Quote text */}
-                  <p className="text-xs md:text-sm leading-relaxed mb-6 text-foreground/70 flex-1">
-                    {t.quote}
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-border/40">
-                    <div className="w-11 h-11 flex-shrink-0 flex items-center justify-center text-xs font-bold bg-primary/10 border border-primary/25 text-primary">
-                      {t.initials}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-foreground">{t.author}</div>
-                      <div className="text-[11px] text-foreground/50">{t.title}</div>
-                      <div className="text-[10px] mt-0.5 text-primary/70 font-mono">
-                        {t.company}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-
-          {/* CTA under testimonials */}
+          {/* CTA */}
           <motion.div
             className="text-center mt-10"
             initial={{ opacity: 0 }}
@@ -261,7 +239,8 @@ const TestimonialsSection = () => {
           >
             <a
               href="/iletisim"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all duration-300 group"
+              className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all duration-300 group"
+              style={{ color: "#007190" }}
             >
               Siz de partnerimiz olun
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
