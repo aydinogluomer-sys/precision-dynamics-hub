@@ -87,7 +87,7 @@ const IndustriesSection = () => {
 
       {/* Desktop: Card Stack */}
       {!isMobile && (
-        <div ref={stackRef} style={{ height: `${industries.length * 100}vh` }}>
+        <div ref={stackRef} style={{ height: `${industries.length * 40}vh` }}>
           <div className="sticky top-0 h-screen overflow-hidden">
             {industries.map((industry, i) => (
               <IndustryStackCard

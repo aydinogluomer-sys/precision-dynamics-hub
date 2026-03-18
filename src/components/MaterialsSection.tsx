@@ -64,7 +64,7 @@ const materials = [
 
 const badges = ["50+ Malzeme Seçeneği", "Sertifikalı Tedarikçiler", "Malzeme Test Raporları"];
 
-/* ── Flip card CSS ── */
+/* ── Flip card CSS (respects prefers-reduced-motion) ── */
 const flipStyles = `
 .flip-card { perspective: 1000px; }
 .flip-card-inner {
@@ -79,6 +79,10 @@ const flipStyles = `
   -webkit-backface-visibility: hidden;
 }
 .flip-card-back { transform: rotateY(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner { transition: none; }
+  .flip-card:hover .flip-card-inner { transform: none; }
+}
 `;
 
 /* ── Mobile Material Card ── */

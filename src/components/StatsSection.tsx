@@ -1,6 +1,7 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { StaggerContainer, StaggerItem } from "./ScrollReveal";
 import SectionHeader from "./SectionHeader";
 
@@ -12,11 +13,16 @@ const stats = [
 ];
 
 const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }) => {
+  const prefersReduced = usePrefersReducedMotion();
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (prefersReduced) {
+      setCount(stat.value);
+      return;
+    }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
@@ -36,7 +42,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [stat.value, hasAnimated]);
+  }, [stat.value, hasAnimated, prefersReduced]);
 
   const displayCount = stat.isDecimal ? count.toFixed(2) : Math.floor(count);
 
