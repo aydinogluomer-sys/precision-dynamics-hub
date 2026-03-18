@@ -59,7 +59,7 @@ const NexusPromoSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-foreground/70 leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/70 leading-relaxed mb-8 max-w-lg">
               Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. 
               Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu.
             </p>
