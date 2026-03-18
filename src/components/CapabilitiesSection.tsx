@@ -50,7 +50,7 @@ const CapabilitiesSection = () => {
           transition={{ delay: 0.1 }}
         >
           {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--sw-medici))" }}>
+          <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--forge-steel))" }}>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Kategori</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Ekipman</span>
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Boyut</span>
