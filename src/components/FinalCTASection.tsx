@@ -52,8 +52,8 @@ const FinalCTASection = () => {
         onAnimationComplete={() => setSweepState("idle")}
         style={{
           background: sweepDirection === "right"
-            ? "linear-gradient(135deg, #3d5a5b 0%, #162038 100%)"
-            : "linear-gradient(135deg, #162038 0%, #3d5a5b 100%)",
+            ? "linear-gradient(135deg, #3a4a5c 0%, #0f0f0f 100%)"
+            : "linear-gradient(135deg, #0f0f0f 0%, #3a4a5c 100%)",
         }}
       />
 
