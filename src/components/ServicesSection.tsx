@@ -7,6 +7,7 @@ import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
 import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
+import { BlurImage } from "./BlurImage";
 
 const services = [
   {
