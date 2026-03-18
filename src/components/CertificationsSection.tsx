@@ -26,7 +26,7 @@ const CertificationsSection = () => {
           to { transform: translateX(-50%); }
         }
         .marquee-track {
-          animation: marquee 30s linear infinite;
+          animation: marquee 20s linear infinite;
         }
         .marquee-track:hover {
           animation-play-state: paused;
