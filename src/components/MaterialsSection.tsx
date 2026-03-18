@@ -74,7 +74,7 @@ const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
       onClick={() => setFlipped(!flipped)}
     >
       <div className="absolute inset-0 z-10">
-        <img src={mat.image} alt={mat.name} className="w-full h-full object-cover" loading="lazy" />
+        <BlurImage src={mat.image} alt={mat.name} className="w-full h-full object-cover" disableScaleTransform />
         <div
           className="absolute inset-0"
           style={{
