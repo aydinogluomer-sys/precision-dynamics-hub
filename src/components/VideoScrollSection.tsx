@@ -70,7 +70,7 @@ const VideoScrollSection = () => {
     <div
       ref={containerRef}
       className="relative h-[200vh]"
-      style={{ background: "hsl(var(--sw-tyrian))" }}
+      style={{ background: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
       
