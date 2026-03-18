@@ -208,9 +208,9 @@ const ServicesSection = () => {
 };
 
 const ServiceCard = ({ service, index }: { service: (typeof services)[number]; index: number }) => {
-  // Alternate clipPath direction
-  const clipFrom = index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)";
-  const clipTo = index % 2 === 0 ? "inset(0% 0 0 0)" : "inset(0 0% 0 0)";
+  const prefersReduced = usePrefersReducedMotion();
+  const clipFrom = prefersReduced ? "inset(0)" : (index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)");
+  const clipTo = "inset(0)";
 
   return (
     <motion.div

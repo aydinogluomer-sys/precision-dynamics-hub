@@ -52,7 +52,8 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
 };
 
 const CapabilitiesSection = () => {
-  const tolerance = useToleranceCountUp();
+  const prefersReduced = usePrefersReducedMotion();
+  const tolerance = useToleranceCountUp(prefersReduced);
 
   return (
     <section id="kabiliyetler" className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
