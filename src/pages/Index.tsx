@@ -23,73 +23,59 @@ const Index = () => {
       <Header />
       <JsonLdSchema type="organization" />
       <main>
-        {/* Hero — sticky dark */}
-        <ParallaxSection sticky>
+        <ParallaxSection index={1}>
           <HeroSection />
         </ParallaxSection>
 
-        {/* NexusPromo — slides over hero with 3D tilt */}
-        <ParallaxSection>
+        <ParallaxSection index={2}>
           <NexusPromoSection />
         </ParallaxSection>
 
-        {/* HowWeWork — light, slides in */}
-        <ParallaxSection>
+        <ParallaxSection index={3}>
           <HowWeWorkSection />
         </ParallaxSection>
 
-        {/* Certifications — dark band */}
-        <ParallaxSection>
+        <ParallaxSection index={4}>
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* Video — sticky dark */}
-        <ParallaxSection sticky>
+        <ParallaxSection index={5}>
           <VideoScrollSection />
         </ParallaxSection>
 
-        {/* Services — light, slides over video */}
-        <ParallaxSection>
+        <ParallaxSection index={6}>
           <ServicesSection />
         </ParallaxSection>
 
-        {/* Industries — white */}
-        <ParallaxSection>
+        <ParallaxSection index={7}>
           <IndustriesSection />
         </ParallaxSection>
 
-        {/* Materials — warm light */}
-        <ParallaxSection>
+        <ParallaxSection index={8}>
           <MaterialsSection />
         </ParallaxSection>
 
-        {/* WhyUs — dark gunmetal */}
-        <ParallaxSection>
+        <ParallaxSection index={9}>
           <WhyUsSection />
         </ParallaxSection>
 
-        {/* Capabilities — cool light */}
-        <ParallaxSection>
+        <ParallaxSection index={10}>
           <CapabilitiesSection />
         </ParallaxSection>
 
-        {/* Stats — sticky dark */}
-        <ParallaxSection sticky>
+        <ParallaxSection index={11}>
           <StatsSection />
         </ParallaxSection>
 
-        {/* Testimonials — warm light, slides over */}
-        <ParallaxSection>
+        <ParallaxSection index={12}>
           <TestimonialsSection />
         </ParallaxSection>
 
-        {/* FAQ — cool mist */}
-        <ParallaxSection>
+        <ParallaxSection index={13}>
           <FAQBlogSection />
         </ParallaxSection>
 
-        {/* FinalCTA — sticky dark */}
-        <ParallaxSection sticky>
+        <ParallaxSection index={14}>
           <FinalCTASection />
         </ParallaxSection>
       </main>
