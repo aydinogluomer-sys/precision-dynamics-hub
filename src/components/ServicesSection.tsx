@@ -31,8 +31,8 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section id="hizmetler" className="section-industrial" style={{ backgroundColor: "#e4eded" }}>
-      <style>{`.dark #hizmetler { background-color: hsl(var(--section-mist)) !important; }`}</style>
+    <section id="hizmetler" className="section-industrial" style={{ backgroundColor: "hsl(var(--sw-mist-cool))" }}>
+      <style>{`.dark #hizmetler { background-color: hsl(var(--sw-mist-cool)) !important; }`}</style>
       <div className="container-industrial">
         {/* Section Header */}
         <motion.div
