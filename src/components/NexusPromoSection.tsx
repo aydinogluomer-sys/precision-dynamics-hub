@@ -32,8 +32,8 @@ const features = [
 
 const NexusPromoSection = () => {
   return (
-    <section className="relative py-20 md:py-28" style={{ backgroundColor: "#b4cdc2" }}>
-      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--section-cool)) !important; }`}</style>
+    <section className="relative py-20 md:py-28" style={{ backgroundColor: "#5a7a6c" }}>
+      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--section-sage)) !important; }`}</style>
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
         <TextReveal>
