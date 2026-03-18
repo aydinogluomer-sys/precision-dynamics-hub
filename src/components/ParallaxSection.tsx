@@ -98,7 +98,6 @@ const ParallaxSection = ({
           clipPath: useClip ? clipPath : undefined,
           transformOrigin: variant === "depth-3d" ? "center bottom" : "center center",
           willChange: isAnimating ? "transform, opacity, filter" : "auto",
-          overflow: "hidden",
           ...style,
         }}
       >
