@@ -38,7 +38,7 @@ const FinalCTASection = () => {
       ref={sectionRef}
       id="iletisim"
       className="py-20 md:py-28 text-center relative overflow-hidden"
-      style={{ backgroundColor: "#162038" }}
+      style={{ backgroundColor: "hsl(var(--sw-tyrian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -109,7 +109,7 @@ const FinalCTASection = () => {
           >
             <MagneticButton
               href="/teklif-al"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 border-[#c17f59] bg-[#c17f59]"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 bg-sanzo-sienna border-sanzo-sienna"
               strength={0.25}
             >
               Teklif Al

@@ -99,7 +99,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "#162038" }}>
+      style={{ backgroundColor: "hsl(var(--sw-tyrian))" }}>
       
       {/* Parallax Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
@@ -119,7 +119,7 @@ const HeroSection = () => {
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
-          background: "linear-gradient(to right, rgba(22,32,56,0.92) 0%, rgba(22,32,56,0.7) 50%, rgba(22,32,56,0.85) 100%)",
+          background: "linear-gradient(to right, rgba(13,43,82,0.92) 0%, rgba(13,43,82,0.7) 50%, rgba(13,43,82,0.85) 100%)",
           opacity: overlayOpacity
         }} />
       
@@ -130,7 +130,7 @@ const HeroSection = () => {
           <motion.div
             className="relative p-4 sm:p-8 rounded-2xl"
             style={{
-              background: "radial-gradient(circle at center, rgba(22,32,56,0.6) 0%, transparent 100%)",
+              background: "radial-gradient(circle at center, rgba(13,43,82,0.6) 0%, transparent 100%)",
               backdropFilter: "blur(4px)"
             }}
             variants={containerVariants}
@@ -169,7 +169,7 @@ const HeroSection = () => {
             </TextReveal>
 
             <motion.div variants={fadeUpVariants} className="mb-8">
-              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, #c17f59 0%, #d4a574 100%)", transform: "skewX(-5deg)" }}>
+              <span className="inline-block px-5 py-2 text-white font-semibold text-sm" style={{ background: "linear-gradient(135deg, hsl(var(--sw-sienna)) 0%, hsl(var(--sw-sudan)) 100%)", transform: "skewX(-5deg)" }}>
                 <span style={{ display: "block", transform: "skewX(5deg)" }}>"Disiplinli Operasyon, Güvenilir Üretim."</span>
               </span>
             </motion.div>
@@ -203,7 +203,7 @@ const HeroSection = () => {
             <div
               className="relative overflow-hidden z-10"
               style={{
-                background: "rgba(22,32,56,0.6)",
+                background: "rgba(13,43,82,0.6)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(0,113,144,0.15)",
                 boxShadow: "0 0 60px rgba(0,113,144,0.15), 0 0 120px rgba(212,165,116,0.05), inset 0 1px 0 rgba(0,113,144,0.1)"
@@ -319,12 +319,12 @@ const HeroSection = () => {
                 variants={statItem}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(22,32,56,0.4)",
+                  background: "rgba(13,43,82,0.4)",
                   backdropFilter: "blur(10px)",
                   border: "1px solid rgba(0,113,144,0.1)"
                 }}>
                 
-                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "#d4a574" }}>
+                   <div className="text-lg sm:text-xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: "hsl(var(--sw-sienna))" }}>
                     {stat.value}
                   </div>
                   <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>

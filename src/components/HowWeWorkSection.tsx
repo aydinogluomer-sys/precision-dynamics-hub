@@ -96,7 +96,7 @@ const HowWeWorkSection = () => {
   }, []);
 
   return (
-    <section id="nasil-calisiyoruz" className="border-y border-border" style={{ backgroundColor: "#f0ebe3" }}>
+    <section id="nasil-calisiyoruz" className="border-y border-border" style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}>
       <style>{`.dark #nasil-calisiyoruz { background-color: hsl(var(--section-linen)) !important; }`}</style>
       {/* Section Header */}
       <div className="container-industrial py-16 pb-8">

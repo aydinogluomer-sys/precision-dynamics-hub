@@ -104,7 +104,7 @@ const TestimonialsSection = () => {
       ref={sectionRef}
       id="referanslar"
       className="relative overflow-hidden py-20 md:py-28"
-      style={{ backgroundColor: "#f0ebe3" }}
+      style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}
     >
       <style>{`.dark #referanslar { background-color: hsl(var(--section-linen)) !important; }`}</style>
 
@@ -122,12 +122,12 @@ const TestimonialsSection = () => {
             </span>
             <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "#162038" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--sw-tyrian))" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(22,32,56,0.6)" }}>
+          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(13,43,82,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
-            <span className="font-semibold" style={{ color: "#c17f59" }}> 1000+ projeyi </span>
+            <span className="font-semibold" style={{ color: "hsl(var(--sw-sienna))" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
@@ -153,14 +153,14 @@ const TestimonialsSection = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "#c17f59" }} />
+              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--sw-sienna))" }} />
               <div
                 className="text-2xl md:text-3xl font-bold mb-1.5"
                 style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,28,67,0.4)" }}>
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,43,82,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>

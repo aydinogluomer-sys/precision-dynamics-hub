@@ -10,8 +10,8 @@ const certifications = [
 
 const CertificationsSection = () => {
   return (
-    <section id="sertifikalar" className="py-10 md:py-14 border-y border-border" style={{ backgroundColor: "#3d5a5b" }}>
-      <style>{`.dark #sertifikalar { background-color: hsl(var(--moody-teal)) !important; }`}</style>
+    <section id="sertifikalar" className="py-10 md:py-14 border-y border-border" style={{ backgroundColor: "hsl(var(--sw-slate))" }}>
+      <style>{`.dark #sertifikalar { background-color: hsl(var(--sw-slate)) !important; }`}</style>
       <div className="container-industrial">
         <motion.div
           className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
@@ -24,7 +24,7 @@ const CertificationsSection = () => {
             <motion.span
               key={cert}
               className="text-sm md:text-base font-semibold tracking-wide transition-colors duration-300 cursor-default font-mono"
-              style={{ color: "#ffffff" }}
+              style={{ color: "hsl(var(--sw-neutral))" }}
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
