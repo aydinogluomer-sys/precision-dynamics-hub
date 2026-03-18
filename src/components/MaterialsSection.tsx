@@ -130,11 +130,11 @@ const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; in
   return (
     <div className="relative h-[400px] md:h-[440px] overflow-hidden border border-border/30 group cursor-pointer">
       <div className="absolute inset-0 z-10">
-        <img
+        <BlurImage
           src={mat.image}
           alt={mat.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          loading="lazy"
+          disableScaleTransform
         />
         <div
           className="absolute inset-0 transition-all duration-500"

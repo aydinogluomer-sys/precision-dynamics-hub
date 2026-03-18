@@ -130,11 +130,10 @@ const WhyUsSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
               >
-                <img
+                <BlurImage
                   src={qualityControl}
                   alt="Kalite Kontrol"
                   className="w-full h-32 md:h-40 object-cover"
-                  loading="lazy"
                 />
               </motion.div>
             </div>

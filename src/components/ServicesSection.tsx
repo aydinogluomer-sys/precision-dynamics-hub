@@ -110,17 +110,16 @@ const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
     transition={{ type: "spring", stiffness: 300 }}
   >
     {/* Image */}
-    <div className="relative h-52 overflow-hidden">
-      <motion.img
-        src={service.image}
-        alt={service.title}
-        className="w-full h-full object-cover"
-        loading="lazy"
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.6 }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
-    </div>
+    <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
+      <div className="relative h-52 overflow-hidden">
+        <BlurImage
+          src={service.image}
+          alt={service.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
+      </div>
+    </motion.div>
 
     {/* Content */}
     <div className="p-6">

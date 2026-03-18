@@ -169,11 +169,10 @@ const IndustryCard = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}>
             
-              <img
+              <BlurImage
               src={industry.image}
               alt={industry.name}
-              className="w-full h-full object-cover"
-              loading="lazy" />
+              className="w-full h-full object-cover" />
             
             </motion.div>
           }
