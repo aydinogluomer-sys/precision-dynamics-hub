@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { motion, useTransform, useMotionValue, useSpring, type MotionValue } from "framer-motion";
-import { ArrowRight, AnimatePresence } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { BlurImage } from "./BlurImage";
 import type { IndustryType } from "./IndustryModels";
 
