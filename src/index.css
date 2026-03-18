@@ -55,14 +55,20 @@
     --section-sage: 152 15% 41%;
     --section-dark: 228 44% 13%;
 
-    /* Accent spectrum */
-    --terracotta: 22 42% 55%;
-    --camel: 29 50% 64%;
-    --saffron: 43 74% 67%;
-    --forest-sage: 152 15% 41%;
-    --moody-teal: 181 19% 30%;
-    --midnight: 228 44% 15%;
-    --charcoal-slate: 208 32% 17%;
+    /* Sanzo Wada — Machining Palette */
+    --sw-slate: 197 42% 19%;        /* #1b3644 */
+    --sw-tyrian: 218 73% 19%;       /* #0d2b52 */
+    --sw-antwerp: 191 100% 32%;     /* #008aa1 */
+    --sw-sienna: 31 100% 36%;       /* #b85e00 */
+    --sw-sudan: 11 32% 44%;         /* #9b5348 */
+    --sw-tawny: 18 100% 39%;        /* #c74300 */
+    --sw-neutral: 168 26% 77%;      /* #b5d1cc */
+    --sw-mineral: 148 24% 63%;      /* #9fc2b2 */
+    --sw-medici: 180 30% 36%;       /* #417777 */
+    --sw-warm-gray: 126 16% 65%;    /* #9cb29e */
+    --sw-andover: 149 21% 45%;      /* #5c8a73 */
+    --sw-linen-warm: 30 33% 94%;    /* #f5f0eb */
+    --sw-mist-cool: 160 19% 94%;    /* #eef3f1 */
 
     /* Sidebar */
     --sidebar-background: 33 20% 98%;
