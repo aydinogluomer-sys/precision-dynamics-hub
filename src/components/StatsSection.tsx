@@ -90,11 +90,14 @@ const StatsSection = () => {
         }}
       />
       <div className="container-industrial relative z-10">
-        <TextReveal className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            Rakamlarla Mas Technic
-          </h2>
-        </TextReveal>
+        <div className="mb-16">
+          <SectionHeader
+            tag="Rakamlar"
+            title="Rakamlarla Mas Technic"
+            align="center"
+            titleClassName="text-3xl md:text-4xl font-bold text-white"
+          />
+        </div>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <StatCard key={index} stat={stat} />

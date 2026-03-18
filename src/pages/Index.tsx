@@ -133,7 +133,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 14 — FinalCTA (dark, last) */}
-        <ParallaxSection index={15} isLast>
+        <ParallaxSection index={15} isLast className="relative z-10">
           <FinalCTASection />
         </ParallaxSection>
       </main>

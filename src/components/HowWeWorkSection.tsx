@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import SectionHeader from "./SectionHeader";
 
 const steps = [
 {

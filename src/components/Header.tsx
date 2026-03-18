@@ -307,12 +307,15 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
     <header className="fixed top-0 left-0 right-0 z-50">
       <motion.div
         className="border-b border-border transition-shadow"
+        initial={isFirstVisit ? { y: -70, opacity: 0 } : false}
         animate={{
+          y: 0,
+          opacity: 1,
           backgroundColor: isScrolled ? "hsl(var(--background) / 0.95)" : "hsl(var(--background))",
           backdropFilter: isScrolled ? "blur(12px)" : "blur(0px)",
           boxShadow: isScrolled ? "0 4px 20px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
         }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="container-industrial">
           <motion.div
