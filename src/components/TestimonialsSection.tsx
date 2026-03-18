@@ -125,9 +125,9 @@ const TestimonialsSection = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--sw-tyrian))" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(22,32,56,0.6)" }}>
+          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(13,43,82,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
-            <span className="font-semibold" style={{ color: "#c17f59" }}> 1000+ projeyi </span>
+            <span className="font-semibold" style={{ color: "hsl(var(--sw-sienna))" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
