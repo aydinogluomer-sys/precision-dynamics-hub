@@ -24,6 +24,7 @@ const ParallaxSection = ({
 }: ParallaxSectionProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: ref,
