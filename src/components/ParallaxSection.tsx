@@ -36,7 +36,7 @@ const ParallaxSection = ({
     if (active !== isAnimating) setIsAnimating(active);
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], isLast ? [1, 1] :
+  const scale = useTransform(scrollYProgress, [0, 1], isLast || prefersReduced ? [1, 1] :
     variant === "zoom-out-blur" ? [1, 0.85] :
     variant === "zoom-in" ? [1, 1.08] :
     variant === "slide-up" ? [1, 1] :
