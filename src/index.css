@@ -252,4 +252,13 @@
   .animate-fire-text {
     animation: fireText 2s linear infinite;
   }
+
+  @keyframes metalPulse {
+    0%, 100% { opacity: 0.25; transform: scale(1); }
+    50%      { opacity: 0.45; transform: scale(1.05); }
+  }
+
+  .animate-metal-pulse {
+    animation: metalPulse 4s ease-in-out infinite;
+  }
 }
