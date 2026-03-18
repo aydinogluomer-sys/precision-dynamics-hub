@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Download, FileText } from "lucide-react";
+import { ClipboardCheck, Download, FileText, Loader2 } from "lucide-react";
 import { CardListSkeleton } from "./MusteriSkeletons";
 
 interface QualityReport {
@@ -14,6 +14,8 @@ interface QualityReport {
   notes: string | null;
   created_at: string;
 }
+
+const PAGE_SIZE = 20;
 
 const typeLabel = (t: string | null) => {
   switch (t) {
@@ -36,24 +38,51 @@ const typeColor = (t: string | null) => {
 const KaliteRaporTab = () => {
   const [reports, setReports] = useState<QualityReport[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async (pageNum: number, append: boolean) => {
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data } = await supabase
       .from("quality_reports")
       .select("id, title, report_type, file_url, order_id, notes, created_at")
-      .order("created_at", { ascending: false });
-    setReports((data as QualityReport[]) || []);
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    const newItems = (data as QualityReport[]) || [];
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setReports(prev => [...prev, ...newItems]);
+    else setReports(newItems);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    fetchReports();
+    fetchReports(0, false);
     const channel = supabase
       .channel("customer-quality-tab")
-      .on("postgres_changes", { event: "*", schema: "public", table: "quality_reports" }, () => fetchReports())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "quality_reports" }, (payload) => {
+        setReports(prev => [payload.new as QualityReport, ...prev]);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "quality_reports" }, (payload) => {
+        const updated = payload.new as QualityReport;
+        setReports(prev => prev.map(r => r.id === updated.id ? updated : r));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "quality_reports" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setReports(prev => prev.filter(r => r.id !== deleted.id));
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [fetchReports]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchReports(nextPage, true);
+    setLoadingMore(false);
+  };
 
   if (loading) return <CardListSkeleton count={3} />;
 
@@ -88,6 +117,13 @@ const KaliteRaporTab = () => {
           )}
         </div>
       ))}
+      {hasMore && reports.length > 0 && (
+        <div className="flex justify-center pt-4">
+          <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+            {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

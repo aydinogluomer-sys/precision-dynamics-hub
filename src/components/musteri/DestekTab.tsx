@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ interface Message {
   is_staff: boolean | null;
   created_at: string;
 }
+
+const PAGE_SIZE = 20;
 
 const statusColor = (s: string | null) => {
   switch (s) {
@@ -55,25 +57,43 @@ const DestekTab = () => {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [reply, setReply] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async (pageNum: number, append: boolean) => {
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data } = await supabase
       .from("support_tickets")
       .select("id, subject, message, status, priority, order_id, created_at")
-      .order("created_at", { ascending: false });
-    setTickets((data as Ticket[]) || []);
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    const newItems = (data as Ticket[]) || [];
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setTickets(prev => [...prev, ...newItems]);
+    else setTickets(newItems);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    fetchTickets();
+    fetchTickets(0, false);
 
-    // Realtime subscription for tickets and messages
     const ticketChannel = supabase
       .channel("customer-tickets-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, () => fetchTickets())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_tickets" }, (payload) => {
+        setTickets(prev => [payload.new as Ticket, ...prev]);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "support_tickets" }, (payload) => {
+        const updated = payload.new as Ticket;
+        setTickets(prev => prev.map(t => t.id === updated.id ? updated : t));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "support_tickets" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setTickets(prev => prev.filter(t => t.id !== deleted.id));
+      })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, (payload) => {
-        const newMsg = payload.new as any;
+        const newMsg = payload.new as { id: string; message: string; is_staff: boolean | null; created_at: string; ticket_id: string };
         if (newMsg.ticket_id) {
           setMessages(prev => ({
             ...prev,
@@ -89,7 +109,15 @@ const DestekTab = () => {
       .subscribe();
 
     return () => { supabase.removeChannel(ticketChannel); };
-  }, []);
+  }, [fetchTickets]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchTickets(nextPage, true);
+    setLoadingMore(false);
+  };
 
   const handleSubmit = async () => {
     if (!form.subject.trim() || !form.message.trim()) { toast.error("Konu ve mesaj zorunludur."); return; }
@@ -106,7 +134,6 @@ const DestekTab = () => {
       toast.success("Destek talebi oluşturuldu!");
       setForm({ subject: "", message: "" });
       setShowForm(false);
-      fetchTickets();
     }
     setSubmitting(false);
   };
@@ -136,7 +163,6 @@ const DestekTab = () => {
     });
     if (error) { toast.error("Mesaj gönderilemedi."); } else {
       setReply("");
-      // Realtime will handle adding the message
     }
     setSendingReply(false);
   };
@@ -221,6 +247,13 @@ const DestekTab = () => {
               )}
             </div>
           ))}
+          {hasMore && tickets.length > 0 && (
+            <div className="flex justify-center pt-4">
+              <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+                {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

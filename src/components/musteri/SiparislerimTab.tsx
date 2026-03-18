@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Package, RefreshCw } from "lucide-react";
+import { Package, RefreshCw, Loader2 } from "lucide-react";
 import { TableSkeleton } from "./MusteriSkeletons";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,6 +20,8 @@ interface Order {
   rfq_ref: string | null;
 }
 
+const PAGE_SIZE = 20;
+
 const statusColor = (s: string | null) => {
   switch (s) {
     case "Üretimde": return "bg-blue-500/10 text-blue-600 border-blue-200";
@@ -34,24 +36,51 @@ const SiparislerimTab = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async (pageNum: number, append: boolean) => {
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data } = await supabase
       .from("orders")
       .select("id, part_name, status, progress, quantity, order_date, deadline, rfq_ref")
-      .order("created_at", { ascending: false });
-    setOrders((data as Order[]) || []);
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    const newItems = (data as Order[]) || [];
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setOrders(prev => [...prev, ...newItems]);
+    else setOrders(newItems);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(0, false);
     const channel = supabase
       .channel("customer-orders-tab")
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => fetchOrders())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, (payload) => {
+        setOrders(prev => [payload.new as Order, ...prev]);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, (payload) => {
+        const updated = payload.new as Order;
+        setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "orders" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setOrders(prev => prev.filter(o => o.id !== deleted.id));
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [fetchOrders]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchOrders(nextPage, true);
+    setLoadingMore(false);
+  };
 
   const handleReorder = (order: Order) => {
     toast.info(`"${order.part_name}" için yeniden sipariş talebi oluşturuluyor...`);
@@ -117,6 +146,13 @@ const SiparislerimTab = () => {
           ))}
         </tbody>
       </table>
+      {hasMore && orders.length > 0 && (
+        <div className="flex justify-center pt-4">
+          <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+            {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense, Fragment } from "react";
+import { useEffect, useState, useCallback, lazy, Suspense, Fragment } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,11 @@ interface RFQ {
   user_id: string | null;
 }
 
+const PAGE_SIZE = 20;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const CAD_EXTS = ["stl", "obj", "step", "stp", "iges", "igs"];
+
+type FilterKey = "bekleyen" | "fiyatVerildi" | "onaylanan" | "reddedilen";
 
 const getDisplayStatus = (r: RFQ): string => {
   const s = r.status;
@@ -49,28 +52,103 @@ const statusColor = (s: string) => {
   }
 };
 
+const matchesFilter = (r: RFQ, filter: FilterKey): boolean => {
+  switch (filter) {
+    case "bekleyen": {
+      const s = r.status;
+      return !s || s === "Yeni" || s === "pending" || s === "Beklemede" || s === "Değerlendiriliyor";
+    }
+    case "fiyatVerildi":
+      return r.status === "Fiyat Verildi" && !r.customer_approved;
+    case "onaylanan":
+      return r.status === "Onaylandı";
+    case "reddedilen":
+      return r.status === "Reddedildi";
+  }
+};
+
 const TekliflerimTab = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("bekleyen");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchRfqs = async () => {
-    const { data } = await supabase
+  const fetchRfqs = useCallback(async (pageNum: number, append: boolean, filter: FilterKey) => {
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    let query = supabase
       .from("rfqs")
-      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at, files, user_id")
-      .order("created_at", { ascending: false });
-    setRfqs((data as RFQ[]) || []);
+      .select("id, service, material, quantity, status, date, quoted_price, price_valid_until, customer_approved, rejection_reason, created_at, files, user_id");
+
+    switch (filter) {
+      case "bekleyen":
+        query = query.or("status.in.(Yeni,pending,Beklemede,Değerlendiriliyor),status.is.null");
+        break;
+      case "fiyatVerildi":
+        query = query.eq("status", "Fiyat Verildi").eq("customer_approved", false);
+        break;
+      case "onaylanan":
+        query = query.eq("status", "Onaylandı");
+        break;
+      case "reddedilen":
+        query = query.eq("status", "Reddedildi");
+        break;
+    }
+
+    const { data } = await query.order("created_at", { ascending: false }).range(from, to);
+    const newItems = (data as RFQ[]) || [];
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setRfqs(prev => [...prev, ...newItems]);
+    else setRfqs(newItems);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    fetchRfqs();
+    fetchRfqs(0, false, activeFilter);
     const channel = supabase
       .channel("customer-rfqs-tab")
-      .on("postgres_changes", { event: "*", schema: "public", table: "rfqs" }, () => fetchRfqs())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "rfqs" }, (payload) => {
+        const newRfq = payload.new as RFQ;
+        if (matchesFilter(newRfq, activeFilter)) {
+          setRfqs(prev => [newRfq, ...prev]);
+        }
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rfqs" }, (payload) => {
+        const updated = payload.new as RFQ;
+        if (matchesFilter(updated, activeFilter)) {
+          setRfqs(prev => prev.map(r => r.id === updated.id ? updated : r));
+        } else {
+          setRfqs(prev => prev.filter(r => r.id !== updated.id));
+        }
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "rfqs" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setRfqs(prev => prev.filter(r => r.id !== deleted.id));
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [activeFilter, fetchRfqs]);
+
+  const handleTabChange = (val: string) => {
+    const filter = val as FilterKey;
+    setActiveFilter(filter);
+    setPage(0);
+    setRfqs([]);
+    setLoading(true);
+    fetchRfqs(0, false, filter);
+  };
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchRfqs(nextPage, true, activeFilter);
+    setLoadingMore(false);
+  };
 
   const handleApprove = async (rfqId: string) => {
     setApproving(rfqId);
@@ -83,32 +161,11 @@ const TekliflerimTab = () => {
       toast.error("Onaylama başarısız oldu.");
     } else {
       toast.success("Teklif onaylandı! Siparişe dönüştürülecek.");
-      fetchRfqs();
     }
     setApproving(null);
   };
 
-  const pending = rfqs.filter(r => {
-    const ds = getDisplayStatus(r);
-    return ds === "Yeni" || ds === "Beklemede" || ds === "Değerlendiriliyor";
-  });
-  const priced = rfqs.filter(r => r.status === "Fiyat Verildi" && !r.customer_approved);
-  const approved = rfqs.filter(r => r.status === "Onaylandı" || r.customer_approved);
-  const rejected = rfqs.filter(r => r.status === "Reddedildi");
-
   if (loading) return <TableSkeleton rows={4} cols={7} />;
-
-  if (rfqs.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <FileText size={40} className="mb-3 opacity-30" />
-        <p className="text-sm font-medium">Henüz teklif talebiniz bulunmuyor.</p>
-        <Link to="/teklif-al" className="mt-4">
-          <Button size="sm" className="gap-2"><Upload size={16} /> Teknik Çizim Yükle & Teklif Al</Button>
-        </Link>
-      </div>
-    );
-  }
 
   const RfqTable = ({ items }: { items: RFQ[] }) => {
     const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -122,7 +179,6 @@ const TekliflerimTab = () => {
         const { data } = await supabase.storage.from("cad-uploads").createSignedUrl(rawPath, 3600);
         if (data?.signedUrl) urls[filePath] = data.signedUrl;
         else {
-          // Try user/rfq folder
           const baseName = rawPath.split("/").pop() || rawPath;
           const dirs = [rfq.user_id ? `${rfq.user_id}/${rfq.id}` : null, `anonymous/${rfq.id}`].filter(Boolean) as string[];
           for (const dir of dirs) {
@@ -138,23 +194,33 @@ const TekliflerimTab = () => {
       setSignedUrls((prev) => ({ ...prev, [rfq.id]: "loaded", ...Object.fromEntries(Object.entries(urls).map(([k, v]) => [`${rfq.id}:${k}`, v])) }));
     };
 
-    if (items.length === 0) return <p className="text-sm text-muted-foreground py-8 text-center">Bu kategoride teklif bulunmuyor.</p>;
+    if (items.length === 0) return (
+      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <FileText size={40} className="mb-3 opacity-30" />
+        <p className="text-sm font-medium">Bu kategoride teklif bulunmuyor.</p>
+        <Link to="/teklif-al" className="mt-4">
+          <Button size="sm" className="gap-2"><Upload size={16} /> Teknik Çizim Yükle & Teklif Al</Button>
+        </Link>
+      </div>
+    );
+
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
-              <th className="pb-3 pr-4">ID</th>
-              <th className="pb-3 pr-4">Hizmet</th>
-              <th className="pb-3 pr-4">Malzeme</th>
-              <th className="pb-3 pr-4">Adet</th>
-              <th className="pb-3 pr-4">Fiyat Teklifi</th>
-              <th className="pb-3 pr-4">Durum</th>
-              <th className="pb-3 pr-4">Tarih</th>
-              <th className="pb-3">İşlem</th>
-            </tr>
-          </thead>
-          <tbody>
+      <>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
+                <th className="pb-3 pr-4">ID</th>
+                <th className="pb-3 pr-4">Hizmet</th>
+                <th className="pb-3 pr-4">Malzeme</th>
+                <th className="pb-3 pr-4">Adet</th>
+                <th className="pb-3 pr-4">Fiyat Teklifi</th>
+                <th className="pb-3 pr-4">Durum</th>
+                <th className="pb-3 pr-4">Tarih</th>
+                <th className="pb-3">İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
               {items.map((r) => {
                 const displayStatus = getDisplayStatus(r);
                 const cadFiles = (r.files || []).filter((f) => {
@@ -225,9 +291,17 @@ const TekliflerimTab = () => {
                   </Fragment>
                 );
               })}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+        {hasMore && items.length > 0 && (
+          <div className="flex justify-center pt-4">
+            <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+              {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+            </Button>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -240,17 +314,14 @@ const TekliflerimTab = () => {
         </Link>
       </div>
 
-      <Tabs defaultValue="bekleyen" className="w-full">
+      <Tabs value={activeFilter} onValueChange={handleTabChange} className="w-full">
         <TabsList className="bg-muted/50 h-auto p-1">
-          <TabsTrigger value="bekleyen" className="text-xs">Fiyat Bekleyenler ({pending.length})</TabsTrigger>
-          <TabsTrigger value="fiyatVerildi" className="text-xs">Fiyat Verildi ({priced.length})</TabsTrigger>
-          <TabsTrigger value="onaylanan" className="text-xs">Onaylananlar ({approved.length})</TabsTrigger>
-          <TabsTrigger value="reddedilen" className="text-xs">Reddedilenler ({rejected.length})</TabsTrigger>
+          <TabsTrigger value="bekleyen" className="text-xs">Fiyat Bekleyenler</TabsTrigger>
+          <TabsTrigger value="fiyatVerildi" className="text-xs">Fiyat Verildi</TabsTrigger>
+          <TabsTrigger value="onaylanan" className="text-xs">Onaylananlar</TabsTrigger>
+          <TabsTrigger value="reddedilen" className="text-xs">Reddedilenler</TabsTrigger>
         </TabsList>
-        <TabsContent value="bekleyen"><RfqTable items={pending} /></TabsContent>
-        <TabsContent value="fiyatVerildi"><RfqTable items={priced} /></TabsContent>
-        <TabsContent value="onaylanan"><RfqTable items={approved} /></TabsContent>
-        <TabsContent value="reddedilen"><RfqTable items={rejected} /></TabsContent>
+        <TabsContent value={activeFilter}><RfqTable items={rfqs} /></TabsContent>
       </Tabs>
     </div>
   );
