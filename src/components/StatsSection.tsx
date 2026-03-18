@@ -11,7 +11,7 @@ const stats = [
   { value: 15, suffix: "+", label: "Yıl Tecrübe", isDecimal: false },
 ];
 
-const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
+const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }) => {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -53,6 +53,10 @@ const StatCard = ({ stat }: { stat: typeof stats[number] }) => {
           borderColor: "rgba(232, 97, 10, 0.4)",
           boxShadow: "0 0 30px rgba(232, 97, 10, 0.15)",
         }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.15 * index }}
       >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
@@ -100,7 +104,7 @@ const StatsSection = () => {
         </div>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
-            <StatCard key={index} stat={stat} />
+            <StatCard key={index} stat={stat} index={index} />
           ))}
         </StaggerContainer>
       </div>

@@ -64,6 +64,23 @@ const materials = [
 
 const badges = ["50+ Malzeme Seçeneği", "Sertifikalı Tedarikçiler", "Malzeme Test Raporları"];
 
+/* ── Flip card CSS ── */
+const flipStyles = `
+.flip-card { perspective: 1000px; }
+.flip-card-inner {
+  position: relative;
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+  transform-style: preserve-3d;
+}
+.flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front,
+.flip-card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-card-back { transform: rotateY(180deg); }
+`;
+
 /* ── Mobile Material Card ── */
 const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
   const [flipped, setFlipped] = useState(false);
@@ -125,72 +142,85 @@ const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
   );
 };
 
-/* ── Desktop Material Card ── */
+/* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; index: number }) => {
   return (
-    <div className="relative h-[400px] md:h-[440px] overflow-hidden border border-border/30 group cursor-pointer">
-      <div className="absolute inset-0 z-10">
-        <BlurImage
-          src={mat.image}
-          alt={mat.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          disableScaleTransform
-        />
-        <div
-          className="absolute inset-0 transition-all duration-500"
-          style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%)",
-          }}
-        />
-      </div>
+    <div className="flip-card h-[400px] md:h-[440px] cursor-pointer">
+      <div className="flip-card-inner w-full h-full">
+        {/* Front face */}
+        <div className="flip-card-front absolute inset-0 overflow-hidden border border-border/30 group">
+          <div className="absolute inset-0 z-10">
+            <BlurImage
+              src={mat.image}
+              alt={mat.name}
+              className="w-full h-full object-cover transition-transform duration-700"
+              disableScaleTransform
+            />
+            <div
+              className="absolute inset-0 transition-all duration-500"
+              style={{
+                background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%)",
+              }}
+            />
+          </div>
 
-      <div className="absolute inset-0 bg-card" />
+          <div className="absolute inset-0 bg-card" />
 
-      <div className="absolute top-4 left-4 z-20">
-        <span
-          className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/90 font-mono"
-          style={{ background: mat.color, opacity: 0.9 }}
-        >
-          {mat.tag}
-        </span>
-      </div>
-
-      <div className="absolute top-0 right-0 p-5 text-[10px] z-20 font-mono text-foreground/20">
-        {String(index + 1).padStart(2, "0")}
-      </div>
-
-      <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
-        <div
-          className="w-12 h-1 mb-5 transition-all duration-300 group-hover:w-20"
-          style={{ background: mat.color }}
-        />
-        <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
-        <div className="text-[10px] tracking-[0.2em] mb-4 font-mono text-white/50">{mat.typeCode}</div>
-
-        <div className="flex gap-2 mb-5 flex-wrap">
-          {mat.applications.map((app) => (
-            <span key={app} className="text-[9px] px-2 py-0.5 border border-white/15 text-white/50 font-mono transition-colors duration-300 group-hover:border-white/30 group-hover:text-white/70">
-              {app}
+          <div className="absolute top-4 left-4 z-20">
+            <span
+              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/90 font-mono"
+              style={{ background: mat.color, opacity: 0.9 }}
+            >
+              {mat.tag}
             </span>
-          ))}
+          </div>
+
+          <div className="absolute top-0 right-0 p-5 text-[10px] z-20 font-mono text-foreground/20">
+            {String(index + 1).padStart(2, "0")}
+          </div>
+
+          <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
+            <div
+              className="w-12 h-1 mb-5 transition-all duration-300"
+              style={{ background: mat.color }}
+            />
+            <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
+            <div className="text-[10px] tracking-[0.2em] mb-4 font-mono text-white/50">{mat.typeCode}</div>
+
+            <div className="flex gap-2 mb-5 flex-wrap">
+              {mat.applications.map((app) => (
+                <span key={app} className="text-[9px] px-2 py-0.5 border border-white/15 text-white/50 font-mono">
+                  {app}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="pt-5 border-t border-white/10">
-          {mat.specs.map((spec) => (
-            <div key={spec.label} className="flex justify-between mb-2.5 font-mono" style={{ fontSize: "10px" }}>
-              <span className="text-white/50">{spec.label}</span>
-              <span className="text-white font-semibold">{spec.value}</span>
-            </div>
-          ))}
+        {/* Back face — specs table */}
+        <div className="flip-card-back absolute inset-0 overflow-hidden border border-border/30 bg-card flex flex-col justify-center p-8 md:p-10">
+          <div className="w-12 h-1 mb-6" style={{ background: mat.color }} />
+          <h3 className="text-xl font-bold text-foreground mb-2">{mat.name}</h3>
+          <div className="text-[10px] tracking-[0.2em] mb-6 font-mono text-muted-foreground">{mat.typeCode}</div>
+
+          <div className="border-t border-border pt-4">
+            {mat.specs.map((spec) => (
+              <div key={spec.label} className="flex justify-between py-3 border-b border-border/50 font-mono">
+                <span className="text-xs text-muted-foreground">{spec.label}</span>
+                <span className="text-sm font-semibold text-foreground">{spec.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 flex gap-2 flex-wrap">
+            {mat.applications.map((app) => (
+              <span key={app} className="text-[9px] px-2 py-1 border border-primary/30 text-primary font-mono">
+                {app}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-
-      <div
-        className="absolute inset-0 z-15 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at bottom, ${mat.color}15 0%, transparent 70%)`,
-        }}
-      />
     </div>
   );
 };
@@ -200,7 +230,7 @@ const MaterialsSection = () => {
 
   return (
     <section id="malzemeler" className="py-16 md:py-24 min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
-      <style>{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
+      <style>{flipStyles}{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       {/* Subtle grid */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -221,11 +251,11 @@ const MaterialsSection = () => {
             <div className="w-10 h-px bg-primary" />
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
-            Çalıştığımız Malzemeler
+            {"Çalıştığımız Malzemeler"}
           </h2>
           <p className="text-sm md:text-base max-w-lg mx-auto text-foreground/60">
             {isMobile
-              ? <>50'den fazla malzeme seçeneği · <span className="text-foreground/80">Dokunarak detayları görün</span></>
+              ? <>{"50'den fazla malzeme seçeneği · "}<span className="text-foreground/80">{"Dokunarak detayları görün"}</span></>
               : "50'den fazla materyal seçeneği ile projelerinizin teknik gereksinimlerine ve sektör standartlarına yanıt veren geniş hammadde kütüphanesi"
             }
           </p>
@@ -244,7 +274,7 @@ const MaterialsSection = () => {
             <span key={badge} className="inline-flex items-center gap-2 text-xs md:text-sm text-foreground/70">
               <Check className="w-3.5 md:w-4 h-3.5 md:h-4 text-primary flex-shrink-0" />
               {badge}
-              {!isMobile && i < 2 && <span className="ml-4 text-foreground/15">·</span>}
+              {!isMobile && i < 2 && <span className="ml-4 text-foreground/15">{"·"}</span>}
             </span>
           ))}
           <a

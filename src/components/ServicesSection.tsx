@@ -7,7 +7,6 @@ import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
-import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 import { BlurImage } from "./BlurImage";
 
 const services = [
@@ -127,9 +126,15 @@ const ServicesSection = () => {
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                className="min-w-[340px] md:min-w-[380px] snap-start flex-shrink-0"
+                className="min-w-[340px] md:min-w-[380px] snap-start flex-shrink-0 service-card"
+                data-index={i}
+                style={{
+                  transform: activeIndex === i ? "scale(1)" : "scale(0.95)",
+                  opacity: activeIndex === i ? 1 : 0.7,
+                  transition: "transform 0.4s ease, opacity 0.4s ease",
+                }}
               >
-                <ServiceCard service={s} />
+                <ServiceCard service={s} index={i} />
               </div>
             ))}
           </div>
@@ -201,40 +206,73 @@ const ServicesSection = () => {
   );
 };
 
-const ServiceCard = ({ service }: { service: (typeof services)[number] }) => (
-  <motion.div
-    className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 h-full"
-    whileHover={{ y: -4 }}
-    transition={{ type: "spring", stiffness: 300 }}
-  >
-    {/* Image — outer motion.div for hover scale, inner overflow-hidden */}
-    <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
-      <div className="relative h-52 overflow-hidden">
-        <BlurImage
-          src={service.image}
-          alt={service.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
+const ServiceCard = ({ service, index }: { service: (typeof services)[number]; index: number }) => {
+  // Alternate clipPath direction
+  const clipFrom = index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)";
+  const clipTo = index % 2 === 0 ? "inset(0% 0 0 0)" : "inset(0 0% 0 0)";
+
+  return (
+    <motion.div
+      className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 h-full"
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      {/* Image with clipPath mask reveal */}
+      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
+        <motion.div
+          className="relative h-52 overflow-hidden"
+          initial={{ clipPath: clipFrom }}
+          whileInView={{ clipPath: clipTo }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <BlurImage
+            src={service.image}
+            alt={service.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
+        </motion.div>
+      </motion.div>
+
+      {/* Content with text stagger */}
+      <div className="p-6">
+        <motion.h3
+          className="heading-industrial text-lg mb-3"
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+        >
+          {service.title}
+        </motion.h3>
+        <motion.p
+          className="text-foreground/60 text-sm leading-relaxed mb-6"
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          {service.description}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
+          <Link
+            to={service.link}
+            className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
+          >
+            {"Teknik Detaylar"}
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
       </div>
     </motion.div>
-
-    {/* Content */}
-    <div className="p-6">
-      <h3 className="heading-industrial text-lg mb-3">{service.title}</h3>
-      <p className="text-foreground/60 text-sm leading-relaxed mb-6">
-        {service.description}
-      </p>
-
-      <Link
-        to={service.link}
-        className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
-      >
-        {"Teknik Detaylar"}
-        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </div>
-  </motion.div>
-);
+  );
+};
 
 export default ServicesSection;

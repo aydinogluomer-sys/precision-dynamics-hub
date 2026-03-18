@@ -17,7 +17,7 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 /**
  * Thin shadow separator between consecutive dark sections.
@@ -65,7 +65,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 4 — Certifications (dark) */}
-        <ParallaxSection index={4}>
+        <ParallaxSection index={4} variant="slide-up">
           <CertificationsSection />
         </ParallaxSection>
 
@@ -83,22 +83,22 @@ const Index = () => {
           >
             <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
               <span className="text-xs uppercase tracking-[0.3em] font-mono mb-4" style={{ color: "hsl(var(--primary))" }}>
-                Mühendislik Hizmetleri
+                {"Mühendislik Hizmetleri"}
               </span>
               <h2 className="text-3xl md:text-5xl font-bold text-white">
-                <span>Çözümlerimizi Keşfedin</span>
+                <span>{"Çözümlerimizi Keşfedin"}</span>
               </h2>
             </div>
           </AuroraBackground>
         </ParallaxSection>
 
         {/* 6 — Services (light) */}
-        <ParallaxSection index={7}>
+        <ParallaxSection index={7} variant="wipe-mask">
           <ServicesSection />
         </ParallaxSection>
 
         {/* 7 — Industries (light) */}
-        <ParallaxSection index={8}>
+        <ParallaxSection index={8} variant="color-fade">
           <IndustriesSection />
         </ParallaxSection>
 
@@ -113,7 +113,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 10 — Capabilities (light) */}
-        <ParallaxSection index={11}>
+        <ParallaxSection index={11} variant="depth-3d">
           <CapabilitiesSection />
         </ParallaxSection>
 
