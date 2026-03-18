@@ -47,7 +47,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <main>
+      <main className="relative z-10">
         {/* 1 — Hero (dark) */}
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
