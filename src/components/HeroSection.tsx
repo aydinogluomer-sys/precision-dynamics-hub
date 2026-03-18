@@ -264,7 +264,7 @@ const HeroSection = () => {
                     className={`w-16 h-16 rounded-full flex items-center justify-center ${
                     isDragging ? "bg-primary/20" : "bg-white/5"}`
                     }
-                    style={{ border: `1px solid ${isDragging ? "#099197" : "rgba(9,145,151,0.2)"}` }}
+                    style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
                     animate={{ y: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}>
                     <Upload className="w-7 h-7 text-primary" />
