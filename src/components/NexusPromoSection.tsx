@@ -1,13 +1,11 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { TextReveal } from "./ScrollReveal";
 import {
   LayoutDashboard, FileText, Package, Factory,
   ShieldCheck, ArrowRight, BarChart3,
-  Clock, CheckCircle2, Upload, Eye, SkipForward
+  Clock, CheckCircle2, Upload, Eye
 } from "lucide-react";
-import cncVideo from "@/assets/cnc-machining-video.mp4";
 
 /* Fake dashboard data for the mockup */
 const recentOrders = [
@@ -30,117 +28,12 @@ const features = [
 ];
 
 const NexusPromoSection = () => {
-  const [videoActive, setVideoActive] = useState(true);
-  const [videoEnded, setVideoEnded] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const hasLockedRef = useRef(false);
-
-  // Lock scroll when video section enters viewport
-  useEffect(() => {
-    if (!videoActive || videoEnded) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasLockedRef.current) {
-          hasLockedRef.current = true;
-          document.body.style.overflow = "hidden";
-          videoRef.current?.play().catch(() => {});
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, [videoActive, videoEnded]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, []);
-
-  const handleVideoEnd = useCallback(() => {
-    setVideoEnded(true);
-    setVideoActive(false);
-    document.body.style.overflow = "unset";
-  }, []);
-
-  const handleSkip = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-    setVideoEnded(true);
-    setVideoActive(false);
-    document.body.style.overflow = "unset";
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
     >
-      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
 
-      {/* Full-screen video overlay */}
-      <AnimatePresence>
-        {videoActive && !videoEnded && (
-          <motion.div
-            className="absolute inset-0 z-50 flex items-center justify-center"
-            style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <video
-              ref={videoRef}
-              src={cncVideo}
-              autoPlay
-              muted
-              playsInline
-              onEnded={handleVideoEnd}
-              className="w-full h-full object-cover"
-            />
-
-            {/* Skip button */}
-            <motion.button
-              onClick={handleSkip}
-              className="absolute bottom-8 right-8 flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-colors"
-              style={{
-                color: "hsl(var(--forge-silver))",
-                borderColor: "rgba(255,255,255,0.2)",
-                backgroundColor: "rgba(0,0,0,0.4)",
-                backdropFilter: "blur(8px)",
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
-              whileHover={{ borderColor: "rgba(255,255,255,0.5)" }}
-            >
-              <span>Atla</span>
-              <SkipForward className="w-3.5 h-3.5" />
-            </motion.button>
-
-            {/* Progress bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
-              <motion.div
-                className="h-full"
-                style={{ backgroundColor: "hsl(var(--primary))" }}
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: videoRef.current?.duration || 10, ease: "linear" }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-20 md:py-28">
