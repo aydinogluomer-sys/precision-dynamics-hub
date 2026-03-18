@@ -46,7 +46,7 @@ const ParallaxSection = ({
     [1, 0.92]
   );
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast ? [1, 1, 1] :
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast || prefersReduced ? [1, 1, 1] :
     variant === "zoom-out-blur" ? [1, 1, 0] :
     variant === "zoom-in" ? [1, 1, 0] :
     variant === "slide-up" ? [1, 1, 0] :
