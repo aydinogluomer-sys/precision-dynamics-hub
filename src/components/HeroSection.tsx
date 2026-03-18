@@ -130,7 +130,7 @@ const HeroSection = () => {
           <motion.div
             className="relative p-4 sm:p-8 rounded-2xl"
             style={{
-              background: "radial-gradient(circle at center, rgba(13,28,67,0.6) 0%, transparent 100%)",
+              background: "radial-gradient(circle at center, rgba(22,32,56,0.6) 0%, transparent 100%)",
               backdropFilter: "blur(4px)"
             }}
             variants={containerVariants}
