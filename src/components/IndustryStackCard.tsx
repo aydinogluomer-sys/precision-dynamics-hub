@@ -52,6 +52,7 @@ export function IndustryStackCard({
   const springRotateY = useSpring(rotateYVal, { stiffness: 200, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (prefersReduced) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const yPos = (e.clientY - rect.top) / rect.height - 0.5;
