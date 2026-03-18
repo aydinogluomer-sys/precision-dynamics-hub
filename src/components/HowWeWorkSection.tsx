@@ -81,10 +81,11 @@ const HowWeWorkSection = () => {
     offset: ["start start", "end end"],
   });
 
+  const noHorizontal = isMobile || prefersReduced;
   const rawX = useTransform(
     scrollYProgress,
     [0, 1],
-    isMobile ? ["0%", "0%"] : ["0%", "-75%"]
+    noHorizontal ? ["0%", "0%"] : ["0%", "-75%"]
   );
   const x = useSpring(rawX, { stiffness: 200, damping: 40 });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
