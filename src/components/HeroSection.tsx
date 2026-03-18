@@ -50,7 +50,7 @@ const charVariants = {
   enter: (i: number) => ({
     y: 0,
     opacity: 1,
-    transition: { delay: i * 0.02, duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: i * 0.02, duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
   }),
   initial: { y: "-100%", opacity: 0 },
   exit: (i: number) => ({
