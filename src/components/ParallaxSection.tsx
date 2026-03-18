@@ -1,32 +1,24 @@
 import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
 import { useState } from "react";
+
+type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in";
 
 interface ParallaxSectionProps {
   children: ReactNode;
   className?: string;
   index?: number;
-  /** Last section — disables scale-down effect */
   isLast?: boolean;
+  variant?: TransitionVariant;
   style?: React.CSSProperties;
 }
 
-/**
- * Stacking-cards parallax wrapper (OneDollarLesson style).
- *
- * Every section is `position: sticky; top: 0` with an increasing z-index.
- * As the user scrolls past a section it scales down, fades, and gains
- * border-radius — looking like a card being pushed to the back of a stack
- * while the next section slides up naturally over it.
- *
- * Performance: `will-change` is only applied while the section is actively
- * animating to avoid holding GPU memory for off-screen sections.
- */
 const ParallaxSection = ({
   children,
   className = "",
   index = 0,
   isLast = false,
+  variant = "stack",
   style,
 }: ParallaxSectionProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,28 +29,40 @@ const ParallaxSection = ({
     offset: ["start start", "end start"],
   });
 
-  // Activate will-change only while in animation range
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const active = v > 0.01 && v < 0.99;
     if (active !== isAnimating) setIsAnimating(active);
   });
 
-  // Last section: no scale-down (nothing comes after)
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 1],
-    isLast ? [1, 1] : [1, 0.92]
+  const scale = useTransform(scrollYProgress, [0, 1], isLast ? [1, 1] :
+    variant === "zoom-out-blur" ? [1, 0.85] :
+    variant === "zoom-in" ? [1, 1.08] :
+    variant === "slide-up" ? [1, 1] :
+    [1, 0.92]
   );
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    isLast ? [1, 1, 1] : [1, 1, 0.4]
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast ? [1, 1, 1] :
+    variant === "zoom-out-blur" ? [1, 1, 0] :
+    variant === "zoom-in" ? [1, 1, 0] :
+    variant === "slide-up" ? [1, 1, 0] :
+    [1, 1, 0.4]
   );
-  const borderRadius = useTransform(
-    scrollYProgress,
-    [0, 1],
-    isLast ? [0, 0] : [0, 16]
+
+  const borderRadius = useTransform(scrollYProgress, [0, 1],
+    isLast || variant !== "stack" ? [0, 0] : [0, 16]
   );
+
+  const y = useTransform(scrollYProgress, [0, 1],
+    variant === "slide-up" && !isLast ? [0, -60] : [0, 0]
+  );
+
+  const blurValue = useTransform(scrollYProgress, [0, 1],
+    variant === "zoom-out-blur" && !isLast ? [0, 8] : [0, 0]
+  );
+
+  const filter = useMotionTemplate`blur(${blurValue}px)`;
+
+  const useBlur = variant === "zoom-out-blur" && !isLast;
 
   return (
     <div
@@ -74,8 +78,10 @@ const ParallaxSection = ({
           scale,
           opacity,
           borderRadius,
+          y,
+          filter: useBlur ? filter : undefined,
           transformOrigin: "center center",
-          willChange: isAnimating ? "transform, opacity" : "auto",
+          willChange: isAnimating ? "transform, opacity, filter" : "auto",
           overflow: "hidden",
           ...style,
         }}

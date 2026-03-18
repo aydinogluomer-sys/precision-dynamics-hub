@@ -39,7 +39,7 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <main>
         {/* 1 — Hero (dark) */}
-        <ParallaxSection index={1}>
+        <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection />
         </ParallaxSection>
 
@@ -50,7 +50,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 3 — HowWeWork (light) */}
-        <ParallaxSection index={3}>
+        <ParallaxSection index={3} variant="slide-up">
           <HowWeWorkSection />
         </ParallaxSection>
 
@@ -61,7 +61,7 @@ const Index = () => {
 
         {/* 5 — Video (dark) — shadow after dark→dark */}
         <DarkSeparator />
-        <ParallaxSection index={5}>
+        <ParallaxSection index={5} variant="zoom-in">
           <VideoScrollSection />
         </ParallaxSection>
 
@@ -76,7 +76,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 8 — Materials (light) */}
-        <ParallaxSection index={8}>
+        <ParallaxSection index={8} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
 
@@ -91,7 +91,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 11 — Stats (dark) */}
-        <ParallaxSection index={11}>
+        <ParallaxSection index={11} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
 
