@@ -69,11 +69,6 @@ const Index = () => {
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* 5 — Video (dark) */}
-        <DarkSeparator />
-        <ParallaxSection index={5} variant="zoom-in">
-          <VideoScrollSection />
-        </ParallaxSection>
 
         {/* 5.5 — Aurora transition (dark→light bridge) */}
         <ParallaxSection index={6}>
