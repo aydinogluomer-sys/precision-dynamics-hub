@@ -1,4 +1,4 @@
-import { Activity, Sun, Moon, Home, ChevronRight } from "lucide-react";
+import { Activity, Sun, Moon, Home, ChevronRight, PanelLeft, PanelLeftClose } from "lucide-react";
 import MusteriNotifications from "./MusteriNotifications";
 import { useState, useEffect, ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -21,9 +21,11 @@ interface Props {
   activeTab: string;
   mobileSidebar?: ReactNode;
   onTabChange?: (tab: string) => void;
+  sidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
 }
 
-const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange }: Props) => {
+const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed, onToggleSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -35,6 +37,13 @@ const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange }: Props) => {
       <header className="h-14 border-b dark:border-[#334155] border-slate-200 dark:bg-[#0F172A] bg-white flex items-center justify-between px-4">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           {mobileSidebar}
+          <button
+            onClick={onToggleSidebar}
+            className="hidden lg:flex p-1.5 rounded-lg dark:text-slate-400 text-slate-500 hover:text-[#0AA2CD] dark:hover:bg-[#1E293B] hover:bg-slate-100 transition-colors"
+            title={sidebarCollapsed ? "Kenar çubuğunu aç" : "Kenar çubuğunu kapat"}
+          >
+            {sidebarCollapsed ? <PanelLeft className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
+          </button>
           <h2 className="font-black dark:text-white text-slate-800 text-xs sm:text-sm tracking-wider uppercase truncate">
             {tabTitles[activeTab] || "Müşteri Paneli"}
           </h2>
@@ -63,7 +72,6 @@ const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange }: Props) => {
         </div>
       </header>
 
-      {/* Breadcrumb - only show when not on Genel Bakış */}
       {activeTab !== "genel" && (
         <nav className="h-9 px-4 flex items-center gap-1.5 text-[11px] dark:bg-[#0B1120] bg-slate-50 border-b dark:border-[#1E293B] border-slate-100">
           <button
