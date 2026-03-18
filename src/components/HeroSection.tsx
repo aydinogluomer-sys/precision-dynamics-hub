@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Upload } from "lucide-react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
+import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import MagneticButton from "./MagneticButton";
 import { TextReveal } from "./ScrollReveal";
 import { toast } from "sonner";
@@ -63,8 +64,6 @@ const charVariants = {
 };
 
 const HeadlineStagger = ({ text }: { text: string }) => {
-  const lines = text.split("\n");
-  // First 2 words get char stagger, rest get word fade
   const allWords = text.replace(/\n/g, " ").split(" ");
   const staggerWords = allWords.slice(0, 2);
   const restWords = allWords.slice(2);
@@ -72,7 +71,6 @@ const HeadlineStagger = ({ text }: { text: string }) => {
 
   return (
     <div className="flex flex-col items-start">
-      {/* Character-staggered portion */}
       <span className="inline-flex flex-wrap">
         {staggerChars.map((char, i) => (
           <motion.span
@@ -94,7 +92,6 @@ const HeadlineStagger = ({ text }: { text: string }) => {
           </motion.span>
         ))}
       </span>
-      {/* Remaining words — simple fade */}
       {restWords.length > 0 && (
         <motion.span
           initial={{ opacity: 0, y: 8 }}
@@ -158,13 +155,23 @@ interface HeroSectionProps {
 const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const { scrollY } = useScroll();
-  const bgY = useTransform(scrollY, [0, 800], [0, 200]);
-  const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
-  const navigate = useNavigate();
 
+  // Layered parallax — 3 speeds
+  const videoY = useTransform(scrollY, [0, 800], [0, 160]);    // 0.2x
+  const gridY = useTransform(scrollY, [0, 800], [0, 400]);     // 0.5x
+  const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
+
+  // 3D mouse perspective
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], [3, -3]);
+  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], [-3, 3]);
+  const rotateX = useSpring(rawRotateX, { stiffness: 150, damping: 20 });
+  const rotateY = useSpring(rawRotateY, { stiffness: 150, damping: 20 });
+
+  const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const materialCountUp = useCountUp(50);
 
   useEffect(() => {
@@ -173,6 +180,17 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }, [mouseX, mouseY]);
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(0);
+    mouseY.set(0);
+  }, [mouseX, mouseY]);
 
   const validateFile = (file: File): string | null => {
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
@@ -218,20 +236,25 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
-      {/* Parallax Background */}
-      <motion.div className="absolute inset-0 z-0" style={{ y: bgY }}>
-        <img
-          src={heroBg}
-          alt="CNC precision machining"
-          className="w-full h-full object-cover scale-110"
-          loading="eager"
+      {/* Video Background — 0.2x parallax */}
+      <motion.div className="absolute inset-0 z-0" style={{ y: videoY }}>
+        <video
+          src={cncVideo}
+          poster={heroBg}
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="none"
+          className="w-full h-[120%] object-cover"
         />
       </motion.div>
 
-      {/* Grid Pattern */}
-      <div
+      {/* Grid Pattern — 0.5x parallax */}
+      <motion.div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
+          y: gridY,
           backgroundImage:
             "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
@@ -248,7 +271,18 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         }}
       />
 
-      <div className="container-industrial relative z-10">
+      {/* 3D Mouse Perspective Wrapper */}
+      <motion.div
+        className="container-industrial relative z-10 w-full"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          transformPerspective: 1200,
+          transformStyle: "preserve-3d" as const,
+        }}
+      >
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Content */}
           <motion.div
@@ -534,7 +568,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <motion.div

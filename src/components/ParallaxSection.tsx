@@ -2,7 +2,7 @@ import { useRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
 import { useState } from "react";
 
-type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in";
+type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in" | "wipe-mask" | "color-fade" | "depth-3d";
 
 interface ParallaxSectionProps {
   children: ReactNode;
@@ -38,6 +38,9 @@ const ParallaxSection = ({
     variant === "zoom-out-blur" ? [1, 0.85] :
     variant === "zoom-in" ? [1, 1.08] :
     variant === "slide-up" ? [1, 1] :
+    variant === "depth-3d" ? [1, 0.8] :
+    variant === "wipe-mask" ? [1, 1] :
+    variant === "color-fade" ? [1, 0.92] :
     [1, 0.92]
   );
 
@@ -45,6 +48,9 @@ const ParallaxSection = ({
     variant === "zoom-out-blur" ? [1, 1, 0] :
     variant === "zoom-in" ? [1, 1, 0] :
     variant === "slide-up" ? [1, 1, 0] :
+    variant === "color-fade" ? [1, 0.8, 0] :
+    variant === "depth-3d" ? [1, 1, 0] :
+    variant === "wipe-mask" ? [1, 1, 1] :
     [1, 1, 0.4]
   );
 
@@ -60,9 +66,16 @@ const ParallaxSection = ({
     variant === "zoom-out-blur" && !isLast ? [0, 8] : [0, 0]
   );
 
+  // Wipe mask clip path
+  const clipProgress = useTransform(scrollYProgress, [0, 1],
+    variant === "wipe-mask" && !isLast ? [0, 100] : [0, 0]
+  );
+  const clipPath = useMotionTemplate`inset(0 0 ${clipProgress}% 0)`;
+
   const filter = useMotionTemplate`blur(${blurValue}px)`;
 
   const useBlur = variant === "zoom-out-blur" && !isLast;
+  const useClip = variant === "wipe-mask" && !isLast;
 
   return (
     <div
@@ -80,7 +93,8 @@ const ParallaxSection = ({
           borderRadius,
           y,
           filter: useBlur ? filter : undefined,
-          transformOrigin: "center center",
+          clipPath: useClip ? clipPath : undefined,
+          transformOrigin: variant === "depth-3d" ? "center bottom" : "center center",
           willChange: isAnimating ? "transform, opacity, filter" : "auto",
           overflow: "hidden",
           ...style,
