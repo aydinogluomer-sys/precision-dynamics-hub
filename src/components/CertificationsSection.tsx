@@ -10,8 +10,8 @@ const certifications = [
 
 const CertificationsSection = () => {
   return (
-    <section id="sertifikalar" className="py-10 md:py-14 border-y border-border" style={{ backgroundColor: "#3d5a5b" }}>
-      <style>{`.dark #sertifikalar { background-color: hsl(var(--moody-teal)) !important; }`}</style>
+    <section id="sertifikalar" className="py-10 md:py-14 border-y border-border" style={{ backgroundColor: "hsl(var(--sw-slate))" }}>
+      <style>{`.dark #sertifikalar { background-color: hsl(var(--sw-slate)) !important; }`}</style>
       <div className="container-industrial">
         <motion.div
           className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
