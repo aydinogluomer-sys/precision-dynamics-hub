@@ -33,7 +33,7 @@ const stats = [
 
 const WhyUsSection = () => {
   return (
-    <section id="neden-biz" className="relative overflow-hidden" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+    <section id="neden-biz" className="min-h-screen relative overflow-hidden flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
       <style>{`.dark #neden-biz { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
       {/* Stats Bar */}
       <div className="border-b border-border/50">

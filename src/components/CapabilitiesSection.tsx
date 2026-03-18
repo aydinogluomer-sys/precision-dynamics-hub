@@ -12,7 +12,7 @@ const equipment = [
 
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+    <section id="kabiliyetler" className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
