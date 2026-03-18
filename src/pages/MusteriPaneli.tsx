@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -29,10 +29,13 @@ interface Profile {
 
 const MusteriPaneli = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "genel";
+  const setTab = (tab: string) => setSearchParams({ tab }, { replace: true });
+
   const [user, setUser] = useState<SupaUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("genel");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
@@ -83,10 +86,10 @@ const MusteriPaneli = () => {
   return (
     <div className="min-h-screen flex dark:bg-[#0F172A] bg-slate-50 dark:text-white text-slate-800">
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
+      <div className={`hidden lg:block transition-all duration-300 ${sidebarCollapsed ? "w-0 overflow-hidden" : ""}`}>
         <MusteriSidebar
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={setTab}
           collapsed={sidebarCollapsed}
           displayName={displayName}
           userEmail={userEmail}
@@ -97,11 +100,13 @@ const MusteriPaneli = () => {
       <div className="flex-1 flex flex-col min-w-0">
         <MusteriHeader
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={setTab}
+          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={() => setSidebarCollapsed(prev => !prev)}
           mobileSidebar={
             <MusteriMobileSidebar
               activeTab={activeTab}
-              onTabChange={setActiveTab}
+              onTabChange={setTab}
               displayName={displayName}
               userEmail={userEmail}
               onLogout={handleLogout}
