@@ -160,7 +160,7 @@ const TestimonialsSection = () => {
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,28,67,0.4)" }}>
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(13,43,82,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>

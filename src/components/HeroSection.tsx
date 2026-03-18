@@ -319,7 +319,7 @@ const HeroSection = () => {
                 variants={statItem}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(22,32,56,0.4)",
+                  background: "rgba(13,43,82,0.4)",
                   backdropFilter: "blur(10px)",
                   border: "1px solid rgba(0,113,144,0.1)"
                 }}>

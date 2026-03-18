@@ -64,8 +64,8 @@ const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="sss" className="section-industrial border-y border-border" style={{ backgroundColor: "rgba(228,237,237,0.5)" }}>
-      <style>{`.dark #sss { background-color: hsl(var(--section-mist)) !important; }`}</style>
+    <section id="sss" className="section-industrial border-y border-border" style={{ backgroundColor: "hsl(var(--sw-mist-cool))" }}>
+      <style>{`.dark #sss { background-color: hsl(var(--sw-mist-cool)) !important; }`}</style>
       <div className="container-industrial">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
           {/* FAQ Column */}

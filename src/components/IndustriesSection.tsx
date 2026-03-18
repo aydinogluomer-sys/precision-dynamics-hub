@@ -190,8 +190,8 @@ const IndustryCard = ({
         </div>
       </div>
 
-      <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "rgba(212,165,116,0.12)" }}>
-        <span className="text-technical text-xs font-semibold" style={{ color: "#3d5a5b" }}>{industry.highlight}</span>
+      <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "hsl(var(--sw-sienna) / 0.08)" }}>
+        <span className="text-technical text-xs font-semibold" style={{ color: "hsl(var(--sw-medici))" }}>{industry.highlight}</span>
       </div>
     </motion.div>);
 
