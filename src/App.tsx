@@ -91,9 +91,11 @@ const AnimatedRoutes = () => {
 };
 
 import ChatBot from "@/components/ChatBot";
+import CursorFollower from "@/components/CursorFollower";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <CursorFollower />
     <TooltipProvider>
       <Toaster />
       <Sonner />

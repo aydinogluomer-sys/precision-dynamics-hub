@@ -1,7 +1,8 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { TextReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
+import { StaggerContainer, StaggerItem } from "./ScrollReveal";
+import SectionHeader from "./SectionHeader";
 
 const stats = [
   { value: 35, suffix: "+", label: "CNC Tezgâh", isDecimal: false },
@@ -89,11 +90,14 @@ const StatsSection = () => {
         }}
       />
       <div className="container-industrial relative z-10">
-        <TextReveal className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            Rakamlarla Mas Technic
-          </h2>
-        </TextReveal>
+        <div className="mb-16">
+          <SectionHeader
+            tag="Rakamlar"
+            title="Rakamlarla Mas Technic"
+            align="center"
+            titleClassName="text-3xl md:text-4xl font-bold text-white"
+          />
+        </div>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <StatCard key={index} stat={stat} />

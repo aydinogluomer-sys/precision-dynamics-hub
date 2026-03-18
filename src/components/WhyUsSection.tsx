@@ -1,7 +1,6 @@
-import { Check, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { TextReveal } from "./ScrollReveal";
+import { Check } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import { BlurImage } from "./BlurImage";
@@ -33,8 +32,26 @@ const stats = [
 ];
 
 const WhyUsSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "center center"],
+  });
+
+  const clipPath = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
+  );
+  const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+
   return (
-    <section id="neden-biz" className="min-h-screen relative overflow-hidden flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+    <section
+      ref={sectionRef}
+      id="neden-biz"
+      className="min-h-screen relative overflow-hidden flex flex-col justify-center"
+      style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
+    >
       <style>{`.dark #neden-biz { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
       {/* Stats Bar */}
       <div className="border-b border-border/50">
@@ -49,10 +66,16 @@ const WhyUsSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-bold mb-1 font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
+                <div
+                  className="text-3xl md:text-4xl font-bold mb-1 font-mono"
+                  style={{ color: "hsl(var(--forge-molten))" }}
+                >
                   {stat.value}
                 </div>
-                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium" style={{ color: "hsl(var(--forge-silver))" }}>
+                <div
+                  className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium"
+                  style={{ color: "hsl(var(--forge-silver))" }}
+                >
                   {stat.label}
                 </div>
               </motion.div>
@@ -74,16 +97,21 @@ const WhyUsSection = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-primary" />
               <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
-                Avantajlar
+                {"Avantajlar"}
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
-              Endüstri Liderlerinin<br />
-              Mas Technic'i<br />
-              Tercih Etme Nedenleri.
+              {"Endüstri Liderlerinin"}
+              <br />
+              {"Mas Technic'i"}
+              <br />
+              {"Tercih Etme Nedenleri."}
             </h2>
-            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "hsl(var(--forge-silver))" }}>
-              Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz.
+            <p
+              className="text-sm leading-relaxed mb-10 max-w-md"
+              style={{ color: "hsl(var(--forge-silver))" }}
+            >
+              {"Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz."}
             </p>
 
             <div className="space-y-6">
@@ -100,15 +128,22 @@ const WhyUsSection = () => {
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
-                    <p className="text-xs leading-relaxed" style={{ color: "hsl(var(--forge-silver) / 0.7)" }}>{adv.desc}</p>
+                    <h4 className="font-semibold text-sm text-white mb-0.5">
+                      {adv.title}
+                    </h4>
+                    <p
+                      className="text-xs leading-relaxed"
+                      style={{ color: "hsl(var(--forge-silver) / 0.7)" }}
+                    >
+                      {adv.desc}
+                    </p>
                   </div>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          {/* Right: Images */}
+          {/* Right: Images with scroll-driven clipPath reveal */}
           <motion.div
             className="relative"
             initial={{ opacity: 0, x: 20 }}
@@ -117,18 +152,17 @@ const WhyUsSection = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="relative">
-              <BlurImage
-                src={cncWorkshop}
-                alt="CNC Üretim Atölyesi"
-                className="w-full h-[350px] md:h-[450px] object-cover"
-              />
-              {/* Overlapping smaller image */}
+              <motion.div style={{ clipPath }}>
+                <BlurImage
+                  src={cncWorkshop}
+                  alt="CNC Üretim Atölyesi"
+                  className="w-full h-[350px] md:h-[450px] object-cover"
+                />
+              </motion.div>
+              {/* Overlapping smaller image with scale animation */}
               <motion.div
                 className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-forge-gunmetal shadow-2xl"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
+                style={{ scale: imageScale }}
               >
                 <BlurImage
                   src={qualityControl}

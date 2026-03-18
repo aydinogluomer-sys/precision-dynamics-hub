@@ -17,6 +17,7 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { useState, useEffect } from "react";
 
 /**
  * Thin shadow separator between consecutive dark sections.
@@ -33,14 +34,23 @@ const DarkSeparator = () => (
 );
 
 const Index = () => {
+  const [isFirstVisit] = useState(() => {
+    const visited = sessionStorage.getItem("mas_visited");
+    if (!visited) {
+      sessionStorage.setItem("mas_visited", "1");
+      return true;
+    }
+    return false;
+  });
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <main>
+      <main className="relative z-10">
         {/* 1 — Hero (dark) */}
         <ParallaxSection index={1} variant="zoom-out-blur">
-          <HeroSection />
+          <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
         {/* 2 — NexusPromo (dark) */}
@@ -123,7 +133,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 14 — FinalCTA (dark, last) */}
-        <ParallaxSection index={15} isLast>
+        <ParallaxSection index={15} isLast className="relative z-10">
           <FinalCTASection />
         </ParallaxSection>
       </main>

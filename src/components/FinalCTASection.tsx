@@ -86,7 +86,10 @@ const FinalCTASection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1] }}
           >
-            Bir Sonraki Kritik Projenize<br />Başlamaya Hazır mısınız?
+            <span>{"Bir Sonraki "}</span>
+            <span style={{ background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{"Kritik"}</span>
+            <span>{" Projenize"}</span><br />
+            <span>{"Başlamaya Hazır mısınız?"}</span>
           </motion.h2>
 
           <motion.p

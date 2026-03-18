@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 const certifications = [
   "ISO 9001:2015",
   "AS9100D",
@@ -8,32 +6,48 @@ const certifications = [
   "NIST 800-171",
 ];
 
+const separator = " · ";
+const marqueeContent = certifications.flatMap((cert, i) => [
+  cert,
+  ...(i < certifications.length - 1 ? [separator] : [separator]),
+]);
+
 const CertificationsSection = () => {
   return (
-    <section id="sertifikalar" className="py-10 md:py-14 border-y border-border min-h-screen flex items-center" style={{ backgroundColor: "hsl(var(--forge-iron))" }}>
-      <style>{`.dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; }`}</style>
-      <div className="container-industrial">
-        <motion.div
-          className="flex flex-wrap justify-center items-center gap-6 md:gap-10"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          {certifications.map((cert, i) => (
-            <motion.span
-              key={cert}
-              className="text-sm md:text-base font-semibold tracking-wide transition-colors duration-300 cursor-default font-mono"
-              style={{ color: "hsl(var(--forge-silver))" }}
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.08 * i, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+    <section
+      id="sertifikalar"
+      className="py-6 border-y border-border overflow-hidden"
+      style={{ backgroundColor: "hsl(var(--forge-iron))" }}
+    >
+      <style>{`
+        .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; }
+        @keyframes marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .marquee-track {
+          animation: marquee 30s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+      <div className="relative">
+        <div className="marquee-track flex whitespace-nowrap">
+          {/* Render content 2x for seamless loop */}
+          {[...marqueeContent, ...marqueeContent].map((item, i) => (
+            <span
+              key={i}
+              className="text-2xl font-semibold uppercase tracking-[0.15em] opacity-40 cursor-default mx-4"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "hsl(var(--forge-silver))",
+              }}
             >
-              {cert}
-            </motion.span>
+              {item}
+            </span>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
