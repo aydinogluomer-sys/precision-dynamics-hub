@@ -24,7 +24,7 @@ const CertificationsSection = () => {
             <motion.span
               key={cert}
               className="text-sm md:text-base font-semibold tracking-wide transition-colors duration-300 cursor-default font-mono"
-              style={{ color: "#007190" }}
+              style={{ color: "#ffffff" }}
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
