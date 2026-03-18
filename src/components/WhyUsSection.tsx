@@ -81,7 +81,7 @@ const WhyUsSection = () => {
               Mas Technic'i<br />
               Tercih Etme Nedenleri.
             </h2>
-            <p className="text-sm leading-relaxed mb-10 max-w-md text-foreground/60">
+            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "hsl(var(--forge-silver))" }}>
               Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz.
             </p>
 
