@@ -88,7 +88,7 @@ const NexusPromoSection = () => {
             <Link
               to="/musteri-paneli"
               className="group inline-flex items-center gap-2 px-7 py-3.5 text-white font-semibold text-sm transition-all hover:brightness-110"
-              style={{ transform: "skewX(-4deg)", backgroundColor: "#f37420" }}
+              style={{ transform: "skewX(-4deg)", backgroundColor: "#c17f59" }}
             >
               <span style={{ transform: "skewX(4deg)" }} className="flex items-center gap-2">
                 Paneli Keşfet
