@@ -50,7 +50,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 3 — HowWeWork (light) */}
-        <ParallaxSection index={3}>
+        <ParallaxSection index={3} variant="slide-up">
           <HowWeWorkSection />
         </ParallaxSection>
 
