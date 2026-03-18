@@ -289,7 +289,7 @@ const HeroSection = () => {
               </div>
 
               {/* Footer bar */}
-              <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(9,145,151,0.15)", background: "rgba(9,145,151,0.03)" }}>
+              <div className="flex items-center justify-between px-5 py-3 border-t" style={{ borderColor: "rgba(0,113,144,0.15)", background: "rgba(0,113,144,0.03)" }}>
                 <span className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>UÇTAN UCA ŞİFRELEME AKTİF
                   <motion.span className="w-1.5 h-1.5 rounded-full bg-green-400"
                     animate={{ opacity: [1, 0.3, 1] }}
