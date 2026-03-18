@@ -125,8 +125,8 @@ const HowWeWorkSection = () => {
       <style>{`.dark #nasil-calisiyoruz { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
       <div
         id="nasil-calisiyoruz"
-        className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col justify-center border-y border-border"
-        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+         className={`${noHorizontal ? "" : "lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden"} flex flex-col justify-center border-y border-border`}
+         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       >
         {/* Section Header */}
         <div className="container-industrial pt-16 pb-8">
