@@ -32,7 +32,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <main>
+      <main className="relative z-10">
         {/* 1 — Hero */}
         <HeroSection isFirstVisit={isFirstVisit} />
 
