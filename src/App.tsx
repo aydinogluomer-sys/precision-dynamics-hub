@@ -7,11 +7,9 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollToTop from "@/components/ScrollToTop";
 
-// Eager load: Index (landing page)
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Lazy load: all other pages
 const SSS = lazy(() => import("./pages/SSS"));
 const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi"));
 const KVKK = lazy(() => import("./pages/KVKK"));
@@ -29,11 +27,14 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Malzemeler = lazy(() => import("./pages/Malzemeler"));
 const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori"));
 const TeklifAl = lazy(() => import("./pages/TeklifAl"));
-
 const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork"));
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
+import ChatBot from "@/components/ChatBot";
+import CursorFollower from "@/components/CursorFollower";
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -44,9 +45,9 @@ const PageLoader = () => (
 const queryClient = new QueryClient();
 
 const pageTransition = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
-  exit: { opacity: 0, y: -12, transition: { duration: 0.25, ease: "easeIn" as const } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.35, ease: "easeOut" as const } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeIn" as const } },
 };
 
 const AnimatedRoutes = () => {
@@ -58,6 +59,7 @@ const AnimatedRoutes = () => {
         <Suspense fallback={<PageLoader />}>
           <Routes location={location}>
             <Route path="/" element={<Index />} />
+            <Route path="/test" element={<TestHowWeWork />} />
             <Route path="/sss" element={<SSS />} />
             <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
             <Route path="/kvkk" element={<KVKK />} />
@@ -89,9 +91,6 @@ const AnimatedRoutes = () => {
     </AnimatePresence>
   );
 };
-
-import ChatBot from "@/components/ChatBot";
-import CursorFollower from "@/components/CursorFollower";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
