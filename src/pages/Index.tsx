@@ -61,7 +61,7 @@ const Index = () => {
 
         {/* 5 — Video (dark) — shadow after dark→dark */}
         <DarkSeparator />
-        <ParallaxSection index={5}>
+        <ParallaxSection index={5} variant="zoom-in">
           <VideoScrollSection />
         </ParallaxSection>
 
