@@ -28,64 +28,11 @@ const features = [
 ];
 
 const NexusPromoSection = () => {
-  const [videoActive, setVideoActive] = useState(true);
-  const [videoEnded, setVideoEnded] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const hasLockedRef = useRef(false);
-
-  // Lock scroll when video section enters viewport
-  useEffect(() => {
-    if (!videoActive || videoEnded) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasLockedRef.current) {
-          hasLockedRef.current = true;
-          document.body.style.overflow = "hidden";
-          videoRef.current?.play().catch(() => {});
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    const el = sectionRef.current;
-    if (el) observer.observe(el);
-
-    return () => {
-      if (el) observer.unobserve(el);
-    };
-  }, [videoActive, videoEnded]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, []);
-
-  const handleVideoEnd = useCallback(() => {
-    setVideoEnded(true);
-    setVideoActive(false);
-    document.body.style.overflow = "unset";
-  }, []);
-
-  const handleSkip = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-    setVideoEnded(true);
-    setVideoActive(false);
-    document.body.style.overflow = "unset";
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
     >
-      <style>{`.dark .nexus-promo-section { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
 
       {/* Full-screen video overlay */}
       <AnimatePresence>
