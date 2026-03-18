@@ -119,7 +119,7 @@ const HowWeWorkSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="lg:h-[400vh] h-auto"
+      className={noHorizontal ? "h-auto" : "lg:h-[400vh] h-auto"}
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
       <style>{`.dark #nasil-calisiyoruz { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
