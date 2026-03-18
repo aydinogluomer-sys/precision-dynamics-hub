@@ -122,7 +122,7 @@ const TestimonialsSection = () => {
             </span>
             <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "#162038" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--sw-tyrian))" }}>
             Bizi Tercih Edenler
           </h2>
           <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(22,32,56,0.6)" }}>
