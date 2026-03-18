@@ -14,12 +14,16 @@ const equipment = [
 ];
 
 /* CountUp for tolerance stat */
-const useToleranceCountUp = () => {
+const useToleranceCountUp = (prefersReduced: boolean) => {
   const [value, setValue] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (prefersReduced) {
+      setValue(0.001);
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -42,7 +46,7 @@ const useToleranceCountUp = () => {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasAnimated]);
+  }, [hasAnimated, prefersReduced]);
 
   return { value, ref };
 };
