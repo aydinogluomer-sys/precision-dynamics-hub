@@ -104,9 +104,9 @@ const TestimonialsSection = () => {
       ref={sectionRef}
       id="referanslar"
       className="relative overflow-hidden py-20 md:py-28"
-      style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}
+      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <style>{`.dark #referanslar { background-color: hsl(var(--section-linen)) !important; }`}</style>
+      <style>{`.dark #referanslar { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
 
       {/* Decorative corner accents */}
       <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
