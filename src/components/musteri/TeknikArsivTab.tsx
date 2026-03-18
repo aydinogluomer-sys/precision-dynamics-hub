@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, FolderOpen, Upload, FileCode, FileText, Download, Filter, Search } from "lucide-react";
+import { Loader2, FolderOpen, Upload, FileCode, FileText, Download, Search } from "lucide-react";
 import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 import { lazy, Suspense } from "react";
@@ -23,6 +23,8 @@ interface CustomerFile {
   rfqId?: string;
 }
 
+const PAGE_SIZE = 20;
+
 const fileIcon = (type: string | null) => {
   switch (type) {
     case "cad": case "step": case "stp": case "iges": return FileCode;
@@ -39,24 +41,31 @@ const isCadFile = (name: string) => {
 type FilterType = "all" | "upload" | "rfq";
 
 const TeknikArsivTab = () => {
-  const [files, setFiles] = useState<CustomerFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<CustomerFile[]>([]);
+  const [rfqFiles, setRfqFiles] = useState<CustomerFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async (pageNum: number, append: boolean) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
 
-    // Fetch customer_files (manual uploads)
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
     const { data: customerFiles } = await supabase
       .from("customer_files")
       .select("id, file_name, file_url, file_type, version, notes, created_at")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
-    const uploadedFiles: CustomerFile[] = await Promise.all(
-      ((customerFiles as any[]) || []).map(async (file) => {
+    const newItems: CustomerFile[] = await Promise.all(
+      ((customerFiles as CustomerFile[]) || []).map(async (file) => {
         const { data: urlData } = await supabase.storage
           .from("customer-files")
           .createSignedUrl(file.file_url, 3600);
@@ -64,7 +73,16 @@ const TeknikArsivTab = () => {
       })
     );
 
-    // Fetch RFQ files (from teklif submissions)
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setUploadedFiles(prev => [...prev, ...newItems]);
+    else setUploadedFiles(newItems);
+    setLoading(false);
+  }, []);
+
+  const fetchRfqFiles = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data: rfqs } = await supabase
       .from("rfqs")
       .select("id, files, created_at, service")
@@ -72,22 +90,21 @@ const TeknikArsivTab = () => {
       .not("files", "is", null)
       .order("created_at", { ascending: false });
 
-    const rfqFiles: CustomerFile[] = [];
+    const result: CustomerFile[] = [];
     if (rfqs) {
       for (const rfq of rfqs) {
         if (!rfq.files || rfq.files.length === 0) continue;
         for (const filePath of rfq.files) {
           const fileName = filePath.split("/").pop() || filePath;
           const ext = fileName.split(".").pop()?.toLowerCase() || "";
-          const fileType = ["step", "stp", "iges", "igs"].includes(ext) ? "cad" :
-                          ["stl", "obj"].includes(ext) ? "cad" :
+          const fileType = ["step", "stp", "iges", "igs", "stl", "obj"].includes(ext) ? "cad" :
                           ["pdf"].includes(ext) ? "pdf" : "other";
 
           const { data: urlData } = await supabase.storage
             .from("cad-uploads")
             .createSignedUrl(filePath, 3600);
 
-          rfqFiles.push({
+          result.push({
             id: `rfq-${rfq.id}-${fileName}`,
             file_name: fileName,
             file_url: filePath,
@@ -102,17 +119,40 @@ const TeknikArsivTab = () => {
         }
       }
     }
+    setRfqFiles(result);
+  }, []);
 
-    // Merge and sort by date
-    const allFiles = [...uploadedFiles, ...rfqFiles].sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
+  useEffect(() => {
+    Promise.all([fetchFiles(0, false), fetchRfqFiles()]);
 
-    setFiles(allFiles);
-    setLoading(false);
+    const channel = supabase
+      .channel("customer-files-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "customer_files" }, async (payload) => {
+        const newFile = payload.new as { id: string; file_name: string; file_url: string; file_type: string | null; version: number | null; notes: string | null; created_at: string };
+        const { data: urlData } = await supabase.storage.from("customer-files").createSignedUrl(newFile.file_url, 3600);
+        setUploadedFiles(prev => [{ ...newFile, signedUrl: urlData?.signedUrl, source: "upload" as const }, ...prev]);
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "customer_files" }, async (payload) => {
+        const updated = payload.new as { id: string; file_name: string; file_url: string; file_type: string | null; version: number | null; notes: string | null; created_at: string };
+        const { data: urlData } = await supabase.storage.from("customer-files").createSignedUrl(updated.file_url, 3600);
+        setUploadedFiles(prev => prev.map(f => f.id === updated.id ? { ...updated, signedUrl: urlData?.signedUrl, source: "upload" as const } : f));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "customer_files" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setUploadedFiles(prev => prev.filter(f => f.id !== deleted.id));
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchFiles, fetchRfqFiles]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchFiles(nextPage, true);
+    setLoadingMore(false);
   };
-
-  useEffect(() => { fetchFiles(); }, []);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -140,7 +180,6 @@ const TeknikArsivTab = () => {
 
     if (dbError) { toast.error("Dosya kaydedilemedi."); } else {
       toast.success("Dosya yüklendi!");
-      fetchFiles();
     }
     setUploading(false);
     e.target.value = "";
@@ -148,8 +187,13 @@ const TeknikArsivTab = () => {
 
   if (loading) return <CardListSkeleton count={4} />;
 
+  // Merge and sort
+  const allFiles = [...uploadedFiles, ...rfqFiles].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
   // Apply filters
-  const filteredFiles = files.filter(f => {
+  const filteredFiles = allFiles.filter(f => {
     if (filter === "upload" && f.source !== "upload") return false;
     if (filter === "rfq" && f.source !== "rfq") return false;
     if (searchQuery.trim()) {
@@ -159,8 +203,8 @@ const TeknikArsivTab = () => {
     return true;
   });
 
-  const uploadCount = files.filter(f => f.source === "upload").length;
-  const rfqCount = files.filter(f => f.source === "rfq").length;
+  const uploadCount = uploadedFiles.length;
+  const rfqCount = rfqFiles.length;
 
   return (
     <div className="space-y-4">
@@ -184,7 +228,7 @@ const TeknikArsivTab = () => {
             onClick={() => setFilter("all")}
             className={`px-3 py-1.5 transition-colors ${filter === "all" ? "bg-primary text-white" : "bg-background text-muted-foreground hover:bg-muted"}`}
           >
-            Tümü ({files.length})
+            Tümü ({allFiles.length})
           </button>
           <button
             onClick={() => setFilter("upload")}
@@ -215,10 +259,10 @@ const TeknikArsivTab = () => {
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <FolderOpen size={40} className="mb-3 opacity-30" />
           <p className="text-sm font-medium">
-            {files.length === 0 ? "Henüz dosya yüklenmemiş." : "Aramanızla eşleşen dosya bulunamadı."}
+            {allFiles.length === 0 ? "Henüz dosya yüklenmemiş." : "Aramanızla eşleşen dosya bulunamadı."}
           </p>
           <p className="text-xs mt-1">
-            {files.length === 0
+            {allFiles.length === 0
               ? "Teknik çizimlerinizi ve CAD dosyalarınızı buradan yönetin. Teklif talebi ile gönderilen dosyalar da burada görünür."
               : "Farklı bir arama terimi deneyin veya filtreyi değiştirin."}
           </p>
@@ -258,6 +302,13 @@ const TeknikArsivTab = () => {
               </div>
             );
           })}
+          {hasMore && (
+            <div className="flex justify-center pt-4">
+              <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+                {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

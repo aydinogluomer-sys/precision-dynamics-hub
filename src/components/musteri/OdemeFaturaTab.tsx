@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,14 @@ interface FinDoc {
   file_urls: string[] | null;
 }
 
+interface SummaryData {
+  totalCount: number;
+  totalPaid: number;
+  totalUnpaid: number;
+}
+
+const PAGE_SIZE = 20;
+
 const statusColor = (s: string | null) => {
   switch (s) {
     case "ödendi": return "bg-green-500/10 text-green-600 border-green-200";
@@ -43,7 +51,6 @@ const BANK_ACCOUNTS = [
   { bank: "İş Bankası", iban: "TR00 0000 0000 0000 0000 0000 02", branch: "OSB Şubesi" },
 ];
 
-// İyzico Logo SVG
 const IyzicoLogo = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 120 32" className={className} xmlns="http://www.w3.org/2000/svg">
     <rect width="120" height="32" rx="4" fill="#1A1A2E" />
@@ -53,7 +60,6 @@ const IyzicoLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Stripe Logo SVG
 const StripeLogo = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 120 32" className={className} xmlns="http://www.w3.org/2000/svg">
     <rect width="120" height="32" rx="4" fill="#635BFF" />
@@ -63,6 +69,7 @@ const StripeLogo = ({ className }: { className?: string }) => (
 
 const OdemeFaturaTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
+  const [summary, setSummary] = useState<SummaryData>({ totalCount: 0, totalPaid: 0, totalUnpaid: 0 });
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<FinDoc | null>(null);
@@ -73,6 +80,9 @@ const OdemeFaturaTab = () => {
   const [showIyzicoDialog, setShowIyzicoDialog] = useState(false);
   const [showStripeDialog, setShowStripeDialog] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Çek form state
   const [cekNo, setCekNo] = useState("");
@@ -81,23 +91,64 @@ const OdemeFaturaTab = () => {
   const [cekTutar, setCekTutar] = useState("");
   const [cekSubmitting, setCekSubmitting] = useState(false);
 
-  const fetchDocs = async () => {
+  const fetchSummary = useCallback(async () => {
+    const { data } = await supabase
+      .from("financial_documents")
+      .select("total_amount, payment_status");
+    const all = (data as { total_amount: number | null; payment_status: string | null }[]) || [];
+    const paid = all.filter(d => d.payment_status === "ödendi");
+    const unpaid = all.filter(d => d.payment_status !== "ödendi");
+    setSummary({
+      totalCount: all.length,
+      totalPaid: paid.reduce((a, d) => a + (d.total_amount || 0), 0),
+      totalUnpaid: unpaid.reduce((a, d) => a + (d.total_amount || 0), 0),
+    });
+  }, []);
+
+  const fetchDocs = useCallback(async (pageNum: number, append: boolean) => {
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data } = await supabase
       .from("financial_documents")
       .select("id, doc_number, title, doc_type, total_amount, currency, payment_status, due_date, doc_date, file_urls")
-      .order("created_at", { ascending: false });
-    setDocs((data as FinDoc[]) || []);
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    const newItems = (data as FinDoc[]) || [];
+    setHasMore(newItems.length === PAGE_SIZE);
+    if (append) setDocs(prev => [...prev, ...newItems]);
+    else setDocs(newItems);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    fetchDocs();
+    Promise.all([fetchSummary(), fetchDocs(0, false)]);
     const channel = supabase
       .channel("customer-odeme-fatura")
-      .on("postgres_changes", { event: "*", schema: "public", table: "financial_documents" }, () => fetchDocs())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "financial_documents" }, (payload) => {
+        setDocs(prev => [payload.new as FinDoc, ...prev]);
+        fetchSummary();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "financial_documents" }, (payload) => {
+        const updated = payload.new as FinDoc;
+        setDocs(prev => prev.map(d => d.id === updated.id ? updated : d));
+        fetchSummary();
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "financial_documents" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setDocs(prev => prev.filter(d => d.id !== deleted.id));
+        fetchSummary();
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [fetchSummary, fetchDocs]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    await fetchDocs(nextPage, true);
+    setLoadingMore(false);
+  };
 
   const handlePayClick = (p: FinDoc) => {
     setSelectedPayment(p);
@@ -180,8 +231,6 @@ const OdemeFaturaTab = () => {
 
   const unpaid = docs.filter(p => p.payment_status !== "ödendi");
   const paid = docs.filter(p => p.payment_status === "ödendi");
-  const totalUnpaid = unpaid.reduce((a, p) => a + (p.total_amount || 0), 0);
-  const totalPaid = paid.reduce((a, p) => a + (p.total_amount || 0), 0);
 
   const isOverdue = (due: string | null) => {
     if (!due) return false;
@@ -194,19 +243,19 @@ const OdemeFaturaTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Summary */}
+      {/* Summary — from separate unpaginated query */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-background border border-border p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Toplam Fatura</p>
-          <p className="text-xl font-bold font-mono mt-1">{docs.length} adet</p>
+          <p className="text-xl font-bold font-mono mt-1">{summary.totalCount} adet</p>
         </div>
         <div className="bg-background border border-border p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Ödenen Toplam</p>
-          <p className="text-xl font-bold font-mono mt-1 text-green-600">₺{totalPaid.toLocaleString("tr-TR")}</p>
+          <p className="text-xl font-bold font-mono mt-1 text-green-600">₺{summary.totalPaid.toLocaleString("tr-TR")}</p>
         </div>
         <div className="bg-background border border-border p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Bekleyen Borç</p>
-          <p className="text-xl font-bold font-mono mt-1 text-red-600">₺{totalUnpaid.toLocaleString("tr-TR")}</p>
+          <p className="text-xl font-bold font-mono mt-1 text-red-600">₺{summary.totalUnpaid.toLocaleString("tr-TR")}</p>
         </div>
       </div>
 
@@ -342,6 +391,14 @@ const OdemeFaturaTab = () => {
             );
           })}
         </Tabs>
+      )}
+
+      {hasMore && docs.length > 0 && (
+        <div className="flex justify-center pt-2">
+          <Button variant="outline" size="sm" disabled={loadingMore} onClick={loadMore}>
+            {loadingMore ? <Loader2 size={14} className="animate-spin" /> : "Daha Fazla Yükle"}
+          </Button>
+        </div>
       )}
 
       {/* Method Selection Dialog */}
