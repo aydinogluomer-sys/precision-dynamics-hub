@@ -75,20 +75,31 @@ const HowWeWorkSection = () => {
   const [activeStep, setActiveStep] = useState(0);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // All hooks called unconditionally
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
   const noHorizontal = isMobile || prefersReduced;
+
+  // Desktop: translate the 4-card strip from 0% to -75% (each card = 100vw, so 4 cards need -75%)
   const rawX = useTransform(
     scrollYProgress,
     [0, 1],
     noHorizontal ? ["0%", "0%"] : ["0%", "-75%"]
   );
-  const x = useSpring(rawX, { stiffness: 200, damping: 40 });
+  const x = useSpring(rawX, { stiffness: 120, damping: 30 });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  // Scroll-driven active step for desktop
+  useEffect(() => {
+    if (noHorizontal) return;
+    const unsubscribe = scrollYProgress.on("change", (v) => {
+      const step = Math.min(Math.floor(v * steps.length), steps.length - 1);
+      setActiveStep(step);
+    });
+    return unsubscribe;
+  }, [noHorizontal, scrollYProgress]);
 
   // IO-based activeStep for mobile
   useEffect(() => {
@@ -117,16 +128,19 @@ const HowWeWorkSection = () => {
   }, [isMobile]);
 
   return (
-    <div
+    <section
       ref={sectionRef}
-      className={noHorizontal ? "h-auto" : "lg:h-[400vh] h-auto"}
+      className={noHorizontal ? "h-auto" : "h-[400vh]"}
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <style>{`.dark #nasil-calisiyoruz { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
       <div
         id="nasil-calisiyoruz"
-         className={`${noHorizontal ? "" : "lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden"} flex flex-col justify-center border-y border-border`}
-         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+        className={`${
+          noHorizontal
+            ? ""
+            : "sticky top-0 h-screen overflow-hidden"
+        } flex flex-col justify-center border-y border-border`}
+        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       >
         {/* Section Header */}
         <div className="container-industrial pt-16 pb-8">
@@ -144,9 +158,9 @@ const HowWeWorkSection = () => {
           </motion.div>
         </div>
 
-        {/* Progress bar — desktop only */}
-        <div className="hidden lg:block container-industrial pb-4">
-          <div className="h-1 bg-border rounded-full overflow-hidden">
+        {/* Step indicators */}
+        <div className="hidden lg:flex container-industrial pb-4 items-center gap-4">
+          <div className="flex-1 h-1 bg-border rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{
@@ -155,25 +169,28 @@ const HowWeWorkSection = () => {
               }}
             />
           </div>
+          <span className="text-technical text-xs text-muted-foreground">
+            {String(activeStep + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
+          </span>
         </div>
 
         {/* Steps container */}
         <motion.div
-          className="lg:flex lg:flex-row flex flex-col lg:flex-nowrap"
-          style={{ x }}
+          className="lg:flex lg:flex-row flex flex-col lg:flex-nowrap flex-1"
+          style={noHorizontal ? undefined : { x }}
         >
           {steps.map((step, i) => (
             <div
               key={step.number}
               ref={(el) => { stepRefs.current[i] = el; }}
-              className="lg:w-screen lg:shrink-0 lg:px-16 lg:flex lg:items-center min-h-[50vh] lg:min-h-0 lg:h-[calc(100vh-12rem)] flex items-center py-6 px-4"
+              className="lg:w-screen lg:shrink-0 lg:px-16 lg:flex lg:items-center min-h-[50vh] lg:min-h-0 lg:h-[calc(100vh-14rem)] flex items-center py-6 px-4"
             >
-              <StepCard step={step} index={i} isActive={!isMobile || activeStep === i} />
+              <StepCard step={step} index={i} isActive={activeStep === i} />
             </div>
           ))}
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -44,9 +44,9 @@ const PageLoader = () => (
 const queryClient = new QueryClient();
 
 const pageTransition = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
-  exit: { opacity: 0, y: -12, transition: { duration: 0.25, ease: "easeIn" as const } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" as const } },
+  exit: { opacity: 0, transition: { duration: 0.25, ease: "easeIn" as const } },
 };
 
 const AnimatedRoutes = () => {
