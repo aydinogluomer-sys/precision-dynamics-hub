@@ -5,6 +5,7 @@ import materialAluminium from "@/assets/material-aluminium.jpg";
 import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
+import { BlurImage } from "./BlurImage";
 
 const materials = [
   {
