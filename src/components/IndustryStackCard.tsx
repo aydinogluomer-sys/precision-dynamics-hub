@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { motion, useTransform, useMotionValue, useSpring, type MotionValue } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { ArrowRight } from "lucide-react";
 import { BlurImage } from "./BlurImage";
 import type { IndustryType } from "./IndustryModels";
@@ -35,21 +36,23 @@ export function IndustryStackCard({
   onActivate,
   onDeactivate,
 }: IndustryStackCardProps) {
+  const prefersReduced = usePrefersReducedMotion();
   const start = index / total;
   const end = (index + 1) / total;
 
   // Scroll-driven transforms — hooks at top level
-  const y = useTransform(scrollYProgress, [start, end], ["0%", "-100%"]);
-  const scale = useTransform(scrollYProgress, [start, end], [1, 0.92]);
-  const opacity = useTransform(scrollYProgress, [start, Math.min(end, 0.98)], [1, 0]);
+  const y = useTransform(scrollYProgress, [start, end], prefersReduced ? ["0%", "0%"] : ["0%", "-100%"]);
+  const scale = useTransform(scrollYProgress, [start, end], prefersReduced ? [1, 1] : [1, 0.92]);
+  const opacity = useTransform(scrollYProgress, [start, Math.min(end, 0.98)], prefersReduced ? [1, 1] : [1, 0]);
 
-  // 3D tilt
+  // 3D tilt (disabled for reduced motion)
   const rotateXVal = useMotionValue(0);
   const rotateYVal = useMotionValue(0);
   const springRotateX = useSpring(rotateXVal, { stiffness: 200, damping: 20 });
   const springRotateY = useSpring(rotateYVal, { stiffness: 200, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (prefersReduced) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const yPos = (e.clientY - rect.top) / rect.height - 0.5;

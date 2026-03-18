@@ -1,6 +1,7 @@
 import { useRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
 import { useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in" | "wipe-mask" | "color-fade" | "depth-3d";
 
@@ -23,6 +24,7 @@ const ParallaxSection = ({
 }: ParallaxSectionProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -34,7 +36,7 @@ const ParallaxSection = ({
     if (active !== isAnimating) setIsAnimating(active);
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], isLast ? [1, 1] :
+  const scale = useTransform(scrollYProgress, [0, 1], isLast || prefersReduced ? [1, 1] :
     variant === "zoom-out-blur" ? [1, 0.85] :
     variant === "zoom-in" ? [1, 1.08] :
     variant === "slide-up" ? [1, 1] :
@@ -44,7 +46,7 @@ const ParallaxSection = ({
     [1, 0.92]
   );
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast ? [1, 1, 1] :
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], isLast || prefersReduced ? [1, 1, 1] :
     variant === "zoom-out-blur" ? [1, 1, 0] :
     variant === "zoom-in" ? [1, 1, 0] :
     variant === "slide-up" ? [1, 1, 0] :
@@ -96,7 +98,6 @@ const ParallaxSection = ({
           clipPath: useClip ? clipPath : undefined,
           transformOrigin: variant === "depth-3d" ? "center bottom" : "center center",
           willChange: isAnimating ? "transform, opacity, filter" : "auto",
-          overflow: "hidden",
           ...style,
         }}
       >

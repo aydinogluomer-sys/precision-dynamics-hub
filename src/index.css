@@ -247,3 +247,27 @@
     animation: fireText 2s linear infinite;
   }
 }
+
+/* ── Reduced Motion: disable all non-essential animations ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .flip-card-inner {
+    transition: none !important;
+  }
+
+  .flip-card:hover .flip-card-inner {
+    transform: none !important;
+  }
+
+  video[autoplay] {
+    animation: none !important;
+  }
+}

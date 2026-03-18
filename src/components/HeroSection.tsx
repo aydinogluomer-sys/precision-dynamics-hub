@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Upload } from "lucide-react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import MagneticButton from "./MagneticButton";
@@ -155,17 +156,18 @@ interface HeroSectionProps {
 const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const { scrollY } = useScroll();
+  const prefersReduced = usePrefersReducedMotion();
 
-  // Layered parallax — 3 speeds
-  const videoY = useTransform(scrollY, [0, 800], [0, 160]);    // 0.2x
-  const gridY = useTransform(scrollY, [0, 800], [0, 400]);     // 0.5x
-  const overlayOpacity = useTransform(scrollY, [0, 600], [0.85, 1]);
+  // Layered parallax — 3 speeds (disabled for reduced motion)
+  const videoY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 160]);
+  const gridY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 400]);
+  const overlayOpacity = useTransform(scrollY, [0, 600], prefersReduced ? [0.85, 0.85] : [0.85, 1]);
 
-  // 3D mouse perspective
+  // 3D mouse perspective (disabled for reduced motion)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], [3, -3]);
-  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], [-3, 3]);
+  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [3, -3]);
+  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], prefersReduced ? [0, 0] : [-3, 3]);
   const rotateX = useSpring(rawRotateX, { stiffness: 150, damping: 20 });
   const rotateY = useSpring(rawRotateY, { stiffness: 150, damping: 20 });
 

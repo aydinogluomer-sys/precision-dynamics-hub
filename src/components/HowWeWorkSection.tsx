@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import SectionHeader from "./SectionHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -70,6 +71,7 @@ const steps = [
 const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const prefersReduced = usePrefersReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -79,10 +81,11 @@ const HowWeWorkSection = () => {
     offset: ["start start", "end end"],
   });
 
+  const noHorizontal = isMobile || prefersReduced;
   const rawX = useTransform(
     scrollYProgress,
     [0, 1],
-    isMobile ? ["0%", "0%"] : ["0%", "-75%"]
+    noHorizontal ? ["0%", "0%"] : ["0%", "-75%"]
   );
   const x = useSpring(rawX, { stiffness: 200, damping: 40 });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
@@ -116,14 +119,14 @@ const HowWeWorkSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="lg:h-[400vh] h-auto"
+      className={noHorizontal ? "h-auto" : "lg:h-[400vh] h-auto"}
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
       <style>{`.dark #nasil-calisiyoruz { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
       <div
         id="nasil-calisiyoruz"
-        className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden flex flex-col justify-center border-y border-border"
-        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+         className={`${noHorizontal ? "" : "lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden"} flex flex-col justify-center border-y border-border`}
+         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       >
         {/* Section Header */}
         <div className="container-industrial pt-16 pb-8">
