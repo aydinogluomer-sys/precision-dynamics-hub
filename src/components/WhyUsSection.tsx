@@ -124,7 +124,7 @@ const WhyUsSection = () => {
               />
               {/* Overlapping smaller image */}
               <motion.div
-                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-sanzo-neutral dark:border-section-dark shadow-2xl"
+                className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-forge-gunmetal shadow-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

@@ -89,7 +89,7 @@ const ServicesSection = () => {
             </p>
           </div>
           <div className="flex gap-4 shrink-0">
-            <Link to="/teklif-al" className="whitespace-nowrap px-8 py-4 font-semibold uppercase tracking-wider text-sm border-2 transition-all duration-200" style={{ backgroundColor: "hsl(var(--sw-sienna))", borderColor: "hsl(var(--sw-sienna))", color: "#ffffff" }}>
+            <Link to="/teklif-al" className="whitespace-nowrap px-8 py-4 font-semibold uppercase tracking-wider text-sm border-2 transition-all duration-200" style={{ backgroundColor: "hsl(var(--forge-molten))", borderColor: "hsl(var(--forge-molten))", color: "#ffffff" }}>
               Danışmanlık Al
             </Link>
             <Link to="/iletisim" className="btn-industrial-secondary whitespace-nowrap">

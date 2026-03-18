@@ -211,7 +211,7 @@ const NexusPromoSection = () => {
             {/* Floating badge */}
             <motion.div
               className="absolute -bottom-4 -right-4 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider shadow-lg"
-              style={{ backgroundColor: "hsl(var(--sw-sienna))", color: "#ffffff" }}
+              style={{ backgroundColor: "hsl(var(--forge-molten))", color: "#ffffff" }}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}

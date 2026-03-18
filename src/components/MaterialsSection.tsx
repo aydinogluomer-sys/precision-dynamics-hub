@@ -198,8 +198,8 @@ const MaterialsSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section id="malzemeler" className="py-16 md:py-24 dark:bg-section-dark" style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}>
-      <style>{`.dark #malzemeler { background-color: hsl(var(--section-dark)) !important; }`}</style>
+    <section id="malzemeler" className="py-16 md:py-24" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+      <style>{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       {/* Subtle grid */}
       <div
         className="absolute inset-0 pointer-events-none"
