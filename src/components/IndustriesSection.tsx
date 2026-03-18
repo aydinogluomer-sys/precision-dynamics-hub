@@ -4,6 +4,7 @@ import { lazy, Suspense, useState, useCallback, useRef } from "react";
 import { TextReveal } from "./ScrollReveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IndustryType } from "./IndustryModels";
+import { BlurImage } from "./BlurImage";
 
 import imgAerospace from "@/assets/industry-aerospace.jpg";
 import imgDefense from "@/assets/industry-defense.jpg";
@@ -168,11 +169,10 @@ const IndustryCard = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}>
             
-              <img
+              <BlurImage
               src={industry.image}
               alt={industry.name}
-              className="w-full h-full object-cover"
-              loading="lazy" />
+              className="w-full h-full object-cover" />
             
             </motion.div>
           }

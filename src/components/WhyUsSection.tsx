@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { TextReveal } from "./ScrollReveal";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
+import { BlurImage } from "./BlurImage";
 
 const advantages = [
   {
@@ -116,11 +117,10 @@ const WhyUsSection = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="relative">
-              <img
+              <BlurImage
                 src={cncWorkshop}
                 alt="CNC Üretim Atölyesi"
                 className="w-full h-[350px] md:h-[450px] object-cover"
-                loading="lazy"
               />
               {/* Overlapping smaller image */}
               <motion.div
@@ -130,11 +130,10 @@ const WhyUsSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
               >
-                <img
+                <BlurImage
                   src={qualityControl}
                   alt="Kalite Kontrol"
                   className="w-full h-32 md:h-40 object-cover"
-                  loading="lazy"
                 />
               </motion.div>
             </div>
