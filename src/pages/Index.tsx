@@ -76,7 +76,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 8 — Materials (light) */}
-        <ParallaxSection index={8}>
+        <ParallaxSection index={8} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
 
