@@ -51,11 +51,11 @@ const CapabilitiesSection = () => {
         >
           {/* Table Header */}
           <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "#5a7a6c" }}>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Kategori</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Ekipman</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Boyut</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Tolerans</span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">Hız</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Kategori</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Ekipman</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Boyut</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Tolerans</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Hız</span>
           </div>
 
           {/* Table Rows */}
