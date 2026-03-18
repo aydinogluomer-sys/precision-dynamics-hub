@@ -34,25 +34,25 @@ const Index = () => {
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
       <main className="relative z-10">
-        {/* 1 — Hero (zoom-out-blur transition) */}
+        {/* 1 — Hero */}
         <ParallaxSection index={0} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
-        {/* 2 — NexusPromo (stack transition) */}
+        {/* 2 — NexusPromo */}
         <ParallaxSection index={1} variant="stack">
           <NexusPromoSection />
         </ParallaxSection>
 
-        {/* 3 — HowWeWork — has internal sticky, NOT wrapped */}
+        {/* 3 — HowWeWork — internal sticky, NOT wrapped */}
         <HowWeWorkSection />
 
-        {/* 4 — Certifications (slide-up transition) */}
+        {/* 4 — Certifications */}
         <ParallaxSection index={3} variant="slide-up">
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* 5 — Video scroll — has internal sticky, NOT wrapped */}
+        {/* 5 — Video scroll — internal sticky, NOT wrapped */}
         <VideoScrollSection />
 
         {/* 5.5 — Aurora transition */}
@@ -72,28 +72,28 @@ const Index = () => {
           </AuroraBackground>
         </ParallaxSection>
 
-        {/* 6 — Services (wipe-mask transition) */}
+        {/* 6 — Services */}
         <ParallaxSection index={6} variant="wipe-mask">
           <ServicesSection />
         </ParallaxSection>
 
-        {/* 7 — Industries — has internal sticky card stack, NOT wrapped */}
+        {/* 7 — Industries — internal sticky, NOT wrapped */}
         <IndustriesSection />
 
-        {/* 8 — Materials (color-fade transition) */}
+        {/* 8 — Materials */}
         <ParallaxSection index={8} variant="color-fade">
           <MaterialsSection />
         </ParallaxSection>
 
-        {/* 9 — WhyUs (stack transition) */}
+        {/* 9 — WhyUs */}
         <ParallaxSection index={9} variant="stack">
           <WhyUsSection />
         </ParallaxSection>
 
-        {/* 10 — Capabilities — has internal sticky, NOT wrapped */}
+        {/* 10 — Capabilities — internal sticky, NOT wrapped */}
         <CapabilitiesSection />
 
-        {/* 11 — Stats (zoom-out-blur transition) */}
+        {/* 11 — Stats */}
         <ParallaxSection index={11} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
