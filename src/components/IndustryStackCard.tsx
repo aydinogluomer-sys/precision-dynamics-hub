@@ -36,15 +36,16 @@ export function IndustryStackCard({
   onActivate,
   onDeactivate,
 }: IndustryStackCardProps) {
+  const prefersReduced = usePrefersReducedMotion();
   const start = index / total;
   const end = (index + 1) / total;
 
   // Scroll-driven transforms — hooks at top level
-  const y = useTransform(scrollYProgress, [start, end], ["0%", "-100%"]);
-  const scale = useTransform(scrollYProgress, [start, end], [1, 0.92]);
-  const opacity = useTransform(scrollYProgress, [start, Math.min(end, 0.98)], [1, 0]);
+  const y = useTransform(scrollYProgress, [start, end], prefersReduced ? ["0%", "0%"] : ["0%", "-100%"]);
+  const scale = useTransform(scrollYProgress, [start, end], prefersReduced ? [1, 1] : [1, 0.92]);
+  const opacity = useTransform(scrollYProgress, [start, Math.min(end, 0.98)], prefersReduced ? [1, 1] : [1, 0]);
 
-  // 3D tilt
+  // 3D tilt (disabled for reduced motion)
   const rotateXVal = useMotionValue(0);
   const rotateYVal = useMotionValue(0);
   const springRotateX = useSpring(rotateXVal, { stiffness: 200, damping: 20 });
