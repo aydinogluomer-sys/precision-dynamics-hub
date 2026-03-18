@@ -40,7 +40,7 @@ const NexusPromoSection = () => {
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-primary" />
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80 font-mono">
                 Dijital Platform
               </span>
             </div>
