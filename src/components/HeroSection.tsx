@@ -243,7 +243,7 @@ const HeroSection = () => {
                 <motion.div
                   className="absolute inset-4 sm:inset-6 pointer-events-none"
                   style={{
-                    border: `2px dashed ${isDragging ? "#099197" : "rgba(255,255,255,0.12)"}`,
+                    border: `2px dashed ${isDragging ? "#007190" : "rgba(255,255,255,0.12)"}`,
                     transition: "border-color 0.3s"
                   }}
                   animate={isDragging ? { scale: [1, 1.02, 1] } : {}}
