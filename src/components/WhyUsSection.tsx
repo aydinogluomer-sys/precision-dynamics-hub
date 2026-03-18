@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { TextReveal } from "./ScrollReveal";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
+import { BlurImage } from "./BlurImage";
 
 const advantages = [
   {
