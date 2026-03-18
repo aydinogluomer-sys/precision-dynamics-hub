@@ -12,8 +12,8 @@ const equipment = [
 
 const CapabilitiesSection = () => {
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 dark:bg-section-dark border-t border-border" style={{ backgroundColor: "#f8ed43" }}>
-      <style>{`.dark #kabiliyetler { background-color: hsl(var(--section-warm)) !important; }`}</style>
+    <section id="kabiliyetler" className="py-16 md:py-24 px-4 dark:bg-section-dark border-t border-border" style={{ backgroundColor: "#f0ebe3" }}>
+      <style>{`.dark #kabiliyetler { background-color: hsl(var(--section-linen)) !important; }`}</style>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
