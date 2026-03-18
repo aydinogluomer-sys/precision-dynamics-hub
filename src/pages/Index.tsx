@@ -50,7 +50,7 @@ const Index = () => {
       <main>
         {/* 1 — Hero (dark) */}
         <ParallaxSection index={1} variant="zoom-out-blur">
-          <HeroSection />
+          <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
         {/* 2 — NexusPromo (dark) */}
