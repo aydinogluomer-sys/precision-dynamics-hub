@@ -33,15 +33,17 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <main>
         <HeroSection isFirstVisit={isFirstVisit} />
+
+        <div style={{ background: 'red', padding: '40px', color: 'white', fontSize: '32px' }}>
+          DEBUG: After Hero - if you see this, layout is working
+        </div>
+
         <NexusPromoSection />
         <HowWeWorkSection />
         <CertificationsSection />
-        <VideoScrollSection />
         <ServicesSection />
-        <IndustriesSection />
         <MaterialsSection />
         <WhyUsSection />
-        <CapabilitiesSection />
         <StatsSection />
         <TestimonialsSection />
         <FAQBlogSection />
