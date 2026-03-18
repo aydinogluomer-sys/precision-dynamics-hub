@@ -104,7 +104,7 @@ const TestimonialsSection = () => {
       ref={sectionRef}
       id="referanslar"
       className="relative overflow-hidden py-20 md:py-28"
-      style={{ backgroundColor: "#f0ebe3" }}
+      style={{ backgroundColor: "hsl(var(--sw-linen-warm))" }}
     >
       <style>{`.dark #referanslar { background-color: hsl(var(--section-linen)) !important; }`}</style>
 
