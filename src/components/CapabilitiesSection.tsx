@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import MagneticButton from "./MagneticButton";
 
 const equipment = [
