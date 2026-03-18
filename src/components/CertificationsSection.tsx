@@ -26,7 +26,7 @@ const CertificationsSection = () => {
           to { transform: translateX(-50%); }
         }
         .marquee-track {
-          animation: marquee 30s linear infinite;
+          animation: marquee 20s linear infinite;
         }
         .marquee-track:hover {
           animation-play-state: paused;
@@ -38,7 +38,7 @@ const CertificationsSection = () => {
           {[...marqueeContent, ...marqueeContent].map((item, i) => (
             <span
               key={i}
-              className="text-2xl font-semibold uppercase tracking-[0.15em] opacity-40 cursor-default mx-4"
+              className="text-3xl md:text-4xl font-bold uppercase tracking-[0.15em] opacity-50 cursor-default mx-5"
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 color: "hsl(var(--forge-silver))",

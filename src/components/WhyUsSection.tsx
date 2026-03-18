@@ -35,7 +35,7 @@ const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "center center"],
+    offset: ["start 95%", "start 40%"],
   });
 
   const clipPath = useTransform(
