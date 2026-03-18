@@ -91,7 +91,7 @@ const Index = () => {
         </ParallaxSection>
 
         {/* 11 — Stats (dark) */}
-        <ParallaxSection index={11}>
+        <ParallaxSection index={11} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
 
