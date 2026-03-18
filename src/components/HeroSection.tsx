@@ -203,10 +203,10 @@ const HeroSection = () => {
             <div
               className="relative overflow-hidden z-10"
               style={{
-                background: "rgba(13,28,67,0.6)",
+                background: "rgba(22,32,56,0.6)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(9,145,151,0.15)",
-                boxShadow: "0 0 60px rgba(9,145,151,0.15), 0 0 120px rgba(253,191,104,0.05), inset 0 1px 0 rgba(9,145,151,0.1)"
+                border: "1px solid rgba(0,113,144,0.15)",
+                boxShadow: "0 0 60px rgba(0,113,144,0.15), 0 0 120px rgba(212,165,116,0.05), inset 0 1px 0 rgba(0,113,144,0.1)"
               }}>
               
               {/* Header bar */}
