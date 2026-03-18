@@ -59,21 +59,21 @@ const Index = () => {
           <NexusPromoSection />
         </ParallaxSection>
 
-        {/* 3 — HowWeWork (light) */}
-        <ParallaxSection index={3} variant="slide-up">
+        {/* 3 — HowWeWork (light) — has its own sticky horizontal scroll, no ParallaxSection */}
+        <div className="relative" style={{ zIndex: 3 }}>
           <HowWeWorkSection />
-        </ParallaxSection>
+        </div>
 
         {/* 4 — Certifications (dark) */}
         <ParallaxSection index={4} variant="slide-up">
           <CertificationsSection />
         </ParallaxSection>
 
-        {/* 5 — Video (dark) */}
+        {/* 5 — Video (dark) — has its own sticky scroll, no ParallaxSection */}
         <DarkSeparator />
-        <ParallaxSection index={5} variant="zoom-in">
+        <div className="relative" style={{ zIndex: 5 }}>
           <VideoScrollSection />
-        </ParallaxSection>
+        </div>
 
         {/* 5.5 — Aurora transition (dark→light bridge) */}
         <ParallaxSection index={6}>
@@ -97,10 +97,10 @@ const Index = () => {
           <ServicesSection />
         </ParallaxSection>
 
-        {/* 7 — Industries (light) */}
-        <ParallaxSection index={8} variant="color-fade">
+        {/* 7 — Industries (light) — has its own sticky card stack, no ParallaxSection */}
+        <div className="relative" style={{ zIndex: 8 }}>
           <IndustriesSection />
-        </ParallaxSection>
+        </div>
 
         {/* 8 — Materials (light) */}
         <ParallaxSection index={9} variant="slide-up">
@@ -112,10 +112,10 @@ const Index = () => {
           <WhyUsSection />
         </ParallaxSection>
 
-        {/* 10 — Capabilities (light) */}
-        <ParallaxSection index={11} variant="depth-3d">
+        {/* 10 — Capabilities (light) — has internal sticky panel, no ParallaxSection */}
+        <div className="relative" style={{ zIndex: 11 }}>
           <CapabilitiesSection />
-        </ParallaxSection>
+        </div>
 
         {/* 11 — Stats (dark) */}
         <ParallaxSection index={12} variant="zoom-out-blur">
