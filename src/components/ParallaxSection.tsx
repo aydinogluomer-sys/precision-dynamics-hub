@@ -1,5 +1,5 @@
 import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
 import { useState } from "react";
 
 type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in";
@@ -34,7 +34,6 @@ const ParallaxSection = ({
     if (active !== isAnimating) setIsAnimating(active);
   });
 
-  // --- Variant-based transforms ---
   const scale = useTransform(scrollYProgress, [0, 1], isLast ? [1, 1] :
     variant === "zoom-out-blur" ? [1, 0.85] :
     variant === "zoom-in" ? [1, 1.08] :
@@ -57,9 +56,13 @@ const ParallaxSection = ({
     variant === "slide-up" && !isLast ? [0, -60] : [0, 0]
   );
 
-  const blur = useTransform(scrollYProgress, [0, 1],
+  const blurValue = useTransform(scrollYProgress, [0, 1],
     variant === "zoom-out-blur" && !isLast ? [0, 8] : [0, 0]
   );
+
+  const filter = useMotionTemplate`blur(${blurValue}px)`;
+
+  const useBlur = variant === "zoom-out-blur" && !isLast;
 
   return (
     <div
@@ -76,9 +79,7 @@ const ParallaxSection = ({
           opacity,
           borderRadius,
           y,
-          filter: variant === "zoom-out-blur" && !isLast
-            ? blur.get() > 0 ? `blur(${blur.get()}px)` : "none"
-            : undefined,
+          filter: useBlur ? filter : undefined,
           transformOrigin: "center center",
           willChange: isAnimating ? "transform, opacity, filter" : "auto",
           overflow: "hidden",
