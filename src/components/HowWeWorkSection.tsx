@@ -69,17 +69,42 @@ const steps = [
 
 const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  // Translate the card strip from right to left as user scrolls
-  // 4 cards visible at once, so we translate from off-screen right to final position
-  const x = useTransform(scrollYProgress, [0, 0.8], ["60%", "0%"]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.15], [40, 0]);
+  // Desktop: translate strip so cards scroll into view across the full scroll range
+  // Cards start off-screen right and end fully visible
+  const x = useTransform(scrollYProgress, [0.05, 0.95], ["75%", "0%"]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.12], [0, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.12], [40, 0]);
+
+  // Mobile: simple vertical layout, no sticky scroll
+  if (isMobile) {
+    return (
+      <section
+        id="nasil-calisiyoruz"
+        className="relative border-y border-border py-12"
+        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+      >
+        <div className="container-industrial mb-8">
+          <SectionHeader
+            tag="Metodoloji"
+            title="Hassas Üretim İş Akışımız"
+            description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
+          />
+        </div>
+        <div className="flex flex-col gap-5 px-4">
+          {steps.map((step, i) => (
+            <StepCard key={step.number} step={step} index={i} />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
