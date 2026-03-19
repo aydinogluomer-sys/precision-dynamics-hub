@@ -46,7 +46,7 @@ const statItem = {
   },
 };
 
-/* ── Character Stagger Headline ────────────────────────────── */
+/* ── Character Stagger Headline ─────────────────────────────── */
 
 const charVariants = {
   enter: (i: number) => ({
