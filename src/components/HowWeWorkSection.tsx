@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 
 const steps = [
@@ -66,38 +66,36 @@ const steps = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
 const HowWeWorkSection = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Translate the card strip from right to left as user scrolls
+  // 4 cards visible at once, so we translate from off-screen right to final position
+  const x = useTransform(scrollYProgress, [0, 0.8], ["60%", "0%"]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.15], [40, 0]);
+
   return (
     <section
+      ref={sectionRef}
       id="nasil-calisiyoruz"
-      className="section-industrial border-y border-border"
-      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+      className="relative border-y border-border"
+      style={{
+        height: "300vh",
+        backgroundColor: "hsl(var(--forge-workshop))",
+      }}
     >
-      <div className="container-industrial">
-        {/* Section Header */}
+      {/* Sticky container */}
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="container-industrial pt-8 pb-6"
+          style={{ opacity: headerOpacity, y: headerY }}
         >
           <SectionHeader
             tag="Metodoloji"
@@ -106,33 +104,13 @@ const HowWeWorkSection = () => {
           />
         </motion.div>
 
-        {/* Connecting progress line (desktop) */}
-        <div className="hidden lg:block relative mb-10">
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
-          <div className="flex justify-between relative z-10">
-            {steps.map((step, i) => (
-              <div key={step.number} className="flex flex-col items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-                  <span>{step.number}</span>
-                </div>
-                <span className="text-technical text-xs text-muted-foreground">{step.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 2×2 Grid */}
+        {/* Horizontal card strip */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          className="flex gap-5 px-8 lg:px-12 pb-8"
+          style={{ x }}
         >
           {steps.map((step, i) => (
-            <motion.div key={step.number} variants={cardVariants}>
-              <StepCard step={step} index={i} isActive={false} />
-            </motion.div>
+            <StepCard key={step.number} step={step} index={i} />
           ))}
         </motion.div>
       </div>
@@ -140,45 +118,55 @@ const HowWeWorkSection = () => {
   );
 };
 
-const StepCard = ({ step, index, isActive }: { step: (typeof steps)[number]; index: number; isActive: boolean }) => {
+const StepCard = ({
+  step,
+  index,
+}: {
+  step: (typeof steps)[number];
+  index: number;
+}) => {
   return (
     <div
-      className={`w-full max-w-2xl mx-auto p-8 lg:p-10 border bg-background transition-all duration-300 hover:shadow-lg ${
-        isActive ? "border-primary shadow-lg" : "border-border"
-      }`}
+      className="flex-shrink-0 w-[calc(25%-15px)] min-w-[280px] p-6 lg:p-8 border bg-background border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
     >
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 bg-primary flex items-center justify-center">
-          <step.icon className="w-6 h-6 text-primary-foreground" />
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-12 h-12 bg-primary flex items-center justify-center">
+          <step.icon className="w-5 h-5 text-primary-foreground" />
         </div>
         <div>
-          <span className="text-technical text-xs text-primary block">{step.number}.</span>
-          <span className="font-bold text-xl">{step.label}</span>
+          <span className="text-technical text-xs text-primary block">
+            {step.number}.
+          </span>
+          <span className="font-bold text-lg">{step.label}</span>
         </div>
-        <div
-          className="h-[2px] bg-primary ml-auto transition-all duration-500"
-          style={{ width: isActive ? 48 : 0 }}
-        />
       </div>
 
-      <h3 className="heading-industrial text-xl mb-3">{step.title}</h3>
-      <p className="text-muted-foreground leading-relaxed mb-6">{step.description}</p>
+      <h3 className="heading-industrial text-lg mb-2">{step.title}</h3>
+      <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+        {step.description}
+      </p>
 
-      <div className="grid sm:grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-1 gap-2 mb-5">
         {step.checklist.map((item) => (
           <div key={item.title} className="flex gap-2 items-start">
-            <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+            <CheckCircle className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
             <div>
-              <span className="text-sm font-semibold block">{item.title}</span>
-              <span className="text-xs text-muted-foreground">{item.desc}</span>
+              <span className="text-xs font-semibold block">{item.title}</span>
+              <span className="text-[11px] text-muted-foreground">
+                {item.desc}
+              </span>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-4 pt-6 border-t border-border">
-        <span className="text-technical text-3xl font-bold text-primary">{step.stat.value}</span>
-        <span className="text-technical text-xs text-muted-foreground uppercase tracking-wider">{step.stat.label}</span>
+      <div className="flex items-center gap-3 pt-4 border-t border-border">
+        <span className="text-technical text-2xl font-bold text-primary">
+          {step.stat.value}
+        </span>
+        <span className="text-technical text-[10px] text-muted-foreground uppercase tracking-wider">
+          {step.stat.label}
+        </span>
       </div>
     </div>
   );
