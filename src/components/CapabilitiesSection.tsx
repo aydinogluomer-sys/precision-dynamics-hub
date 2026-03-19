@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import MagneticButton from "./MagneticButton";
 
@@ -51,12 +50,17 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
   return { value, ref };
 };
 
-const CapabilitiesSection = () => {
+const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
 
   return (
-    <section id="kabiliyetler" className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+    <section
+      ref={forwardedRef}
+      id="kabiliyetler"
+      className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border"
+      style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
+    >
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
@@ -152,6 +156,8 @@ const CapabilitiesSection = () => {
       </div>
     </section>
   );
-};
+});
+
+CapabilitiesSection.displayName = "CapabilitiesSection";
 
 export default CapabilitiesSection;
