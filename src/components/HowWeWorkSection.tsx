@@ -1,9 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { motion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const steps = [
   {
@@ -68,125 +66,73 @@ const steps = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 const HowWeWorkSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-  const prefersReduced = usePrefersReducedMotion();
-  const [activeStep, setActiveStep] = useState(0);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  const noHorizontal = isMobile || prefersReduced;
-
-  // Desktop: translate the 4-card strip from 0% to -75% (each card = 100vw, so 4 cards need -75%)
-  const rawX = useTransform(
-    scrollYProgress,
-    [0, 1],
-    noHorizontal ? ["0%", "0%"] : ["0%", "-75%"]
-  );
-  const x = useSpring(rawX, { stiffness: 120, damping: 30 });
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
-  // Scroll-driven active step for desktop
-  useEffect(() => {
-    if (noHorizontal) return;
-    const unsubscribe = scrollYProgress.on("change", (v) => {
-      const step = Math.min(Math.floor(v * steps.length), steps.length - 1);
-      setActiveStep(step);
-    });
-    return unsubscribe;
-  }, [noHorizontal, scrollYProgress]);
-
-  // IO-based activeStep for mobile
-  useEffect(() => {
-    if (!isMobile) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let bestEntry: IntersectionObserverEntry | null = null;
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
-              bestEntry = entry;
-            }
-          }
-        });
-        if (bestEntry) {
-          const index = stepRefs.current.indexOf(bestEntry.target as HTMLDivElement);
-          if (index !== -1) setActiveStep(index);
-        }
-      },
-      { threshold: [0.3, 0.5, 0.7], rootMargin: "-20% 0px -20% 0px" }
-    );
-    stepRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-    return () => observer.disconnect();
-  }, [isMobile]);
-
   return (
     <section
-      ref={sectionRef}
-      className={noHorizontal ? "h-auto" : "h-[400vh]"}
+      id="nasil-calisiyoruz"
+      className="section-industrial border-y border-border"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <div
-        id="nasil-calisiyoruz"
-        className={`${
-          noHorizontal
-            ? ""
-            : "sticky top-0 h-screen overflow-hidden"
-        } flex flex-col justify-center border-y border-border`}
-        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
-      >
+      <div className="container-industrial">
         {/* Section Header */}
-        <div className="container-industrial pt-16 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <SectionHeader
-              tag="Metodoloji"
-              title="Hassas Üretim İş Akışımız"
-              description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
-            />
-          </motion.div>
-        </div>
-
-        {/* Step indicators */}
-        <div className="hidden lg:flex container-industrial pb-4 items-center gap-4">
-          <div className="flex-1 h-1 bg-border rounded-full overflow-hidden">
-            <motion.div
-              className="h-full rounded-full"
-              style={{
-                width: progressWidth,
-                backgroundColor: "hsl(var(--primary))",
-              }}
-            />
-          </div>
-          <span className="text-technical text-xs text-muted-foreground">
-            {String(activeStep + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
-          </span>
-        </div>
-
-        {/* Steps container */}
         <motion.div
-          className="lg:flex lg:flex-row flex flex-col lg:flex-nowrap flex-1"
-          style={noHorizontal ? undefined : { x }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12"
+        >
+          <SectionHeader
+            tag="Metodoloji"
+            title="Hassas Üretim İş Akışımız"
+            description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
+          />
+        </motion.div>
+
+        {/* Connecting progress line (desktop) */}
+        <div className="hidden lg:block relative mb-10">
+          <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
+          <div className="flex justify-between relative z-10">
+            {steps.map((step, i) => (
+              <div key={step.number} className="flex flex-col items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                  <span>{step.number}</span>
+                </div>
+                <span className="text-technical text-xs text-muted-foreground">{step.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 2×2 Grid */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
         >
           {steps.map((step, i) => (
-            <div
-              key={step.number}
-              ref={(el) => { stepRefs.current[i] = el; }}
-              className="lg:w-screen lg:shrink-0 lg:px-16 lg:flex lg:items-center min-h-[50vh] lg:min-h-0 lg:h-[calc(100vh-14rem)] flex items-center py-6 px-4"
-            >
-              <StepCard step={step} index={i} isActive={activeStep === i} />
-            </div>
+            <motion.div key={step.number} variants={cardVariants}>
+              <StepCard step={step} index={i} />
+            </motion.div>
           ))}
         </motion.div>
       </div>
