@@ -22,9 +22,12 @@ export const AuroraBackground = ({
     >
       <div className="absolute inset-0 overflow-hidden">
         <div
+          style={{
+            "--aurora":
+              "repeating-linear-gradient(100deg, hsl(var(--forge-teal)) 10%, hsl(var(--forge-molten)) 15%, hsl(var(--forge-amber)) 20%, hsl(var(--forge-teal)) 25%, hsl(var(--forge-ember)) 30%)",
+          } as React.CSSProperties}
           className={cn(
             `
-            [--aurora:repeating-linear-gradient(100deg,var(--forge-teal-raw,0_113_144)_10%,var(--forge-molten-raw,217_72_15)_15%,var(--forge-amber-raw,245_158_11)_20%,var(--forge-teal-raw,0_113_144)_25%,var(--forge-ember-raw,180_83_9)_30%)]
             [background-image:var(--aurora)]
             [background-size:300%,_200%]
             [background-position:50%_50%,50%_50%]
