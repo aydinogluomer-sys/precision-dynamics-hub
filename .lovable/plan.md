@@ -29,7 +29,7 @@
 
 ---
 
-## Faz 1 — Veritabanı Tabloları + RLS
+## Faz 1 — Veritabanı Tabloları + RLS ✅ TAMAMLANDI
 
 ```
 Supabase'de eksik tabloları oluştur ve RLS politikalarını kur.
