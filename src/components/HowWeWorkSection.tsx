@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const steps = [
   {
