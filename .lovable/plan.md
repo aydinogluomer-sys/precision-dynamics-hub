@@ -149,7 +149,7 @@ Hiçbir .tsx dosyasına dokunma.
 
 ---
 
-## Faz 2 — URL Routing + Sidebar Toggle
+## Faz 2 — URL Routing + Sidebar Toggle ✅ TAMAMLANDI
 
 `MusteriPaneli.tsx`'te `sidebarCollapsed` state var ama `setSidebarCollapsed` hiç çağrılmıyor.
 URL routing yok, sadece `activeTab` state.
