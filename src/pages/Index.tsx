@@ -15,6 +15,7 @@ import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
+import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { useState } from "react";
 
@@ -33,34 +34,76 @@ const Index = () => {
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
       <main className="relative">
-        <HeroSection isFirstVisit={isFirstVisit} />
-        <NexusPromoSection />
-        <HowWeWorkSection />
-        <CertificationsSection />
-        <VideoScrollSection />
+        <ParallaxSection index={1} variant="zoom-out-blur">
+          <HeroSection isFirstVisit={isFirstVisit} />
+        </ParallaxSection>
 
-        <section style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <AuroraBackground className="min-h-[50vh] w-full" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-            <div className="relative z-10 flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
-              <span className="mb-4 text-xs font-mono uppercase tracking-[0.3em] text-primary">
-                {"Mühendislik Hizmetleri"}
-              </span>
-              <h2 className="text-3xl font-bold text-primary-foreground md:text-5xl">
-                <span>{"Çözümlerimizi Keşfedin"}</span>
-              </h2>
-            </div>
-          </AuroraBackground>
-        </section>
+        <ParallaxSection index={2} variant="color-fade">
+          <NexusPromoSection />
+        </ParallaxSection>
 
-        <ServicesSection />
-        <IndustriesSection />
-        <MaterialsSection />
-        <WhyUsSection />
-        <CapabilitiesSection />
-        <StatsSection />
-        <TestimonialsSection />
-        <FAQBlogSection />
-        <FinalCTASection />
+        <ParallaxSection index={3} variant="slide-up">
+          <HowWeWorkSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={4} variant="stack">
+          <CertificationsSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={5} variant="zoom-in">
+          <VideoScrollSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={6} variant="color-fade">
+          <section style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+            <AuroraBackground className="min-h-[50vh] w-full" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+              <div className="relative z-10 flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
+                <span className="mb-4 text-xs font-mono uppercase tracking-[0.3em] text-primary">
+                  {"Mühendislik Hizmetleri"}
+                </span>
+                <h2 className="text-3xl font-bold text-primary-foreground md:text-5xl">
+                  <span>{"Çözümlerimizi Keşfedin"}</span>
+                </h2>
+              </div>
+            </AuroraBackground>
+          </section>
+        </ParallaxSection>
+
+        <ParallaxSection index={7} variant="slide-up">
+          <ServicesSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={8} variant="stack">
+          <IndustriesSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={9} variant="slide-up">
+          <MaterialsSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={10} variant="wipe-mask">
+          <WhyUsSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={11} variant="depth-3d">
+          <CapabilitiesSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={12} variant="zoom-out-blur">
+          <StatsSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={13} variant="stack">
+          <TestimonialsSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={14} variant="color-fade">
+          <FAQBlogSection />
+        </ParallaxSection>
+
+        <ParallaxSection index={15} isLast variant="stack">
+          <FinalCTASection />
+        </ParallaxSection>
       </main>
       <Footer />
     </div>
