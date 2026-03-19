@@ -371,22 +371,27 @@ const TeklifAl = () => {
         uploadedFilePaths = [storagePath];
       }
 
-      const { error } = await supabase.from("rfqs").insert({
-        id: rfqId,
-        customer: profileData.full_name || null,
-        company: profileData.company || null,
-        email: user?.email || null,
-        phone: profileData.phone || null,
-        user_id: user?.id || null,
-        quantity,
-        date: new Date().toISOString().split("T")[0],
-        status: "Yeni",
-        service: currentService.label,
-        material: materialLabel,
-        notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
-        files: uploadedFilePaths.length > 0 ? uploadedFilePaths : [],
+      const { data: fnData, error: fnError } = await supabase.functions.invoke("rfq-rate-limit", {
+        body: {
+          id: rfqId,
+          customer: profileData.full_name || null,
+          company: profileData.company || null,
+          email: user?.email || null,
+          phone: profileData.phone || null,
+          user_id: user?.id || null,
+          quantity,
+          service: currentService.label,
+          material: materialLabel,
+          notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
+          files: uploadedFilePaths.length > 0 ? uploadedFilePaths : [],
+        },
       });
-      if (error) throw error;
+      if (fnError) throw fnError;
+      if (fnData?.error) {
+        toast.error(fnData.error);
+        setIsSubmitting(false);
+        return;
+      }
       toast.success(
         "Teklif talebiniz başarıyla gönderildi! 48 saat içinde dönüş yapacağız.",
         {
