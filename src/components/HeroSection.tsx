@@ -107,7 +107,7 @@ const HeadlineStagger = ({ text }: { text: string }) => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
-          transition={{ delay: staggerChars.length * 0.02 + 0.1, duration: 0.4 }}
+          transition={{ delay: charIndex * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line"
           style={{
             fontSize: "clamp(1.75rem, 4.5vw, 4rem)",
