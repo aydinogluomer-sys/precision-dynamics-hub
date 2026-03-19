@@ -131,7 +131,7 @@ const HowWeWorkSection = () => {
         >
           {steps.map((step, i) => (
             <motion.div key={step.number} variants={cardVariants}>
-              <StepCard step={step} index={i} />
+              <StepCard step={step} index={i} isActive={false} />
             </motion.div>
           ))}
         </motion.div>
