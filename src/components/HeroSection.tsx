@@ -68,29 +68,38 @@ const HeadlineStagger = ({ text }: { text: string }) => {
   const allWords = text.replace(/\n/g, " ").split(" ");
   const staggerWords = allWords.slice(0, 2);
   const restWords = allWords.slice(2);
-  const staggerChars = staggerWords.join("\u00A0").split("");
+
+  // Build per-word spans with character stagger — preserves word boundaries
+  let charIndex = 0;
 
   return (
     <div className="flex flex-col items-start">
-      <span className="inline-flex flex-wrap">
-        {staggerChars.map((char, i) => (
-          <motion.span
-            key={`${char}-${i}`}
-            custom={i}
-            variants={charVariants}
-            initial="initial"
-            animate="enter"
-            exit="exit"
-            className="inline-block font-extrabold uppercase"
-            style={{
-              fontSize: "clamp(1.75rem, 4.5vw, 4rem)",
-              color: "white",
-              letterSpacing: "-0.03em",
-              lineHeight: 1,
-            }}
-          >
-            {char === "\u00A0" ? "\u00A0" : char}
-          </motion.span>
+      <span className="inline-flex flex-wrap gap-x-[0.3em]">
+        {staggerWords.map((word, wi) => (
+          <span key={wi} className="inline-flex whitespace-nowrap">
+            {word.split("").map((char) => {
+              const i = charIndex++;
+              return (
+                <motion.span
+                  key={`${char}-${i}`}
+                  custom={i}
+                  variants={charVariants}
+                  initial="initial"
+                  animate="enter"
+                  exit="exit"
+                  className="inline-block font-extrabold uppercase"
+                  style={{
+                    fontSize: "clamp(1.75rem, 4.5vw, 4rem)",
+                    color: "white",
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {char}
+                </motion.span>
+              );
+            })}
+          </span>
         ))}
       </span>
       {restWords.length > 0 && (

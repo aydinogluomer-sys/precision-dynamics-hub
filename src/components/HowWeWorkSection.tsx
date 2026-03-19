@@ -153,7 +153,7 @@ const StepCard = ({
 }) => {
   return (
     <div
-      className="flex-shrink-0 w-[calc(25%-15px)] min-w-[280px] p-6 lg:p-8 border bg-background border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
+      className="flex-shrink-0 w-full md:w-[calc(25%-15px)] min-w-0 md:min-w-[280px] p-6 lg:p-8 border bg-background border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
     >
       <div className="flex items-center gap-3 mb-5">
         <div className="w-12 h-12 bg-primary flex items-center justify-center">
