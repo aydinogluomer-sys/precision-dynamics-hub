@@ -31,7 +31,7 @@ export const TestimonialsColumn = React.forwardRef<HTMLDivElement, {
         {[
           ...new Array(2).fill(0).map((_, index) => (
             <React.Fragment key={index}>
-              {props.testimonials.map(({ text, image, name, role }, i) => (
+              {testimonials.map(({ text, image, name, role }, i) => (
                 <div
                   className="rounded-xl border border-border bg-card p-6 shadow-sm"
                   key={`${index}-${i}`}
