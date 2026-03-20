@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useMemo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollToTop from "@/components/ScrollToTop";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -45,15 +46,31 @@ const PageLoader = () => (
 const queryClient = new QueryClient();
 
 const pageTransition = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.35, ease: "easeOut" as const } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeIn" as const } },
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] as const } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
 };
 
 const AnimatedRoutes = () => {
   const location = useLocation();
 
-  return (
+  const isPanel = useMemo(() => {
+    return location.pathname.startsWith("/admin") ||
+           location.pathname.startsWith("/musteri-paneli");
+  }, [location.pathname]);
+
+  const panelRoutes = (
+    <Suspense fallback={<PageLoader />}>
+      <Routes location={location}>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
+
+  const publicRoutes = (
     <AnimatePresence mode="wait">
       <motion.div key={location.pathname} {...pageTransition}>
         <Suspense fallback={<PageLoader />}>
@@ -79,16 +96,38 @@ const AnimatedRoutes = () => {
             <Route path="/giris" element={<Login />} />
             <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
             <Route path="/teklif-al" element={<TeklifAl />} />
             <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </motion.div>
     </AnimatePresence>
+  );
+
+  return isPanel ? panelRoutes : publicRoutes;
+};
+
+const AppContent = () => {
+  const location = useLocation();
+
+  const isPanel = useMemo(() => {
+    return location.pathname.startsWith("/admin") ||
+           location.pathname.startsWith("/musteri-paneli");
+  }, [location.pathname]);
+
+  const content = (
+    <>
+      <ScrollToTop />
+      <AnimatedRoutes />
+      <ChatBot />
+    </>
+  );
+
+  return isPanel ? content : (
+    <SmoothScrollProvider>
+      {content}
+    </SmoothScrollProvider>
   );
 };
 
@@ -99,9 +138,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScrollToTop />
-        <AnimatedRoutes />
-        <ChatBot />
+        <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
