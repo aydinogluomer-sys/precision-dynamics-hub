@@ -154,7 +154,7 @@ const TestimonialsSection = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
+              className="testimonial-stat-card relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
               style={{
                 backgroundColor: "rgba(255,255,255,0.6)",
                 borderColor: "rgba(0,113,144,0.15)",
