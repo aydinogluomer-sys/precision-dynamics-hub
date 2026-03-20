@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollToTop from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
