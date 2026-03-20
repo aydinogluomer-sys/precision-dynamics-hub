@@ -66,7 +66,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
       >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
-          style={{ lineHeight: 1, color: "hsl(var(--forge-molten))" }}
+          style={{ lineHeight: 1, color: "hsl(var(--forge-molten))", fontVariantNumeric: "tabular-nums" }}
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
