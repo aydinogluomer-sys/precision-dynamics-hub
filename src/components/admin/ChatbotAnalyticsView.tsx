@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
