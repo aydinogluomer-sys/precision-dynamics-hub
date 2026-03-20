@@ -127,8 +127,8 @@ const TestimonialsSection = () => {
         {/* Header */}
         <TextReveal className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-3 mb-5">
-            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
+            <span className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
               Güvenilir Partnerler
             </span>
             <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
