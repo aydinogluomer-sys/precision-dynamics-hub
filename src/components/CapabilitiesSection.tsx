@@ -58,7 +58,7 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
     <section
       ref={forwardedRef}
       id="kabiliyetler"
-      className="py-16 md:py-24 px-4 min-h-screen flex flex-col justify-center border-t border-border"
+      className="py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border"
       style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
     >
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>

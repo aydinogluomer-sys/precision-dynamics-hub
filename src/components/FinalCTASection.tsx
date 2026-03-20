@@ -37,7 +37,7 @@ const FinalCTASection = () => {
     <section
       ref={sectionRef}
       id="iletisim"
-      className="py-20 md:py-28 min-h-screen flex items-center justify-center text-center relative overflow-hidden"
+      className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center justify-center text-center relative overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

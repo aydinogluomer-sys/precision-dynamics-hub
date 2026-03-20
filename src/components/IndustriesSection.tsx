@@ -73,7 +73,7 @@ const IndustriesSection = () => {
 
   return (
     <section id="endustriler" className="bg-background border-y border-border">
-      <div className="container-industrial py-16 md:py-20">
+      <div className="container-industrial py-24 md:py-32 lg:py-40">
         <TextReveal className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
