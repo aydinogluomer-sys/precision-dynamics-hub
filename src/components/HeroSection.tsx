@@ -251,6 +251,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       <motion.div className="absolute inset-0 z-0" style={{ y: videoY }}>
         <video
           src={cncVideo}
+          poster={heroBg}
           muted
           autoPlay
           loop
