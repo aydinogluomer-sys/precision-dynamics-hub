@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { Reveal } from "@/components/ui/Reveal";
 
 interface SectionHeaderProps {
   tag: string;
@@ -18,37 +18,33 @@ const SectionHeader = ({
   const isCenter = align === "center";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className={isCenter ? "text-center" : ""}
-    >
-      <div
-        className={`flex items-center gap-3 mb-4 ${
-          isCenter ? "justify-center" : ""
-        }`}
-      >
-        <div className="w-8 h-px bg-primary" />
-        <span className="text-[10px] uppercase tracking-[0.5em] font-mono text-primary font-semibold">
-          {tag}
-        </span>
+    <Reveal direction="up" duration={0.6}>
+      <div className={isCenter ? "text-center" : ""}>
+        <div
+          className={`flex items-center gap-3 mb-4 ${
+            isCenter ? "justify-center" : ""
+          }`}
+        >
+          <div className="w-8 h-px bg-primary" />
+          <span className="text-[10px] uppercase tracking-[0.5em] font-mono text-primary font-semibold">
+            {tag}
+          </span>
+        </div>
+        <h2
+          className={
+            titleClassName ||
+            "text-3xl md:text-5xl font-bold tracking-tight mb-4"
+          }
+        >
+          <span>{title}</span>
+        </h2>
+        {description && (
+          <p className="text-sm text-foreground/60 max-w-lg leading-relaxed">
+            <span>{description}</span>
+          </p>
+        )}
       </div>
-      <h2
-        className={
-          titleClassName ||
-          "text-3xl md:text-5xl font-bold tracking-tight mb-4"
-        }
-      >
-        {title}
-      </h2>
-      {description && (
-        <p className="text-sm text-foreground/60 max-w-lg leading-relaxed">
-          {description}
-        </p>
-      )}
-    </motion.div>
+    </Reveal>
   );
 };
 
