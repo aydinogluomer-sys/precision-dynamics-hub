@@ -166,12 +166,12 @@ const TestimonialsSection = () => {
             >
               <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--forge-molten))" }} />
               <div
-                className="text-2xl md:text-3xl font-bold mb-1.5"
+                className="testimonial-stat-value text-2xl md:text-3xl font-bold mb-1.5"
                 style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
+              <div className="testimonial-stat-label text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>
