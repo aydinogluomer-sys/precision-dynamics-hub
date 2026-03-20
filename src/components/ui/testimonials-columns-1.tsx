@@ -21,7 +21,7 @@ export const TestimonialsColumn = React.forwardRef<HTMLDivElement, {
           translateY: "-50%",
         }}
         transition={{
-          duration: props.duration || 10,
+          duration: duration || 10,
           repeat: Infinity,
           ease: "linear",
           repeatType: "loop",
