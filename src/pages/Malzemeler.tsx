@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
