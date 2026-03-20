@@ -9,13 +9,13 @@ interface Testimonial {
   role: string;
 }
 
-export const TestimonialsColumn = (props: {
+export const TestimonialsColumn = React.forwardRef<HTMLDivElement, {
   className?: string;
   testimonials: Testimonial[];
   duration?: number;
-}) => {
+}>(({ className, testimonials, duration, ...rest }, ref) => {
   return (
-    <div className={props.className}>
+    <div className={className} ref={ref} {...rest}>
       <motion.div
         animate={{
           translateY: "-50%",
