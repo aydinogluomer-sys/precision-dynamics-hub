@@ -248,6 +248,31 @@
   }
 }
 
+/* ── Industrial Cursor Styles ── */
+.cursor-none-active,
+.cursor-none-active * {
+  cursor: none !important;
+}
+
+.cursor-dot {
+  background-color: hsl(var(--forge-molten));
+  transition: background-color 0.3s ease;
+}
+
+.cursor-dot[data-hover="true"] {
+  background-color: hsl(var(--forge-teal));
+}
+
+.cursor-ring {
+  border: 1.5px solid hsl(var(--forge-molten) / 0.5);
+  background: transparent;
+  transition: border-color 0.3s ease;
+}
+
+.cursor-ring[data-hover="true"] {
+  border-color: hsl(var(--forge-teal) / 0.6);
+
+
 /* ── Reduced Motion: disable all non-essential animations ── */
 @media (prefers-reduced-motion: reduce) {
   *,
