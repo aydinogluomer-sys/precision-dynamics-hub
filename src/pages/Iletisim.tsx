@@ -28,6 +28,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 const Iletisim = () => {
+  usePageMeta({ title: "İletişim", description: "CNC işleme, teklif talebi ve mühendislik desteği için Mas Technic ile iletişime geçin." });
   const [meetingForm, setMeetingForm] = useState({
     name: "",
     email: "",

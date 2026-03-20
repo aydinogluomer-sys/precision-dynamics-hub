@@ -110,6 +110,7 @@ interface TrendingSearch {
 }
 
 const SSS = () => {
+  usePageMeta({ title: "Sıkça Sorulan Sorular", description: "CNC işleme, malzeme seçimi, tolerans ve üretim süreçleri hakkında sıkça sorulan sorular." });
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
