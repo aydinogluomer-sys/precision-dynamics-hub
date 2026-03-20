@@ -139,6 +139,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <CursorFollower />
+        <ScrollProgress />
         <AppContent />
       </BrowserRouter>
     </TooltipProvider>
