@@ -58,7 +58,9 @@ const Index = () => {
         </ParallaxSection>
 
         <ParallaxSection index={5} variant="zoom-in">
-          <VideoScrollSection />
+          <Suspense fallback={<SectionLoader />}>
+            <VideoScrollSection />
+          </Suspense>
         </ParallaxSection>
 
         <ParallaxSection index={6} variant="color-fade">
