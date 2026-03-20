@@ -14,6 +14,7 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
   ({ children, className = "", as = "a", href, onClick, strength = 0.3 }, forwardedRef) => {
     const innerRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleMouse = (e: MouseEvent) => {
       if (!innerRef.current) return;
@@ -23,7 +24,10 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
       setPosition({ x, y });
     };
 
-    const reset = () => setPosition({ x: 0, y: 0 });
+    const reset = () => {
+      setPosition({ x: 0, y: 0 });
+      setIsHovered(false);
+    };
 
     const Tag = as;
 
@@ -35,13 +39,31 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
           else if (forwardedRef) forwardedRef.current = node;
         }}
         onMouseMove={handleMouse}
+        onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={reset}
-        animate={{ x: position.x, y: position.y }}
+        animate={{
+          x: position.x,
+          y: position.y,
+          boxShadow: isHovered
+            ? "0 0 20px rgba(232, 97, 10, 0.3)"
+            : "0 0 0px rgba(232, 97, 10, 0)",
+        }}
+        whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
         className="inline-block"
       >
         <Tag className={className} href={href} onClick={onClick}>
-          {children}
+          {/* Inner text moves opposite direction for parallax */}
+          <motion.span
+            className="inline-block"
+            animate={{
+              x: -position.x * 0.4,
+              y: -position.y * 0.4,
+            }}
+            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+          >
+            {children}
+          </motion.span>
         </Tag>
       </motion.div>
     );

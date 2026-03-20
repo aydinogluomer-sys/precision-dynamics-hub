@@ -156,11 +156,20 @@
   }
 
   .card-industrial {
-    @apply bg-card border border-border p-6 transition-all duration-200;
+    @apply bg-card border border-border p-6;
+    transition: all 0.4s ease-out;
   }
 
   .card-industrial:hover {
-    @apply border-primary shadow-lg;
+    border-color: hsl(var(--forge-molten));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-out;
+  }
+
+  .card-industrial:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+    transition: transform 0.3s ease-out;
   }
 
   .section-industrial {
