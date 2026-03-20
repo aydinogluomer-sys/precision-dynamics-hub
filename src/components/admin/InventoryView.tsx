@@ -62,7 +62,7 @@ const InventoryView = () => {
   const avgWaste = materials.length > 0 ? materials.reduce((s, m) => s + m.waste_rate, 0) / materials.length : 0;
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+    return <IndustrialSkeleton variant="table" rows={5} columns={4} />;
   }
 
   return (

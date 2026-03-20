@@ -62,7 +62,7 @@ const IssuesView = () => {
 
   const categories = ["Takım Arızası", "CAM/NC Hatası", "İnsan Hatası", "Kaynak Kusuru", "Kritik Donanım"];
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+  if (loading) return <IndustrialSkeleton variant="table" rows={5} columns={5} />;
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">

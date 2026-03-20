@@ -201,7 +201,7 @@ const PipelineView = () => {
     toast.success("PDF yazdırma penceresi açıldı");
   };
 
-  if (loading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+  if (loading) return <IndustrialSkeleton variant="card" rows={6} />;
 
   return (
     <div className="space-y-6 animate-[fadeInUp_0.4s_ease-out]">

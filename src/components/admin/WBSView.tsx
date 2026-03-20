@@ -87,7 +87,7 @@ const WBSView = () => {
     fetchData();
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+  if (loading) return <IndustrialSkeleton variant="table" rows={5} columns={4} />;
 
   if (wbsList.length === 0) {
     return (
