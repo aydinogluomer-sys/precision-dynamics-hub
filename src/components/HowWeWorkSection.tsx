@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Upload, MessageSquare, Settings, Truck, CheckCircle } from "lucide-react";
+import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -175,7 +175,7 @@ const StepCard = ({
       <div className="grid grid-cols-1 gap-2 mb-5">
         {step.checklist.map((item) =>
         <div key={item.title} className="flex items-start gap-[8px]">
-            <CheckCircle className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+            
             <div>
               <span className="text-xs font-semibold block">{item.title}</span>
               <span className="text-[11px] text-muted-foreground">
