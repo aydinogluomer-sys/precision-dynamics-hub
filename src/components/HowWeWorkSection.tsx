@@ -11,7 +11,7 @@ const steps = [
     label: "Analiz",
     title: "Fizibilite & Kaynak Planlaması",
     description:
-      "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz.",
+      "Teknik analiz, malzeme fizibilitesi ve kaynak planlamasıyla başlıyoruz.",
     checklist: [
       { title: "CAD Uyumluluğu", desc: "Evrensel dosya formatı desteği" },
       { title: "Maliyet Optimizasyonu", desc: "Kaynak tahsis stratejisi" },
@@ -26,7 +26,7 @@ const steps = [
     label: "Tasarım",
     title: "Teknik Tasarım & Geri Bildirim",
     description:
-      "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM ilkeleri doğrultusunda imalat uygunluğunu değerlendirir.",
+      "Mühendislerimiz, tasarımınızı DFM ilkelerine göre imalata uygunluk açısından inceler.",
     checklist: [
       { title: "DFM Analizi", desc: "Üretim için tasarım optimizasyonu" },
       { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
@@ -41,7 +41,7 @@ const steps = [
     label: "Üretim",
     title: "Hassas Üretim & İzleme",
     description:
-      "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme yapılır.",
+      "Onaylı tasarımlar, çok eksenli CNC tezgâhlarda gerçek zamanlı izleme ile üretilir.",
     checklist: [
       { title: "5 Eksen CNC", desc: "Karmaşık geometri işleme" },
       { title: "Gerçek Zamanlı İzleme", desc: "IoT destekli proses takibi" },
@@ -56,7 +56,7 @@ const steps = [
     label: "KK & Teslimat",
     title: "Kalite Kontrol & Sevkiyat",
     description:
-      "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ve zamanında teslimat.",
+      "CMM ölçüm cihazlarıyla  kalite onayı, özenli paketleme ve tam vaktinde teslimat.",
     checklist: [
       { title: "CMM Ölçüm", desc: "3 boyutlu koordinat ölçümü" },
       { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
