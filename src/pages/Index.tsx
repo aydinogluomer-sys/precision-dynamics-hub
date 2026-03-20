@@ -40,7 +40,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <main className="relative">
+      <main id="main-content" className="relative">
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
