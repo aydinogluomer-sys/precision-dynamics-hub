@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, lazy, Suspense } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, X, Send, Loader2, Trash2, Download, Paperclip, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
