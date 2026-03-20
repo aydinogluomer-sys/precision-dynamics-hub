@@ -11,9 +11,8 @@ const steps = [
   label: "Analiz",
   title: "Fizibilite & Kaynak Planlaması",
   description:
-  "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz.",
+  "Teknik analiz, malzeme fizibilitesi ve kaynak planlamasıyla başlıyoruz.",
   checklist: [
-  { title: "CAD Uyumluluğu", desc: "Evrensel dosya formatı desteği" },
   { title: "Maliyet Optimizasyonu", desc: "Kaynak tahsis stratejisi" },
   { title: "Malzeme Analizi", desc: "Dayanıklılık ve mukavemet testleri" },
   { title: "ISO Hazırlığı", desc: "Standart uyumluluk denetimi" }],
@@ -26,11 +25,10 @@ const steps = [
   label: "Tasarım",
   title: "Teknik Tasarım & Geri Bildirim",
   description:
-  "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM ilkeleri doğrultusunda imalat uygunluğunu değerlendirir.",
+  "Mühendislerimiz, tasarımınızı DFM ilkelerine göre imalata uygunluk açısından inceler.",
   checklist: [
   { title: "DFM Analizi", desc: "Üretim için tasarım optimizasyonu" },
   { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
-  { title: "Prototip Planı", desc: "Hızlı prototipleme stratejisi" },
   { title: "Malzeme Seçimi", desc: "Uygulamaya özel malzeme" }],
 
   stat: { value: "48 sa", label: "Ortalama Teklif Süresi" }
@@ -41,10 +39,9 @@ const steps = [
   label: "Üretim",
   title: "Hassas Üretim & İzleme",
   description:
-  "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme yapılır.",
+  "Onaylı tasarımlar, CNC tezgâhlarda gerçek zamanlı izlemeyle üretilir.",
   checklist: [
   { title: "5 Eksen CNC", desc: "Karmaşık geometri işleme" },
-  { title: "Gerçek Zamanlı İzleme", desc: "IoT destekli proses takibi" },
   { title: "Yüzey İşleme", desc: "Ra 0.4μm yüzey kalitesi" },
   { title: "Proses Kontrolü", desc: "SPC ile süreç yönetimi" }],
 
@@ -56,12 +53,11 @@ const steps = [
   label: "KK & Teslimat",
   title: "Kalite Kontrol & Sevkiyat",
   description:
-  "CMM ölçüm cihazları ile %100 kalite kontrol sonrası güvenli paketleme ve zamanında teslimat.",
+  "CMM ile kalite kontrolü sonrası güvenli paketleme ve zamanında teslimat sağlıyoruz.",
   checklist: [
   { title: "CMM Ölçüm", desc: "3 boyutlu koordinat ölçümü" },
   { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
-  { title: "Paketleme", desc: "Özel koruyucu ambalaj" },
-  { title: "Lojistik", desc: "Uluslararası sevkiyat desteği" }],
+  { title: "Paketleme", desc: "Özel koruyucu ambalaj" }],
 
   stat: { value: "%100", label: "Kalite Kontrol" }
 }];
