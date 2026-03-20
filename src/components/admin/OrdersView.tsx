@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Package, Loader2, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -109,7 +110,7 @@ const OrdersView = () => {
     fetchOrders();
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+  if (loading) return <IndustrialSkeleton variant="table" rows={6} columns={5} />;
 
   if (orders.length === 0) {
     return (

@@ -248,6 +248,33 @@
   }
 }
 
+/* ── Industrial Skeleton Shimmer ── */
+@keyframes industrial-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.industrial-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--forge-gunmetal) / 0.3) 0%,
+    hsl(var(--forge-steel) / 0.3) 50%,
+    hsl(var(--forge-gunmetal) / 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: industrial-shimmer 1.5s ease infinite;
+}
+
+.dark .industrial-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--forge-gunmetal)) 0%,
+    hsl(var(--forge-steel) / 0.4) 50%,
+    hsl(var(--forge-gunmetal)) 100%
+  );
+  background-size: 200% 100%;
+}
+
 /* ── Industrial Cursor Styles ── */
 .cursor-none-active,
 .cursor-none-active * {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { Package, AlertTriangle, Scissors, Wrench, Loader2, Plus, X, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -62,7 +63,7 @@ const InventoryView = () => {
   const avgWaste = materials.length > 0 ? materials.reduce((s, m) => s + m.waste_rate, 0) / materials.length : 0;
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+    return <IndustrialSkeleton variant="table" rows={5} columns={4} />;
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { Wrench, Clock, AlertTriangle, Activity, Timer, Loader2, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -73,7 +74,7 @@ const TPMView = () => {
   const avgFilterLife = machines.length > 0 ? Math.round(machines.reduce((s, m) => s + m.filter_life, 0) / machines.length) : 0;
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>;
+    return <IndustrialSkeleton variant="card" rows={3} />;
   }
 
   return (

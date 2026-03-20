@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
@@ -133,7 +134,7 @@ const SchedulingView = () => {
 
       <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden">
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" /></div>
+          <IndustrialSkeleton variant="table" rows={6} columns={5} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
