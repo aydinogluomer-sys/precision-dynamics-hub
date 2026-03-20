@@ -616,6 +616,7 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
         </AnimatePresence>
       </motion.div>
     </header>
+    </>
   );
 };
 
