@@ -173,11 +173,11 @@
   }
 
   .section-industrial {
-    @apply py-20 md:py-28;
+    @apply py-24 md:py-32 lg:py-40;
   }
 
   .container-industrial {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-6 lg:px-8;
   }
 
   .heading-industrial {
@@ -186,6 +186,35 @@
 
   .subheading-industrial {
     @apply text-foreground/70 font-normal;
+  }
+
+  /* Typography hierarchy */
+  .typo-h1 {
+    @apply font-bold text-6xl md:text-8xl tracking-tighter;
+    line-height: 0.9;
+  }
+
+  .typo-h2 {
+    @apply font-bold text-3xl md:text-5xl tracking-tight;
+    line-height: 1.1;
+  }
+
+  .typo-h3 {
+    @apply font-semibold text-xl md:text-2xl tracking-tight;
+  }
+
+  .typo-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .typo-technical {
+    @apply font-mono text-sm tracking-wide;
+  }
+
+  .typo-tag {
+    @apply font-mono font-medium uppercase;
+    font-size: 10px;
+    letter-spacing: 0.5em;
   }
 
   .grid-lines {

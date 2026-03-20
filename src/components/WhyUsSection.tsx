@@ -85,7 +85,7 @@ const WhyUsSection = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Text Content */}
           <motion.div

@@ -36,7 +36,7 @@ const NexusPromoSection = () => {
 
 
       {/* Main content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
         {/* Header */}
         <TextReveal>
           <div className="mb-4">

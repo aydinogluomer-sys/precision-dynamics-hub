@@ -103,7 +103,7 @@ const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-20 md:py-28 min-h-screen flex flex-col justify-center"
+      className="relative overflow-hidden py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
       <style>{`.dark #referanslar { background-color: hsl(var(--forge-workshop)) !important; }`}</style>

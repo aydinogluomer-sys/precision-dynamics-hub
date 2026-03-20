@@ -233,7 +233,7 @@ const MaterialsSection = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section id="malzemeler" className="py-16 md:py-24 min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+    <section id="malzemeler" className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
       <style>{flipStyles}{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       {/* Subtle grid */}
       <div
