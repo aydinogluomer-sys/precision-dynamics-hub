@@ -256,8 +256,13 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           autoPlay
           loop
           playsInline
-          preload="auto"
-          className="w-full h-[120%] object-cover"
+          preload="none"
+          className="w-full h-[120%] object-cover hidden md:block"
+        />
+        <img
+          src={heroBg}
+          alt="CNC Factory"
+          className="w-full h-[120%] object-cover md:hidden"
         />
       </motion.div>
 

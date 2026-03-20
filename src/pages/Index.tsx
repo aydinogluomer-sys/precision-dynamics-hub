@@ -1,23 +1,30 @@
+import { Suspense, lazy, useState } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import NexusPromoSection from "@/components/NexusPromoSection";
 import HowWeWorkSection from "@/components/HowWeWorkSection";
 import CertificationsSection from "@/components/CertificationsSection";
-import VideoScrollSection from "@/components/VideoScrollSection";
 import ServicesSection from "@/components/ServicesSection";
 import IndustriesSection from "@/components/IndustriesSection";
 import MaterialsSection from "@/components/MaterialsSection";
 import WhyUsSection from "@/components/WhyUsSection";
 import CapabilitiesSection from "@/components/CapabilitiesSection";
 import StatsSection from "@/components/StatsSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQBlogSection from "@/components/FAQBlogSection";
 import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
-import { useState } from "react";
+
+const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
+const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
+
+const SectionLoader = () => (
+  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
+  </div>
+);
 
 const Index = () => {
   const [isFirstVisit] = useState(() => {
@@ -51,7 +58,9 @@ const Index = () => {
         </ParallaxSection>
 
         <ParallaxSection index={5} variant="zoom-in">
-          <VideoScrollSection />
+          <Suspense fallback={<SectionLoader />}>
+            <VideoScrollSection />
+          </Suspense>
         </ParallaxSection>
 
         <ParallaxSection index={6} variant="color-fade">
@@ -94,7 +103,9 @@ const Index = () => {
         </ParallaxSection>
 
         <ParallaxSection index={13} variant="stack">
-          <TestimonialsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <TestimonialsSection />
+          </Suspense>
         </ParallaxSection>
 
         <ParallaxSection index={14} variant="color-fade">
