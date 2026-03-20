@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { Wrench, Clock, AlertTriangle, Activity, Timer, Loader2, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";

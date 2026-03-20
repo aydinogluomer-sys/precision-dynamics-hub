@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Users, Plus, X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
