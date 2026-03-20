@@ -78,17 +78,22 @@ const ParallaxSection = ({
 
   const borderRadius = useTransform(scrollYProgress, [0, 1], isLast || variant !== "stack" ? [0, 0] : [0, 16]);
 
-  const y = useTransform(scrollYProgress, [0, 1], variant === "slide-up" && !isLast ? [0, -40] : [0, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], variant === "slide-up" && !isLast ? [0, -60] : [0, 0]);
 
   const blurValue = useTransform(scrollYProgress, [0, 1], variant === "zoom-out-blur" && !isLast ? [0, 6] : [0, 0]);
 
-  const clipProgress = useTransform(scrollYProgress, [0, 1], variant === "wipe-mask" && !isLast ? [0, 100] : [0, 0]);
+  const useSlideUpClip = variant === "slide-up" && !isLast;
+  const clipProgress = useTransform(
+    scrollYProgress,
+    [0, 1],
+    (variant === "wipe-mask" || useSlideUpClip) && !isLast ? [0, 100] : [0, 0]
+  );
   const clipPath = useMotionTemplate`inset(0 0 ${clipProgress}% 0)`;
 
   const filter = useMotionTemplate`blur(${blurValue}px)`;
 
   const useBlur = variant === "zoom-out-blur" && !isLast;
-  const useClip = variant === "wipe-mask" && !isLast;
+  const useClip = (variant === "wipe-mask" || useSlideUpClip) && !isLast;
 
   return (
     <div ref={ref} className="relative text-xs" style={{ zIndex: index }}>
