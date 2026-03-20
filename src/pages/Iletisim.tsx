@@ -4,6 +4,7 @@ import JsonLdSchema from "@/components/JsonLdSchema";
 import { Phone, Mail, MapPin, Clock, Calendar, Video, ArrowRight, Send, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
@@ -27,6 +28,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 const Iletisim = () => {
+  usePageMeta({ title: "İletişim", description: "CNC işleme, teklif talebi ve mühendislik desteği için Mas Technic ile iletişime geçin." });
   const [meetingForm, setMeetingForm] = useState({
     name: "",
     email: "",

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -41,6 +42,7 @@ const RatingBar = ({ value, max = 5, label }: { value: number; max?: number; lab
 );
 
 const Malzemeler = () => {
+  usePageMeta({ title: "Malzemeler", description: "CNC işlemede kullanılan alüminyum, çelik, titanyum ve mühendislik plastikleri — teknik özellikler ve karşılaştırma." });
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [searchQuery, setSearchQuery] = useState("");
