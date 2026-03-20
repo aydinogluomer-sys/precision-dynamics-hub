@@ -41,6 +41,7 @@ const Hakkimizda = () => {
     </main>
     <Footer />
   </div>
-);
+  );
+};
 
 export default Hakkimizda;
