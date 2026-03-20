@@ -1,0 +1,658 @@
+# Mas Technic — Awwwards Implementation Plan
+# Scroll-Driven Industrial Storytelling
+
+> Mevcut 161 dosyalık mimariyi koruyarak "forge-obsidian" tasarım diline
+> sadık kalır. Hiçbir panel (Admin / Müşteri) dokunulmaz.
+
+---
+
+## ASSET ÜRETİMİ (Kod yazmadan önce)
+
+### Asset 1 — CNC Sequence (Ana Scrollytelling)
+
+**Start Frame Prompt (Kling AI / Runway / Sora):**
+```
+Ultra-premium industrial photography of a raw aluminum billet block
+placed on a matte black surface. Deep black background with subtle
+gradient falloff, soft rim lighting tracing the block edges and
+machine marks. Cinematic lighting, high contrast, engineering
+aesthetic, sharp focus. No text, no logos. Shot with 85mm lens,
+f/1.8, ultra-high resolution, photorealistic, Apple-level product
+shoot, dramatic mood.
+```
+
+**End Frame Prompt:**
+```
+Exploded technical diagram view of a finished precision CNC-machined
+aluminum aerospace bracket, every component and internal geometry
+precisely separated and floating in perfect alignment, suspended
+mid-air against a deep black studio background. Visible internal
+structure including threaded holes, tolerance surfaces, chamfers,
+and material grain. Hyper-realistic product visualization,
+ultra-sharp focus, studio rim lighting identical to the hero shot.
+Cinematic lighting, high contrast, luxury engineering aesthetic.
+No labels, no annotations, no text. Photorealistic, ultra-high
+resolution, Apple-style industrial design render.
+```
+
+**Motion Prompt:**
+```
+Smoothly transition from the raw aluminum billet to the finished
+exploded precision CNC part. The material transforms and the
+geometry assembles then disassembles. Slow motion, 6 seconds.
+```
+
+**Frame Extraction (ffmpeg):**
+```bash
+ffmpeg -i cnc_sequence.mp4 -vf fps=20 -q:v 2 public/sequence-cnc/frame_%04d.jpg
+# Hedef: ~120 frame, her biri ~50-80KB (WebP ile)
+# WebP dönüşüm:
+for f in public/sequence-cnc/*.jpg; do
+  cwebp -q 80 "$f" -o "${f%.jpg}.webp"
+done
+```
+
+---
+
+### Asset 2 — Material Morph Sequence (Malzemeler Sayfası)
+
+**Start Frame:**
+```
+Close-up macro photography of raw titanium metal surface, grain
+texture visible, matte silver-grey. Deep black background, soft
+studio rim lighting. Ultra-high resolution, photorealistic.
+```
+
+**End Frame:**
+```
+Same titanium surface now finished and polished, aerospace-grade
+anodized surface visible. Deep black background, identical lighting.
+```
+
+**Motion Prompt:**
+```
+Surface transforms from raw industrial titanium grain to mirror-polished
+anodized finish. Slow morph, 4 seconds.
+```
+
+---
+
+### Asset 3 — Machine Loop Video (Arka Plan Aksan)
+
+**Prompt:**
+```
+Top-down view of a 5-axis CNC machining center cutting an aluminum
+part, slow motion, sparks and coolant fluid visible. Deep black
+studio background, dramatic rim lighting on the machine head and
+part. Cinematic, 4K, loop-ready (start and end frame identical).
+```
+
+**Dosya:** `public/machine-loop.mp4`
+
+---
+
+## FAZ 1 — GLOBAL ALTYAPI
+
+### 1.1 Smooth Scroll (Lenis)
+
+**Dosya:** `src/components/providers/SmoothScrollProvider.tsx`
+
+```tsx
+// npm install @studio-freight/react-lenis
+import { ReactLenis } from "@studio-freight/react-lenis";
+
+export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <ReactLenis root options={{ lerp: 0.08, duration: 1.4, smoothWheel: true, wheelMultiplier: 0.8, touchMultiplier: 1.5 }}>
+      {children}
+    </ReactLenis>
+  );
+}
+```
+
+**Entegrasyon:** `src/App.tsx` içinde `<SmoothScrollProvider>` ile tüm route'ları sar.
+Admin ve Müşteri paneli route'larında (`/admin`, `/musteri-paneli`) Lenis'i devre dışı bırak:
+
+```tsx
+const isPanel = location.pathname.startsWith("/admin") ||
+                location.pathname.startsWith("/musteri-paneli");
+
+return isPanel ? children : <SmoothScrollProvider>{children}</SmoothScrollProvider>;
+```
+
+**`src/index.css` değişikliği:**
+- `scroll-behavior: smooth;` → kaldır (Lenis ile çakışır)
+
+---
+
+### 1.2 Custom Cursor
+
+**Dosya:** `src/components/ui/IndustrialCursor.tsx`
+
+- Landing page ve hizmet sayfalarında: `forge-molten` (#e8610a) 12px dot + lagging 40px ring
+- Hover on cards/buttons: ring genişler (60px), renk `forge-teal`'e geçer
+- Admin / Müşteri paneli: standart imleç (cursor: auto)
+- Mobile: render etme (`usePrefersReducedMotion` ile de devre dışı bırak)
+
+```tsx
+// usePrefersReducedMotion zaten mevcut
+// Sadece landing page path'lerinde mount et:
+const CURSOR_PATHS = ["/", "/hakkimizda", "/hizmetler", "/malzemeler",
+                      "/teklif-al", "/blog", "/kabiliyetler", "/endustriyel"];
+```
+
+**Cursor yapısı:**
+1. İç dot: 12px, forge-molten (#e8610a), position: fixed, pointer-events: none
+   - Direkt mouse position takibi (spring yok, anında)
+2. Dış ring: 40px, 1.5px border forge-molten/50, lagging spring
+   - stiffness: 150, damping: 15 (yavaş takip = lüks his)
+3. Hover state:
+   - a, button, [role=button] üzerinde → ring 60px'e genişler
+   - Renk forge-teal'e geçer (transition: 0.3s)
+4. body { cursor: none } sadece aktif path'lerde (CSS class toggle)
+
+**Mevcut `CursorFollower.tsx` üzerine yazılacak** (yeni dosya oluşturulmayacak).
+
+---
+
+### 1.3 Page Transitions
+
+**Dosya:** `src/components/providers/PageTransition.tsx`
+
+```tsx
+const variants = {
+  initial:  { opacity: 0, y: 12 },
+  animate:  { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] } },
+  exit:     { opacity: 0, y: -8, transition: { duration: 0.2 } },
+};
+// AnimatePresence mode="wait" ile React Router outlet'ini sar
+// Admin ve Müşteri paneli route'ları bu geçişten muaf
+```
+
+---
+
+## FAZ 2 — HERO SCROLLYTELLING
+
+### 2.1 Image Preloader Hook
+
+**Dosya:** `src/hooks/useImagePreloader.ts`
+
+```ts
+export function useImagePreloader(basePath: string, count: number) {
+  // İlk 10 frame eager yüklenir (hızlı başlangıç)
+  // Kalan frame'ler requestIdleCallback ile arka planda lazy yüklenir
+  // img.onerror → skip, sonraki frame'e atla (hata toleransı)
+  // Cleanup: useEffect return'da abort
+
+  return { frames, progress, ready };
+}
+```
+
+**Dönen değerler:**
+- `frames: HTMLImageElement[]` — yüklenen tüm frame'ler
+- `progress: number` — 0..1 arası yükleme yüzdesi
+- `ready: boolean` — tüm frame'ler yüklendi mi
+
+---
+
+### 2.2 CNC Scroll Component
+
+**Dosya:** `src/components/sections/CNCScrollStory.tsx`
+
+**Mimari:**
+```
+<section style={{ height: "500vh" }}>        ← Scroll alanı (5 ekran yüksekliği)
+  <div style={{ position: "sticky", top: 0, height: "100vh" }}>
+    <canvas ref={canvasRef} />                ← Frame çizimi
+    <div className="absolute inset-0">       ← Text overlay katmanı
+      {stories.map((story) => <StoryOverlay />)}
+    </div>
+  </div>
+</section>
+```
+
+**Canvas Logic:**
+- `useScroll({ target: containerRef })` → scrollYProgress (0..1)
+- `useMotionValueEvent` ile her scroll değişiminde:
+  ```
+  frameIndex = Math.floor(latest * (TOTAL_FRAMES - 1))
+  ctx.drawImage(frames[frameIndex], ...)
+  ```
+- Canvas boyutu: `width * devicePixelRatio`, `height * devicePixelRatio` (retina desteği)
+- Arka plan: #0f0f0f (forge-obsidian ile aynı, edge invisible)
+
+**Text Overlays:**
+
+| Scroll % | Metin | Hizalama | Font |
+|----------|-------|----------|------|
+| 0-15% | "Ham malzeme." + "Sonsuz olasılık." | Merkez | Space Grotesk 700, text-5xl |
+| 20-40% | "±0.005mm tolerans." | Sol | IBM Plex Mono 400, text-white/70 |
+| 45-65% | "Ti-6Al-4V. AS9100D." | Sağ | IBM Plex Mono 400, text-white/70 |
+| 70-85% | "Prototipten 50.000 adete." | Sol | Space Grotesk 700, text-white/70 |
+| 88-100% | "Teklif Al →" CTA button | Merkez | forge-molten bg |
+
+Her overlay: `useTransform` ile opacity 0→1→0 (scroll range'e bağlı)
+
+**Loading State:**
+- ready false iken: forge-obsidian bg + forge-molten spinner
+- Yükleme yüzdesi gösterimi: `"%{progress} yükleniyor..."`
+- ready true → canvas fade-in (opacity 0→1, 0.5s)
+
+**Mobil Davranış:**
+- Canvas `object-fit: contain` (parça kesilmemeli)
+- height: "300vh" (mobilde daha kısa scroll)
+- Text overlay'ler daha büyük (text-3xl → text-4xl mobilde)
+
+**Reduced Motion:**
+- `usePrefersReducedMotion` true → canvas statik, sadece ilk frame göster
+- Text overlay'ler anında görünür (animasyonsuz)
+
+**Index.tsx Entegrasyonu:**
+- HeroSection'dan sonra, NexusPromoSection'dan önce CNCScrollStory eklenir
+- `React.lazy` ile import (bundle split)
+- ParallaxSection variant gerekmez (kendi sticky scroll'u var)
+
+---
+
+## FAZ 3 — SECTION ANİMASYONLARI
+
+### 3.1 Reveal Component
+
+**Dosya:** `src/components/ui/Reveal.tsx`
+
+```tsx
+// Props:
+//   children: ReactNode
+//   direction?: "up" | "down" | "left" | "right" (default: "up")
+//   delay?: number (default: 0)
+//   duration?: number (default: 0.7)
+//   className?: string
+
+// Animasyon:
+//   direction="up":    clipPath inset(0 0 100% 0) → inset(0 0 0% 0)
+//   direction="down":  clipPath inset(100% 0 0 0) → inset(0 0 0% 0)
+//   direction="left":  clipPath inset(0 100% 0 0) → inset(0 0 0 0)
+//   direction="right": clipPath inset(0 0 0 100%) → inset(0 0 0 0)
+//   + opacity 0 → 1
+
+// Ease: [0.76, 0, 0.24, 1] (dramatic ease)
+// Tetikleme: whileInView, viewport={{ once: true, amount: 0.3 }}
+// usePrefersReducedMotion true → animasyonsuz render
+```
+
+**Entegrasyon:** `SectionHeader.tsx`'teki mevcut motion.div'i `<Reveal>` ile değiştir.
+
+---
+
+### 3.2 Material Morph Section (Malzemeler Sayfası)
+
+**Dosya:** `src/components/sections/MaterialMorphScroll.tsx`
+
+- Asset 2 sequence'ı kullanır (`public/sequence-material/`)
+- CNCScrollStory ile aynı canvas+sticky pattern
+- height: "300vh", 80 frame
+- Scroll %50'de sağda floating card: malzeme özellikleri
+  - machinability, corrosionResistance — SVG stroke-dasharray dairesel progress ring
+- `Malzemeler.tsx`'ye entegre edilir
+
+---
+
+### 3.3 Machine Loop Background (Hizmetler Hero)
+
+```tsx
+<video
+  src="/machine-loop.mp4"
+  autoPlay loop muted playsInline
+  className="absolute inset-0 w-full h-full object-cover opacity-15"
+  style={{ mixBlendMode: "luminosity" }}
+/>
+// İçerik z-10, video z-0
+// IntersectionObserver ile viewport'a girince play(), çıkınca pause()
+// preload="none" — lazy load
+// Mobilde: video yüklenmez (bant genişliği tasarrufu)
+```
+
+---
+
+### 3.4 Horizontal Scroll (HowWeWork Upgrade)
+
+Mevcut `HowWeWorkSection.tsx` zaten yatay scroll içeriyor.
+Lenis entegrasyonundan sonra wheel event otomatik yatay scroll'a yönlendirilecek.
+
+**Ek:** Her adımda (DFM → CAM → CNC → CMM → Teslimat) bir `machine-loop` still frame
+overlay olarak fadeIn ile gelir.
+
+---
+
+## FAZ 4 — SECTION GEÇİŞLERİ
+
+### 4.1 Hex Wipe Transition
+
+**Dosya:** `src/components/ui/HexWipe.tsx`
+
+```tsx
+// SVG clip-path ile altıgen maske
+// clipPath animate: scale(0) → scale(3) merkez noktasından
+// Kullanım: Endüstri sayfaları arası geçiş
+// Framer Motion animate ile: 0.8s, ease [0.76, 0, 0.24, 1]
+const hexPath = "M50 0 L100 25 L100 75 L50 100 L0 75 L0 25 Z";
+```
+
+---
+
+### 4.2 Depth-3D Parallax (Mevcut ParallaxSection'a Ek)
+
+`ParallaxSection.tsx` zaten `depth-3d` variant içeriyor.
+`machine-loop.mp4`'ü bu variant'ın z-0 arka plan katmanı olarak kullan.
+İçerik z-10'da kalır, video opacity-10 + luminosity blend.
+
+---
+
+## FAZ 5 — MİKRO-İNTERAKSİYONLAR
+
+### 5.1 Magnetic Button Upgrade
+
+**Dosya:** `src/components/MagneticButton.tsx`
+- Hover'da iç metin ters yönde kayma (parallax efekti)
+- Border glow: `box-shadow: 0 0 20px forge-molten/30` hover'da
+- Click: scale(0.95) → scale(1) spring bounce
+
+### 5.2 Card Hover Micro-Interactions
+
+Tüm `card-industrial` sınıflı kartlara:
+- Hover: border-color forge-teal → forge-molten (0.3s), translateY(-4px), shadow artışı
+- İç ikon: scale(1.1) + rotate(5deg)
+- Leave: tümü geri (0.4s, ease-out)
+
+### 5.3 Scroll Progress Indicator
+
+**Yeni dosya:** `src/components/ui/ScrollProgress.tsx`
+- Ekranın en üstünde 2px yüksekliğinde bar
+- Renk: forge-molten gradient (molten → amber)
+- Width: scrollYProgress * 100%
+- position: fixed, top: 0, z-50
+- Admin/müşteri panelinde gizli
+
+### 5.4 Number Counter
+
+- `font-variant-numeric: tabular-nums` (kayma önlenir)
+- IBM Plex Mono font zorunlu (tüm sayısal değerler)
+- Scroll-driven: viewport'a girince başla
+
+---
+
+## FAZ 6 — TİPOGRAFİ & SPACING CİLALAMASI
+
+### 6.1 Tipografi Hiyerarşisi
+
+```
+h1 (Hero): Space Grotesk 700, text-6xl md:text-8xl, tracking-tighter, leading-[0.9]
+h2 (Section): Space Grotesk 700, text-3xl md:text-5xl, tracking-tight, leading-[1.1]
+h3 (Card): Space Grotesk 600, text-xl md:text-2xl, tracking-tight
+Body: Space Grotesk 400, text-base, leading-relaxed
+Technical: IBM Plex Mono 400, text-sm, tracking-wide
+Tag/Label: IBM Plex Mono 500, text-[10px], uppercase, tracking-[0.5em]
+```
+
+### 6.2 Section Spacing Standardizasyonu
+
+```
+Tüm section'lar: py-24 md:py-32 lg:py-40
+İç container: max-w-7xl mx-auto px-6 lg:px-8
+```
+
+### 6.3 Renk Kullanım Kuralları
+
+```
+Arka plan section döngüsü:
+  Light → forge-obsidian → Light → forge-gunmetal → Light
+Vurgu renkleri:
+  CTA butonları: forge-molten (#e8610a)
+  Linkler: forge-teal (#0a7e8c)
+  Teknik değerler: forge-silver üzerine forge-molten accent
+  Badge/tag: forge-teal bg, white text
+```
+
+---
+
+## FAZ 7 — PERFORMANS OPTİMİZASYONU
+
+### 7.1 Lazy Loading & Code Splitting
+
+- CNCScrollStory, MaterialMorphScroll, TestimonialsSection, VideoScrollSection → React.lazy
+- Three.js sadece /teklif-al için lazy import
+
+### 7.2 Image Optimization
+
+- Tüm statik görseller: WebP format, srcset responsive boyutlar
+- loading="lazy" (hero hariç)
+- BlurImage component'i tüm görsellerde kullanılacak
+
+### 7.3 Video Optimization
+
+- preload="none" — IntersectionObserver ile play/pause
+- Mobilde: poster image göster, video yükleme
+- machine-loop.mp4: 720p, H.264, <2MB
+
+### 7.4 Font Loading
+
+- font-display: swap
+- Preconnect: `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`
+- IBM Plex Mono eklenmeli (henüz yüklenmemiş olabilir)
+
+---
+
+## FAZ 8 — PANEL CİLALAMASI (Admin/Müşteri UI Polish)
+
+### 8.1 Industrial Skeleton Loader
+
+**Dosya:** `src/components/ui/IndustrialSkeleton.tsx`
+
+- Props: variant ("table" | "card" | "list"), rows, columns
+- forge-gunmetal bg, forge-steel shimmer (CSS keyframe 1.5s ease infinite)
+- background-position: 200% → -200%
+- Admin modüllerindeki tüm "Yükleniyor..." text'leri bu component ile değiştirilir
+- MusteriSkeletons.tsx ile uyumlu hale getir veya birleştir
+
+### 8.2 Export Progress Bar
+
+**Dosya:** `src/components/ui/ExportProgress.tsx`
+
+- fixed bottom bar, forge-obsidian bg, h-10
+- İç bar: forge-molten gradient, Framer Motion layout animation
+- Metin: "Rapor hazırlanıyor... MasTechnic_Dashboard_2026-03-20.xlsx"
+- Font: IBM Plex Mono, text-xs
+- exportExcelReport() başında göster, promise resolve/reject'te 1s sonra fade-out
+
+---
+
+## FAZ 9 — SEO & ACCESSIBILITY
+
+### 9.1 Structured Data
+
+- JsonLdSchema.tsx genişletilir: Product, Service, FAQPage şemaları
+- Her hizmet detay sayfasında ilgili schema otomatik inject
+
+### 9.2 Accessibility Audit
+
+- Tüm görsellerde anlamlı alt text
+- Keyboard navigation tüm interactive elementlerde
+- ARIA labels: CursorFollower, CNCScrollStory, HexWipe
+- Color contrast: WCAG AA minimum
+- Skip to content link: Header'a ekle
+- prefers-reduced-motion: tüm animasyonlar devre dışı
+- Focus visible: tüm buton/link'lerde ring göster
+
+### 9.3 Meta Tags
+
+- Sayfa bazlı title ve description
+- Open Graph image'lar
+- Twitter card meta'ları
+
+---
+
+## FAZ 10 — FINAL QA & POLISH
+
+### 10.1 Cross-Browser Test
+
+- Chrome 120+, Firefox 120+, Safari 17+, Edge 120+
+- Mobile: iOS Safari 17+, Chrome Android
+- Lenis smooth scroll, canvas rendering, CSS clip-path, backdrop-filter, mix-blend-mode
+
+### 10.2 Performance Budget
+
+- FCP < 1.5s, LCP < 2.5s, CLS < 0.1, TTI < 3.5s
+- Bundle: < 300KB gzipped (vendor hariç)
+- Sequence frames: lazy load, ilk 10 eager
+
+### 10.3 Son Kontroller
+
+- Tüm link'ler çalışıyor mu (404 taraması)
+- Dark mode'da tüm yeni bileşenler doğru görünüyor mu
+- Footer sticky davranışı bozulmamış mı
+- ParallaxSection variant'ları hala çalışıyor mu
+- Admin/Müşteri panellerinde hiçbir regresyon yok
+
+---
+
+## PERFORMANS KURALLARI (Özet)
+
+```
+Sequence yükleme:     İlk 10 frame eager, kalan lazy + requestIdleCallback
+Canvas boyutu:        devicePixelRatio ile scale (retina desteği)
+Mobil canvas:         object-fit: contain (cover değil — parça kesilmemeli)
+Video:                preload="none" — IntersectionObserver ile play()
+Lenis + panel:        /admin ve /musteri-paneli'nde Lenis destroy()
+reduced-motion:       usePrefersReducedMotion true → canvas statik, 1 frame
+Bundle:               Three.js sadece /teklif-al ve CNCScrollStory için lazy import
+```
+
+---
+
+## DOSYA YERLEŞİMİ (Yeni Eklenenler)
+
+```
+public/
+├── sequence-cnc/          # 120 WebP frame — CNC ham → explode
+├── sequence-material/     # 80 WebP frame — Ti raw → polished
+└── machine-loop.mp4       # ~3s loop, <2MB, 720p yeterli
+
+src/
+├── components/
+│   ├── providers/
+│   │   ├── SmoothScrollProvider.tsx
+│   │   └── PageTransition.tsx
+│   ├── sections/
+│   │   ├── CNCScrollStory.tsx
+│   │   ├── MaterialMorphScroll.tsx
+│   │   └── ServiceHero.tsx
+│   └── ui/
+│       ├── IndustrialCursor.tsx  (veya mevcut CursorFollower.tsx üzerine yazılır)
+│       ├── Reveal.tsx
+│       ├── HexWipe.tsx
+│       ├── IndustrialSkeleton.tsx
+│       ├── ScrollProgress.tsx
+│       └── ExportProgress.tsx
+└── hooks/
+    └── useImagePreloader.ts
+```
+
+---
+
+## LOVABLE PROMPT SIRASI
+
+Her faz tamamlanmadan bir sonrakine geçme. Her prompt sonrası PIN at.
+
+### Prompt 1 — Lenis + Cursor
+```
+Projeye @studio-freight/react-lenis ekle. SmoothScrollProvider.tsx oluştur,
+lerp: 0.08, duration: 1.4. App.tsx içinde /admin ve /musteri-paneli
+path'lerinde Lenis devre dışı, diğer tüm sayfalarda aktif.
+
+Ayrıca CursorFollower.tsx'i güncelle: forge-molten (#e8610a) 12px dot +
+40px lagging ring. Sadece şu path'lerde aktif: /, /hizmetler, /malzemeler,
+/teklif-al, /blog, /kabiliyetler, /endustriyel, /hakkimizda.
+Mobile ve prefers-reduced-motion'da render etme.
+```
+
+### Prompt 2 — Page Transitions
+```
+PageTransition.tsx güncelle. AnimatePresence mode="wait" ile sar.
+Geçiş: opacity 0→1, y 12→0, duration 0.35s, ease [0.76, 0, 0.24, 1].
+Exit: opacity 0, y -8, duration 0.2s. Admin ve Müşteri paneli muaf.
+```
+
+### Prompt 3 — Reveal Component
+```
+src/components/ui/Reveal.tsx oluştur. clip-path animasyonu:
+inset(0 0 100% 0) → inset(0 0 0% 0), opacity 0→1, duration 0.7s,
+ease [0.76, 0, 0.24, 1]. usePrefersReducedMotion desteği.
+Landing page'deki tüm SectionHeader bileşenlerini Reveal ile sar.
+```
+
+### Prompt 4 — Image Preloader Hook
+```
+src/hooks/useImagePreloader.ts oluştur. İlk 10 frame eager,
+kalan requestIdleCallback ile lazy. img.onerror ile hata toleransı.
+progress (0..1) ve ready boolean döner.
+```
+
+### Prompt 5 — CNCScrollStory (Asset'ler hazır olmalı!)
+```
+src/components/sections/CNCScrollStory.tsx oluştur. 120 frame,
+sticky canvas, 500vh container. useScroll ile frame mapping.
+devicePixelRatio retina desteği. Loading state: forge-molten spinner
++ yükleme yüzdesi. Text overlay'ler ve CTA. Index.tsx'e entegre et.
+```
+
+### Prompt 6 — Skeleton + Export Progress
+```
+IndustrialSkeleton.tsx: table/card/list variant, forge-gunmetal shimmer.
+ExportProgress.tsx: fixed bottom bar, forge-molten progress.
+Admin modüllerindeki spinner'ları değiştir.
+```
+
+### Prompt 7 — Mikro-interaksiyonlar
+```
+MagneticButton parallax + glow. Card hover efektleri.
+ScrollProgress bar. Number counter tabular-nums.
+```
+
+### Prompt 8 — Tipografi & Spacing
+```
+Tipografi hiyerarşisi standardizasyonu.
+Section spacing: py-24 md:py-32 lg:py-40.
+Renk döngüsü uygulaması.
+```
+
+### Prompt 9 — Performans
+```
+React.lazy code splitting. Video IO play/pause.
+Font loading optimizasyonu. Image WebP.
+```
+
+### Prompt 10 — SEO & Accessibility
+```
+JsonLdSchema genişletme. ARIA labels.
+Skip to content. Meta tags. WCAG AA kontrastı.
+```
+
+### Prompt 11 — Final QA
+```
+Cross-browser test. Performance budget kontrol.
+Dark mode doğrulama. Regresyon kontrolü.
+```
+
+---
+
+## PACKAGE.JSON EKLENTİLERİ
+
+```json
+{
+  "dependencies": {
+    "@studio-freight/react-lenis": "^1.0.14"
+  }
+}
+```
+
+Three.js, Framer Motion, Recharts zaten mevcut — ek paket gerekmez.
