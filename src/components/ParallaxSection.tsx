@@ -93,7 +93,7 @@ const ParallaxSection = ({
   const filter = useMotionTemplate`blur(${blurValue}px)`;
 
   const useBlur = variant === "zoom-out-blur" && !isLast;
-  const useClip = variant === "wipe-mask" && !isLast;
+  const useClip = (variant === "wipe-mask" || useSlideUpClip) && !isLast;
 
   return (
     <div ref={ref} className="relative text-xs" style={{ zIndex: index }}>
