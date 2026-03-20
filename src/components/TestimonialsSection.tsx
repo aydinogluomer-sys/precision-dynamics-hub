@@ -106,7 +106,18 @@ const TestimonialsSection = () => {
       className="relative overflow-hidden py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <style>{`.dark #referanslar { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
+      <style>{`
+        .dark #referanslar { background-color: hsl(var(--background)) !important; }
+        .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
+        .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
+        .dark .testimonial-heading { color: hsl(var(--foreground)) !important; }
+        .dark .testimonial-subtext { color: hsl(var(--muted-foreground)) !important; }
+        .dark .testimonial-accent-line { background-color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-accent-text { color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-logo-item { color: hsl(var(--muted-foreground) / 0.3) !important; }
+        .dark .testimonial-corner { border-color: hsl(var(--border)) !important; }
+      `}</style>
 
       {/* Decorative corner accents */}
       <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
