@@ -25,11 +25,10 @@ const steps = [
   label: "Tasarım",
   title: "Teknik Tasarım & Geri Bildirim",
   description:
-  "Mühendislerimiz tasarımınızı detaylı olarak inceler, DFM ilkeleri doğrultusunda imalat uygunluğunu değerlendirir.",
+  "Mühendislerimiz, tasarımınızı DFM ilkelerine göre imalata uygunluk açısından inceler.",
   checklist: [
   { title: "DFM Analizi", desc: "Üretim için tasarım optimizasyonu" },
   { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
-  { title: "Prototip Planı", desc: "Hızlı prototipleme stratejisi" },
   { title: "Malzeme Seçimi", desc: "Uygulamaya özel malzeme" }],
 
   stat: { value: "48 sa", label: "Ortalama Teklif Süresi" }
