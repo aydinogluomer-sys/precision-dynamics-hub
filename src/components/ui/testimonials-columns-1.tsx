@@ -15,9 +15,12 @@ interface TestimonialsColumnProps {
   duration?: number;
 }
 
-export function TestimonialsColumn({ className, testimonials, duration }: TestimonialsColumnProps) {
+export const TestimonialsColumn = React.forwardRef<
+  HTMLDivElement,
+  TestimonialsColumnProps
+>(function TestimonialsColumn({ className, testimonials, duration }, ref) {
   return (
-    <div className={className}>
+    <div className={className} ref={ref}>
       <motion.div
         animate={{
           translateY: "-50%",
@@ -62,4 +65,4 @@ export function TestimonialsColumn({ className, testimonials, duration }: Testim
       </motion.div>
     </div>
   );
-}
+});

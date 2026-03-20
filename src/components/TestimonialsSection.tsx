@@ -106,26 +106,37 @@ const TestimonialsSection = () => {
       className="relative overflow-hidden py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <style>{`.dark #referanslar { background-color: hsl(var(--forge-workshop)) !important; }`}</style>
+      <style>{`
+        .dark #referanslar { background-color: hsl(var(--background)) !important; }
+        .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
+        .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
+        .dark .testimonial-heading { color: hsl(var(--foreground)) !important; }
+        .dark .testimonial-subtext { color: hsl(var(--muted-foreground)) !important; }
+        .dark .testimonial-accent-line { background-color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-accent-text { color: hsl(var(--forge-teal)) !important; }
+        .dark .testimonial-logo-item { color: hsl(var(--muted-foreground) / 0.3) !important; }
+        .dark .testimonial-corner { border-color: hsl(var(--border)) !important; }
+      `}</style>
 
       {/* Decorative corner accents */}
-      <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
-      <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div className="testimonial-corner absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
 
       <div className="container-industrial relative z-10">
         {/* Header */}
         <TextReveal className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-3 mb-5">
-            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
+            <span className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
               Güvenilir Partnerler
             </span>
-            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
+          <h2 className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+          <p className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
             <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
@@ -143,7 +154,7 @@ const TestimonialsSection = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
+              className="testimonial-stat-card relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
               style={{
                 backgroundColor: "rgba(255,255,255,0.6)",
                 borderColor: "rgba(0,113,144,0.15)",
@@ -155,12 +166,12 @@ const TestimonialsSection = () => {
             >
               <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--forge-molten))" }} />
               <div
-                className="text-2xl md:text-3xl font-bold mb-1.5"
+                className="testimonial-stat-value text-2xl md:text-3xl font-bold mb-1.5"
                 style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
               >
                 {stat.value}
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
+              <div className="testimonial-stat-label text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
                 {stat.label}
               </div>
             </motion.div>
@@ -179,7 +190,7 @@ const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.15)" }}>
+              <div className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.15)" }}>
                 {item.node}
               </div>
             )}
@@ -197,7 +208,7 @@ const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.1)" }}>
+              <div className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.1)" }}>
                 {item.node}
               </div>
             )}
