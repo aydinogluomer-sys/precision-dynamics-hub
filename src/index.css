@@ -172,6 +172,10 @@
     transition: all 0.3s ease-out;
   }
 
+  .dark .card-industrial:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 15px hsl(var(--forge-molten) / 0.1);
+  }
+
   .card-industrial:hover .card-icon {
     transform: scale(1.1) rotate(5deg);
     transition: transform 0.3s ease-out;
