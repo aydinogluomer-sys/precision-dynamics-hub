@@ -120,8 +120,8 @@ const TestimonialsSection = () => {
       `}</style>
 
       {/* Decorative corner accents */}
-      <div className="absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
-      <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div className="testimonial-corner absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
 
       <div className="container-industrial relative z-10">
         {/* Header */}
