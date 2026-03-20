@@ -131,7 +131,7 @@ const TestimonialsSection = () => {
             <span className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
               Güvenilir Partnerler
             </span>
-            <div className="w-10 h-px" style={{ backgroundColor: "#007190" }} />
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
             Bizi Tercih Edenler
