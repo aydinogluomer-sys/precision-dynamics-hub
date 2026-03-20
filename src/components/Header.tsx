@@ -304,6 +304,14 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
   };
 
   return (
+    <>
+    {/* Skip to content — accessibility */}
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded focus:outline-none"
+    >
+      {"İçeriğe geç"}
+    </a>
     <header className="fixed top-0 left-0 right-0 z-50">
       <motion.div
         className="border-b border-border transition-shadow"
