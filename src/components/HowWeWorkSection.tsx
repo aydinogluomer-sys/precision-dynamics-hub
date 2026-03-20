@@ -183,7 +183,7 @@ const StepCard = ({
       </div>
 
       <div className="flex items-center gap-3 pt-4 border-t border-border">
-        <span className="text-technical text-2xl font-bold text-primary">
+        <span className="text-technical font-bold text-primary text-xl">
           {step.stat.value}
         </span>
         <span className="text-technical text-[10px] text-muted-foreground uppercase tracking-wider">
