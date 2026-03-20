@@ -88,9 +88,16 @@ const VideoScrollSection = () => {
             loop
             muted
             playsInline
-            preload="auto"
-            className="w-full h-full object-cover"
+            preload="none"
+            className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }} />
+          {/* Mobile: poster image only */}
+          <img
+            src={cncWorkshop}
+            alt="CNC Workshop"
+            className="w-full h-full object-cover md:hidden"
+            loading="lazy"
+          />
           
         </motion.div>
 

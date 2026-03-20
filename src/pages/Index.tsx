@@ -103,7 +103,9 @@ const Index = () => {
         </ParallaxSection>
 
         <ParallaxSection index={13} variant="stack">
-          <TestimonialsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <TestimonialsSection />
+          </Suspense>
         </ParallaxSection>
 
         <ParallaxSection index={14} variant="color-fade">
