@@ -11,7 +11,7 @@ const steps = [
     label: "Analiz",
     title: "Fizibilite & Kaynak Planlaması",
     description:
-      "İlk aşamada derinlemesine teknik analiz, malzeme fizibilite çalışmaları ve kapsamlı kaynak planlaması gerçekleştiriyoruz.",
+      "Teknik analiz, malzeme fizibilitesi ve kaynak planlamasıyla başlıyoruz.",
     checklist: [
       { title: "CAD Uyumluluğu", desc: "Evrensel dosya formatı desteği" },
       { title: "Maliyet Optimizasyonu", desc: "Kaynak tahsis stratejisi" },
