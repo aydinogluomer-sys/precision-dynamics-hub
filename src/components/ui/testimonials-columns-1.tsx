@@ -9,19 +9,19 @@ interface Testimonial {
   role: string;
 }
 
-export const TestimonialsColumn = (props: {
+export const TestimonialsColumn = React.forwardRef<HTMLDivElement, {
   className?: string;
   testimonials: Testimonial[];
   duration?: number;
-}) => {
+}>(({ className, testimonials, duration, ...rest }, ref) => {
   return (
-    <div className={props.className}>
+    <div className={className} ref={ref} {...rest}>
       <motion.div
         animate={{
           translateY: "-50%",
         }}
         transition={{
-          duration: props.duration || 10,
+          duration: duration || 10,
           repeat: Infinity,
           ease: "linear",
           repeatType: "loop",
@@ -31,7 +31,7 @@ export const TestimonialsColumn = (props: {
         {[
           ...new Array(2).fill(0).map((_, index) => (
             <React.Fragment key={index}>
-              {props.testimonials.map(({ text, image, name, role }, i) => (
+              {testimonials.map(({ text, image, name, role }, i) => (
                 <div
                   className="rounded-xl border border-border bg-card p-6 shadow-sm"
                   key={`${index}-${i}`}
@@ -60,4 +60,6 @@ export const TestimonialsColumn = (props: {
       </motion.div>
     </div>
   );
-};
+});
+
+TestimonialsColumn.displayName = "TestimonialsColumn";

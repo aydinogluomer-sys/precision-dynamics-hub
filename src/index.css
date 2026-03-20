@@ -95,7 +95,7 @@
     --forge-amber: 37 80% 38%;
     --forge-ember: 0 50% 40%;
     --forge-teal: 186 75% 25%;
-    --forge-silver: 210 10% 50%;
+    --forge-silver: 210 12% 62%;
     --forge-steel: 212 18% 24%;
     --forge-concrete: 36 12% 12%;
     --forge-workshop: 38 12% 10%;
@@ -170,6 +170,10 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease-out;
+  }
+
+  .dark .card-industrial:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 15px hsl(var(--forge-molten) / 0.1);
   }
 
   .card-industrial:hover .card-icon {
