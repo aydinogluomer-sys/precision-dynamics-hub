@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import { ChevronDown, Search, MessageCircleQuestion, Hash, BarChart3, ArrowRight, HelpCircle, Layers, Filter, TrendingUp, Flame } from "lucide-react";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { servicePages } from "@/data/servicePages";
