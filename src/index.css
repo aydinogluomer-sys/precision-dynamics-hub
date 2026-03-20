@@ -124,7 +124,7 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior removed — Lenis handles smooth scroll */
   }
 
   a, button, [role="button"] {
