@@ -326,9 +326,7 @@ const RFQManager = () => {
 
       <div className="dark:bg-[#1E293B] bg-white rounded-xl dark:border-[#334155] border-slate-200 border overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" />
-          </div>
+          <IndustrialSkeleton variant="table" rows={6} columns={5} />
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-500">
             <FileText className="w-10 h-10 mb-3" />

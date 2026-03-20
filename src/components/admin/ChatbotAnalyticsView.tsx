@@ -35,11 +35,7 @@ const ChatbotAnalyticsView = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-[#0AA2CD]" />
-      </div>
-    );
+    return <IndustrialSkeleton variant="card" rows={3} />;
   }
 
   const totalQueries = data.length;
