@@ -271,7 +271,7 @@
 
 .cursor-ring[data-hover="true"] {
   border-color: hsl(var(--forge-teal) / 0.6);
-
+}
 
 /* ── Reduced Motion: disable all non-essential animations ── */
 @media (prefers-reduced-motion: reduce) {
