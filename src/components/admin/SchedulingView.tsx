@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { IndustrialSkeleton } from "@/components/ui/IndustrialSkeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
