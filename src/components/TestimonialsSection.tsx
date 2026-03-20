@@ -133,10 +133,10 @@ const TestimonialsSection = () => {
             </span>
             <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
+          <h2 className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
             Bizi Tercih Edenler
           </h2>
-          <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+          <p className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
             <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}> 1000+ projeyi </span>
             başarıyla teslim ettik.
