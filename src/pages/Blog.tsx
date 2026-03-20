@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal, BookOpen, Hash } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useMemo } from "react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { blogPosts, blogCategories } from "@/data/blogData";
 
 type SortOption = "newest" | "oldest" | "popular";
