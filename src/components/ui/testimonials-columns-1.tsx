@@ -60,4 +60,6 @@ export const TestimonialsColumn = React.forwardRef<HTMLDivElement, {
       </motion.div>
     </div>
   );
-};
+});
+
+TestimonialsColumn.displayName = "TestimonialsColumn";
