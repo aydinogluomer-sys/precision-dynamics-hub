@@ -39,10 +39,9 @@ const steps = [
   label: "Üretim",
   title: "Hassas Üretim & İzleme",
   description:
-  "Onaylanan tasarımlar çok eksenli CNC tezgâhlarımızda üretilir. Tüm süreç boyunca gerçek zamanlı izleme yapılır.",
+  "Onaylı tasarımlar, CNC tezgâhlarda gerçek zamanlı izlemeyle üretilir.",
   checklist: [
   { title: "5 Eksen CNC", desc: "Karmaşık geometri işleme" },
-  { title: "Gerçek Zamanlı İzleme", desc: "IoT destekli proses takibi" },
   { title: "Yüzey İşleme", desc: "Ra 0.4μm yüzey kalitesi" },
   { title: "Proses Kontrolü", desc: "SPC ile süreç yönetimi" }],
 
