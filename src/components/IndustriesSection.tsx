@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { motion } from "framer-motion";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
