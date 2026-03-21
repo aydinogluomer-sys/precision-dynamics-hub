@@ -357,5 +357,3 @@ export const IndustryCanvas = ({ type }: { type: IndustryType }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export { IndustryCanvas };
