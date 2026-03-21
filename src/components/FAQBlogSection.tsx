@@ -82,7 +82,7 @@ const FAQBlogSection = () => {
     visible: (i: number) => ({
       opacity: 1,
       rotateY: 0,
-      transition: { duration: 0.5, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] },
+      transition: { duration: 0.5, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
     }),
   };
 
