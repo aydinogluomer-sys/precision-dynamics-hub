@@ -258,7 +258,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
 
   return (
     <div
-      className={`gsap-project-card relative flex-shrink-0 w-[75vw] h-[60vh] bg-gradient-to-br ${project.gradient} overflow-hidden group cursor-pointer`}
+      className={`gsap-project-card relative flex-shrink-0 w-[80vw] h-[60vh] bg-gradient-to-br ${project.gradient} overflow-hidden group cursor-pointer`}
       style={{ willChange: "transform, opacity" }}
     >
       {/* Grid overlay */}
