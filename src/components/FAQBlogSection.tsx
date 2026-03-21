@@ -75,12 +75,22 @@ const blogPosts = [
 
 const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const prefersReduced = usePrefersReducedMotion();
+
+  const faqCardVariants = {
+    hidden: prefersReduced ? { opacity: 1, rotateY: 0 } : { opacity: 0, rotateY: 90 },
+    visible: (i: number) => ({
+      opacity: 1,
+      rotateY: 0,
+      transition: { duration: 0.5, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] },
+    }),
+  };
 
   return (
     <section
       id="sss"
       className="section-industrial min-h-screen flex flex-col justify-center border-y border-border"
-      style={{ backgroundColor: "hsl(var(--forge-mist))" }}
+      style={{ backgroundColor: "hsl(var(--forge-mist))", perspective: 1200 }}
     >
       <style>{`.dark #sss { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       <div className="container-industrial">
