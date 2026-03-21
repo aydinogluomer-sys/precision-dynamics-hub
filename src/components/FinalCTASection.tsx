@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import MagneticButton from "./MagneticButton";
-import { Reveal } from "./ui/Reveal";
+
 
 const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
