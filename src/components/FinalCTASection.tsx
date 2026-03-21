@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useLayoutEffect } from "react";
 import MagneticButton from "./MagneticButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
