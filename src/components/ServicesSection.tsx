@@ -209,6 +209,7 @@ const ServicesSection = () => {
 
 const ServiceCard = ({ service, index }: { service: (typeof services)[number]; index: number }) => {
   const prefersReduced = usePrefersReducedMotion();
+  const [isHovered, setIsHovered] = useState(false);
   const clipFrom = prefersReduced ? "inset(0)" : (index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)");
   const clipTo = "inset(0)";
 
@@ -217,6 +218,8 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
       className="group relative border border-border bg-card overflow-hidden hover:border-primary transition-all duration-300 h-full"
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image with clipPath mask reveal */}
       <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
@@ -232,6 +235,16 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
             alt={service.title}
             className="w-full h-full object-cover"
           />
+          {/* Ghost machine-loop video on hover */}
+          <video
+            src="/machine-loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover hidden md:block transition-opacity duration-500"
+            style={{ opacity: isHovered ? 0.12 : 0, mixBlendMode: "lighten" }}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
         </motion.div>
       </motion.div>
@@ -244,6 +257,7 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
+          animate={{ y: isHovered ? -4 : 0 }}
         >
           {service.title}
         </motion.h3>
@@ -272,6 +286,17 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
           </Link>
         </motion.div>
       </div>
+
+      {/* Molten glow border on hover */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{
+          boxShadow: isHovered
+            ? "inset 0 0 0 1px hsl(var(--forge-molten) / 0.4), 0 0 20px hsl(var(--forge-molten) / 0.1)"
+            : "inset 0 0 0 0px transparent, 0 0 0px transparent",
+        }}
+        transition={{ duration: 0.3 }}
+      />
     </motion.div>
   );
 };

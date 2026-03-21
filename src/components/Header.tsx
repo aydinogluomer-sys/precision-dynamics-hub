@@ -377,12 +377,18 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   ) : (
                     <button
                       onClick={() => !item.hasDropdown && handleNavClick(item)}
-                      className={`flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none ${
+                      className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none group/nav ${
                         item.isBold
                           ? "font-bold text-primary"
                           : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
+                      <span className="relative">
+                        {item.label}
+                        {!item.isBold && !item.hasDropdown && (
+                          <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+                        )}
+                      </span>
                       {item.label}
                       {item.hasDropdown && (
                         <motion.span
