@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import { BlurImage } from "./BlurImage";
