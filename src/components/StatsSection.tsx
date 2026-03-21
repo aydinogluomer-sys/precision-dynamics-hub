@@ -110,14 +110,27 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
 
 const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props, _forwardedRef) {
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedGlobal = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
+  const circleInitial = prefersReducedGlobal ? { clipPath: "circle(150% at 50% 50%)" } : { clipPath: "circle(0% at 50% 50%)" };
+  const circleAnimate = { clipPath: "circle(150% at 50% 50%)" };
+
   return (
-    <section ref={sectionRef} id="rakamlar" className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <motion.section
+      ref={sectionRef}
+      id="rakamlar"
+      className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden"
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      initial={circleInitial}
+      whileInView={circleAnimate}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+    >
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
