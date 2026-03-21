@@ -16,7 +16,6 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import PageLoader from "@/components/PageLoader";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 
 import CNCScrollStory from "@/components/CNCScrollStory";
@@ -82,36 +81,23 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <ParallaxSection index={6} variant="color-fade">
-          <section style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-            <AuroraBackground className="min-h-[50vh] w-full" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-              <div className="relative z-10 flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
-                <span className="mb-4 text-xs font-mono uppercase tracking-[0.3em] text-primary">
-                  {"Mühendislik Hizmetleri"}
-                </span>
-                <h2 className="text-3xl font-bold text-primary-foreground md:text-5xl">
-                  <span>{"Çözümlerimizi Keşfedin"}</span>
-                </h2>
-              </div>
-            </AuroraBackground>
-          </section>
-        </ParallaxSection>
+        {/* Aurora section removed — ServicesSection has its own header */}
 
         <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
 
-        <ParallaxSection index={7} variant="slide-up">
+        <ParallaxSection index={6} variant="slide-up">
           <ServicesSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
-        <ParallaxSection index={8} variant="stack">
+        <ParallaxSection index={7} variant="stack">
           <IndustriesSection />
         </ParallaxSection>
 
         {/* Project Showcase — horizontal scroll */}
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
-        <div className="relative" style={{ zIndex: 9 }}>
+        <div className="relative" style={{ zIndex: 8 }}>
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
@@ -119,7 +105,7 @@ const Index = () => {
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
-        <div className="relative" style={{ zIndex: 10 }}>
+        <div className="relative" style={{ zIndex: 9 }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>
@@ -127,31 +113,31 @@ const Index = () => {
 
         <SectionDivider fillColor="hsl(var(--forge-concrete))" />
 
-        <ParallaxSection index={9} variant="slide-up">
+        <ParallaxSection index={8} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
-        <ParallaxSection index={10} variant="wipe-mask">
+        <ParallaxSection index={9} variant="wipe-mask">
           <WhyUsSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
-        <ParallaxSection index={11} variant="depth-3d">
+        <ParallaxSection index={10} variant="depth-3d">
           <CapabilitiesSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
-        <ParallaxSection index={12} variant="zoom-out-blur">
+        <ParallaxSection index={11} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
-        <ParallaxSection index={13} variant="stack">
+        <ParallaxSection index={12} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
@@ -159,12 +145,12 @@ const Index = () => {
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
-        <ParallaxSection index={14} variant="color-fade">
+        <ParallaxSection index={13} variant="color-fade">
           <FAQBlogSection />
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
-        <ParallaxSection index={15} isLast variant="stack">
+        <ParallaxSection index={14} isLast variant="stack">
           <FinalCTASection />
         </ParallaxSection>
       </main>

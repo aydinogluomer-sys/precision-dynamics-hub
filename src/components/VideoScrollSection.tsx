@@ -43,12 +43,13 @@ const VideoScrollSection = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.7, 0.9], [1, 1, 0]);
 
   // Content always visible from start
-  const labelOpacity = 1;
-  const titleOpacity = 1;
-  const titleY = 0;
-  const descOpacity = 1;
-  const cardsOpacity = 1;
-  const cardsY = 0;
+  // Scroll-driven stagger for feature cards
+  const labelOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
+  const titleOpacity = useTransform(scrollYProgress, [0.02, 0.1], [0, 1]);
+  const titleY = useTransform(scrollYProgress, [0.02, 0.1], [20, 0]);
+  const descOpacity = useTransform(scrollYProgress, [0.04, 0.12], [0, 1]);
+  const cardsOpacity = useTransform(scrollYProgress, [0.06, 0.18], [0, 1]);
+  const cardsY = useTransform(scrollYProgress, [0.06, 0.18], [30, 0]);
 
   // Exit transition overlay
   const exitOpacity = useTransform(scrollYProgress, [0.75, 0.9], [0, 1]);
@@ -69,7 +70,7 @@ const VideoScrollSection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative h-[200vh]"
+      className="relative h-[150vh]"
       style={{ background: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
@@ -88,7 +89,7 @@ const VideoScrollSection = () => {
             loop
             muted
             playsInline
-            preload="none"
+            preload="metadata"
             className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }} />
           {/* Mobile: poster image only */}
@@ -116,7 +117,7 @@ const VideoScrollSection = () => {
               color: "hsl(var(--primary))",
               fontFamily: "'JetBrains Mono', monospace",
               opacity: labelOpacity
-            }}>ÜÜHENDİSLİK & ÜRETİM
+            }}>{"MÜHENDİSLİK & ÜRETİM"}
 
 
           </motion.span>

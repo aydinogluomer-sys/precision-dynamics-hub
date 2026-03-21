@@ -149,7 +149,7 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
               {equipment.map((eq, i) => (
                 <motion.div
                   key={eq.category}
-                  className="grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-muted/10 transition-colors min-w-[640px]"
+                  className="grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-primary/5 transition-colors min-w-[640px] cursor-default"
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}

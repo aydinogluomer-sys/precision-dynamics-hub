@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useLayoutEffect } from "react";
 import MagneticButton from "./MagneticButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
@@ -8,7 +8,7 @@ import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 const GsapCtaHeadline = () => {
   const ref = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 

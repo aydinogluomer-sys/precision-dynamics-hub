@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const TOTAL_FRAMES = 120;
+const FALLBACK_TIMEOUT = 5000;
 
 const stories = [
   { range: [0, 0.22], text: "Ham malzeme.\nSonsuz olasılık.", align: "center" as const, size: "text-4xl md:text-6xl lg:text-7xl" },
@@ -21,12 +22,22 @@ const CNCScrollStory = () => {
   const currentFrameRef = useRef(0);
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
+  const [showFallback, setShowFallback] = useState(false);
 
   const { images, ready, loadedCount } = useImagePreloader({
     basePath: "/sequence-cnc",
     totalFrames: TOTAL_FRAMES,
     eagerCount: 10,
   });
+
+  // Timeout fallback: if frames don't load in 5s, show poster
+  useEffect(() => {
+    if (ready) return;
+    const timer = setTimeout(() => {
+      if (!ready) setShowFallback(true);
+    }, FALLBACK_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, [ready]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -35,7 +46,6 @@ const CNCScrollStory = () => {
 
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
 
-  // Story overlay opacities
   const story0Opacity = useTransform(scrollYProgress, [stories[0].range[0], stories[0].range[0] + 0.04, stories[0].range[1] - 0.04, stories[0].range[1]], [0, 1, 1, 0]);
   const story1Opacity = useTransform(scrollYProgress, [stories[1].range[0], stories[1].range[0] + 0.04, stories[1].range[1] - 0.04, stories[1].range[1]], [0, 1, 1, 0]);
   const story2Opacity = useTransform(scrollYProgress, [stories[2].range[0], stories[2].range[0] + 0.04, stories[2].range[1] - 0.04, stories[2].range[1]], [0, 1, 1, 0]);
@@ -100,12 +110,27 @@ const CNCScrollStory = () => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
 
+  /* ── Mobile fallback ── */
   if (isMobile) {
     return (
       <section
-        className="relative min-h-screen flex items-center justify-center"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
         style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       >
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        >
+          <img
+            src="/sequence-cnc/frame_0001.webp"
+            alt="CNC İşleme"
+            className="w-full h-full object-cover opacity-30"
+            loading="lazy"
+          />
+        </motion.div>
         <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center">
           <span
             className="text-xs uppercase tracking-[0.3em] mb-4 block"
@@ -128,18 +153,13 @@ const CNCScrollStory = () => {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <img
-          src="/sequence-cnc/frame_0001.webp"
-          alt="CNC İşleme"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-          loading="lazy"
-        />
       </section>
     );
   }
 
+  /* ── Desktop: scroll-driven canvas ── */
   return (
-    <div ref={containerRef} className="relative" style={{ height: "500vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "350vh" }}>
       <div className="sticky top-0 h-screen overflow-hidden">
         <canvas
           ref={canvasRef}
@@ -148,11 +168,21 @@ const CNCScrollStory = () => {
           aria-label="CNC işleme süreci animasyonu"
           role="img"
         />
+
+        {/* Fallback poster when frames fail to load */}
+        {showFallback && !ready && (
+          <img
+            src="/sequence-cnc/frame_0001.webp"
+            alt="CNC İşleme"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        )}
+
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.5)" }} />
 
         {/* Loading state */}
-        {!ready && (
+        {!ready && !showFallback && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
             <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
             <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
@@ -176,7 +206,10 @@ const CNCScrollStory = () => {
               <div className={`max-w-5xl mx-auto px-6 lg:px-12 w-full ${story.align === "right" ? "flex justify-end" : ""}`}>
                 <h2
                   className={`${story.size} font-bold text-white/90 whitespace-pre-line tracking-tight`}
-                  style={{ fontFamily: story.mono ? "'IBM Plex Mono', monospace" : "'Space Grotesk', sans-serif" }}
+                  style={{
+                    fontFamily: story.mono ? "'IBM Plex Mono', monospace" : "'Space Grotesk', sans-serif",
+                    textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                  }}
                 >
                   {story.text}
                 </h2>
