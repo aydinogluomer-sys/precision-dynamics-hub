@@ -21,9 +21,9 @@ const recentFiles = [
 ];
 
 const features = [
-  { icon: BarChart3, label: "Gerçek Zamanlı Üretim Takibi", desc: "Anlık makine ve sipariş durumu" },
-  { icon: Upload, label: "CAD Dosya Yönetimi", desc: "Versiyon kontrolü ile güvenli paylaşım" },
-  { icon: ShieldCheck, label: "Kalite Raporları & Sertifikalar", desc: "CMM ölçüm sonuçlarına anında erişim" },
+  { icon: BarChart3, label: "Gerçek Zamanlı Üretim Takibi", desc: "78 aktif sipariş · Anlık makine durumu" },
+  { icon: Upload, label: "CAD Dosya Yönetimi", desc: "Versiyon kontrolü · NDA korumalı paylaşım" },
+  { icon: ShieldCheck, label: "Kalite Raporları & Sertifikalar", desc: "3.2s ort. CMM ölçüm · Anlık erişim" },
   { icon: Clock, label: "Otomatik Bildirimler", desc: "Sipariş ve üretim durum güncellemeleri" },
 ];
 
