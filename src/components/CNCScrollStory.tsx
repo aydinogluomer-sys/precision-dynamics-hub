@@ -1,17 +1,28 @@
 import { useRef, useEffect, useCallback } from "react";
-import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TOTAL_FRAMES = 120;
+
+const stories = [
+  { range: [0, 0.15], text: "Ham malzeme.\nSonsuz olasılık.", align: "center" as const, size: "text-4xl md:text-6xl lg:text-7xl" },
+  { range: [0.2, 0.4], text: "±0.005mm tolerans.", align: "left" as const, size: "text-2xl md:text-4xl", mono: true },
+  { range: [0.45, 0.65], text: "Ti-6Al-4V. AS9100D.", align: "right" as const, size: "text-2xl md:text-4xl", mono: true },
+  { range: [0.7, 0.85], text: "Prototipten\n50.000 adete.", align: "left" as const, size: "text-3xl md:text-5xl" },
+];
 
 const CNCScrollStory = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentFrameRef = useRef(0);
   const isMobile = useIsMobile();
+  const prefersReduced = usePrefersReducedMotion();
 
-  const { images, ready } = useImagePreloader({
+  const { images, ready, loadedCount } = useImagePreloader({
     basePath: "/sequence-cnc",
     totalFrames: TOTAL_FRAMES,
     eagerCount: 10,
@@ -23,6 +34,16 @@ const CNCScrollStory = () => {
   });
 
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
+
+  // Story overlay opacities
+  const story0Opacity = useTransform(scrollYProgress, [stories[0].range[0], stories[0].range[0] + 0.03, stories[0].range[1] - 0.03, stories[0].range[1]], [0, 1, 1, 0]);
+  const story1Opacity = useTransform(scrollYProgress, [stories[1].range[0], stories[1].range[0] + 0.03, stories[1].range[1] - 0.03, stories[1].range[1]], [0, 1, 1, 0]);
+  const story2Opacity = useTransform(scrollYProgress, [stories[2].range[0], stories[2].range[0] + 0.03, stories[2].range[1] - 0.03, stories[2].range[1]], [0, 1, 1, 0]);
+  const story3Opacity = useTransform(scrollYProgress, [stories[3].range[0], stories[3].range[0] + 0.03, stories[3].range[1] - 0.03, stories[3].range[1]], [0, 1, 1, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.88, 0.92], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.88, 0.95], [30, 0]);
+
+  const storyOpacities = [story0Opacity, story1Opacity, story2Opacity, story3Opacity];
 
   const drawFrame = useCallback(
     (index: number) => {
@@ -50,7 +71,6 @@ const CNCScrollStory = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Cover-fit the image
       const imgRatio = img.naturalWidth / img.naturalHeight;
       const canvasRatio = w / h;
       let sw: number, sh: number, sx: number, sy: number;
@@ -73,10 +93,9 @@ const CNCScrollStory = () => {
   );
 
   useMotionValueEvent(frameIndex, "change", (v) => {
-    drawFrame(v);
+    if (!prefersReduced) drawFrame(v);
   });
 
-  // Draw first frame when ready
   useEffect(() => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
@@ -90,16 +109,24 @@ const CNCScrollStory = () => {
         <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center">
           <span
             className="text-xs uppercase tracking-[0.3em] mb-4 block"
-            style={{ color: "hsl(var(--primary))", fontFamily: "'JetBrains Mono', monospace" }}
+            style={{ color: "hsl(var(--primary))", fontFamily: "'IBM Plex Mono', monospace" }}
           >
-            CNC İşleme Süreci
+            {"CNC İşleme Süreci"}
           </span>
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ham Metalden Hassas Parçaya
+            {"Ham Metalden Hassas Parçaya"}
           </h2>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
-            Alüminyum billet'ten nihai havacılık parçasına dönüşüm sürecini keşfedin.
+          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.6)" }}>
+            {"Alüminyum billet'ten nihai havacılık parçasına dönüşüm sürecini keşfedin."}
           </p>
+          <Link
+            to="/teklif-al"
+            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white"
+            style={{ backgroundColor: "hsl(var(--forge-molten))" }}
+          >
+            <span>{"Teklif Al"}</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
         <img
           src="/sequence-cnc/frame_0001.webp"
@@ -112,42 +139,66 @@ const CNCScrollStory = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative h-[300vh]">
+    <div ref={containerRef} className="relative" style={{ height: "500vh" }}>
       <div className="sticky top-0 h-screen overflow-hidden">
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
           style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          aria-label="CNC işleme süreci animasyonu"
+          role="img"
         />
         {/* Dark overlay */}
-        <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.45)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.5)" }} />
 
-        {/* Content overlay */}
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="max-w-5xl mx-auto px-6 text-center">
-            <span
-              className="text-xs uppercase tracking-[0.3em] mb-4 block"
-              style={{ color: "hsl(var(--primary))", fontFamily: "'JetBrains Mono', monospace" }}
-            >
-              CNC İşleme Süreci
-            </span>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 tracking-tight">
-              Ham Metalden
-              <br />
-              Hassas Parçaya
-            </h2>
-            <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Alüminyum billet'ten nihai havacılık parçasına dönüşüm sürecini scroll ile keşfedin.
-            </p>
-          </div>
-        </div>
-
-        {/* Loading indicator */}
+        {/* Loading state */}
         {!ready && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+            <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
+            <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
+              {`%${Math.round((loadedCount / TOTAL_FRAMES) * 100)} yükleniyor...`}
+            </span>
           </div>
         )}
+
+        {/* Story overlays */}
+        <div className="absolute inset-0 z-10">
+          {stories.map((story, i) => (
+            <motion.div
+              key={i}
+              className={`absolute inset-0 flex items-center ${
+                story.align === "center" ? "justify-center text-center" :
+                story.align === "left" ? "justify-start text-left" :
+                "justify-end text-right"
+              }`}
+              style={{ opacity: prefersReduced ? 1 : storyOpacities[i] }}
+            >
+              <div className={`max-w-5xl mx-auto px-6 lg:px-12 w-full ${story.align === "right" ? "flex justify-end" : ""}`}>
+                <h2
+                  className={`${story.size} font-bold text-white/90 whitespace-pre-line tracking-tight`}
+                  style={{ fontFamily: story.mono ? "'IBM Plex Mono', monospace" : "'Space Grotesk', sans-serif" }}
+                >
+                  {story.text}
+                </h2>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* CTA at end */}
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ opacity: ctaOpacity, y: ctaY }}
+          >
+            <Link
+              to="/teklif-al"
+              className="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              style={{ backgroundColor: "hsl(var(--forge-molten))" }}
+            >
+              <span>{"Teklif Al"}</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

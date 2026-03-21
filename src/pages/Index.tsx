@@ -17,9 +17,10 @@ import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
+import CNCScrollStory from "@/components/CNCScrollStory";
+
 const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
-const CNCScrollStory = lazy(() => import("@/components/CNCScrollStory"));
 const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
 
 const SectionLoader = () => (
@@ -48,9 +49,7 @@ const Index = () => {
         </ParallaxSection>
 
         <div className="relative" style={{ zIndex: 2 }}>
-          <Suspense fallback={<SectionLoader />}>
-            <CNCScrollStory />
-          </Suspense>
+          <CNCScrollStory />
         </div>
 
         <ParallaxSection index={2} variant="color-fade">

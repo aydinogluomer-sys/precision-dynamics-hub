@@ -98,6 +98,18 @@ const Malzemeler = () => {
       {/* Hero */}
       <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        {/* Ghost machine-loop video */}
+        <video
+          src="/machine-loop.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="none"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.08] pointer-events-none hidden md:block"
+          style={{ mixBlendMode: "luminosity" }}
+          aria-hidden="true"
+        />
         <div className="container-industrial relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60 mb-3 block">Malzeme Kütüphanesi</span>

@@ -174,6 +174,18 @@ const ServiceDetail = () => {
               animate={{ scale: 1 }}
               transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             />
+            {/* Ghost machine-loop video */}
+            <video
+              src="/machine-loop.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="none"
+              className="absolute inset-0 w-full h-full object-cover opacity-[0.12] pointer-events-none hidden md:block"
+              style={{ mixBlendMode: "luminosity" }}
+              aria-hidden="true"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,15%,8%)] via-[hsl(220,15%,8%,0.75)] to-[hsl(220,15%,8%,0.2)]" />
 
             <motion.div
