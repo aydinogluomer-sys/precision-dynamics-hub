@@ -319,17 +319,17 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
         animate={{
           y: 0,
           opacity: 1,
-          backgroundColor: isScrolled ? "hsl(var(--background) / 0.95)" : "hsl(var(--background))",
-          backdropFilter: isScrolled ? "blur(12px)" : "blur(0px)",
-          boxShadow: isScrolled ? "0 4px 20px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
+          backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
+          backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
+          boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
         }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="container-industrial">
           <motion.div
             className="flex items-center justify-between"
-            animate={{ height: isScrolled ? 60 : 70 }}
-            transition={{ duration: 0.25 }}
+            animate={{ height: isScrolled ? 56 : 70 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
