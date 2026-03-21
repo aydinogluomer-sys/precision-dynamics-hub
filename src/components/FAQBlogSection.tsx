@@ -101,7 +101,12 @@ const FAQBlogSection = () => {
               <SectionHeader tag="SSS" title="Sıkça Sorulan Sorular" />
             </div>
 
-            <div className="space-y-2">
+            <motion.div
+              className="space-y-2"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
               {faqs.map((faq, index) => (
                 <div key={index} className="border border-border bg-background">
                   <button
