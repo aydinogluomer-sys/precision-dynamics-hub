@@ -148,7 +148,7 @@ const HowWeWorkSection = () => {
           )}
         </motion.div>
       </div>
-    </section>);
+    </motion.section>);
 
 };
 

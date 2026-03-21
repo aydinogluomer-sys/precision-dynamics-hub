@@ -217,7 +217,7 @@ const ServicesSection = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

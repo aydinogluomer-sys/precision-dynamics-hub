@@ -306,7 +306,7 @@ const MaterialsSection = () => {
           </a>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

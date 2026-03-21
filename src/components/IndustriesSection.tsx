@@ -48,11 +48,12 @@ const secondaryIndustries: Industry[] = [
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, scale: 0.85, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
+    scale: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.08, ease: EASE as unknown as [number, number, number, number] },
+    transition: { duration: 0.5, delay: i * 0.06, ease: EASE as unknown as [number, number, number, number] },
   }),
 };
 

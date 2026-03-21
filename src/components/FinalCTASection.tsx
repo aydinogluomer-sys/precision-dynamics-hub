@@ -108,6 +108,17 @@ const FinalCTASection = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Flash cut white overlay */}
+      {!prefersReduced && (
+        <motion.div
+          className="absolute inset-0 z-[30] pointer-events-none"
+          style={{ backgroundColor: "white" }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: [0, 0.6, 0] }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.25, ease: "easeOut", times: [0, 0.5, 1] }}
+        />
+      )}
       {/* Diagonal sweep overlay */}
       <motion.div
         key={sweepKey}

@@ -285,7 +285,7 @@ const MaterialMorphScroll = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -157,6 +157,16 @@ const ProjectShowcase = () => {
       className="relative"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
+      {/* Chromatic aberration overlay */}
+      <style>{`
+        @keyframes chroma-r { 0% { transform: translateX(8px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
+        @keyframes chroma-g { 0% { transform: translateX(-6px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
+        @keyframes chroma-b { 0% { transform: translateX(4px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
+        .chroma-layer { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; animation-duration: 0.3s; animation-fill-mode: forwards; animation-timing-function: ease-out; }
+      `}</style>
+      <div className="chroma-layer" style={{ backgroundColor: "rgba(255,0,0,0.15)", animation: "chroma-r 0.3s ease-out forwards" }} />
+      <div className="chroma-layer" style={{ backgroundColor: "rgba(0,255,0,0.1)", animation: "chroma-g 0.3s ease-out forwards" }} />
+      <div className="chroma-layer" style={{ backgroundColor: "rgba(0,0,255,0.15)", animation: "chroma-b 0.3s ease-out forwards" }} />
       <div className="h-screen flex flex-col justify-center">
         {/* Header */}
         <div className="container-industrial pt-12 pb-8">

@@ -153,7 +153,7 @@ const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props, _forw
           ))}
         </StaggerContainer>
       </div>
-    </section>
+    </motion.section>
   );
 });
 

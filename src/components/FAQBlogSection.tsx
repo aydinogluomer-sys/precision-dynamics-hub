@@ -143,7 +143,7 @@ const FAQBlogSection = () => {
                   </AnimatePresence>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             <div className="text-center md:text-left mt-6">
               <Link

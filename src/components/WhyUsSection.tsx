@@ -151,10 +151,10 @@ const WhyUsSection = () => {
           {/* Right: Images with scroll-driven clipPath reveal */}
           <motion.div
             className="relative"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            initial={splitRightInitial}
+            whileInView={splitAnimate}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="relative">
               <motion.div style={{ clipPath }}>

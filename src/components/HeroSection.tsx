@@ -161,6 +161,16 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
+      {/* Lens flare overlay */}
+      {!prefersReduced && (
+        <motion.div
+          className="absolute inset-0 z-[50] pointer-events-none"
+          initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
+          animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ backgroundColor: "white" }}
+        />
+      )}
       {/* Video Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: videoY }}>
         <video

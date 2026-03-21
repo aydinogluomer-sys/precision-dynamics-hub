@@ -159,7 +159,7 @@ const TestimonialsSection = () => {
             <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
           <h2 className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
-            Bizi Tercih Edenler
+            <WordScatter text="Bizi Tercih Edenler" prefersReduced={prefersReduced} />
           </h2>
           <p className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak

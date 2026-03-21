@@ -176,7 +176,7 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 });
 

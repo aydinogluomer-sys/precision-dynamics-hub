@@ -113,7 +113,7 @@ const NexusPromoSection = () => {
           <NexusDashboardMockup />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

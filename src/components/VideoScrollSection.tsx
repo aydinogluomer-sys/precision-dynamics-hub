@@ -76,6 +76,15 @@ const VideoScrollSection = () => {
       style={{ background: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
+      {/* Spotlight sweep overlay */}
+      {!prefersReduced && (
+        <style>{`
+          @keyframes spotlight-sweep {
+            from { -webkit-mask-position: -100% center; mask-position: -100% center; }
+            to { -webkit-mask-position: 200% center; mask-position: 200% center; }
+          }
+        `}</style>
+      )}
       
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
         {/* Video: paused by default, plays on hover, zooms on scroll */}
