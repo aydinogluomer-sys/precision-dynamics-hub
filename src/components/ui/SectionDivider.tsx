@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, forwardRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
