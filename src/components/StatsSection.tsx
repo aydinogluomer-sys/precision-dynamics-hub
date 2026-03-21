@@ -1,5 +1,5 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, forwardRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 const staggerItemVariants = {
@@ -108,7 +108,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
   );
 };
 
-const StatsSection = () => {
+const StatsSection = forwardRef<HTMLElement, Record<string, never>>((_props, _forwardedRef) => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -142,6 +142,8 @@ const StatsSection = () => {
       </div>
     </section>
   );
-};
+});
+
+StatsSection.displayName = "StatsSection";
 
 export default StatsSection;

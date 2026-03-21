@@ -1,6 +1,5 @@
-import { useRef, type ReactNode } from "react";
+import { useRef, forwardRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
-import { useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in" | "wipe-mask" | "color-fade" | "depth-3d";
@@ -15,7 +14,7 @@ interface ParallaxSectionProps {
   videoBg?: string;
 }
 
-const ParallaxSection = ({
+const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
   children,
   className = "",
   index = 0,
@@ -23,7 +22,7 @@ const ParallaxSection = ({
   variant = "stack",
   style,
   videoBg
-}: ParallaxSectionProps) => {
+}, _forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
@@ -128,7 +127,8 @@ const ParallaxSection = ({
         {children}
       </motion.div>
     </div>);
+});
 
-};
+ParallaxSection.displayName = "ParallaxSection";
 
 export default ParallaxSection;

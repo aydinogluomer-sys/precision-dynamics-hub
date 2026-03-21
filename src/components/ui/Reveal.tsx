@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -62,14 +62,14 @@ const WordStagger = ({
   );
 };
 
-const Reveal = ({
+const Reveal = forwardRef<HTMLDivElement, RevealProps>(({
   children,
   direction = "up",
   variant = "clip",
   delay = 0,
   duration = 0.7,
   className = "",
-}: RevealProps) => {
+}, _forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
@@ -97,6 +97,8 @@ const Reveal = ({
       {children}
     </motion.div>
   );
-};
+});
+
+Reveal.displayName = "Reveal";
 
 export { Reveal };

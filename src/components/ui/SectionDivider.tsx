@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, forwardRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -10,11 +10,11 @@ interface SectionDividerProps {
   className?: string;
 }
 
-const SectionDivider = ({
+const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(({
   fillColor = "hsl(var(--forge-obsidian))",
   flip = false,
   className = "",
-}: SectionDividerProps) => {
+}, _forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -52,6 +52,8 @@ const SectionDivider = ({
       </motion.div>
     </div>
   );
-};
+});
+
+SectionDivider.displayName = "SectionDivider";
 
 export { SectionDivider };
