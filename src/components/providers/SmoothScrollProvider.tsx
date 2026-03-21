@@ -6,7 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 declare global {
-  interface Window { __lenis?: Lenis; }
+  interface Window {
+    __lenis?: Lenis;
+  }
 }
 
 interface SmoothScrollProviderProps {
@@ -14,7 +16,7 @@ interface SmoothScrollProviderProps {
 }
 
 const shouldDisable =
-  import.meta.env.DEV && import.meta.env.VITE_DISABLE_LENIS === "true";
+  (import.meta.env.DEV && import.meta.env.VITE_DISABLE_LENIS === "true") || typeof window === "undefined";
 
 export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
   const lenisRef = useRef<Lenis | null>(null);
@@ -40,7 +42,9 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
       window.dispatchEvent(new Event("scroll"));
     });
 
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
     gsap.ticker.lagSmoothing(0);
 
     return () => {
