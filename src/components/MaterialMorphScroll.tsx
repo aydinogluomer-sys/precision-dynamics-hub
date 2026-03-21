@@ -1,10 +1,11 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const TOTAL_FRAMES = 80;
+const FALLBACK_TIMEOUT = 5000;
 
 const materialProps = [
   { label: "İşlenebilirlik", value: 4, max: 5 },
@@ -19,12 +20,22 @@ const MaterialMorphScroll = () => {
   const currentFrameRef = useRef(0);
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
+  const [showFallback, setShowFallback] = useState(false);
 
   const { images, ready, loadedCount } = useImagePreloader({
     basePath: "/sequence-material",
     totalFrames: TOTAL_FRAMES,
     eagerCount: 8,
   });
+
+  // Timeout fallback
+  useEffect(() => {
+    if (ready) return;
+    const timer = setTimeout(() => {
+      if (!ready) setShowFallback(true);
+    }, FALLBACK_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, [ready]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,14 +44,11 @@ const MaterialMorphScroll = () => {
 
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
 
-  // Floating card appears at 40-80% scroll
-  const cardOpacity = useTransform(scrollYProgress, [0.35, 0.42, 0.75, 0.82], [0, 1, 1, 0]);
-  const cardX = useTransform(scrollYProgress, [0.35, 0.45], [60, 0]);
+  // Floating card — wider visibility range
+  const cardOpacity = useTransform(scrollYProgress, [0.25, 0.32, 0.82, 0.88], [0, 1, 1, 0]);
+  const cardX = useTransform(scrollYProgress, [0.25, 0.35], [60, 0]);
 
-  // SVG progress ring
   const ringProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
-  // Title overlay
   const titleOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25, 0.32], [0, 1, 1, 0]);
 
   const drawFrame = useCallback(
@@ -98,12 +106,27 @@ const MaterialMorphScroll = () => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
 
+  /* ── Mobile fallback with material properties ── */
   if (isMobile) {
     return (
       <section
-        className="relative min-h-[70vh] flex items-center justify-center"
+        className="relative min-h-[70vh] flex items-center justify-center overflow-hidden"
         style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       >
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        >
+          <img
+            src="/sequence-material/frame_0001.webp"
+            alt="Malzeme Dönüşümü"
+            className="w-full h-full object-cover opacity-30"
+            loading="lazy"
+          />
+        </motion.div>
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 text-center">
           <span
             className="text-xs uppercase tracking-[0.3em] mb-4 block"
@@ -114,16 +137,30 @@ const MaterialMorphScroll = () => {
           <h2 className="text-3xl font-bold text-white mb-4">
             {"Yüzey Mükemmelliği"}
           </h2>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.6)" }}>
             {"Ham titanyumdan cilalı anodize yüzeye dönüşüm."}
           </p>
+
+          {/* Mobile material properties */}
+          <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
+            {materialProps.map((prop) => (
+              <div key={prop.label} className="text-left p-3" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <span className="text-[10px] text-white/50 font-mono uppercase tracking-wider block mb-1">{prop.label}</span>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: prop.max }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-1.5 flex-1 rounded-full"
+                      style={{
+                        backgroundColor: i < prop.value ? "hsl(var(--forge-molten))" : "rgba(255,255,255,0.1)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <img
-          src="/sequence-material/frame_0001.webp"
-          alt="Malzeme Dönüşümü"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-          loading="lazy"
-        />
       </section>
     );
   }
@@ -140,10 +177,20 @@ const MaterialMorphScroll = () => {
           aria-label="Malzeme dönüşüm animasyonu"
           role="img"
         />
+
+        {/* Fallback poster */}
+        {showFallback && !ready && (
+          <img
+            src="/sequence-material/frame_0001.webp"
+            alt="Malzeme Dönüşümü"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        )}
+
         <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.4)" }} />
 
         {/* Loading state */}
-        {!ready && (
+        {!ready && !showFallback && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
             <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
             <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
@@ -182,7 +229,6 @@ const MaterialMorphScroll = () => {
               borderColor: "rgba(255,255,255,0.1)",
             }}
           >
-            {/* SVG Progress Ring */}
             <div className="flex items-center gap-4 mb-5">
               <svg width="56" height="56" viewBox="0 0 100 100" className="shrink-0 -rotate-90">
                 <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
@@ -206,7 +252,6 @@ const MaterialMorphScroll = () => {
               </div>
             </div>
 
-            {/* Material properties */}
             <div className="space-y-3">
               {materialProps.map((prop) => (
                 <div key={prop.label}>
