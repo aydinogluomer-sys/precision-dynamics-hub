@@ -5,7 +5,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 interface RevealProps {
   children: ReactNode;
   direction?: "up" | "down" | "left" | "right";
-  variant?: "clip" | "word-stagger";
+  variant?: "clip" | "word-stagger" | "line-split";
   delay?: number;
   duration?: number;
   className?: string;
