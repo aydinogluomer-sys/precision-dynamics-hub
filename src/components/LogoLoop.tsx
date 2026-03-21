@@ -39,6 +39,7 @@ const LogoLoop = ({
   className = "",
   style = {},
 }: LogoLoopProps) => {
+  const prefersReduced = usePrefersReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const seqRef = useRef<HTMLDivElement>(null);
