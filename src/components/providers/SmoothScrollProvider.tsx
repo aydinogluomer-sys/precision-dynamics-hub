@@ -13,14 +13,15 @@ interface SmoothScrollProviderProps {
   children: ReactNode;
 }
 
-export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
-  if (import.meta.env.DEV && import.meta.env.VITE_DISABLE_LENIS === "true") {
-    return <>{children}</>;
-  }
+const shouldDisable =
+  import.meta.env.DEV && import.meta.env.VITE_DISABLE_LENIS === "true";
 
+export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    if (shouldDisable) return;
+
     const isAutomation = (navigator as unknown as { webdriver?: boolean }).webdriver === true;
 
     const lenis = new Lenis({
