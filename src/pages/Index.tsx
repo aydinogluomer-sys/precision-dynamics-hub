@@ -150,7 +150,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-deep-iron))" />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" />
 
         <ParallaxSection index={10} variant="depth-3d" videoBg="/machine-loop.mp4">
           <Suspense fallback={<SectionLoader />}>
