@@ -44,12 +44,14 @@ const secondaryIndustries: Industry[] = [
   { name: "Madencilik", description: "", highlight: "Aşınma direnci", image: imgMining },
 ];
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.5, delay: i * 0.08, ease: EASE as unknown as [number, number, number, number] },
   }),
 };
 
@@ -58,7 +60,7 @@ const chipVariants = {
   visible: (i: number) => ({
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.35, delay: 0.4 + i * 0.05, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.35, delay: 0.4 + i * 0.05, ease: EASE as unknown as [number, number, number, number] },
   }),
 };
 
