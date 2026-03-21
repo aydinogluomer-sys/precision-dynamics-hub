@@ -53,6 +53,10 @@ const CNCScrollStory = () => {
   const ctaOpacity = useTransform(scrollYProgress, [0.85, 0.90], [0, 1]);
   const ctaY = useTransform(scrollYProgress, [0.85, 0.92], [30, 0]);
 
+  // Exit animation — fade + shrink as user scrolls past
+  const exitOpacity = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.15]);
+  const exitScale = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.88]);
+
   const storyOpacities = [story0Opacity, story1Opacity, story2Opacity, story3Opacity];
 
   const drawFrame = useCallback(
