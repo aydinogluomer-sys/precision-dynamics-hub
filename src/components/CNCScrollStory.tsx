@@ -36,12 +36,12 @@ const CNCScrollStory = () => {
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
 
   // Story overlay opacities
-  const story0Opacity = useTransform(scrollYProgress, [stories[0].range[0], stories[0].range[0] + 0.03, stories[0].range[1] - 0.03, stories[0].range[1]], [0, 1, 1, 0]);
-  const story1Opacity = useTransform(scrollYProgress, [stories[1].range[0], stories[1].range[0] + 0.03, stories[1].range[1] - 0.03, stories[1].range[1]], [0, 1, 1, 0]);
-  const story2Opacity = useTransform(scrollYProgress, [stories[2].range[0], stories[2].range[0] + 0.03, stories[2].range[1] - 0.03, stories[2].range[1]], [0, 1, 1, 0]);
-  const story3Opacity = useTransform(scrollYProgress, [stories[3].range[0], stories[3].range[0] + 0.03, stories[3].range[1] - 0.03, stories[3].range[1]], [0, 1, 1, 0]);
-  const ctaOpacity = useTransform(scrollYProgress, [0.88, 0.92], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.88, 0.95], [30, 0]);
+  const story0Opacity = useTransform(scrollYProgress, [stories[0].range[0], stories[0].range[0] + 0.04, stories[0].range[1] - 0.04, stories[0].range[1]], [0, 1, 1, 0]);
+  const story1Opacity = useTransform(scrollYProgress, [stories[1].range[0], stories[1].range[0] + 0.04, stories[1].range[1] - 0.04, stories[1].range[1]], [0, 1, 1, 0]);
+  const story2Opacity = useTransform(scrollYProgress, [stories[2].range[0], stories[2].range[0] + 0.04, stories[2].range[1] - 0.04, stories[2].range[1]], [0, 1, 1, 0]);
+  const story3Opacity = useTransform(scrollYProgress, [stories[3].range[0], stories[3].range[0] + 0.04, stories[3].range[1] - 0.04, stories[3].range[1]], [0, 1, 1, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.85, 0.90], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.85, 0.92], [30, 0]);
 
   const storyOpacities = [story0Opacity, story1Opacity, story2Opacity, story3Opacity];
 
