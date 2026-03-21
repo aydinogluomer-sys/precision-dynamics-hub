@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo, type ReactNode, type CSSProperties } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const ANIM = { SMOOTH_TAU: 0.25, MIN_COPIES: 2, HEADROOM: 2 };
 
