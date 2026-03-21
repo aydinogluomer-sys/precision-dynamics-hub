@@ -48,6 +48,7 @@ const SECTIONS = [
   { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "neden-biz", label: "Neden Biz" },
+  { id: "rakamlar", label: "Rakamlar" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
   { id: "referanslar", label: "Referanslar" },
   { id: "sss-blog", label: "SSS & Blog" },
