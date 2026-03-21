@@ -19,7 +19,7 @@ interface Customer {
   phone: string | null;
 }
 
-const CustomersView = () => {
+export const CustomersView = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -148,5 +148,3 @@ const CustomersView = () => {
     </div>
   );
 };
-
-export default CustomersView;

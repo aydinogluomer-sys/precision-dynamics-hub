@@ -1,4 +1,4 @@
-const AuthSeparator = () => (
+export const AuthSeparator = () => (
   <div className="relative my-6">
     <div className="absolute inset-0 flex items-center">
       <div className="w-full border-t border-border" />
@@ -10,5 +10,3 @@ const AuthSeparator = () => (
     </div>
   </div>
 );
-
-export default AuthSeparator;

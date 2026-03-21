@@ -3,7 +3,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import MagneticButton from "./MagneticButton";
+import { MagneticButton } from "./MagneticButton";
 
 const equipment = [
   { category: "CNC Frezeleme", model: "DMG MORI 5-Eksen", size: "1200 × 800 × 600", tolerance: "±0.005 mm", speed: "24,000 RPM" },
@@ -51,7 +51,7 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
   return { value, ref };
 };
 
-const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
+export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
 
@@ -181,5 +181,3 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
 });
 
 CapabilitiesSection.displayName = "CapabilitiesSection";
-
-export default CapabilitiesSection;

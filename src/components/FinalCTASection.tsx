@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback, useLayoutEffect } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import MagneticButton from "./MagneticButton";
+import { MagneticButton } from "./MagneticButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 /* ── GSAP CTA headline with char stagger ── */
@@ -67,8 +67,7 @@ const GsapCtaHeadline = () => {
   );
 };
 
-
-const FinalCTASection = () => {
+export const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
@@ -196,5 +195,3 @@ const FinalCTASection = () => {
     </section>
   );
 };
-
-export default FinalCTASection;

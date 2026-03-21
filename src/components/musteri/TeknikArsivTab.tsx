@@ -8,7 +8,7 @@ import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 import { lazy, Suspense } from "react";
 
-const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview").then(m => ({ default: m.CustomerCadPreview })));
 
 interface CustomerFile {
   id: string;
@@ -40,7 +40,7 @@ const isCadFile = (name: string) => {
 
 type FilterType = "all" | "upload" | "rfq";
 
-const TeknikArsivTab = () => {
+export const TeknikArsivTab = () => {
   const [uploadedFiles, setUploadedFiles] = useState<CustomerFile[]>([]);
   const [rfqFiles, setRfqFiles] = useState<CustomerFile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -314,5 +314,3 @@ const TeknikArsivTab = () => {
     </div>
   );
 };
-
-export default TeknikArsivTab;

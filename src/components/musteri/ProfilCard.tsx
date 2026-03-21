@@ -32,7 +32,7 @@ const ProfileRow = ({ icon: Icon, label, value }: { icon: React.ElementType; lab
   </div>
 );
 
-const ProfilCard = ({ user, profile, editing, saving, editForm, setEditing, setEditForm, onSave }: ProfilCardProps) => (
+export const ProfilCard = ({ user, profile, editing, saving, editForm, setEditing, setEditForm, onSave }: ProfilCardProps) => (
   <div className="bg-card border border-border p-6">
     <div className="flex items-center justify-between mb-6">
       <h2 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Profil Bilgileri</h2>
@@ -75,5 +75,3 @@ const ProfilCard = ({ user, profile, editing, saving, editForm, setEditing, setE
     )}
   </div>
 );
-
-export default ProfilCard;

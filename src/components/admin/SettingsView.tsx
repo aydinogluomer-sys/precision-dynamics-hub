@@ -17,7 +17,7 @@ const defaultApiSettings = {
   realtimeSync: true,
 };
 
-const SettingsView = () => {
+export const SettingsView = () => {
   const [active, setActive] = useState(0);
   const [params, setParams] = useState(defaultParams);
   const [apiSettings, setApiSettings] = useState(defaultApiSettings);
@@ -172,5 +172,3 @@ const SettingsView = () => {
     </div>
   );
 };
-
-export default SettingsView;

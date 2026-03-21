@@ -1,10 +1,10 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { Target, Users, Award, Globe } from "lucide-react";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
-const Hakkimizda = () => {
+export const Hakkimizda = () => {
   usePageMeta({ title: "Hakkımızda", description: "Mas Technic — hassas CNC işleme, talaşlı imalat ve mühendislik çözümleri sunan güvenilir üretim partneri." });
   return (
   <div className="min-h-screen bg-background">
@@ -43,5 +43,3 @@ const Hakkimizda = () => {
   </div>
   );
 };
-
-export default Hakkimizda;

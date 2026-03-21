@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Lock } from "lucide-react";
 
-const AdminLogin = () => {
+export const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -76,5 +76,3 @@ const AdminLogin = () => {
     </div>
   );
 };
-
-export default AdminLogin;

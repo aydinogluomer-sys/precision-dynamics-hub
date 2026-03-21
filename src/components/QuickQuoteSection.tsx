@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-const QuickQuoteSection = () => {
+export const QuickQuoteSection = () => {
   const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<"idle" | "success" | "error">("idle");
@@ -305,5 +305,3 @@ const QuickQuoteSection = () => {
     </section>
   );
 };
-
-export default QuickQuoteSection;

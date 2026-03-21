@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview").then(m => ({ default: m.CustomerCadPreview })));
 
 interface RFQ {
   id: string;
@@ -67,7 +67,7 @@ const matchesFilter = (r: RFQ, filter: FilterKey): boolean => {
   }
 };
 
-const TekliflerimTab = () => {
+export const TekliflerimTab = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
@@ -326,5 +326,3 @@ const TekliflerimTab = () => {
     </div>
   );
 };
-
-export default TekliflerimTab;

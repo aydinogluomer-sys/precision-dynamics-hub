@@ -35,7 +35,7 @@ const typeColor = (t: string | null) => {
   }
 };
 
-const KaliteRaporTab = () => {
+export const KaliteRaporTab = () => {
   const [reports, setReports] = useState<QualityReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -127,5 +127,3 @@ const KaliteRaporTab = () => {
     </div>
   );
 };
-
-export default KaliteRaporTab;

@@ -35,7 +35,7 @@ const categoryColors: Record<string, string> = {
 
 const emptyIssue = { id: "", job: "", category: "Takım Arızası", date: new Date().toISOString().slice(0, 10), severity: "normal", machine: "", detail: "", cost: 0 };
 
-const IssuesView = () => {
+export const IssuesView = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [resolveModal, setResolveModal] = useState<Issue | null>(null);
@@ -218,5 +218,3 @@ const IssuesView = () => {
     </div>
   );
 };
-
-export default IssuesView;

@@ -94,7 +94,7 @@ const quickQuestions = [
   "Teklif nasıl alabilirim?",
 ];
 
-export default function ChatBot() {
+export function ChatBot() {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");

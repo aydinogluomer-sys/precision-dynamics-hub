@@ -94,7 +94,7 @@ const CNCGear = () => {
   );
 };
 
-const CNCModel = () => (
+export const CNCModel = () => (
   <div className="w-full h-full">
     <Canvas
       camera={{ position: [0, 3, 6], fov: 40 }}
@@ -111,5 +111,3 @@ const CNCModel = () => (
     </Canvas>
   </div>
 );
-
-export default CNCModel;

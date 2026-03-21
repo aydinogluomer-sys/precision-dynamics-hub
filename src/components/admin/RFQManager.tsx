@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-const RFQCadPreview = lazy(() => import("./RFQCadPreview"));
+const RFQCadPreview = lazy(() => import("./RFQCadPreview").then(m => ({ default: m.RFQCadPreview })));
 
 interface RFQ {
   id: string;
@@ -34,7 +34,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-blue-500/20 text-blue-400",
 };
 
-const RFQManager = () => {
+export const RFQManager = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Tümü");
@@ -519,5 +519,3 @@ const RFQManager = () => {
     </div>
   );
 };
-
-export default RFQManager;

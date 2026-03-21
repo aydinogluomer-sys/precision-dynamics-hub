@@ -504,7 +504,7 @@ const CadViewer = ({ signedUrl, extension, stepGeometry }: { signedUrl: string; 
 };
 
 // ── Main Component ──
-const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewProps) => {
+export const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewProps) => {
   const [loading, setLoading] = useState(true);
   const [meta, setMeta] = useState<FileMetadata | null>(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -628,5 +628,3 @@ const RFQCadPreview = ({ filePath, rfqId, userId, onDownload }: RFQCadPreviewPro
     </div>
   );
 };
-
-export default RFQCadPreview;

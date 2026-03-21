@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { BlurImage } from "./BlurImage";
 import type { IndustryType } from "./IndustryModels";
 
-const IndustryCanvas = lazy(() => import("./IndustryModels"));
+const IndustryCanvas = lazy(() => import("./IndustryModels").then(m => ({ default: m.IndustryCanvas })));
 
 interface Industry {
   name: string;

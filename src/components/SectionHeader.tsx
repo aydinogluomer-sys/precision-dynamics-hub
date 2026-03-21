@@ -14,7 +14,7 @@ const toKebab = (str: string) =>
     .replace(/[^a-z0-9\u00C0-\u024F]+/gi, "-")
     .replace(/(^-|-$)/g, "");
 
-const SectionHeader = ({
+export const SectionHeader = ({
   tag,
   title,
   description,
@@ -59,5 +59,3 @@ const SectionHeader = ({
     </div>
   );
 };
-
-export default SectionHeader;

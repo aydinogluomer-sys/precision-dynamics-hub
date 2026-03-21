@@ -13,8 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import Header from "@/components/Header";
-
+import { Header } from "@/components/Header";
 
 // ── Part Table Data ──
 const partData = [
@@ -152,7 +151,7 @@ const COLORS = [
 ];
 
 // ── Main Dashboard ──
-const CADDashboard = () => {
+export const CADDashboard = () => {
   const [checkedRows, setCheckedRows] = useState<Record<string, boolean>>(
     Object.fromEntries(partData.map((p) => [p.id, p.checked]))
   );
@@ -804,5 +803,3 @@ const CADDashboard = () => {
     </div>
   );
 };
-
-export default CADDashboard;

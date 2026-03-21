@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import AdminSidebar from "./AdminSidebar";
+import { AdminSidebar } from "./AdminSidebar";
 import { useState } from "react";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) => {
+export const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,5 +41,3 @@ const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) =
     </Sheet>
   );
 };
-
-export default MobileSidebar;

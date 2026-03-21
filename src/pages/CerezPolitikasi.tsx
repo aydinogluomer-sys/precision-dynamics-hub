@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
-const CerezPolitikasi = () => (
+export const CerezPolitikasi = () => (
   <div className="min-h-screen bg-background">
     <Header />
     <main className="pt-24 pb-16">
@@ -22,5 +22,3 @@ const CerezPolitikasi = () => (
     <Footer />
   </div>
 );
-
-export default CerezPolitikasi;

@@ -33,7 +33,7 @@ interface Lead {
   created_at: string;
 }
 
-const PipelineView = () => {
+export const PipelineView = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
@@ -384,5 +384,3 @@ const PipelineView = () => {
     </div>
   );
 };
-
-export default PipelineView;

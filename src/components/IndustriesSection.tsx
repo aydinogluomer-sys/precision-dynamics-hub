@@ -66,7 +66,7 @@ const chipVariants = {
   }),
 };
 
-const IndustriesSection = () => {
+export const IndustriesSection = () => {
   return (
     <section id="endustriler" className="bg-background border-y border-border">
       <div className="container-industrial py-24 md:py-32 lg:py-40">
@@ -167,5 +167,3 @@ const PrimaryIndustryCard = ({
     </div>
   </motion.div>
 );
-
-export default IndustriesSection;

@@ -1,5 +1,5 @@
 import { Activity, Sun, Moon, Home, ChevronRight, PanelLeft, PanelLeftClose } from "lucide-react";
-import MusteriNotifications from "./MusteriNotifications";
+import { MusteriNotifications } from "./MusteriNotifications";
 import { useState, useEffect, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -25,7 +25,7 @@ interface Props {
   onToggleSidebar?: () => void;
 }
 
-const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed, onToggleSidebar }: Props) => {
+export const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed, onToggleSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -89,5 +89,3 @@ const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed
     </div>
   );
 };
-
-export default MusteriHeader;

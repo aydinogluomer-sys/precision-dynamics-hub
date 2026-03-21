@@ -247,7 +247,7 @@ const CameraReset = ({ trigger }: { trigger: number }) => {
 };
 
 // ── Main Component ──
-const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
+export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileType, setFileType] = useState<"stl" | "obj" | null>(null);
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
@@ -568,5 +568,3 @@ const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
     </div>
   );
 };
-
-export default ModelViewer;

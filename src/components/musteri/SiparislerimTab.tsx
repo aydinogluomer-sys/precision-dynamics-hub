@@ -32,7 +32,7 @@ const statusColor = (s: string | null) => {
   }
 };
 
-const SiparislerimTab = () => {
+export const SiparislerimTab = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -156,5 +156,3 @@ const SiparislerimTab = () => {
     </div>
   );
 };
-
-export default SiparislerimTab;

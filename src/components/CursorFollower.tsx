@@ -16,7 +16,7 @@ const isActivePath = (pathname: string): boolean => {
   return CURSOR_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
 };
 
-const CursorFollower = () => {
+export const CursorFollower = () => {
   const location = useLocation();
   const prefersReduced = usePrefersReducedMotion();
 
@@ -151,5 +151,3 @@ const CursorFollower = () => {
     </>
   );
 };
-
-export default CursorFollower;

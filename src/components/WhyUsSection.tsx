@@ -33,7 +33,7 @@ const stats = [
   { value: "15+", label: "Yıl Tecrübe" },
 ];
 
-const WhyUsSection = () => {
+export const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -182,5 +182,3 @@ const WhyUsSection = () => {
     </section>
   );
 };
-
-export default WhyUsSection;

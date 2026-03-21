@@ -7,7 +7,7 @@ interface SocialButtonsProps {
   onSocial: (provider: "google" | "linkedin_oidc") => void;
 }
 
-const SocialButtons = ({ socialLoading, onSocial }: SocialButtonsProps) => (
+export const SocialButtons = ({ socialLoading, onSocial }: SocialButtonsProps) => (
   <div className="grid grid-cols-2 gap-3">
     <Button
       variant="outline"
@@ -37,5 +37,3 @@ const SocialButtons = ({ socialLoading, onSocial }: SocialButtonsProps) => (
     </Button>
   </div>
 );
-
-export default SocialButtons;

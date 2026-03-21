@@ -18,8 +18,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { materialsData, materialCategories } from "@/data/materialsData";
 
 // ── 3D Model Components ──
@@ -186,7 +186,7 @@ const services = [
 ];
 
 // ── Ana Bileşen ──
-const TeklifAl = () => {
+export const TeklifAl = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFinish, setSelectedFinish] = useState("machined");
   const [delivery, setDelivery] = useState<"standard" | "express">("standard");
@@ -1239,5 +1239,3 @@ const TeklifAl = () => {
     </div>
   );
 };
-
-export default TeklifAl;

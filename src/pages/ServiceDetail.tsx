@@ -1,12 +1,12 @@
 import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { getPageBySlug, getPagesByCategory } from "@/data/servicePages";
 import { ArrowRight, ChevronRight, CheckCircle2, Gauge, ArrowUpRight, Cpu, FlaskConical, Calendar, Sparkles, Layers, Zap } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import ComparisonTable from "@/components/ComparisonTable";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import heroCncFrezeleme from "@/assets/hero-cnc-frezeleme.jpg";
@@ -40,7 +40,7 @@ import heroProjeYonetimi from "@/assets/hero-proje-yonetimi.jpg";
 import heroTedarikZinciri from "@/assets/hero-tedarik-zinciri.jpg";
 import heroOperasyonelVerimlilik from "@/assets/hero-operasyonel-verimlilik.jpg";
 import heroSeriUretim from "@/assets/hero-seri-uretim.jpg";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 
 const heroImageMap: Record<string, string> = {
   "hero-cnc-frezeleme": heroCncFrezeleme,
@@ -118,7 +118,7 @@ const staggerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-const ServiceDetail = () => {
+export const ServiceDetail = () => {
   const { slug } = useParams<{ category: string; slug: string }>();
   const page = slug ? getPageBySlug(slug) : undefined;
   const heroRef = useRef<HTMLDivElement>(null);
@@ -581,5 +581,3 @@ const ServiceDetail = () => {
     </div>
   );
 };
-
-export default ServiceDetail;

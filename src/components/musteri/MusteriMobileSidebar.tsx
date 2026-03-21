@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import MusteriSidebar from "./MusteriSidebar";
+import { MusteriSidebar } from "./MusteriSidebar";
 import { useState } from "react";
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, onLogout }: Props) => {
+export const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, onLogout }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -42,5 +42,3 @@ const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, 
     </Sheet>
   );
 };
-
-export default MusteriMobileSidebar;

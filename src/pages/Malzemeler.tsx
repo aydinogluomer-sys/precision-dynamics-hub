@@ -6,15 +6,15 @@ import {
   Search, X, ChevronLeft, ChevronRight, ArrowUpDown, LayoutGrid, Rows3,
   Check, FlaskConical, Gem, Wrench, Thermometer, Scale, Shield, Zap, ArrowRight, SlidersHorizontal,
 } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { materialsData, materialCategories, type Material } from "@/data/materialsData";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll").then(m => ({ default: m.MaterialMorphScroll })));
 
 const sortOptions = [
   { id: "name", label: "İsim" },
@@ -43,7 +43,7 @@ const RatingBar = ({ value, max = 5, label }: { value: number; max?: number; lab
   </div>
 );
 
-const Malzemeler = () => {
+export const Malzemeler = () => {
   usePageMeta({ title: "Malzemeler", description: "CNC işlemede kullanılan alüminyum, çelik, titanyum ve mühendislik plastikleri — teknik özellikler ve karşılaştırma." });
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -346,5 +346,3 @@ const Malzemeler = () => {
     </div>
   );
 };
-
-export default Malzemeler;

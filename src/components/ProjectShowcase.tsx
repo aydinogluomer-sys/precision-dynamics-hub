@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { Reveal } from "@/components/ui/Reveal";
-import MagneticButton from "./MagneticButton";
+import { MagneticButton } from "./MagneticButton";
 
 const projects = [
   {
@@ -58,7 +58,7 @@ const projects = [
   },
 ];
 
-const ProjectShowcase = () => {
+export const ProjectShowcase = () => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -362,5 +362,3 @@ const MobileProjectCard = ({ project, index }: { project: typeof projects[number
     </Link>
   </motion.div>
 );
-
-export default ProjectShowcase;

@@ -1,7 +1,7 @@
 import { Search, Download, Activity, Sun, Moon, Loader2, X, Command, FileText, Package, Users, AlertTriangle, Wrench, DollarSign, TrendingUp, Boxes, Wallet, MessageSquare, GitBranch, CalendarDays, Settings, LayoutDashboard } from "lucide-react";
 import { useState, useEffect, useRef, useCallback, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import AdminNotifications from "./AdminNotifications";
+import { AdminNotifications } from "./AdminNotifications";
 
 const tabTitles: Record<string, string> = {
   dashboard: "Kontrol Paneli",
@@ -44,7 +44,7 @@ interface Props {
   exporting?: boolean;
 }
 
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar, exporting }: Props) => {
+export const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar, exporting }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -275,5 +275,3 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobi
     </header>
   );
 };
-
-export default AdminHeader;

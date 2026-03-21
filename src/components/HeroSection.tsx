@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
-import MagneticButton from "./MagneticButton";
+import { MagneticButton } from "./MagneticButton";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { HeadlineStagger } from "./HeadlineStagger";
 
@@ -32,7 +32,7 @@ interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
-const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
+export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const { scrollY } = useScroll();
   const prefersReduced = usePrefersReducedMotion();
@@ -223,5 +223,3 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     </section>
   );
 };
-
-export default HeroSection;

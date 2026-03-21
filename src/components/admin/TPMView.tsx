@@ -42,7 +42,7 @@ const statusLabels: Record<string, string> = {
 
 const emptyLog = { machine: "", type: "Periyodik", date: new Date().toISOString().slice(0, 10), duration: "", cost: 0, detail: "", technician: "" };
 
-const TPMView = () => {
+export const TPMView = () => {
   const [tab, setTab] = useState<"health" | "log">("health");
   const [machines, setMachines] = useState<MachineHealth[]>([]);
   const [logs, setLogs] = useState<MaintenanceLog[]>([]);
@@ -277,5 +277,3 @@ const TPMView = () => {
     </div>
   );
 };
-
-export default TPMView;

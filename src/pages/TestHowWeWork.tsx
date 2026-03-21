@@ -1,8 +1,8 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import HowWeWorkSection from "@/components/HowWeWorkSection";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 
-const TestHowWeWork = () => {
+export const TestHowWeWork = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header isFirstVisit={false} />
@@ -35,5 +35,3 @@ const TestHowWeWork = () => {
     </div>
   );
 };
-
-export default TestHowWeWork;

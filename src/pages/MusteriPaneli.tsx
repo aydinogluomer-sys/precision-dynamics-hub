@@ -5,19 +5,19 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import type { User as SupaUser } from "@supabase/supabase-js";
 
-import MusteriSidebar from "@/components/musteri/MusteriSidebar";
-import MusteriMobileSidebar from "@/components/musteri/MusteriMobileSidebar";
-import MusteriHeader from "@/components/musteri/MusteriHeader";
-import GenelBakisTab from "@/components/musteri/GenelBakisTab";
-import TekliflerimTab from "@/components/musteri/TekliflerimTab";
-import SiparislerimTab from "@/components/musteri/SiparislerimTab";
-import UretimTab from "@/components/musteri/UretimTab";
-import TeknikArsivTab from "@/components/musteri/TeknikArsivTab";
-import KaliteRaporTab from "@/components/musteri/KaliteRaporTab";
-import OdemeFaturaTab from "@/components/musteri/OdemeFaturaTab";
-import DestekTab from "@/components/musteri/DestekTab";
-import BildirimTercihleri from "@/components/musteri/BildirimTercihleri";
-import ProfilAyarlari from "@/components/musteri/ProfilAyarlari";
+import { MusteriSidebar } from "@/components/musteri/MusteriSidebar";
+import { MusteriMobileSidebar } from "@/components/musteri/MusteriMobileSidebar";
+import { MusteriHeader } from "@/components/musteri/MusteriHeader";
+import { GenelBakisTab } from "@/components/musteri/GenelBakisTab";
+import { TekliflerimTab } from "@/components/musteri/TekliflerimTab";
+import { SiparislerimTab } from "@/components/musteri/SiparislerimTab";
+import { UretimTab } from "@/components/musteri/UretimTab";
+import { TeknikArsivTab } from "@/components/musteri/TeknikArsivTab";
+import { KaliteRaporTab } from "@/components/musteri/KaliteRaporTab";
+import { OdemeFaturaTab } from "@/components/musteri/OdemeFaturaTab";
+import { DestekTab } from "@/components/musteri/DestekTab";
+import { BildirimTercihleri } from "@/components/musteri/BildirimTercihleri";
+import { ProfilAyarlari } from "@/components/musteri/ProfilAyarlari";
 
 interface Profile {
   id: string;
@@ -27,7 +27,7 @@ interface Profile {
   city: string | null;
 }
 
-const MusteriPaneli = () => {
+export const MusteriPaneli = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "genel";
@@ -120,5 +120,3 @@ const MusteriPaneli = () => {
     </div>
   );
 };
-
-export default MusteriPaneli;

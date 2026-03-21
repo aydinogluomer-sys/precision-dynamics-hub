@@ -1,6 +1,6 @@
 import { CheckCircle, Shield } from "lucide-react";
 import { motion } from "framer-motion";
-import FloatingPaths from "@/components/FloatingPaths";
+import { FloatingPaths } from "@/components/FloatingPaths";
 
 const benefits = [
   "Teklif taleplerinizi anlık takip edin",
@@ -9,7 +9,7 @@ const benefits = [
   "Mühendislerimizle doğrudan iletişim kurun",
 ];
 
-const LoginLeftPanel = ({ isLogin }: { isLogin: boolean }) => (
+export const LoginLeftPanel = ({ isLogin }: { isLogin: boolean }) => (
   <div className="hidden lg:flex lg:w-[45%] relative bg-industrial-dark overflow-hidden items-center justify-center">
     <FloatingPaths position={1} />
     <FloatingPaths position={-1} />
@@ -58,5 +58,3 @@ const LoginLeftPanel = ({ isLogin }: { isLogin: boolean }) => (
     </motion.div>
   </div>
 );
-
-export default LoginLeftPanel;

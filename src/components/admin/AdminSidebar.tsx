@@ -3,7 +3,6 @@ import {
   AlertTriangle, Users, Settings, LogOut, DollarSign, TrendingUp, Wrench, Boxes, Wallet, MessageSquare, Bot
 } from "lucide-react";
 
-
 const menuItems = [
   { id: "dashboard", label: "Kontrol Paneli", icon: LayoutDashboard },
   { id: "rfq", label: "Talep Merkezi", icon: FileText },
@@ -31,7 +30,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }: Props) => {
+export const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }: Props) => {
   return (
     <aside className={`${collapsed ? "w-0 lg:w-16 overflow-hidden" : "w-64"} dark:bg-[#0F172A] bg-white border-r dark:border-[#334155] border-slate-200 flex flex-col transition-all duration-300 shrink-0 fixed lg:relative inset-y-0 left-0 z-40 ${collapsed ? "lg:overflow-visible" : ""}`}>
       <div className="p-4 border-b dark:border-[#334155] border-slate-200 flex items-center gap-3">
@@ -85,5 +84,3 @@ const AdminSidebar = ({ activeTab, onTabChange, collapsed, userEmail, onLogout }
     </aside>
   );
 };
-
-export default AdminSidebar;

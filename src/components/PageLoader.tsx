@@ -6,7 +6,7 @@ interface PageLoaderProps {
   isFirstVisit: boolean;
 }
 
-const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
+export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
   const prefersReduced = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(isFirstVisit && !prefersReduced);
 
@@ -85,5 +85,3 @@ const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
     </AnimatePresence>
   );
 };
-
-export default PageLoader;

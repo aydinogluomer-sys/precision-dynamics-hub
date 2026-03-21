@@ -6,7 +6,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
 import blogDfm from "@/assets/blog-dfm.jpg";
-import SectionHeader from "./SectionHeader";
+import { SectionHeader } from "./SectionHeader";
 
 const faqs = [
   {
@@ -73,7 +73,7 @@ const blogPosts = [
   },
 ];
 
-const FAQBlogSection = () => {
+export const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -217,5 +217,3 @@ const FAQBlogSection = () => {
     </section>
   );
 };
-
-export default FAQBlogSection;

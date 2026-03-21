@@ -20,7 +20,7 @@ const pageVariants = {
   },
 } as const;
 
-const PageTransition = ({ children }: { children: ReactNode }) => {
+export const PageTransition = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   return (
@@ -38,5 +38,3 @@ const PageTransition = ({ children }: { children: ReactNode }) => {
     </AnimatePresence>
   );
 };
-
-export default PageTransition;

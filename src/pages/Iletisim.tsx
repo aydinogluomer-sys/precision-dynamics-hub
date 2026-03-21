@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { Phone, Mail, MapPin, Clock, Calendar, Video, ArrowRight, Send, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -27,7 +27,7 @@ const fadeUp = (delay = 0) => ({
   transition: { delay, duration: 0.4 },
 });
 
-const Iletisim = () => {
+export const Iletisim = () => {
   usePageMeta({ title: "İletişim", description: "CNC işleme, teklif talebi ve mühendislik desteği için Mas Technic ile iletişime geçin." });
   const [meetingForm, setMeetingForm] = useState({
     name: "",
@@ -348,5 +348,3 @@ const Iletisim = () => {
     </div>
   );
 };
-
-export default Iletisim;

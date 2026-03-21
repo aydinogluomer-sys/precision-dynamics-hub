@@ -1,13 +1,13 @@
 import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { ArrowLeft, Clock, Tag, Eye, Share2, Facebook, Twitter, Linkedin, Link2, MessageSquare, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { blogPosts } from "@/data/blogData";
 
-const BlogDetail = () => {
+export const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
   const [commentName, setCommentName] = useState("");
@@ -234,5 +234,3 @@ const BlogDetail = () => {
     </div>
   );
 };
-
-export default BlogDetail;

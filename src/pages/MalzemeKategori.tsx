@@ -1,8 +1,8 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { materialsData, materialCategories, findMaterialCategory } from "@/data/materialsData";
 
 const getPriceLabel = (p: string) => {
@@ -14,7 +14,7 @@ const getPriceLabel = (p: string) => {
   }
 };
 
-const MalzemeKategori = () => {
+export const MalzemeKategori = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = findMaterialCategory(slug || "");
 
@@ -165,5 +165,3 @@ const MalzemeKategori = () => {
     </div>
   );
 };
-
-export default MalzemeKategori;

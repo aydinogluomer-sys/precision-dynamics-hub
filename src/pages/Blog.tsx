@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Tag, Eye, Search, TrendingUp, SlidersHorizontal, BookOpen, Hash } from "lucide-react";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ import { blogPosts, blogCategories } from "@/data/blogData";
 
 type SortOption = "newest" | "oldest" | "popular";
 
-const Blog = () => {
+export const Blog = () => {
   usePageMeta({ title: "Blog", description: "CNC işleme, talaşlı imalat ve mühendislik konularında teknik makaleler ve sektör haberleri." });
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
@@ -290,5 +290,3 @@ const Blog = () => {
     </div>
   );
 };
-
-export default Blog;

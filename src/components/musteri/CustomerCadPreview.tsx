@@ -168,7 +168,7 @@ const STEPModelRenderer = ({ geometry, clipping, clipValue, wireframe, modelColo
 };
 
 // ── Main Viewer ──
-const CustomerCadPreview = ({ signedUrl, fileName }: CustomerCadPreviewProps) => {
+export const CustomerCadPreview = ({ signedUrl, fileName }: CustomerCadPreviewProps) => {
   const extension = fileName.split(".").pop()?.toLowerCase() || "";
   const canPreview = PREVIEWABLE_EXTS.includes(extension);
   const isStepType = ["step", "stp", "iges", "igs"].includes(extension);
@@ -316,5 +316,3 @@ const CustomerCadPreview = ({ signedUrl, fileName }: CustomerCadPreviewProps) =>
     </div>
   );
 };
-
-export default CustomerCadPreview;

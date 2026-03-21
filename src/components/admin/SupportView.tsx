@@ -40,7 +40,7 @@ const filterLabels: Record<string, string> = {
   "Tümü": "Tümü", open: "Açık", "in-progress": "İşlemde", resolved: "Çözüldü", closed: "Kapalı"
 };
 
-const SupportView = () => {
+export const SupportView = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Ticket | null>(null);
@@ -325,5 +325,3 @@ const SupportView = () => {
     </div>
   );
 };
-
-export default SupportView;
