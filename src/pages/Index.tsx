@@ -81,7 +81,7 @@ const Index = () => {
           <CNCScrollStory />
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
 
         <ParallaxSection index={2} variant="color-fade">
           <NexusPromoSection />
