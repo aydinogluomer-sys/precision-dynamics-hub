@@ -81,7 +81,7 @@ const Index = () => {
           <CNCScrollStory />
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
 
         <ParallaxSection index={2} variant="color-fade">
           <NexusPromoSection />
@@ -97,7 +97,7 @@ const Index = () => {
           <CertificationsSection />
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" />
 
         <ParallaxSection index={5} variant="zoom-in">
           <Suspense fallback={<SectionLoader />}>
@@ -113,7 +113,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" />
 
         <ParallaxSection index={7} variant="stack">
           <Suspense fallback={<SectionLoader />}>
@@ -121,7 +121,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         <ParallaxSection index={8} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
@@ -136,7 +136,7 @@ const Index = () => {
           </Suspense>
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-concrete))" />
+        <SectionDivider fillColor="hsl(var(--forge-mist))" />
 
         <ParallaxSection index={8} variant="slide-up">
           <Suspense fallback={<SectionLoader />}>
@@ -150,7 +150,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" />
 
         <ParallaxSection index={10} variant="depth-3d" videoBg="/machine-loop.mp4">
           <Suspense fallback={<SectionLoader />}>
@@ -158,7 +158,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
 
         <ParallaxSection index={12} variant="stack">
           <Suspense fallback={<SectionLoader />}>
@@ -166,7 +166,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
 
         <ParallaxSection index={13} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
@@ -174,7 +174,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         <ParallaxSection index={14} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
