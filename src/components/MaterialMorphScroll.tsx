@@ -171,7 +171,6 @@ export const MaterialMorphScroll = () => {
     );
   }
 
-  const circumference = 2 * Math.PI * 45;
 
   const burnInitial = prefersReduced ? { filter: "brightness(1)" } : { filter: "brightness(0)" };
   const burnAnimate = { filter: "brightness(1)" };
