@@ -92,6 +92,10 @@ const Index = () => {
           <IndustriesSection />
         </ParallaxSection>
 
+        <Suspense fallback={<SectionLoader />}>
+          <MaterialMorphScroll />
+        </Suspense>
+
         <ParallaxSection index={9} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
