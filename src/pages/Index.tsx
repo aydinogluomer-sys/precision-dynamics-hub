@@ -97,7 +97,7 @@ const Index = () => {
           <CertificationsSection />
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-deep-iron))" />
+        <SectionDivider fillColor="hsl(var(--forge-iron))" />
 
         <ParallaxSection index={5} variant="zoom-in">
           <Suspense fallback={<SectionLoader />}>
