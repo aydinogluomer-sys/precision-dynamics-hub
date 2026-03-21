@@ -100,7 +100,7 @@ const CNCScrollStory = () => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
 
-  if (isMobile || isMobile === undefined) {
+  if (isMobile) {
     return (
       <section
         className="relative min-h-screen flex items-center justify-center"
