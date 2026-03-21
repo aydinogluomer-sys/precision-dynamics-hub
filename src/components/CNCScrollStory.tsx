@@ -246,7 +246,7 @@ const CNCScrollStory = () => {
             </Link>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
