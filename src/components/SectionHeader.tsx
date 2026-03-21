@@ -18,8 +18,8 @@ const SectionHeader = ({
   const isCenter = align === "center";
 
   return (
-    <Reveal direction="up" duration={0.6}>
-      <div className={isCenter ? "text-center" : ""}>
+    <div className={isCenter ? "text-center" : ""}>
+      <Reveal direction="up" duration={0.5}>
         <div
           className={`flex items-center gap-3 mb-4 ${
             isCenter ? "justify-center" : ""
@@ -30,21 +30,25 @@ const SectionHeader = ({
             {tag}
           </span>
         </div>
+      </Reveal>
+      <Reveal variant="word-stagger" delay={0.1} duration={0.6}>
         <h2
           className={
             titleClassName ||
             "text-3xl md:text-5xl font-bold tracking-tight mb-4"
           }
         >
-          <span>{title}</span>
+          {title}
         </h2>
-        {description && (
+      </Reveal>
+      {description && (
+        <Reveal direction="up" delay={0.3} duration={0.5}>
           <p className="text-sm text-foreground/60 max-w-lg leading-relaxed">
             <span>{description}</span>
           </p>
-        )}
-      </div>
-    </Reveal>
+        </Reveal>
+      )}
+    </div>
   );
 };
 
