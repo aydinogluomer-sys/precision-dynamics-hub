@@ -16,7 +16,7 @@ interface ParallaxSectionProps {
   videoBg?: string;
 }
 
-const ParallaxSection = ({
+const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
   children,
   className = "",
   index = 0,
@@ -24,7 +24,7 @@ const ParallaxSection = ({
   variant = "stack",
   style,
   videoBg
-}: ParallaxSectionProps) => {
+}, _forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
