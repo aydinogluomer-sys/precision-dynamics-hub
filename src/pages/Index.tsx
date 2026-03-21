@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import PageLoader from "@/components/PageLoader";
+import QuickQuoteSection from "@/components/QuickQuoteSection";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 
 import CNCScrollStory from "@/components/CNCScrollStory";
