@@ -180,6 +180,10 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
+        <div className="relative" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-mist))" }}>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
+        </div>
+
         {/* z-index 14 */}
         <ParallaxSection index={14} variant="wipe-mask">
           <Suspense fallback={<SectionLoader />}>
