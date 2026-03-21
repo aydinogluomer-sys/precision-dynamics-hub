@@ -52,13 +52,19 @@ const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+
         <div className="relative" style={{ zIndex: 2 }}>
           <CNCScrollStory />
         </div>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+
         <ParallaxSection index={2} variant="color-fade">
           <NexusPromoSection />
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-concrete))" />
 
         <ParallaxSection index={3} variant="slide-up">
           <HowWeWorkSection />
@@ -67,6 +73,8 @@ const Index = () => {
         <ParallaxSection index={4} variant="stack">
           <CertificationsSection />
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={5} variant="zoom-in">
           <Suspense fallback={<SectionLoader />}>
@@ -89,9 +97,13 @@ const Index = () => {
           </section>
         </ParallaxSection>
 
+        <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
+
         <ParallaxSection index={7} variant="slide-up">
           <ServicesSection />
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={8} variant="stack">
           <IndustriesSection />
@@ -105,33 +117,47 @@ const Index = () => {
           </Suspense>
         </div>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+
         <div className="relative" style={{ zIndex: 10 }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>
         </div>
 
+        <SectionDivider fillColor="hsl(var(--forge-concrete))" />
+
         <ParallaxSection index={9} variant="slide-up">
           <MaterialsSection />
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
         <ParallaxSection index={10} variant="wipe-mask">
           <WhyUsSection />
         </ParallaxSection>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+
         <ParallaxSection index={11} variant="depth-3d">
           <CapabilitiesSection />
         </ParallaxSection>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+
         <ParallaxSection index={12} variant="zoom-out-blur">
           <StatsSection />
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={13} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </ParallaxSection>
+
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
         <ParallaxSection index={14} variant="color-fade">
           <FAQBlogSection />
