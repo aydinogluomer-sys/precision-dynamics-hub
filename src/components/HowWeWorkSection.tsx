@@ -111,14 +111,18 @@ const HowWeWorkSection = () => {
   }
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
       id="nasil-calisiyoruz"
       className="relative border-y border-border"
       style={{
         height: "300vh",
         backgroundColor: "hsl(var(--forge-workshop))"
-      }}>
+      }}
+      initial={slideInitial}
+      whileInView={slideAnimate}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}>
       
       {/* Sticky container */}
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
