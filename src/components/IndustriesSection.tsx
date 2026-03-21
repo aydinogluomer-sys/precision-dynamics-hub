@@ -1,11 +1,8 @@
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
-import { lazy, Suspense, useState, useCallback, useRef } from "react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Reveal as TextReveal } from "./ui/Reveal";
-import { useIsMobile } from "@/hooks/use-mobile";
-import type { IndustryType } from "./IndustryModels";
 import { BlurImage } from "./BlurImage";
-import { IndustryStackCard } from "./IndustryStackCard";
+import { Badge } from "./ui/badge";
 
 import imgAerospace from "@/assets/industry-aerospace.jpg";
 import imgDefense from "@/assets/industry-defense.jpg";
@@ -21,188 +18,148 @@ import imgOilgas from "@/assets/industry-oilgas.jpg";
 import imgPower from "@/assets/industry-power.jpg";
 import imgMining from "@/assets/industry-mining.jpg";
 
-const IndustryCanvas = lazy(() => import("./IndustryModels"));
-
 interface Industry {
   name: string;
   description: string;
   highlight: string;
-  modelType: IndustryType;
   image: string;
 }
 
-const industries: Industry[] = [
-  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları", highlight: "±0.005mm tolerans", modelType: "aerospace", image: imgAerospace },
-  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler", highlight: "Yüksek güvenilirlik", modelType: "defense", image: imgDefense },
-  { name: "Robotik", description: "Hassas hareket sistemleri ve aktüatörler", highlight: "Yüksek tekrarlanabilirlik", modelType: "robotics", image: imgRobotics },
-  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında üretim", highlight: "Seri üretim kapasitesi", modelType: "automotive", image: imgAutomotive },
-  { name: "Medikal", description: "ISO 13485 uyumlu medikal bileşenler", highlight: "Biyouyumlu malzemeler", modelType: "medical", image: imgMedical },
-  { name: "Yelken & Yat Sistemleri", description: "Deniz koşullarına dayanıklı parçalar", highlight: "Korozyon direnci", modelType: "marine", image: imgMarine },
-  { name: "Hidrolik & Pnömatik", description: "Yüksek basınç sistemleri bileşenleri", highlight: "350+ bar dayanım", modelType: "hydraulic", image: imgHydraulic },
-  { name: "Boru & Bağlantı Parçaları", description: "Endüstriyel boru sistemleri ve fittings", highlight: "Sızdırmazlık garantisi", modelType: "piping", image: imgPiping },
-  { name: "İklim Teknolojileri", description: "HVAC sistem komponentleri üretimi", highlight: "Enerji verimli tasarım", modelType: "hvac", image: imgHvac },
-  { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistem parçaları", highlight: "Sürdürülebilir üretim", modelType: "renewable", image: imgRenewable },
-  { name: "Petrol & Gaz", description: "Rafineri ve boru hattı ekipmanları", highlight: "API standartları", modelType: "oilgas", image: imgOilgas },
-  { name: "Güç Dağıtım Sistemleri", description: "Enerji iletim ve dağıtım bileşenleri", highlight: "Yüksek iletkenlik", modelType: "power", image: imgPower },
-  { name: "Madencilik Ekipmanları", description: "Ağır hizmet madencilik komponentleri", highlight: "Aşınma direnci", modelType: "mining", image: imgMining },
+const primaryIndustries: Industry[] = [
+  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları. Kritik uçuş bileşenlerinde kanıtlanmış üretim yetkinliği.", highlight: "±0.005mm tolerans", image: imgAerospace },
+  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler. Yüksek güvenilirlik gerektiren savunma projeleri.", highlight: "Yüksek güvenilirlik", image: imgDefense },
+  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında seri ve prototip üretim kapasitesi.", highlight: "Seri üretim kapasitesi", image: imgAutomotive },
+  { name: "Medikal", description: "ISO 13485 uyumlu, biyouyumlu malzemelerle medikal cihaz bileşenleri.", highlight: "Biyouyumlu malzemeler", image: imgMedical },
+  { name: "Robotik", description: "Hassas hareket sistemleri, aktüatörler ve yüksek tekrarlanabilirlik gerektiren parçalar.", highlight: "Yüksek tekrarlanabilirlik", image: imgRobotics },
 ];
 
+const secondaryIndustries: Industry[] = [
+  { name: "Yelken & Yat", description: "", highlight: "Korozyon direnci", image: imgMarine },
+  { name: "Hidrolik & Pnömatik", description: "", highlight: "350+ bar dayanım", image: imgHydraulic },
+  { name: "Boru & Bağlantı", description: "", highlight: "Sızdırmazlık garantisi", image: imgPiping },
+  { name: "İklim Teknolojileri", description: "", highlight: "Enerji verimli tasarım", image: imgHvac },
+  { name: "Yenilenebilir Enerji", description: "", highlight: "Sürdürülebilir üretim", image: imgRenewable },
+  { name: "Petrol & Gaz", description: "", highlight: "API standartları", image: imgOilgas },
+  { name: "Güç Dağıtım", description: "", highlight: "Yüksek iletkenlik", image: imgPower },
+  { name: "Madencilik", description: "", highlight: "Aşınma direnci", image: imgMining },
+];
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.08, ease: EASE as unknown as [number, number, number, number] },
+  }),
+};
+
+const chipVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: (i: number) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.35, delay: 0.4 + i * 0.05, ease: EASE as unknown as [number, number, number, number] },
+  }),
+};
+
 const IndustriesSection = () => {
-  const [activeModel, setActiveModel] = useState<IndustryType | null>(null);
-  const isMobile = useIsMobile();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const stackRef = useRef<HTMLDivElement>(null);
-
-  // Desktop card stack scroll
-  const { scrollYProgress } = useScroll({
-    target: stackRef,
-    offset: ["start start", "end end"],
-  });
-
-  const handleActivate = useCallback((type: IndustryType) => {
-    setActiveModel((prev) => prev === type ? null : type);
-  }, []);
-
-  const handleDeactivate = useCallback(() => {
-    if (!isMobile) setActiveModel(null);
-  }, [isMobile]);
-
-  const scroll = (dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
-  };
-
   return (
     <section id="endustriler" className="bg-background border-y border-border">
       <div className="container-industrial py-24 md:py-32 lg:py-40">
-        <TextReveal className="text-center mb-12">
+        {/* Header */}
+        <TextReveal className="text-center mb-12 md:mb-16">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-px bg-border" />
-            <span className="text-technical text-foreground/70 uppercase tracking-widest text-sm">{"Sektörler"}</span>
+            <span className="text-technical text-foreground/70 uppercase tracking-widest text-sm">Sektörler</span>
             <div className="w-8 h-px bg-border" />
           </div>
-          <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">{"Hizmet Verdiğimiz Endüstriler"}</h2>
-          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">{"Talaşlı imalatın öncelikli olduğu sektörlerde kanıtlanmış operasyonel yetkinlik."}</p>
+          <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
+          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">Talaşlı imalatın öncelikli olduğu sektörlerde kanıtlanmış operasyonel yetkinlik.</p>
         </TextReveal>
+
+        {/* Primary Industries — Large Cards */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-12 md:mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+        >
+          {primaryIndustries.map((industry, i) => (
+            <PrimaryIndustryCard key={industry.name} industry={industry} index={i} isWide={i >= 3} />
+          ))}
+        </motion.div>
+
+        {/* Secondary Industries — Chip/Badge Grid */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-6 h-px bg-border" />
+            <span className="text-technical text-foreground/50 uppercase tracking-widest text-xs">Diğer Sektörler</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {secondaryIndustries.map((industry, i) => (
+              <motion.div key={industry.name} custom={i} variants={chipVariants}>
+                <a
+                  href="#teklif"
+                  className="group inline-flex items-center gap-2.5 px-4 py-2.5 border border-border bg-card hover:border-primary/50 hover:bg-accent/50 rounded-sm transition-all duration-300"
+                >
+                  <div className="w-8 h-8 rounded-sm overflow-hidden flex-shrink-0">
+                    <BlurImage src={industry.image} alt={industry.name} className="w-full h-full object-cover" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">{industry.name}</span>
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-border text-foreground/50 hidden sm:inline-flex">
+                    {industry.highlight}
+                  </Badge>
+                </a>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
-
-      {/* Desktop: Card Stack */}
-      {!isMobile && (
-        <div ref={stackRef} style={{ height: `${industries.length * 40}vh` }}>
-          <div className="sticky top-0 h-screen overflow-hidden">
-            {industries.map((industry, i) => (
-              <IndustryStackCard
-                key={industry.modelType}
-                industry={industry}
-                index={i}
-                total={industries.length}
-                scrollYProgress={scrollYProgress}
-                isActive={activeModel === industry.modelType}
-                isMobile={isMobile}
-                onActivate={handleActivate}
-                onDeactivate={handleDeactivate}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Mobile: Horizontal scroll */}
-      {isMobile && (
-        <div className="container-industrial pb-16">
-          <div className="flex justify-end gap-2 mb-4">
-            <button onClick={() => scroll(-1)} className="p-2 border border-border bg-background hover:bg-accent rounded transition-colors" aria-label="Sola kaydır">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button onClick={() => scroll(1)} className="p-2 border border-border bg-background hover:bg-accent rounded transition-colors" aria-label="Sağa kaydır">
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-          <div
-            ref={scrollRef}
-            className="flex gap-4 sm:gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent"
-            style={{ scrollbarWidth: "thin" }}
-          >
-            {industries.map((industry) => (
-              <div key={industry.modelType} className="snap-start flex-shrink-0 w-[calc(50%-8px)] sm:w-[300px]">
-                <MobileIndustryCard
-                  industry={industry}
-                  isActive={activeModel === industry.modelType}
-                  onActivate={handleActivate}
-                  onDeactivate={handleDeactivate}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   );
 };
 
-/* Mobile card — simplified, no scroll transforms */
-const MobileIndustryCard = ({
+/* Primary card — large image + content */
+const PrimaryIndustryCard = ({
   industry,
-  isActive,
-  onActivate,
-  onDeactivate,
+  index,
+  isWide,
 }: {
   industry: Industry;
-  isActive: boolean;
-  onActivate: (type: IndustryType) => void;
-  onDeactivate: () => void;
+  index: number;
+  isWide: boolean;
 }) => (
   <motion.div
-    className="group bg-background border border-border overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-xl flex flex-col h-full rounded-sm cursor-pointer"
-    onClick={() => onActivate(industry.modelType)}
+    custom={index}
+    variants={cardVariants}
+    className={`group bg-background border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
   >
-    <div className="relative h-48 overflow-hidden bg-card">
-      <AnimatePresence mode="wait">
-        {isActive ? (
-          <motion.div
-            key="canvas"
-            className="absolute inset-0 z-10"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          >
-            <div className="absolute inset-0" style={{
-              background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.08) 0%, transparent 70%)",
-            }} />
-            <Suspense fallback={
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            }>
-              <IndustryCanvas type={industry.modelType} />
-            </Suspense>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="placeholder"
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <BlurImage src={industry.image} alt={industry.name} className="w-full h-full object-cover" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none z-20" />
-    </div>
-    <div className="p-6 flex-1 flex flex-col">
-      <h3 className="font-semibold text-base mb-1.5">{industry.name}</h3>
-      <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
-      <div className="pt-3 border-t border-border">
-        <a href="#teklif" className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors">
-          <span>{"Detaylı Bilgi"}</span> <ArrowRight className="w-3.5 h-3.5" />
-        </a>
+    <div className="relative h-52 md:h-60 overflow-hidden bg-card">
+      <BlurImage
+        src={industry.image}
+        alt={industry.name}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
+      <div className="absolute bottom-3 left-4 z-10">
+        <div className="px-2.5 py-1 border border-border/60 backdrop-blur-sm inline-block" style={{ backgroundColor: "hsl(var(--forge-molten) / 0.12)" }}>
+          <span className="text-technical text-[11px] font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>{industry.highlight}</span>
+        </div>
       </div>
     </div>
-    <div className="px-6 py-2.5 border-t border-border" style={{ backgroundColor: "hsl(var(--forge-molten) / 0.08)" }}>
-      <span className="text-technical text-xs font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>{industry.highlight}</span>
+    <div className="p-5 md:p-6 flex-1 flex flex-col">
+      <h3 className="font-semibold text-base md:text-lg mb-2">{industry.name}</h3>
+      <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
+      <a href="#teklif" className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors mt-auto">
+        <span>Detaylı Bilgi</span> <ArrowRight className="w-3.5 h-3.5" />
+      </a>
     </div>
   </motion.div>
 );
