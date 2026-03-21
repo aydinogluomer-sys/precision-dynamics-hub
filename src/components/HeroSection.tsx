@@ -199,7 +199,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeadline((prev) => (prev + 1) % headlines.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
