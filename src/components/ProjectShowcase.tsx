@@ -40,6 +40,22 @@ const projects = [
     gradient: "from-[hsl(var(--forge-obsidian))] to-[hsl(var(--forge-steel))]",
     link: "/endustriyel/petrol-gaz",
   },
+  {
+    title: "Savunma Optik Montaj",
+    subtitle: "Al 6061-T6 • 5 Eksen",
+    description: "MIL-SPEC standartlarında optik montaj braketi. Vibrasyon ve şok testli.",
+    tag: "Savunma",
+    gradient: "from-[hsl(var(--forge-iron))] to-[hsl(var(--forge-obsidian))]",
+    link: "/endustriyel/savunma",
+  },
+  {
+    title: "Robotik Aktüatör Gövdesi",
+    subtitle: "SUS304 • CNC Torna + Freze",
+    description: "Yüksek tekrarlanabilirlik gerektiren servo motor montaj gövdesi. ±0.005mm.",
+    tag: "Robotik",
+    gradient: "from-[hsl(var(--forge-steel))] to-[hsl(var(--forge-gunmetal))]",
+    link: "/endustriyel/robotik",
+  },
 ];
 
 const ProjectShowcase = () => {
