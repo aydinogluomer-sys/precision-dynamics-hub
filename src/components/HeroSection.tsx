@@ -46,34 +46,42 @@ const statItem = {
   },
 };
 
-/* ── Character Stagger Headline ─────────────────────────────── */
+/* ── Character Stagger Headline with 3D Perspective ──────── */
 
 const charVariants = {
   enter: (i: number) => ({
     y: 0,
     opacity: 1,
     scaleY: 1,
+    rotateX: 0,
     transition: { delay: i * 0.035, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   }),
-  initial: { y: "-120%", opacity: 0, scaleY: 0.8 },
+  initial: { y: "-120%", opacity: 0, scaleY: 0.8, rotateX: 40 },
   exit: (i: number) => ({
     y: "120%",
     opacity: 0,
     scaleY: 0.8,
+    rotateX: -40,
     transition: { delay: i * 0.02, duration: 0.4, ease: "easeIn" as const },
   }),
 };
 
-const HeadlineStagger = ({ text }: { text: string }) => {
+const HeadlineStagger = ({ text, scrollRotateX }: { text: string; scrollRotateX?: ReturnType<typeof useTransform> }) => {
   const allWords = text.replace(/\n/g, " ").split(" ");
   const staggerWords = allWords.slice(0, 2);
   const restWords = allWords.slice(2);
 
-  // Build per-word spans with character stagger — preserves word boundaries
   let charIndex = 0;
 
   return (
-    <div className="flex flex-col items-start">
+    <motion.div
+      className="flex flex-col items-start"
+      style={{
+        perspective: 800,
+        transformStyle: "preserve-3d" as const,
+        rotateX: scrollRotateX,
+      }}
+    >
       <span className="inline-flex flex-wrap gap-x-[0.3em]">
         {staggerWords.map((word, wi) => (
           <span key={wi} className="inline-flex whitespace-nowrap">
@@ -119,7 +127,7 @@ const HeadlineStagger = ({ text }: { text: string }) => {
           {restWords.join(" ")}
         </motion.span>
       )}
-    </div>
+    </motion.div>
   );
 };
 
@@ -171,6 +179,9 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const videoY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 160]);
   const gridY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 400]);
   const overlayOpacity = useTransform(scrollY, [0, 600], prefersReduced ? [0.85, 0.85] : [0.85, 1]);
+
+  // 3D scroll-driven headline tilt
+  const headlineRotateX = useTransform(scrollY, [0, 400], prefersReduced ? [0, 0] : [0, -12]);
 
   // 3D mouse perspective (disabled for reduced motion)
   const mouseX = useMotionValue(0);
@@ -335,7 +346,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             {/* Character Stagger Headlines */}
             <motion.div variants={fadeUpVariants} className="relative h-28 sm:h-36 md:h-48 overflow-hidden mb-6">
               <AnimatePresence mode="wait">
-                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
               </AnimatePresence>
             </motion.div>
 
