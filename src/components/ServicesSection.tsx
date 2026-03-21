@@ -17,6 +17,7 @@ const services = [
     description:
       "Karmaşık geometrilerde üstün yüzey kalitesi; havacılık ve enerji standartlarında hassas imalat.",
     link: "/hizmetler/cnc-frezeleme",
+    cta: "Frezeleme Detayları",
   },
   {
     image: serviceTorna,
@@ -24,6 +25,7 @@ const services = [
     description:
       "Mikron düzeyinde tolerans sınırlarını yakalayan yüksek nitelikli silindirik parça işleme.",
     link: "/hizmetler/cnc-tornalama",
+    cta: "Torna Detayları",
   },
   {
     image: serviceImalat,
@@ -31,6 +33,7 @@ const services = [
     description:
       "Hidrolik ve pnömatik sistem entegrasyonlarıyla tam işlevsel modüller ve üretim hatları.",
     link: "/hizmetler/talasli-imalat",
+    cta: "İmalat Detayları",
   },
   {
     image: serviceLazer,
@@ -38,6 +41,7 @@ const services = [
     description:
       "Yüksek hassasiyetli lazer teknolojisi ile metal ve alaşım malzemelerde temiz ve hızlı kesim.",
     link: "/hizmetler/lazer-kazima",
+    cta: "Lazer Kesim Detayları",
   },
   {
     image: serviceKalip,
@@ -45,6 +49,7 @@ const services = [
     description:
       "Enjeksiyon ve basınçlı döküm kalıplarında tasarımdan üretime mühendislik çözümleri.",
     link: "/hizmetler/enjeksiyon-kalibi",
+    cta: "Kalıp Detayları",
   },
 ];
 
