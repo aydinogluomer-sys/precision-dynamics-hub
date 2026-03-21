@@ -86,8 +86,15 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
         transition={{ delay: 0.15 * index }}
       >
         <div
+        <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
-          style={{ lineHeight: 1, color: "hsl(var(--forge-molten))", fontVariantNumeric: "tabular-nums" }}
+          style={{
+            lineHeight: 1,
+            color: "hsl(var(--forge-molten))",
+            fontVariantNumeric: "tabular-nums",
+            textShadow: "0 0 20px rgba(232, 97, 10, 0.4), 0 0 40px rgba(232, 97, 10, 0.15)",
+          }}
+        >
         >
           {displayCount}
           <span className="text-3xl">{stat.suffix}</span>
