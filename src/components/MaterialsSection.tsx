@@ -254,9 +254,11 @@ const MaterialsSection = () => {
             </span>
             <div className="w-10 h-px bg-primary" />
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
-            {"Çalıştığımız Malzemeler"}
-          </h2>
+          <Reveal variant="word-stagger" duration={0.6}>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
+              {"Çalıştığımız Malzemeler"}
+            </h2>
+          </Reveal>
           <p className="text-sm md:text-base max-w-lg mx-auto text-foreground/60">
             {isMobile
               ? <>{"50'den fazla malzeme seçeneği · "}<span className="text-foreground/80">{"Dokunarak detayları görün"}</span></>

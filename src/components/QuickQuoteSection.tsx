@@ -81,9 +81,11 @@ const QuickQuoteSection = () => {
               </span>
               <div className="w-8 h-px bg-primary" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-              {"CAD Dosyanızı Yükleyin"}
-            </h2>
+            <Reveal variant="word-stagger" duration={0.6}>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                {"CAD Dosyanızı Yükleyin"}
+              </h2>
+            </Reveal>
             <p className="text-sm text-white/50">
               {"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}
             </p>

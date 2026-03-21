@@ -89,9 +89,11 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
                   {"Teknik Yetkinlik"}
                 </span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                {"Makine Parkuru"}
-              </h2>
+              <Reveal variant="word-stagger" duration={0.6}>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                  {"Makine Parkuru"}
+                </h2>
+              </Reveal>
             </motion.div>
 
             {/* Animated tolerance stat */}
