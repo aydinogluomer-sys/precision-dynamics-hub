@@ -108,7 +108,7 @@ const FAQBlogSection = () => {
               viewport={{ once: true, amount: 0.2 }}
             >
               {faqs.map((faq, index) => (
-                <div key={index} className="border border-border bg-background">
+                <motion.div key={index} className="border border-border bg-background" custom={index} variants={faqCardVariants}>
                   <button
                     onClick={() =>
                       setOpenIndex(openIndex === index ? null : index)
