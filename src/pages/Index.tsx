@@ -186,12 +186,17 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 15 }}>
+        {/* z-index 15 — StatsSection */}
+        <ParallaxSection index={15} variant="zoom-out-blur">
+          <StatsSection />
+        </ParallaxSection>
+
+        <div className="relative" style={{ zIndex: 16 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" />
         </div>
 
-        {/* z-index 15 */}
-        <ParallaxSection index={15} variant="depth-3d" videoBg="/machine-loop.mp4">
+        {/* z-index 16 */}
+        <ParallaxSection index={16} variant="depth-3d" videoBg="/machine-loop.mp4">
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
