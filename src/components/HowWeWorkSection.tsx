@@ -77,9 +77,9 @@ export const HowWeWorkSection = () => {
 
   // Desktop: translate strip so all 4 cards scroll horizontally into view
   // Start offset = (totalCardWidth - viewport) expressed as % of strip width
-  const x = useTransform(scrollYProgress, [0.05, 0.95], ["60%", "-10%"]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.05], [40, 0]);
+  const x = useTransform(scrollYProgress, [0, 0.9], ["10%", "-10%"]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.02], [0.8, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.02], [10, 0]);
 
   // Mobile: simple vertical layout, no sticky scroll
   if (isMobile) {
