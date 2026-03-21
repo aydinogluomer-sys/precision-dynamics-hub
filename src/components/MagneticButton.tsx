@@ -15,8 +15,11 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
     const innerRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     const handleMouse = (e: MouseEvent) => {
+      // Disable magnetic effect during keyboard focus
+      if (isFocused) return;
       if (!innerRef.current) return;
       const { left, top, width, height } = innerRef.current.getBoundingClientRect();
       const x = (e.clientX - left - width / 2) * strength;
@@ -41,6 +44,11 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         onMouseMove={handleMouse}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={reset}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setIsFocused(false);
+          reset();
+        }}
         animate={{
           x: position.x,
           y: position.y,
@@ -48,11 +56,15 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
             ? "0 0 20px rgba(232, 97, 10, 0.3)"
             : "0 0 0px rgba(232, 97, 10, 0)",
         }}
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
         className="inline-block"
       >
-        <Tag className={className} href={href} onClick={onClick}>
+        <Tag
+          className={`${className} focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none`}
+          href={href}
+          onClick={onClick}
+        >
           {/* Inner text moves opposite direction for parallax */}
           <motion.span
             className="inline-block"

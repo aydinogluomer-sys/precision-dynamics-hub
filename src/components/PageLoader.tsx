@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 interface PageLoaderProps {
   isFirstVisit: boolean;
 }
 
 const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
-  const [isVisible, setIsVisible] = useState(isFirstVisit);
+  const prefersReduced = usePrefersReducedMotion();
+  const [isVisible, setIsVisible] = useState(isFirstVisit && !prefersReduced);
 
   useEffect(() => {
-    if (!isFirstVisit) return;
+    if (!isFirstVisit || prefersReduced) return;
     const timer = setTimeout(() => setIsVisible(false), 1800);
     return () => clearTimeout(timer);
-  }, [isFirstVisit]);
+  }, [isFirstVisit, prefersReduced]);
 
   return (
     <AnimatePresence>

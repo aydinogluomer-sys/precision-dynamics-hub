@@ -347,6 +347,20 @@
   border-color: hsl(var(--forge-teal) / 0.6);
 }
 
+/* ── Focus Visible — Global a11y ── */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* ── Reduced Motion: disable all non-essential animations ── */
 @media (prefers-reduced-motion: reduce) {
   *,

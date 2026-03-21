@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo, type ReactNode, type CSSProperties } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const ANIM = { SMOOTH_TAU: 0.25, MIN_COPIES: 2, HEADROOM: 2 };
 
@@ -38,6 +39,7 @@ const LogoLoop = ({
   className = "",
   style = {},
 }: LogoLoopProps) => {
+  const prefersReduced = usePrefersReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const seqRef = useRef<HTMLDivElement>(null);
@@ -91,7 +93,7 @@ const LogoLoop = ({
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || seqW <= 0) return;
+    if (!track || seqW <= 0 || prefersReduced) return;
     offset.current = ((offset.current % seqW) + seqW) % seqW;
     track.style.transform = `translate3d(${-offset.current}px,0,0)`;
 
@@ -112,7 +114,7 @@ const LogoLoop = ({
       cancelAnimationFrame(rafRef.current);
       lastTs.current = null;
     };
-  }, [target, seqW, hovered, effHover]);
+  }, [target, seqW, hovered, effHover, prefersReduced]);
 
   const lists = useMemo(
     () =>
@@ -131,7 +133,6 @@ const LogoLoop = ({
                 justifyContent: "center",
                 height: logoHeight,
                 flexShrink: 0,
-                paddingLeft: ii === 0 ? 0 : 0,
               }}
             >
               {renderItem ? (
@@ -147,6 +148,32 @@ const LogoLoop = ({
       )),
     [copies, logos, gap, logoHeight, renderItem]
   );
+
+  // Static grid for reduced motion
+  if (prefersReduced) {
+    return (
+      <div
+        className={className}
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap,
+          justifyContent: "center",
+          alignItems: "center",
+          ...style,
+        }}
+      >
+        {logos.map((item, i) => (
+          <div
+            key={i}
+            style={{ height: logoHeight, display: "flex", alignItems: "center" }}
+          >
+            {renderItem ? renderItem(item, `static-${i}`) : item.node}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const fadeColor = fadeOutColor || "#0F172A";
 

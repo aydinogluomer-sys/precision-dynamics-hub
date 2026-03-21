@@ -4,20 +4,13 @@ import HeroSection from "@/components/HeroSection";
 import NexusPromoSection from "@/components/NexusPromoSection";
 import HowWeWorkSection from "@/components/HowWeWorkSection";
 import CertificationsSection from "@/components/CertificationsSection";
-import ServicesSection from "@/components/ServicesSection";
-import IndustriesSection from "@/components/IndustriesSection";
-import MaterialsSection from "@/components/MaterialsSection";
-import WhyUsSection from "@/components/WhyUsSection";
-import CapabilitiesSection from "@/components/CapabilitiesSection";
-import StatsSection from "@/components/StatsSection";
-import FAQBlogSection from "@/components/FAQBlogSection";
-import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import PageLoader from "@/components/PageLoader";
 import QuickQuoteSection from "@/components/QuickQuoteSection";
 import { SectionDivider } from "@/components/ui/SectionDivider";
+import { SectionDotNav } from "@/components/SectionDotNav";
 
 import CNCScrollStory from "@/components/CNCScrollStory";
 
@@ -25,12 +18,39 @@ const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"))
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
 const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
 const ProjectShowcase = lazy(() => import("@/components/ProjectShowcase"));
+const ServicesSection = lazy(() => import("@/components/ServicesSection"));
+const IndustriesSection = lazy(() => import("@/components/IndustriesSection"));
+const MaterialsSection = lazy(() => import("@/components/MaterialsSection"));
+const WhyUsSection = lazy(() => import("@/components/WhyUsSection"));
+const CapabilitiesSection = lazy(() => import("@/components/CapabilitiesSection"));
+const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection"));
+const FinalCTASection = lazy(() => import("@/components/FinalCTASection"));
 
 const SectionLoader = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
 );
+
+const SECTIONS = [
+  { id: "hero", label: "Ana Sayfa" },
+  { id: "hizli-teklif", label: "Hızlı Teklif" },
+  { id: "cnc-story", label: "CNC Story" },
+  { id: "nexus", label: "Nexus" },
+  { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
+  { id: "sertifikalar", label: "Sertifikalar" },
+  { id: "video", label: "Video" },
+  { id: "hizmetler", label: "Hizmetler" },
+  { id: "endustriler", label: "Endüstriler" },
+  { id: "projeler", label: "Projeler" },
+  { id: "malzeme-morph", label: "Malzeme" },
+  { id: "malzemeler", label: "Malzemeler" },
+  { id: "neden-biz", label: "Neden Biz" },
+  { id: "kabiliyetler", label: "Kabiliyetler" },
+  { id: "referanslar", label: "Referanslar" },
+  { id: "sss-blog", label: "SSS & Blog" },
+  { id: "iletisim", label: "İletişim" },
+];
 
 const Index = () => {
   const [isFirstVisit] = useState(() => {
@@ -47,6 +67,7 @@ const Index = () => {
       <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
+      <SectionDotNav sections={SECTIONS} />
       <main id="main-content" className="relative">
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
@@ -84,21 +105,22 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        {/* Aurora section removed — ServicesSection has its own header */}
-
         <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
 
         <ParallaxSection index={6} variant="slide-up">
-          <ServicesSection />
+          <Suspense fallback={<SectionLoader />}>
+            <ServicesSection />
+          </Suspense>
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={7} variant="stack">
-          <IndustriesSection />
+          <Suspense fallback={<SectionLoader />}>
+            <IndustriesSection />
+          </Suspense>
         </ParallaxSection>
 
-        {/* Project Showcase — horizontal scroll */}
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
         <div className="relative" style={{ zIndex: 8 }}>
           <Suspense fallback={<SectionLoader />}>
@@ -117,28 +139,26 @@ const Index = () => {
         <SectionDivider fillColor="hsl(var(--forge-concrete))" />
 
         <ParallaxSection index={8} variant="slide-up">
-          <MaterialsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <MaterialsSection />
+          </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
-
         <ParallaxSection index={9} variant="wipe-mask">
-          <WhyUsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <WhyUsSection />
+          </Suspense>
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={10} variant="depth-3d" videoBg="/machine-loop.mp4">
-          <CapabilitiesSection />
+          <Suspense fallback={<SectionLoader />}>
+            <CapabilitiesSection />
+          </Suspense>
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
-
-        <ParallaxSection index={11} variant="zoom-out-blur">
-          <StatsSection />
-        </ParallaxSection>
-
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <ParallaxSection index={12} variant="stack">
           <Suspense fallback={<SectionLoader />}>
@@ -149,12 +169,16 @@ const Index = () => {
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
         <ParallaxSection index={13} variant="color-fade">
-          <FAQBlogSection />
+          <Suspense fallback={<SectionLoader />}>
+            <FAQBlogSection />
+          </Suspense>
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
         <ParallaxSection index={14} isLast variant="stack">
-          <FinalCTASection />
+          <Suspense fallback={<SectionLoader />}>
+            <FinalCTASection />
+          </Suspense>
         </ParallaxSection>
       </main>
       <Footer />
