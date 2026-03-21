@@ -24,6 +24,7 @@ const HexWipe = ({ children, isActive, duration = 0.8, className = "" }: HexWipe
         >
           {/* Hex clip-path wipe overlay */}
           <motion.div
+            aria-hidden="true"
             className="absolute inset-0 z-50 pointer-events-none"
             initial={{ clipPath: `polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%)` }}
             animate={{
