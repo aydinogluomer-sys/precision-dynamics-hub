@@ -142,6 +142,8 @@ const StatsSection = forwardRef<HTMLElement, Record<string, never>>((_props, _fo
       </div>
     </section>
   );
-};
+});
+
+StatsSection.displayName = "StatsSection";
 
 export default StatsSection;

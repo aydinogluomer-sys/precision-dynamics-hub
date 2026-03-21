@@ -52,6 +52,8 @@ const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(({
       </motion.div>
     </div>
   );
-};
+});
+
+SectionDivider.displayName = "SectionDivider";
 
 export { SectionDivider };

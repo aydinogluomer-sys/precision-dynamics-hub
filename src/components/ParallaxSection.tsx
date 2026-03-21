@@ -129,7 +129,8 @@ const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
         {children}
       </motion.div>
     </div>);
+});
 
-};
+ParallaxSection.displayName = "ParallaxSection";
 
 export default ParallaxSection;

@@ -97,6 +97,8 @@ const Reveal = forwardRef<HTMLDivElement, RevealProps>(({
       {children}
     </motion.div>
   );
-};
+});
+
+Reveal.displayName = "Reveal";
 
 export { Reveal };
