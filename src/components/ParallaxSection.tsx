@@ -113,7 +113,6 @@ export const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(
         style={{
           zIndex: index,
           perspective: useDepth3d ? 1200 : undefined,
-          backgroundColor: "hsl(var(--forge-obsidian))",
         }}
       >
         <motion.div
