@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { Link } from "react-router-dom";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import {
