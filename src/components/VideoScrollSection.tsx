@@ -32,6 +32,7 @@ const VideoScrollSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
