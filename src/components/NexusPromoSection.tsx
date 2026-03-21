@@ -29,12 +29,19 @@ const features = [
 ];
 
 const NexusPromoSection = () => {
+  const prefersReduced = usePrefersReducedMotion();
+  const inkInitial = prefersReduced ? { clipPath: "circle(150% at 0% 0%)" } : { clipPath: "circle(0% at 0% 0%)" };
+  const inkAnimate = { clipPath: "circle(150% at 0% 0%)" };
+
   return (
-    <section
+    <motion.section
       className="relative min-h-screen"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
+      initial={inkInitial}
+      whileInView={inkAnimate}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
-
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
