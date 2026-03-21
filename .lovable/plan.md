@@ -1,60 +1,34 @@
-## Light Mode Düzeltmesi — Simsiyah Sorunun Kök Nedeni ve Çözüm
 
-### Sorun
 
-`ParallaxSection` wrapper'a eklenen `backgroundColor: "hsl(var(--forge-obsidian))"` TÜM section'ları siyah yapıyor.  style={{ backgroundColor: "hsl(var(--forge-obsidian))" }} yerine style={{ backgroundColor: "hsl(var(--forge-workshop))" }} yap. Sayfadaki bölümlerin yarısı açık renkli:
+## Sorunun Kök Nedeni
+
+Konsolda **"Maximum call stack size exceeded"** hatası var. `SmoothScrollProvider.tsx` satır 40-42'de:
 
 ```text
-KOYU (kasıtlı):                    AÇIK (tema uyumlu):
-─────────────────                  ─────────────────
-HeroSection (obsidian)             HowWeWorkSection (workshop)
-QuickQuoteSection (obsidian)       ServicesSection (concrete)
-CNCScrollStory (obsidian)          IndustriesSection (→ şu an obsidian, YANLIŞ)
-NexusPromoSection (gunmetal)       MaterialsSection (mist)
-CertificationsSection (iron)       CapabilitiesSection (concrete)
-VideoScrollSection (obsidian)      TestimonialsSection (workshop)
-WhyUsSection (gunmetal)            FAQBlogSection (mist)
-MaterialMorphScroll (obsidian)
-ProjectShowcase (obsidian)
-FinalCTASection (obsidian)
+lenis.on("scroll") → window.dispatchEvent("scroll") → Lenis tekrar tetikleniyor → sonsuz döngü → CRASH
 ```
 
-Wrapper'a forge-obsidian vermek, açık renkli bölümlerde scroll animasyonu sırasında siyah zemin gösteriyor ve tüm sayfa karanlık görünüyor.
+Bu crash tüm sayfayı kırıyor — section'lar render olmuyor, scroll çalışmıyor, sayfa Hero + Footer olarak kalıyor. "Üç boş alan" aslında render edilemeyen section'lar.
 
 ### Çözüm
 
-#### 1. ParallaxSection.tsx — Wrapper background'u kaldır
+#### 1. SmoothScrollProvider.tsx — Sonsuz döngüyü kır
 
-`backgroundColor: "hsl(var(--forge-obsidian))"` satırını sil. Her section kendi arka planını zaten tanımlıyor. Wrapper'a gerek yok — parallax animasyonu sırasında alttan görünen, bir üstteki (daha yüksek z-index'li) section'dır, wrapper değil.
+`window.dispatchEvent(new Event("scroll"))` satırını kaldır. Framer Motion `useScroll` zaten native scroll event'leri dinliyor, Lenis ile uyumlu çalışıyor. Sadece `ScrollTrigger.update()` yeterli.
 
-```
+```typescript
 // Önce:
-style={{
-  zIndex: index,
-  perspective: useDepth3d ? 1200 : undefined,
-  backgroundColor: "hsl(var(--forge-obsidian))",  // ← SİL
-}}
+lenis.on("scroll", () => {
+  ScrollTrigger.update();
+  window.dispatchEvent(new Event("scroll"));  // ← sonsuz döngü
+});
 
 // Sonra:
-style={{
-  zIndex: index,
-  perspective: useDepth3d ? 1200 : undefined,
-}}
+lenis.on("scroll", ScrollTrigger.update);
 ```
 
-#### 2. IndustriesSection.tsx — forge-obsidian yerine tema uyumlu renk
+### Etki
+- 1 dosya, 1 satır değişiklik
+- Sonsuz döngü kırılır → sayfa düzgün render olur → tüm section'lar görünür hale gelir
+- "Boş alan" sorunu bu crash'in yan etkisi — crash düzelince section'lar da düzelecek
 
-`backgroundColor: "hsl(var(--forge-obsidian))"` → `backgroundColor: "hsl(var(--forge-workshop))"` olarak değiştir. Bu section koyu olmamalı — HowWeWorkSection ve ServicesSection gibi açık bir section.
-
-#### 3. IndustriesSection.tsx — text/border renkleri düzelt
-
-forge-obsidian kaldırılınca `text-foreground`, `bg-card`, `border-border` gibi tema uyumlu class'lar zaten doğru çalışacak. Ek değişiklik gerekmez.
-
-### Değişecek Dosyalar
-
-- `src/components/ParallaxSection.tsx` — 1 satır silme
-- `src/components/IndustriesSection.tsx` — 1 satır değişiklik
-
-### Neden Bu Çalışır
-
-ParallaxSection'ın z-index hiyerarşisi (1→19) sayesinde, bir section scroll ile uzaklaşırken **üstteki section** onu örter. Wrapper background'u kullanıcı tarafından görülmez — sadece aradaki geçiş anında (milisaniyeler) ve zaten üst section kapladığı için önemsiz. Asıl sorun, koyu wrapper'ın açık section'ların **kendi içeriğinin arkasından** sızmasıydı.
