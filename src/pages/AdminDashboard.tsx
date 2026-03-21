@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 import { exportExcelReport } from "@/utils/excelExport";
+import { ExportProgress } from "@/components/ui/ExportProgress";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 import MobileSidebar from "@/components/admin/MobileSidebar";
