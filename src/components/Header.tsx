@@ -389,7 +389,6 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
                           <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
                         )}
                       </span>
-                      {item.label}
                       {item.hasDropdown && (
                         <motion.span
                           animate={{ rotate: activeDropdown === index ? 180 : 0 }}
