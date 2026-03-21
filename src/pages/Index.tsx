@@ -19,6 +19,8 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 
 const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
+const CNCScrollStory = lazy(() => import("@/components/CNCScrollStory"));
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
 
 const SectionLoader = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
