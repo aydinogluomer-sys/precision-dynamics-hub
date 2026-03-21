@@ -67,6 +67,9 @@ const steps = [
 const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const prefersReduced = usePrefersReducedMotion();
+  const slideInitial = prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 };
+  const slideAnimate = { opacity: 1, x: 0 };
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
