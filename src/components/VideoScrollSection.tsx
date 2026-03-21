@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const features = [
 {
