@@ -242,7 +242,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             <span
               className="text-xs uppercase tracking-widest"
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
                 color: "rgba(255,255,255,0.5)",
               }}
             >
