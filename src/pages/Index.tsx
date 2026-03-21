@@ -69,113 +69,160 @@ const Index = () => {
       <JsonLdSchema type="organization" />
       <SectionDotNav sections={SECTIONS} />
       <main id="main-content" className="relative">
+        {/* z-index 1 */}
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
-        <QuickQuoteSection />
-
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        {/* z-index 2 */}
+        <div className="relative" style={{ zIndex: 2 }}>
+          <QuickQuoteSection />
+        </div>
 
         <div className="relative" style={{ zIndex: 2 }}>
+          <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        </div>
+
+        {/* z-index 3 */}
+        <div className="relative" style={{ zIndex: 3 }}>
           <CNCScrollStory />
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
+        <div className="relative" style={{ zIndex: 4 }}>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
+        </div>
 
-        <ParallaxSection index={2} variant="color-fade">
+        {/* z-index 4 */}
+        <ParallaxSection index={4} variant="color-fade">
           <NexusPromoSection />
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-concrete))" />
+        <div className="relative" style={{ zIndex: 5 }}>
+          <SectionDivider fillColor="hsl(var(--forge-concrete))" />
+        </div>
 
-        <ParallaxSection index={3} variant="slide-up">
+        {/* z-index 5 */}
+        <ParallaxSection index={5} variant="slide-up">
           <HowWeWorkSection />
         </ParallaxSection>
 
-        <ParallaxSection index={4} variant="stack">
+        {/* z-index 6 */}
+        <ParallaxSection index={6} variant="stack">
           <CertificationsSection />
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        <div className="relative" style={{ zIndex: 7 }}>
+          <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        </div>
 
-        <ParallaxSection index={5} variant="zoom-in">
+        {/* z-index 7 */}
+        <ParallaxSection index={7} variant="zoom-in">
           <Suspense fallback={<SectionLoader />}>
             <VideoScrollSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
+        <div className="relative" style={{ zIndex: 8 }}>
+          <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
+        </div>
 
-        <ParallaxSection index={6} variant="slide-up">
+        {/* z-index 8 */}
+        <ParallaxSection index={8} variant="slide-up">
           <Suspense fallback={<SectionLoader />}>
             <ServicesSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        <div className="relative" style={{ zIndex: 9 }}>
+          <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        </div>
 
-        <ParallaxSection index={7} variant="stack">
+        {/* z-index 9 */}
+        <ParallaxSection index={9} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <IndustriesSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
-        <ParallaxSection index={8} variant="stack">
+        <div className="relative" style={{ zIndex: 10 }}>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
+        </div>
+
+        {/* z-index 10 */}
+        <ParallaxSection index={10} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        <div className="relative" style={{ zIndex: 11 }}>
+          <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
+        </div>
 
-        <div className="relative" style={{ zIndex: 9 }}>
+        {/* z-index 12 */}
+        <div className="relative" style={{ zIndex: 12 }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-mist))" />
+        <div className="relative" style={{ zIndex: 13 }}>
+          <SectionDivider fillColor="hsl(var(--forge-mist))" />
+        </div>
 
-        <ParallaxSection index={8} variant="slide-up">
+        {/* z-index 13 */}
+        <ParallaxSection index={13} variant="slide-up">
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
           </Suspense>
         </ParallaxSection>
 
-        <ParallaxSection index={9} variant="wipe-mask">
+        {/* z-index 14 */}
+        <ParallaxSection index={14} variant="wipe-mask">
           <Suspense fallback={<SectionLoader />}>
             <WhyUsSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        <div className="relative" style={{ zIndex: 15 }}>
+          <SectionDivider fillColor="hsl(var(--forge-iron))" />
+        </div>
 
-        <ParallaxSection index={10} variant="depth-3d" videoBg="/machine-loop.mp4">
+        {/* z-index 15 */}
+        <ParallaxSection index={15} variant="depth-3d" videoBg="/machine-loop.mp4">
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
+        <div className="relative" style={{ zIndex: 16 }}>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
+        </div>
 
-        <ParallaxSection index={12} variant="stack">
+        {/* z-index 16 */}
+        <ParallaxSection index={16} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
+        <div className="relative" style={{ zIndex: 17 }}>
+          <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
+        </div>
 
-        <ParallaxSection index={13} variant="color-fade">
+        {/* z-index 17 */}
+        <ParallaxSection index={17} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
-        <ParallaxSection index={14} isLast variant="stack">
+        <div className="relative" style={{ zIndex: 18 }}>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
+        </div>
+
+        {/* z-index 19 — last section */}
+        <ParallaxSection index={19} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>
