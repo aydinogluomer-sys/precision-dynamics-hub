@@ -80,18 +80,7 @@ const FinalCTASection = () => {
           </motion.p>
 
 
-          <motion.h2
-            className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
-            style={{ lineHeight: 0.95 }}
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            whileInView={{ clipPath: "inset(0 0 0% 0)" }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1] }}
-          >
-            <span>{"Birlikte "}</span>
-            <span style={{ background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{"Üretelim"}</span>
-            <span>{"."}</span>
-          </motion.h2>
+          <GsapCtaHeadline />
 
           <motion.p
             className="text-base md:text-lg mb-12 max-w-xl mx-auto text-primary-foreground/60"
