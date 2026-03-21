@@ -238,7 +238,7 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
       {/* Image with clipPath mask reveal */}
       <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
         <motion.div
-          className="relative h-52 overflow-hidden"
+          className="relative h-64 md:h-72 overflow-hidden"
           initial={{ clipPath: clipFrom }}
           whileInView={{ clipPath: clipTo }}
           viewport={{ once: true }}

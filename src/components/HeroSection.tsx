@@ -302,7 +302,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           className="text-xs uppercase tracking-widest"
           style={{
             color: "rgba(255,255,255,0.4)",
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "'IBM Plex Mono', monospace",
           }}
         >
           {"Keşfet"}

@@ -57,7 +57,7 @@ const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
   // --- Opacity ---
   const opacity = useTransform(
     scrollYProgress,
-    variant === "zoom-out-blur" && !none ? [0, 0.3, 1] : [0, 0.6, 1],
+    variant === "zoom-out-blur" && !none ? [0, 0.3, 1] : [0, 0.2, 1],
     none ? [1, 1, 1] :
     variant === "zoom-out-blur" ? [1, 0.8, 0.15] :
     variant === "zoom-in" ? [1, 1, 0.2] :

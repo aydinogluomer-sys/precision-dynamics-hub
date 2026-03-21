@@ -74,7 +74,7 @@ const WhyUsSection = () => {
                 transition={{ delay: i * 0.1 }}
               >
                 <div
-                  className="text-3xl md:text-4xl font-bold mb-1 font-mono"
+                  className="text-4xl md:text-5xl font-bold mb-1 font-mono"
                   style={{ color: "hsl(var(--forge-molten))" }}
                 >
                   {stat.value}

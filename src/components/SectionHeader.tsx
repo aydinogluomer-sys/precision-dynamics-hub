@@ -43,7 +43,7 @@ const SectionHeader = ({
           id={headingId}
           className={
             titleClassName ||
-            "text-3xl md:text-5xl font-bold tracking-tight mb-4"
+            "text-4xl md:text-6xl font-bold tracking-tighter mb-6 leading-[0.95]"
           }
         >
           {title}
