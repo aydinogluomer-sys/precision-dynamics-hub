@@ -62,14 +62,14 @@ const WordStagger = ({
   );
 };
 
-const Reveal = ({
+const Reveal = forwardRef<HTMLDivElement, RevealProps>(({
   children,
   direction = "up",
   variant = "clip",
   delay = 0,
   duration = 0.7,
   className = "",
-}: RevealProps) => {
+}, _forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
 
   if (prefersReduced) {
