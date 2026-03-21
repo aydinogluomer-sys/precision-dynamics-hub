@@ -255,7 +255,7 @@ export const MaterialMorphScroll = () => {
                   strokeWidth="4"
                   strokeLinecap="round"
                   strokeDasharray={circumference}
-                  style={{ strokeDashoffset: useTransform(ringProgress, (v) => circumference * (1 - v)) }}
+                  style={{ strokeDashoffset: ringOffset }}
                 />
               </svg>
               <div>
