@@ -179,7 +179,7 @@ export const MaterialMorphScroll = () => {
     <motion.div
       ref={containerRef}
       className="relative"
-      style={{ height: "300vh" }}
+      style={{ height: "300vh", backgroundColor: "hsl(var(--forge-obsidian))" }}
       initial={burnInitial}
       whileInView={burnAnimate}
       viewport={{ once: true, amount: 0.1 }}
