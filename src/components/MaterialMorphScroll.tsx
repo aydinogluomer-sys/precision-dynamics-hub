@@ -51,6 +51,10 @@ const MaterialMorphScroll = () => {
   const ringProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25, 0.32], [0, 1, 1, 0]);
 
+  // Exit animation — fade + shrink as user scrolls past
+  const exitOpacity = useTransform(scrollYProgress, [0.85, 1], prefersReduced ? [1, 1] : [1, 0.15]);
+  const exitScale = useTransform(scrollYProgress, [0.85, 1], prefersReduced ? [1, 1] : [1, 0.88]);
+
   const drawFrame = useCallback(
     (index: number) => {
       const canvas = canvasRef.current;
@@ -180,7 +184,7 @@ const MaterialMorphScroll = () => {
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1.0, ease: "easeIn" }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
@@ -284,7 +288,7 @@ const MaterialMorphScroll = () => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

@@ -53,6 +53,10 @@ const CNCScrollStory = () => {
   const ctaOpacity = useTransform(scrollYProgress, [0.85, 0.90], [0, 1]);
   const ctaY = useTransform(scrollYProgress, [0.85, 0.92], [30, 0]);
 
+  // Exit animation — fade + shrink as user scrolls past
+  const exitOpacity = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.15]);
+  const exitScale = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.88]);
+
   const storyOpacities = [story0Opacity, story1Opacity, story2Opacity, story3Opacity];
 
   const drawFrame = useCallback(
@@ -160,7 +164,7 @@ const CNCScrollStory = () => {
   /* ── Desktop: scroll-driven canvas ── */
   return (
     <div ref={containerRef} className="relative" style={{ height: "350vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
@@ -242,7 +246,7 @@ const CNCScrollStory = () => {
             </Link>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
