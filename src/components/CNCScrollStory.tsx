@@ -9,10 +9,10 @@ import { Link } from "react-router-dom";
 const TOTAL_FRAMES = 120;
 
 const stories = [
-  { range: [0, 0.15], text: "Ham malzeme.\nSonsuz olasılık.", align: "center" as const, size: "text-4xl md:text-6xl lg:text-7xl" },
-  { range: [0.2, 0.4], text: "±0.005mm tolerans.", align: "left" as const, size: "text-2xl md:text-4xl", mono: true },
-  { range: [0.45, 0.65], text: "Ti-6Al-4V. AS9100D.", align: "right" as const, size: "text-2xl md:text-4xl", mono: true },
-  { range: [0.7, 0.85], text: "Prototipten\n50.000 adete.", align: "left" as const, size: "text-3xl md:text-5xl" },
+  { range: [0, 0.22], text: "Ham malzeme.\nSonsuz olasılık.", align: "center" as const, size: "text-4xl md:text-6xl lg:text-7xl" },
+  { range: [0.18, 0.42], text: "±0.005mm tolerans.", align: "left" as const, size: "text-2xl md:text-4xl", mono: true },
+  { range: [0.38, 0.62], text: "Ti-6Al-4V. AS9100D.", align: "right" as const, size: "text-2xl md:text-4xl", mono: true },
+  { range: [0.58, 0.82], text: "Prototipten\n50.000 adete.", align: "left" as const, size: "text-3xl md:text-5xl" },
 ];
 
 const CNCScrollStory = () => {
