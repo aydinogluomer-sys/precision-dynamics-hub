@@ -35,6 +35,7 @@ const stats = [
 
 const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 95%", "start 40%"],
@@ -46,6 +47,10 @@ const WhyUsSection = () => {
     ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
   );
   const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+
+  const splitLeftInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 };
+  const splitRightInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: 60, opacity: 0 };
+  const splitAnimate = { x: 0, opacity: 1 };
 
   return (
     <section
