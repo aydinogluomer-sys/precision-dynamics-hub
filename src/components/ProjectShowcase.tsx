@@ -1,9 +1,9 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { Reveal } from "@/components/ui/Reveal";
 import MagneticButton from "./MagneticButton";
 
@@ -43,20 +43,68 @@ const projects = [
 ];
 
 const ProjectShowcase = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const prefersReduced = usePrefersReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    if (isMobile) return;
+    const container = containerRef.current;
+    const track = trackRef.current;
+    const progress = progressRef.current;
+    if (!container || !track) return;
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    prefersReduced ? ["0%", "0%"] : ["0%", `-${(projects.length - 1) * 80}vw`]
-  );
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+
+    // Small delay to ensure layout is complete
+    const ctx = gsap.context(() => {
+      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth);
+
+      const tween = gsap.to(track, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          pin: true,
+          scrub: 1.2,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (progress) {
+              progress.style.transform = `scaleX(${self.progress})`;
+            }
+          },
+        },
+      });
+
+      // Card stagger reveal
+      const cards = track.querySelectorAll<HTMLElement>(".gsap-project-card");
+      cards.forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0.3, scale: 0.92 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: tween,
+              start: "left 80%",
+              end: "left 40%",
+              scrub: true,
+            },
+          }
+        );
+      });
+    }, container);
+
+    return () => ctx.revert();
+  }, [isMobile]);
 
   // Mobile: vertical layout
   if (isMobile) {
@@ -89,12 +137,9 @@ const ProjectShowcase = () => {
     <section
       ref={containerRef}
       className="relative"
-      style={{
-        height: `${projects.length * 100}vh`,
-        backgroundColor: "hsl(var(--forge-obsidian))",
-      }}
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
+      <div className="h-screen flex flex-col justify-center">
         {/* Header */}
         <div className="container-industrial pt-12 pb-8">
           <Reveal direction="up" duration={0.6}>
@@ -119,23 +164,24 @@ const ProjectShowcase = () => {
           </Reveal>
         </div>
 
-        {/* Horizontal scroll track */}
-        <motion.div
-          className="flex gap-8 pl-8"
-          style={{ x }}
+        {/* Horizontal scroll track — GSAP pinned */}
+        <div
+          ref={trackRef}
+          className="flex gap-8 pl-8 will-change-transform"
         >
           {projects.map((project, i) => (
             <ProjectCard key={i} project={project} index={i} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Progress bar */}
         <div className="container-industrial py-6">
           <div className="w-full h-px bg-white/10 overflow-hidden">
-            <motion.div
+            <div
+              ref={progressRef}
               className="h-full origin-left"
               style={{
-                scaleX: scrollYProgress,
+                transform: "scaleX(0)",
                 background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))",
               }}
             />
@@ -146,55 +192,106 @@ const ProjectShowcase = () => {
   );
 };
 
-const ProjectCard = ({ project, index }: { project: typeof projects[number]; index: number }) => (
-  <motion.div
-    className={`relative flex-shrink-0 w-[75vw] h-[60vh] bg-gradient-to-br ${project.gradient} overflow-hidden group`}
-    whileHover={{ scale: 0.98 }}
-    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-  >
-    {/* Grid overlay */}
-    <div
-      className="absolute inset-0 pointer-events-none opacity-10"
-      style={{
-        backgroundImage:
-          "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
-      }}
-    />
+const ProjectCard = ({ project, index }: { project: typeof projects[number]; index: number }) => {
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-    {/* Content */}
-    <div className="relative z-10 h-full flex flex-col justify-end p-10 lg:p-14">
-      <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/40 mb-4">
-        {project.tag}
-      </span>
-      <h3 className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-2">
-        <span>{project.title}</span>
-      </h3>
-      <p className="text-sm font-mono text-white/50 mb-4">
-        <span>{project.subtitle}</span>
-      </p>
-      <p className="text-base text-white/60 max-w-lg leading-relaxed mb-6">
-        <span>{project.description}</span>
-      </p>
-      <MagneticButton
-        href={project.link}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-6 py-3 hover:bg-white/10 transition-all w-fit"
-        strength={0.2}
-      >
-        <span>{"Detayları Gör"}</span>
-        <ArrowRight className="w-4 h-4" />
-      </MagneticButton>
-    </div>
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
 
-    {/* Number watermark */}
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+
+    const text = el.textContent || "";
+    el.setAttribute("aria-label", text);
+
+    // Split title into characters for GSAP stagger
+    el.innerHTML = text
+      .split("")
+      .map((c) =>
+        c === " "
+          ? " "
+          : `<span class="gsap-char" style="display:inline-block;opacity:0;transform:translateY(30px)">${c}</span>`
+      )
+      .join("");
+
+    const chars = el.querySelectorAll(".gsap-char");
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          gsap.to(chars, {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.02,
+            ease: "power3.out",
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      el.textContent = text;
+    };
+  }, []);
+
+  return (
     <div
-      className="absolute top-6 right-10 text-[120px] lg:text-[200px] font-bold leading-none pointer-events-none select-none"
-      style={{ color: "rgba(255,255,255,0.03)" }}
+      className={`gsap-project-card relative flex-shrink-0 w-[75vw] h-[60vh] bg-gradient-to-br ${project.gradient} overflow-hidden group cursor-pointer`}
+      style={{ willChange: "transform, opacity" }}
     >
-      {`0${index + 1}`}
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-10"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col justify-end p-10 lg:p-14">
+        <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/40 mb-4">
+          {project.tag}
+        </span>
+        <h3
+          ref={titleRef}
+          className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-2"
+        >
+          {project.title}
+        </h3>
+        <p className="text-sm font-mono text-white/50 mb-4">
+          <span>{project.subtitle}</span>
+        </p>
+        <p className="text-base text-white/60 max-w-lg leading-relaxed mb-6">
+          <span>{project.description}</span>
+        </p>
+        <MagneticButton
+          href={project.link}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-6 py-3 hover:bg-white/10 transition-all w-fit"
+          strength={0.2}
+        >
+          <span>{"Detayları Gör"}</span>
+          <ArrowRight className="w-4 h-4" />
+        </MagneticButton>
+      </div>
+
+      {/* Number watermark */}
+      <div
+        className="absolute top-6 right-10 text-[120px] lg:text-[200px] font-bold leading-none pointer-events-none select-none"
+        style={{ color: "rgba(255,255,255,0.03)" }}
+      >
+        {`0${index + 1}`}
+      </div>
     </div>
-  </motion.div>
-);
+  );
+};
 
 const MobileProjectCard = ({ project, index }: { project: typeof projects[number]; index: number }) => (
   <motion.div
