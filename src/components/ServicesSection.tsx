@@ -57,7 +57,7 @@ const ServicesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const prefersReduced = usePRM();
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
     const container = scrollRef.current;
