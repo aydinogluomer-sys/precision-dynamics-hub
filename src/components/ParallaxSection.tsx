@@ -21,7 +21,8 @@ const ParallaxSection = ({
   index = 0,
   isLast = false,
   variant = "stack",
-  style
+  style,
+  videoBg
 }: ParallaxSectionProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
