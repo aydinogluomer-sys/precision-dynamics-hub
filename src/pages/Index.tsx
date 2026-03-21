@@ -13,6 +13,7 @@ import { SectionDivider } from "@/components/ui/SectionDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
+import { StatsSection } from "@/components/StatsSection";
 
 const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection").then(m => ({ default: m.VideoScrollSection })));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
@@ -47,6 +48,7 @@ const SECTIONS = [
   { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "neden-biz", label: "Neden Biz" },
+  { id: "rakamlar", label: "Rakamlar" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
   { id: "referanslar", label: "Referanslar" },
   { id: "sss-blog", label: "SSS & Blog" },
@@ -76,7 +78,7 @@ export const Index = () => {
         </ParallaxSection>
 
         {/* z-index 2 */}
-        <div className="relative" style={{ zIndex: 2 }}>
+        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <QuickQuoteSection />
         </div>
 
@@ -185,45 +187,50 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 15 }}>
+        {/* z-index 15 — StatsSection */}
+        <ParallaxSection index={15} variant="zoom-out-blur">
+          <StatsSection />
+        </ParallaxSection>
+
+        <div className="relative" style={{ zIndex: 16 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" />
         </div>
 
-        {/* z-index 15 */}
-        <ParallaxSection index={15} variant="depth-3d" videoBg="/machine-loop.mp4">
+        {/* z-index 16 */}
+        <ParallaxSection index={16} variant="depth-3d" videoBg="/machine-loop.mp4">
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 16 }}>
+        <div className="relative" style={{ zIndex: 17 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
         </div>
 
-        {/* z-index 16 */}
-        <ParallaxSection index={16} variant="stack">
+        {/* z-index 17 */}
+        <ParallaxSection index={17} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 17 }}>
+        <div className="relative" style={{ zIndex: 18 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
         </div>
 
-        {/* z-index 17 */}
-        <ParallaxSection index={17} variant="color-fade">
+        {/* z-index 18 */}
+        <ParallaxSection index={18} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 18 }}>
+        <div className="relative" style={{ zIndex: 19 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
-        {/* z-index 19 — last section */}
-        <ParallaxSection index={19} isLast variant="stack">
+        {/* z-index 20 — last section */}
+        <ParallaxSection index={20} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>
