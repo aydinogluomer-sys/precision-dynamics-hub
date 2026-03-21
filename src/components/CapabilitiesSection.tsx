@@ -58,11 +58,23 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
     <section
       ref={forwardedRef}
       id="kabiliyetler"
-      className="py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border"
+      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
     >
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
-      <div className="max-w-7xl mx-auto w-full">
+
+      {/* Ghost background video */}
+      <video
+        src="/machine-loop.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
+        aria-hidden="true"
+      />
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Left: Sticky panel */}
           <div className="lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] flex flex-col justify-center">

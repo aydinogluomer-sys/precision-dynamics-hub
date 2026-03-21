@@ -20,8 +20,12 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     lenisRef.current = lenis;
 
     // Framer Motion sync — dispatch scroll event so useScroll works correctly
+    let isSyncing = false;
     lenis.on("scroll", () => {
+      if (isSyncing) return;
+      isSyncing = true;
       window.dispatchEvent(new Event("scroll"));
+      isSyncing = false;
     });
 
     function raf(time: number) {
