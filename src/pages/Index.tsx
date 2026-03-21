@@ -52,6 +52,8 @@ const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
+        <QuickQuoteSection />
+
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
         <div className="relative" style={{ zIndex: 2 }}>

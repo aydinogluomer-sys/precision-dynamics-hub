@@ -149,8 +149,8 @@ const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; index: number }) => {
   return (
-    <div className="flip-card h-[400px] md:h-[440px] cursor-pointer">
-      <div className="flip-card-inner w-full h-full">
+    <div className="flip-card h-[400px] md:h-[440px] cursor-pointer group/card">
+      <div className="flip-card-inner w-full h-full" style={{ filter: "drop-shadow(0 0 0px transparent)" }} onMouseEnter={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 12px rgba(232,97,10,0.25))"; }} onMouseLeave={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)"; }}>
         {/* Front face */}
         <div className="flip-card-front absolute inset-0 overflow-hidden border border-border/30 group">
           <div className="absolute inset-0 z-10">
