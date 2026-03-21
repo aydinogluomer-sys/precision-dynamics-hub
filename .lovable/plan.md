@@ -1,129 +1,230 @@
 
 
-# Çalışmayan, Kullanılmayan ve Sorunlu Kod Denetimi
+# Tüm Section'ları 9/10+ Seviyeye Çıkarma Planı
 
-## 1. KULLANILMAYAN GSAP HOOKLARİ VE BİLEŞENLERİ
-
-### 1a. `GsapTextReveal` bileşeni — ASLA IMPORT EDİLMİYOR
-- **Dosya:** `src/components/GsapTextReveal.tsx`
-- **Sorun:** Bu bileşen hiçbir yerde kullanılmıyor. Hiçbir dosyada `from "@/components/GsapTextReveal"` import'u yok.
-- **Durum:** Ölü kod (dead code)
-
-### 1b. `useGsapHorizontalScroll` hook'u — ASLA KULLANILMIYOR
-- **Dosya:** `src/hooks/use-gsap.ts` (satır 98-130)
-- **Sorun:** `ProjectShowcase.tsx` kendi inline GSAP ScrollTrigger kodunu yazıyor, bu hook'u kullanmıyor.
-- **Durum:** Ölü kod
-
-### 1c. `useGsapParallax` hook'u — ASLA KULLANILMIYOR
-- **Dosya:** `src/hooks/use-gsap.ts` (satır 139-175)
-- **Sorun:** Hiçbir bileşende import edilmiyor.
-- **Durum:** Ölü kod
-
-### 1d. `useGsapTextReveal` hook'u — SADECE ölü `GsapTextReveal.tsx` tarafından kullanılıyor
-- **Dosya:** `src/hooks/use-gsap.ts` (satır 12-90)
-- **Sorun:** Tek consumer'ı `GsapTextReveal.tsx` ama o da hiçbir yerde kullanılmıyor. Dolaylı ölü kod.
+Mevcut durum ve hedef arasındaki farkları kapatmak için section bazlı aksiyonlar:
 
 ---
 
-## 2. REVEAL `line-split` VARİANTI — ASLA KULLANILMIYOR
+## 1. HERO SECTION (8/10 → 9/10)
 
-- **Dosya:** `src/components/ui/Reveal.tsx` (satır 65-107, 131-136)
-- **Sorun:** `LineSplit` alt bileşeni oluşturulmuş ama hiçbir yerde `variant="line-split"` ile çağrılmıyor. `SectionHeader.tsx` hâlâ standart `direction="up"` kullanıyor.
-- **Durum:** Ölü kod — plan "section başlıklarında kullan" diyordu ama entegre edilmedi.
+**Sorunlar:** CAD upload widget odağı dağıtıyor, skewed badge amacı belirsiz, headline rotate bazen yarım kare yakalıyor.
 
----
-
-## 3. IMAGE SEQUENCE DOSYALARI — MUHTEMELEN EKSİK VEYA BOŞ
-
-- **Sorun:** `CNCScrollStory` 120 frame (`/sequence-cnc/frame_0001.webp` … `frame_0120.webp`), `MaterialMorphScroll` 80 frame (`/sequence-material/frame_0001.webp` … `frame_0080.webp`) bekliyor.
-- **Risk:** Bu dizinler `public/` altında var ama **içlerinde gerçekten 120+80 adet webp dosyası yoksa**, canvas boş kalır, loading spinner sonsuza kadar döner veya ilk frame gösterilip geri kalanı siyah kalır. `onerror` handler'ı frame'i `null` yapıp `onLoad` çağırıyor — yani 404'ler sessizce yutulur ve `ready` state yanlış pozitif verir.
-- **Etki:** Hem `CNCScrollStory` hem `MaterialMorphScroll` masaüstünde boş/siyah canvas gösterebilir.
+**Aksiyonlar:**
+- CAD upload widget'ı sağ sütundan çıkar, Hero'nun altına bağımsız mini "Hızlı Teklif" bölümü olarak taşı (CNCScrollStory öncesine)
+- "Disiplinli Operasyon, Güvenilir Üretim" badge'ini kaldır — CTA butonlarına odak ver
+- Hero'yu full-width tek sütun yap: büyük headline ortada, CTA'lar altta, arka planda video + parallax
+- Headline rotate interval'ı 3s → 4s, `AnimatePresence` exit'e 100ms buffer ekle
 
 ---
 
-## 4. `machine-loop.mp4` VİDEO REFERANSLARI — ÇALIŞIYOR AMA PERFORMANS RİSKİ
+## 2. CNCScrollStory (6/10 → 9/10)
 
-- **Dosya:** 4 yerde kullanılıyor (`ServicesSection`, `CapabilitiesSection`, `Malzemeler`, `ServiceDetail`)
-- **Sorun:** `ServicesSection`'da **her bir kart** için ayrı bir `<video>` elementi oluşturuluyor (5 adet). Tüm videolar `autoPlay loop muted` ile yükleniyor — hover olmasa bile. `opacity: 0` CSS ile gizlense de, video decode işlemi devam ediyor.
-- **Etki:** Mobilde video `hidden md:block` ile gizleniyor ama DOM'da hâlâ var ve `autoPlay` sebebiyle decode olabilir.
+**Sorunlar:** Frame'ler 404 olursa siyah canvas, 500vh çok uzun, mobilde basit fallback.
 
----
-
-## 5. `ScrollReveal.tsx` vs `Reveal.tsx` — İKİ PARALEL SİSTEM
-
-- **Dosya:** `src/components/ScrollReveal.tsx` ve `src/components/ui/Reveal.tsx`
-- **Sorun:** İki farklı reveal sistemi paralel yaşıyor:
-  - `ScrollReveal.tsx`: `TextReveal`, `Parallax`, `SlideIn`, `ScaleReveal`, `StaggerContainer`, `StaggerItem` (5 bileşende aktif kullanılıyor)
-  - `Reveal.tsx`: `clip`, `word-stagger`, `line-split` variant'ları (sadece `ProjectShowcase` kullanıyor)
-- **Etki:** Duplicate mantık, tutarsız API, `line-split` variant kullanılmıyor.
+**Aksiyonlar:**
+- `ready` state'e timeout fallback ekle: 5 saniye sonra hâlâ `!ready` ise statik poster göster (siyah ekran engellensin)
+- Scroll mesafesini `500vh` → `350vh`'e düşür
+- Mobil fallback'e parallax image efekti ekle (şu an düz statik görsel)
+- Story overlay text'lerine subtle backdrop-blur ekle (okunabilirlik)
 
 ---
 
-## 6. `SectionDivider` — YER ALDIĞI AMA ETKİSİ SINIRLI
+## 3. NexusPromoSection (7/10 → 9/10)
 
-- **Dosya:** `src/components/ui/SectionDivider.tsx` + `src/pages/Index.tsx`
-- **Sorun:** `Index.tsx`'de sadece 2 yere eklenmiş (`ProjectShowcase` öncesi ve `FinalCTA` öncesi). Planın hedeflediği "tüm section geçişlerinde curved SVG divider" gerçekleşmedi.
-- **Etki:** Çoğu section geçişi hâlâ düz kesim.
+**Sorunlar:** Dashboard mockup statik, feature açıklamaları generic.
 
----
-
-## 7. `PageLoader` — isFirstVisit BAĞIMLILIĞI
-
-- **Dosya:** `src/components/PageLoader.tsx` + `src/pages/Index.tsx`
-- **Sorun:** `PageLoader` sadece `isFirstVisit=true` iken render ediliyor (sessionStorage ile kontrol). İkinci ziyaretten sonra hiç gösterilmez — bu tasarım gereği. Ancak `isFirstVisit` state'i `Index.tsx` içinde oluşturuluyor ve `PageLoader` ile `Header`'a geçiliyor. `PageLoader`'ın `onComplete` callback'i `Header`'ın gösterilme zamanlamasını etkilemiyor — header hemen visible.
-- **Etki:** PageLoader animasyonu sürerken header'ın arkasında görünebilir (z-index çakışması riski).
+**Aksiyonlar:**
+- Dashboard mockup'a subtle scan-line animasyonu ekle (CSS `@keyframes` — canlılık hissi)
+- Feature açıklamalarını CNC'ye özel concrete metriklerle güncelle ("78 aktif sipariş", "3.2s ortalama CMM ölçüm" gibi)
+- Mockup kartına hover'da hafif `scale(1.02)` + glow border ekle
 
 ---
 
-## 8. HEADER NAV UNDERLINE — DROPDOWN'LU LİNKLERDE YOK
+## 4. HowWeWorkSection (7/10 → 9/10)
 
-- **Dosya:** `src/components/Header.tsx` (satır 373-374, 388-389)
-- **Sorun:** Underline animasyonu yalnızca `!item.isBold && !item.isFire` koşulunda ekleniyor (Link'ler için) ve `!item.isBold && !item.hasDropdown` koşulunda (button'lar için). Dropdown'lu nav öğeleri (Hizmetler, Kabiliyetler, Endüstriyel) underline almıyor — bu design choice olabilir ama "beaucoup tarzı" hedefle tutarsız.
+**Sorunlar:** Section'a girişte boş alan, ilk kart ekranda yok.
 
----
-
-## 9. FinalCTASection `GsapCtaHeadline` — GSAP + FRAMER MOTION ÇAKIŞMASI
-
-- **Dosya:** `src/components/FinalCTASection.tsx` (satır 8-70)
-- **Sorun:** `GsapCtaHeadline` GSAP ile DOM'u manipüle ediyor (`el.innerHTML = ...`) ama aynı zamanda içinde React children (satır 65-68) var. GSAP `el.innerHTML`'yi üzerine yazıyor, React children hiç render edilmiyor (aslında GSAP innerHTML ile değiştiriliyor). Bu durumda React'in DOM reconciliation'ı ile GSAP'ın DOM manipülasyonu çakışabilir.
-- **Etki:** Şu an çalışıyor gibi görünüyor çünkü `innerHTML` override ediyor ama React rerender'da beklenmeyen davranış riski var.
+**Aksiyonlar:**
+- Header opacity range'ini `[0, 0.05]`'e çek — kullanıcı section'a girer girmez başlık görünsün
+- İlk kartın x offset'ini `75%` → `40%`'e düşür — giriş anında kart kısmen görünsün
+- Her kartın checklist öğelerine stagger reveal ekle (scroll'a bağlı)
 
 ---
 
-## 10. `ProjectShowcase` GSAP CARD ANIMATION — containerAnimation REF
+## 5. CertificationsSection (4/10 → 9/10) — EN KRİTİK
 
-- **Dosya:** `src/components/ProjectShowcase.tsx` (satır 70-90)
-- **Sorun:** Card stagger'da `containerAnimation: tween` kullanılıyor. `tween` bir GSAP Tween referansı — bu `gsap.to()` return değerinden alınıyor. Ancak `gsap.context()` içinde oluşturuluyor ve `tween` değişkeni closure'da yakalanıyor. Bu genelde çalışır ama `invalidateOnRefresh: true` ile resize'da tekrar hesaplanırken sıkıntı çıkarabilir.
+**Sorunlar:** Sadece text marquee, logo yok, çok soluk, çok dar, filler hissi.
+
+**Aksiyonlar:**
+- Her sertifika için SVG/ikon badge ekle (ISO kalkan ikonu, AS9100 havacılık ikonu vb.)
+- Opacity 0.5 → 0.8
+- Padding `py-6` → `py-12 md:py-16`
+- Arka plana subtle metalik doku/gradient ekle
+- Marquee hızını 20s → 25s (daha zarif)
+- Sertifika adının altına küçük açıklama satırı ekle ("Kalite Yönetimi" gibi)
 
 ---
 
-## ÖZET TABLOSU
+## 6. VideoScrollSection (6/10 → 9/10)
+
+**Sorunlar:** Typo "ÜÜHENDİSLİK", feature kartları scroll-reveal yok, 200vh uzun.
+
+**Aksiyonlar:**
+- Typo düzelt: "ÜÜHENDİSLİK" → "MÜHENDİSLİK"
+- Feature kartlarına scroll-driven stagger opacity ekle (şu an hepsi static opacity:1)
+- Scroll height'ı `200vh` → `150vh`'e düşür
+- `autoPlay` + `preload="none"` çelişkisini çöz: `preload="metadata"` yap
+
+---
+
+## 7. Aurora "Çözümlerimizi Keşfedin" (3/10 → 9/10) — KRİTİK
+
+**Sorunlar:** Sadece başlık, CTA yok, 50vh boş alan, değer üretmiyor.
+
+**Aksiyonlar:**
+- Bu section'ı tamamen kaldır — Services section'ın kendi başlığı yeterli
+- Alternatif: Aurora'yı ServicesSection'ın header'ına embed et (ayrı section yerine)
+
+---
+
+## 8. ServicesSection (7/10 → 9/10)
+
+**Sorunlar:** Tüm kartlarda aynı CTA metni, video lazy-mount doğrulanmalı.
+
+**Aksiyonlar:**
+- Her karta özel CTA metni: "Frezeleme Detayları", "Torna İşleme", "Yüzey İşleme" vb.
+- Video lazy-mount'un çalıştığını doğrula (sadece hover'da `<video>` render)
+- Kart hover'da title'ın hafif yukarı kayması (translateY -4px)
+
+---
+
+## 9. IndustriesSection (5/10 → 9/10) — KRİTİK
+
+**Sorunlar:** 13 endüstri eşit ağırlıkta, wall of cards, monoton.
+
+**Aksiyonlar:**
+- İlk 5 endüstriyi büyük kartlarla göster (Havacılık, Savunma, Otomotiv, Medikal, Robotik)
+- Kalan 8 endüstriyi küçük chip/badge grid olarak alt satıra taşı
+- 3D canvas'ı kaldır — her karta gerçek fotoğrafı (zaten var: `imgAerospace` vb.) daha belirgin göster
+- Masaüstü card-stack scroll yüksekliğini azalt (13×40vh → 5×50vh ana kartlar)
+
+---
+
+## 10. ProjectShowcase (8/10 → 9/10)
+
+**Sorunlar:** Kartlarda görsel yok (sadece gradient), 4 proje az.
+
+**Aksiyonlar:**
+- Her karta arka plan olarak gerçek proje fotoğrafı/render ekle (gradient üzerinde)
+- En az 2 proje daha ekle (6 toplam)
+- Kart genişliğini `w-[75vw]` → `w-[80vw]` yap
+
+---
+
+## 11. MaterialMorphScroll (5/10 → 9/10)
+
+**Sorunlar:** Frame'ler 404 olursa siyah canvas, floating kart kısa süre görünüyor.
+
+**Aksiyonlar:**
+- CNCScrollStory ile aynı timeout fallback mekanizmasını uygula
+- Floating properties kartının görünürlük aralığını genişlet: `[0.35, 0.82]` → `[0.25, 0.88]`
+- Mobil fallback'e malzeme özellikleri kartını da ekle (şu an sadece başlık var)
+
+---
+
+## 12. MaterialsSection (7/10 → 9/10)
+
+**Aksiyonlar:**
+- `BlurImage` bileşenine `forwardRef` ekle (console uyarısı)
+- Kart hover efektine subtle border-glow ekle (molten renk)
+
+---
+
+## 13. WhyUsSection (7/10 → 9/10)
+
+**Aksiyonlar:**
+- Advantage kartlarına scroll-driven stagger ekle
+- Clip-path reveal'ın mobilde de çalıştığını doğrula
+
+---
+
+## 14. CapabilitiesSection (7/10 → 9/10)
+
+**Aksiyonlar:**
+- Tablo satırlarına hover highlight ekle
+- Counter animasyonu başlangıcını viewport giriş anına bağla
+
+---
+
+## 15. StatsSection (7/10 → 9/10)
+
+**Aksiyonlar:**
+- Counter sayılarına GSAP `TextPlugin` veya mevcut animasyona subtle glow efekti ekle
+- Stat kartlarına stagger reveal ekle
+
+---
+
+## 16. TestimonialsSection (6/10 → 9/10)
+
+**Sorunlar:** `randomuser.me` fake avatarlar, büyük marka isimleri (TAI, ASELSAN, Ford Otosan) gerçek değilse güven kırıcı.
+
+**Aksiyonlar:**
+- Avatar'ları kaldır — yerine şirket logosu veya baş harfi ikonu koy
+- Şirket isimlerini gerçek müşteri listesiyle (`clients` dizisi zaten var: Emir Alüminyum, Mert Teknik vb.) değiştir
+- İsimleri anonim yap veya sadece unvan + şirket göster
+
+---
+
+## 17. FAQBlogSection (7/10 → 9/10)
+
+**Aksiyonlar:**
+- Blog kartlarına hover'da subtle image zoom efekti ekle
+- FAQ accordion açılma animasyonunu smooth yap (height transition)
+
+---
+
+## 18. FinalCTASection (8/10 → 9/10)
+
+**Sorunlar:** GSAP innerHTML React ile çakışma riski.
+
+**Aksiyonlar:**
+- `GsapCtaHeadline` bileşeninde `aria-label`'ı koru ama `useLayoutEffect` kullan (flicker önleme)
+- Sweep overlay'a subtle grain texture ekle
+
+---
+
+## 19. GENEL İYİLEŞTİRMELER (Tüm Section'ları Etkiler)
+
+- **Aurora section'ı kaldır** — Index.tsx'den çıkar
+- **SectionDivider'ları doğru renk eşleştirmesi** ile kontrol et (her geçişte önceki/sonraki bg rengine uyumlu)
+- **PageLoader z-index** → `z-[9999]` olduğunu doğrula
+- **Console uyarılarını temizle** — `forwardRef` eksik bileşenlere ekle
+
+---
+
+## ÖNCELİK SIRASI
 
 ```text
-#   Sorun                                   Tip         Etki
-──  ──────────────────────────────────────  ──────────  ─────────────────────
-1a  GsapTextReveal kullanılmıyor            Ölü kod     Gereksiz bundle
-1b  useGsapHorizontalScroll kullanılmıyor   Ölü kod     Gereksiz bundle
-1c  useGsapParallax kullanılmıyor           Ölü kod     Gereksiz bundle
-1d  useGsapTextReveal dolaylı ölü           Ölü kod     Gereksiz bundle
-2   Reveal line-split hiç kullanılmıyor     Ölü kod     Plan hedefi eksik
-3   Image sequence frame'leri eksik/boş?    Potansiyel  Canvas siyah kalır
-4   5x video decode (ServicesSection)       Performans  Gereksiz GPU/CPU
-5   İki paralel reveal sistemi              Tutarsız    Bakım zorluğu
-6   SectionDivider yetersiz entegrasyon     Eksik       Plan hedefi eksik
-7   PageLoader z-index çakışma riski        Görsel      Header overlap
-8   Dropdown linkler underline almıyor      Tasarım     Tutarsızlık
-9   GSAP innerHTML + React children         Risk        Rerender hatası
-10  containerAnimation resize riski          Risk        Edge case bug
+Sıra  Section                    Mevcut  Hedef  Efor
+────  ─────────────────────────  ──────  ─────  ────
+1     CertificationsSection      4/10    9/10   Orta
+2     Aurora section kaldır       3/10    —      Düşük
+3     IndustriesSection           5/10    9/10   Yüksek
+4     VideoScrollSection typo+    6/10    9/10   Orta
+5     CNCScrollStory fallback    6/10    9/10   Orta
+6     MaterialMorphScroll         5/10    9/10   Orta
+7     TestimonialsSection         6/10    9/10   Orta
+8     HeroSection refactor       8/10    9/10   Yüksek
+9     ProjectShowcase görseller   8/10    9/10   Orta
+10    HowWeWorkSection offset    7/10    9/10   Düşük
+11    NexusPromoSection           7/10    9/10   Düşük
+12    ServicesSection             7/10    9/10   Düşük
+13    WhyUs/Capabilities/Stats   7/10    9/10   Düşük
+14    FinalCTA/FAQ/Materials     7-8/10  9/10   Düşük
 ```
 
-## ÖNERİLEN AKSİYONLAR
+## TEKNİK DETAY
 
-1. **Ölü kodu temizle:** `GsapTextReveal.tsx` sil, `use-gsap.ts`'den kullanılmayan hook'ları kaldır, `Reveal.tsx`'den `line-split`'i kaldır VEYA `SectionHeader`'a entegre et.
-2. **Image sequence audit:** `/sequence-cnc` ve `/sequence-material` dizinlerindeki dosya sayısını doğrula, eksikse fallback poster göster.
-3. **ServicesSection video optimize et:** Video'yu tek bir ref ile paylaş veya hover'da lazy load et.
-4. **Reveal sistemlerini birleştir:** `ScrollReveal.tsx` ve `Reveal.tsx`'i tek bir API altında topla.
-5. **GsapCtaHeadline'ı güvenli yap:** React children'ı kaldır (GSAP zaten innerHTML yazıyor) veya ref-based yaklaşıma geç.
-6. **SectionDivider'ı daha fazla geçişe ekle** (plan gereği).
-7. **PageLoader z-index'ini header'ın üstünde tut** (z-50+ olmalı).
+Toplam **11 dosya** büyük değişiklik, **8 dosya** küçük iyileştirme alacak. Aurora section kaldırılması ile sayfa 1 section kısalacak. IndustriesSection'da 13→5+8 chip yapısı en büyük refactor. Hero'da CAD upload'ın ayrı section'a taşınması layout değişikliği gerektirir.
 
