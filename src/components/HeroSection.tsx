@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
-// Lens flare overlay animation
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import MagneticButton from "./MagneticButton";
 import { Reveal as TextReveal } from "./ui/Reveal";
+import { HeadlineStagger } from "./HeadlineStagger";
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
@@ -27,93 +27,6 @@ const fadeUpVariants = {
     transition: { duration: 0.7, ease: "easeOut" as const },
   },
 };
-
-/* ── Character Stagger Headline with 3D Perspective ──────── */
-
-const charVariants = {
-  enter: (i: number) => ({
-    y: 0,
-    opacity: 1,
-    scaleY: 1,
-    rotateX: 0,
-    transition: { delay: i * 0.035, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  }),
-  initial: { y: "-120%", opacity: 0, scaleY: 0.8, rotateX: 40 },
-  exit: (i: number) => ({
-    y: "120%",
-    opacity: 0,
-    scaleY: 0.8,
-    rotateX: -40,
-    transition: { delay: i * 0.02, duration: 0.4, ease: "easeIn" as const },
-  }),
-};
-
-const HeadlineStagger = ({ text, scrollRotateX }: { text: string; scrollRotateX?: ReturnType<typeof useTransform> }) => {
-  const allWords = text.replace(/\n/g, " ").split(" ");
-  const staggerWords = allWords.slice(0, 2);
-  const restWords = allWords.slice(2);
-
-  let charIndex = 0;
-
-  return (
-    <motion.div
-      className="flex flex-col items-center"
-      style={{
-        perspective: 800,
-        transformStyle: "preserve-3d" as const,
-        rotateX: scrollRotateX,
-      }}
-    >
-      <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
-        {staggerWords.map((word, wi) => (
-          <span key={wi} className="inline-flex whitespace-nowrap">
-            {word.split("").map((char) => {
-              const i = charIndex++;
-              return (
-                <motion.span
-                  key={`${char}-${i}`}
-                  custom={i}
-                  variants={charVariants}
-                  initial="initial"
-                  animate="enter"
-                  exit="exit"
-                  className="inline-block font-extrabold uppercase"
-                  style={{
-                    fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
-                    color: "white",
-                    letterSpacing: "-0.03em",
-                    lineHeight: 1,
-                  }}
-                >
-                  {char}
-                </motion.span>
-              );
-            })}
-          </span>
-        ))}
-      </span>
-      {restWords.length > 0 && (
-        <motion.span
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 8 }}
-          transition={{ delay: charIndex * 0.02 + 0.1, duration: 0.4 }}
-          className="font-extrabold uppercase whitespace-pre-line text-center"
-          style={{
-            fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
-            color: "white",
-            letterSpacing: "-0.03em",
-            lineHeight: 1,
-          }}
-        >
-          {restWords.join(" ")}
-        </motion.span>
-      )}
-    </motion.div>
-  );
-};
-
-/* ── Main Component ────────────────────────────────────────── */
 
 interface HeroSectionProps {
   isFirstVisit?: boolean;
@@ -161,7 +74,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
-      {/* Lens flare overlay — delayed to fire after PageLoader */}
       {!prefersReduced && (
         <motion.div
           className="absolute inset-0 z-[50] pointer-events-none"
@@ -171,7 +83,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           style={{ backgroundColor: "white" }}
         />
       )}
-      {/* Video Background */}
       <motion.div className="absolute inset-0 z-0" style={{ y: videoY }}>
         <video
           src={cncVideo}
@@ -190,7 +101,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         />
       </motion.div>
 
-      {/* Grid Pattern */}
       <motion.div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
@@ -201,7 +111,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         }}
       />
 
-      {/* Dark Overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none z-[2]"
         style={{
@@ -211,7 +120,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         }}
       />
 
-      {/* 3D Mouse Perspective Wrapper */}
       <motion.div
         className="container-industrial relative z-10 w-full"
         onMouseMove={handleMouseMove}
@@ -223,7 +131,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           transformStyle: "preserve-3d" as const,
         }}
       >
-        {/* Full-width single column — centered */}
         <motion.div
           className="max-w-6xl mx-auto text-center"
           variants={containerVariants}
@@ -256,7 +163,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             />
           </motion.div>
 
-          {/* Character Stagger Headlines */}
           <motion.div variants={fadeUpVariants} className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
             <AnimatePresence mode="wait">
               <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
@@ -291,7 +197,6 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
         initial={{ opacity: 0, y: -10 }}
