@@ -19,6 +19,8 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 
 const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
+const CNCScrollStory = lazy(() => import("@/components/CNCScrollStory"));
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
 
 const SectionLoader = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
@@ -44,6 +46,10 @@ const Index = () => {
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
+
+        <Suspense fallback={<SectionLoader />}>
+          <CNCScrollStory />
+        </Suspense>
 
         <ParallaxSection index={2} variant="color-fade">
           <NexusPromoSection />
@@ -85,6 +91,10 @@ const Index = () => {
         <ParallaxSection index={8} variant="stack">
           <IndustriesSection />
         </ParallaxSection>
+
+        <Suspense fallback={<SectionLoader />}>
+          <MaterialMorphScroll />
+        </Suspense>
 
         <ParallaxSection index={9} variant="slide-up">
           <MaterialsSection />
