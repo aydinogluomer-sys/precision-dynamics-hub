@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { Reveal } from "@/components/ui/Reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
@@ -100,13 +101,11 @@ const WhyUsSection = () => {
                 {"Avantajlar"}
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
-              {"Endüstri Liderlerinin"}
-              <br />
-              {"Mas Technic'i"}
-              <br />
-              {"Tercih Etme Nedenleri."}
-            </h2>
+            <Reveal variant="word-stagger" duration={0.6}>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+                {"Endüstri Liderlerinin Mas Technic'i Tercih Etme Nedenleri."}
+              </h2>
+            </Reveal>
             <p
               className="text-sm leading-relaxed mb-10 max-w-md"
               style={{ color: "hsl(var(--forge-silver))" }}

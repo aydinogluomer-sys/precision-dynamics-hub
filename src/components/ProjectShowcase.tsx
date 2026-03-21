@@ -135,9 +135,11 @@ const ProjectShowcase = () => {
               <div className="w-8 h-px bg-primary" />
               <span className="typo-tag text-primary">{"Projelerimiz"}</span>
             </div>
-            <h2 className="typo-h2 text-white mb-4">
-              <span>{"Referans Projeler"}</span>
-            </h2>
+            <Reveal variant="word-stagger" duration={0.6}>
+              <h2 className="typo-h2 text-white mb-4">
+                {"Referans Projeler"}
+              </h2>
+            </Reveal>
           </div>
           <div className="flex flex-col gap-6">
             {projects.map((p, i) => (
