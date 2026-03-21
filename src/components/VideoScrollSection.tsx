@@ -89,7 +89,7 @@ const VideoScrollSection = () => {
             loop
             muted
             playsInline
-            preload="none"
+            preload="metadata"
             className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }} />
           {/* Mobile: poster image only */}
