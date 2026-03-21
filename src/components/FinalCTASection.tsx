@@ -1,7 +1,73 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import MagneticButton from "./MagneticButton";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
+
+/* ── GSAP CTA headline with char stagger ── */
+const GsapCtaHeadline = () => {
+  const ref = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+
+    const words = [
+      { text: "Birlikte ", gradient: false },
+      { text: "Üretelim", gradient: true },
+      { text: ".", gradient: false },
+    ];
+
+    el.innerHTML = words
+      .map((w) => {
+        const chars = w.text.split("").map((c) => {
+          const style = w.gradient
+            ? `display:inline-block;opacity:0;transform:translateY(100%);background:linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)));-webkit-background-clip:text;-webkit-text-fill-color:transparent`
+            : `display:inline-block;opacity:0;transform:translateY(100%)`;
+          return c === " "
+            ? " "
+            : `<span class="gsap-cta-char" style="${style}">${c}</span>`;
+        });
+        return chars.join("");
+      })
+      .join("");
+
+    const allChars = el.querySelectorAll(".gsap-cta-char");
+
+    const ctx = gsap.context(() => {
+      gsap.to(allChars, {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        stagger: 0.03,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <h2
+      ref={ref}
+      className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
+      style={{ lineHeight: 0.95 }}
+      aria-label="Birlikte Üretelim."
+    >
+      <span>{"Birlikte "}</span>
+      <span>{"Üretelim"}</span>
+      <span>{"."}</span>
+    </h2>
+  );
+};
 
 
 const FinalCTASection = () => {
@@ -79,19 +145,7 @@ const FinalCTASection = () => {
             {"Başlayalım"}
           </motion.p>
 
-
-          <motion.h2
-            className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
-            style={{ lineHeight: 0.95 }}
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            whileInView={{ clipPath: "inset(0 0 0% 0)" }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1] }}
-          >
-            <span>{"Birlikte "}</span>
-            <span style={{ background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{"Üretelim"}</span>
-            <span>{"."}</span>
-          </motion.h2>
+          <GsapCtaHeadline />
 
           <motion.p
             className="text-base md:text-lg mb-12 max-w-xl mx-auto text-primary-foreground/60"

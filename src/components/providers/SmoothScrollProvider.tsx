@@ -1,5 +1,9 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import Lenis from "lenis";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface SmoothScrollProviderProps {
   children: ReactNode;
@@ -19,21 +23,14 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
 
     lenisRef.current = lenis;
 
-    // Framer Motion sync — dispatch scroll event so useScroll works correctly
-    let isSyncing = false;
-    lenis.on("scroll", () => {
-      if (isSyncing) return;
-      isSyncing = true;
-      window.dispatchEvent(new Event("scroll"));
-      isSyncing = false;
+    // Sync Lenis → GSAP ScrollTrigger + Framer Motion
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Use GSAP ticker for Lenis raf (smoother than manual rAF)
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
     });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
