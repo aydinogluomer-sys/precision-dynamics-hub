@@ -1,7 +1,7 @@
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { lazy, Suspense, useState, useCallback, useRef } from "react";
-import { TextReveal } from "./ScrollReveal";
+import { Reveal as TextReveal } from "./ui/Reveal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IndustryType } from "./IndustryModels";
 import { BlurImage } from "./BlurImage";

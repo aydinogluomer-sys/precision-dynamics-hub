@@ -2,7 +2,28 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { StaggerContainer, StaggerItem } from "./ScrollReveal";
+const staggerItemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+};
+
+const StaggerItem = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <motion.div className={className} variants={staggerItemVariants}>
+    {children}
+  </motion.div>
+);
+
+const StaggerContainer = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <motion.div
+    className={className}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, amount: 0 }}
+    variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+  >
+    {children}
+  </motion.div>
+);
 import SectionHeader from "./SectionHeader";
 
 const stats = [

@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
-import { TextReveal } from "./ScrollReveal";
+import { Reveal as TextReveal } from "./ui/Reveal";
 import LogoLoop from "./LogoLoop";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TestimonialsColumn } from "./ui/testimonials-columns-1";

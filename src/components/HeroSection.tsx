@@ -6,7 +6,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import MagneticButton from "./MagneticButton";
-import { TextReveal } from "./ScrollReveal";
+import { Reveal as TextReveal } from "./ui/Reveal";
 import { toast } from "sonner";
 
 const headlines = [

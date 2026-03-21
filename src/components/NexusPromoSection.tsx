@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { TextReveal } from "./ScrollReveal";
+import { Reveal as TextReveal } from "./ui/Reveal";
 import {
   LayoutDashboard, FileText, Package, Factory,
   ShieldCheck, ArrowRight, BarChart3,
