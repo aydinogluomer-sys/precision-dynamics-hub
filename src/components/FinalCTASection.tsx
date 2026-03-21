@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import MagneticButton from "./MagneticButton";
+import { Reveal } from "./ui/Reveal";
 
 const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -68,39 +69,45 @@ const FinalCTASection = () => {
       />
 
       <div className="container-industrial relative z-10">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <motion.p
-            className="text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground/70 mb-6 font-mono"
+            className="text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground/70 mb-8 font-mono"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            Başlayalım
+            {"Başlayalım"}
           </motion.p>
 
+          {/* Mega typography with line-split reveal */}
+          <Reveal variant="line-split" duration={0.8} className="mb-8">
+            {"Birlikte\nÜretelim."}
+          </Reveal>
+          {/* Re-style the above via a wrapper */}
+          <div className="sr-only" aria-hidden="true" />
+
           <motion.h2
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6"
-            style={{ lineHeight: 1.15 }}
+            className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
+            style={{ lineHeight: 0.95 }}
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             whileInView={{ clipPath: "inset(0 0 0% 0)" }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.77, 0, 0.175, 1] }}
           >
-            <span>{"Bir Sonraki "}</span>
-            <span style={{ background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{"Kritik"}</span>
-            <span>{" Projenize"}</span><br />
-            <span>{"Başlamaya Hazır mısınız?"}</span>
+            <span>{"Birlikte "}</span>
+            <span style={{ background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{"Üretelim"}</span>
+            <span>{"."}</span>
           </motion.h2>
 
           <motion.p
-            className="text-base md:text-lg mb-10 max-w-xl mx-auto text-primary-foreground/70"
+            className="text-base md:text-lg mb-12 max-w-xl mx-auto text-primary-foreground/60"
             style={{ lineHeight: 1.7 }}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            CAD dosyanızı gönderin, 24 saat içinde kapsamlı DFM analizi ve rekabetçi fiyat teklifi alın. Mühendislik ekibimiz zorlayıcı projelerinize yardımcı olmak için hazır.
+            {"CAD dosyanızı gönderin, 24 saat içinde kapsamlı DFM analizi ve rekabetçi fiyat teklifi alın."}
           </motion.p>
 
           <motion.div
@@ -115,7 +122,7 @@ const FinalCTASection = () => {
               className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 bg-forge-molten border-forge-molten"
               strength={0.25}
             >
-              Teklif Al
+              {"Teklif Al"}
               <ArrowRight className="w-4 h-4" />
             </MagneticButton>
             <MagneticButton
@@ -123,7 +130,7 @@ const FinalCTASection = () => {
               className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all bg-transparent text-primary-foreground hover:bg-primary-foreground/10 border border-primary-foreground/30"
               strength={0.25}
             >
-              Bize Ulaşın
+              {"Bize Ulaşın"}
             </MagneticButton>
           </motion.div>
         </div>

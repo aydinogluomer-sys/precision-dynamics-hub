@@ -335,8 +335,8 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
             <Link to="/" className="flex items-center gap-2 shrink-0">
               <motion.div
                 className="bg-primary flex items-center justify-center"
-                animate={{ width: isScrolled ? 36 : 40, height: isScrolled ? 36 : 40 }}
-                transition={{ duration: 0.25 }}
+                animate={{ width: isScrolled ? 32 : 40, height: isScrolled ? 32 : 40 }}
+                transition={{ duration: 0.3 }}
               >
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
               </motion.div>

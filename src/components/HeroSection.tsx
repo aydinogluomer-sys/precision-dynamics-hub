@@ -346,7 +346,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             {/* Character Stagger Headlines */}
             <motion.div variants={fadeUpVariants} className="relative h-28 sm:h-36 md:h-48 overflow-hidden mb-6">
               <AnimatePresence mode="wait">
-                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
               </AnimatePresence>
             </motion.div>
 
