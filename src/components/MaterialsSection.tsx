@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import materialAluminium from "@/assets/material-aluminium.jpg";

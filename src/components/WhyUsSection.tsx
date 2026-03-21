@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { Reveal } from "@/components/ui/Reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
