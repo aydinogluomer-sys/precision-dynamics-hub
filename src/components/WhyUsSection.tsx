@@ -105,7 +105,6 @@ const WhyUsSection = () => {
                 {"Endüstri Liderlerinin Mas Technic'i Tercih Etme Nedenleri."}
               </h2>
             </Reveal>
-            </h2>
             <p
               className="text-sm leading-relaxed mb-10 max-w-md"
               style={{ color: "hsl(var(--forge-silver))" }}
