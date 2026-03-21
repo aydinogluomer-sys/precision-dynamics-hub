@@ -2,7 +2,6 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { usePrefersReducedMotion as usePRM } from "@/hooks/use-reduced-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
