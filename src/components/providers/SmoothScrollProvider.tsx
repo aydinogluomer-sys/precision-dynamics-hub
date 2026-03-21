@@ -5,36 +5,47 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+declare global {
+  interface Window { __lenis?: Lenis; }
+}
+
 interface SmoothScrollProviderProps {
   children: ReactNode;
 }
 
 export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
+  if (import.meta.env.DEV && import.meta.env.VITE_DISABLE_LENIS === "true") {
+    return <>{children}</>;
+  }
+
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    const isAutomation = (navigator as unknown as { webdriver?: boolean }).webdriver === true;
+
     const lenis = new Lenis({
-      lerp: 0.08,
-      duration: 1.4,
-      smoothWheel: true,
+      lerp: isAutomation ? 1 : 0.08,
+      duration: isAutomation ? 0 : 1.4,
+      smoothWheel: !isAutomation,
       wheelMultiplier: 0.8,
       touchMultiplier: 1.5,
     });
 
     lenisRef.current = lenis;
+    window.__lenis = lenis;
 
-    // Sync Lenis → GSAP ScrollTrigger + Framer Motion
-    lenis.on("scroll", ScrollTrigger.update);
-
-    // Use GSAP ticker for Lenis raf (smoother than manual rAF)
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
+    lenis.on("scroll", () => {
+      ScrollTrigger.update();
+      window.dispatchEvent(new Event("scroll"));
     });
+
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      delete window.__lenis;
     };
   }, []);
 
