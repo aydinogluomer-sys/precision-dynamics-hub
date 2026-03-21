@@ -116,6 +116,39 @@ const LogoLoop = ({
     };
   }, [target, seqW, hovered, effHover, prefersReduced]);
 
+  const lists = useMemo(
+    () =>
+      Array.from({ length: copies }, (_, ci) => (
+        <div
+          key={ci}
+          ref={ci === 0 ? seqRef : undefined}
+          style={{ display: "flex", gap, alignItems: "center", flexShrink: 0 }}
+        >
+          {logos.map((item, ii) => (
+            <div
+              key={`${ci}-${ii}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: logoHeight,
+                flexShrink: 0,
+              }}
+            >
+              {renderItem ? (
+                renderItem(item, `${ci}-${ii}`)
+              ) : (
+                <div style={{ height: logoHeight, display: "flex", alignItems: "center" }}>
+                  {item.node}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )),
+    [copies, logos, gap, logoHeight, renderItem]
+  );
+
   // Static grid for reduced motion
   if (prefersReduced) {
     return (
@@ -141,40 +174,6 @@ const LogoLoop = ({
       </div>
     );
   }
-
-  const lists = useMemo(
-    () =>
-      Array.from({ length: copies }, (_, ci) => (
-        <div
-          key={ci}
-          ref={ci === 0 ? seqRef : undefined}
-          style={{ display: "flex", gap, alignItems: "center", flexShrink: 0 }}
-        >
-          {logos.map((item, ii) => (
-            <div
-              key={`${ci}-${ii}`}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: logoHeight,
-                flexShrink: 0,
-                paddingLeft: ii === 0 ? 0 : 0,
-              }}
-            >
-              {renderItem ? (
-                renderItem(item, `${ci}-${ii}`)
-              ) : (
-                <div style={{ height: logoHeight, display: "flex", alignItems: "center" }}>
-                  {item.node}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )),
-    [copies, logos, gap, logoHeight, renderItem]
-  );
 
   const fadeColor = fadeOutColor || "#0F172A";
 
