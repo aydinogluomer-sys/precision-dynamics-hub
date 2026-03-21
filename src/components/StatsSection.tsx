@@ -108,7 +108,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
   );
 };
 
-const StatsSection = forwardRef<HTMLElement, Record<string, never>>((_props, _forwardedRef) => {
+const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props, _forwardedRef) {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
