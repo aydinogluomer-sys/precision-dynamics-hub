@@ -31,10 +31,6 @@ const certifications = [
 ];
 
 const VENETIAN_STRIPS = 6;
-const stripVariants = {
-  hidden: (prefersReduced: boolean) => prefersReduced ? { clipPath: "inset(0 0 0% 0)" } : { clipPath: "inset(0 0 100% 0)" },
-  visible: { clipPath: "inset(0 0 0% 0)" },
-};
 
 const CertificationsSection = () => {
   const prefersReduced = usePrefersReducedMotion();
