@@ -121,7 +121,7 @@ const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
+        <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         <ParallaxSection index={8} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
