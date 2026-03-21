@@ -15,13 +15,16 @@ import FinalCTASection from "@/components/FinalCTASection";
 import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
+import PageLoader from "@/components/PageLoader";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { SectionDivider } from "@/components/ui/SectionDivider";
 
 import CNCScrollStory from "@/components/CNCScrollStory";
 
 const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
 const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
+const ProjectShowcase = lazy(() => import("@/components/ProjectShowcase"));
 
 const SectionLoader = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
@@ -41,6 +44,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
       <main id="main-content" className="relative">
@@ -93,7 +97,15 @@ const Index = () => {
           <IndustriesSection />
         </ParallaxSection>
 
+        {/* Project Showcase — horizontal scroll */}
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
         <div className="relative" style={{ zIndex: 9 }}>
+          <Suspense fallback={<SectionLoader />}>
+            <ProjectShowcase />
+          </Suspense>
+        </div>
+
+        <div className="relative" style={{ zIndex: 10 }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>
@@ -125,6 +137,7 @@ const Index = () => {
           <FAQBlogSection />
         </ParallaxSection>
 
+        <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
         <ParallaxSection index={15} isLast variant="stack">
           <FinalCTASection />
         </ParallaxSection>
