@@ -163,7 +163,7 @@ export const CNCScrollStory = () => {
 
   /* ── Desktop: scroll-driven canvas ── */
   return (
-    <div ref={containerRef} className="relative" style={{ height: "350vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "hsl(var(--forge-obsidian))" }}>
       <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <canvas
           ref={canvasRef}
