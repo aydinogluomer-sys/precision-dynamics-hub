@@ -61,11 +61,8 @@ const GsapCtaHeadline = () => {
       className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
       style={{ lineHeight: 0.95 }}
       aria-label="Birlikte Üretelim."
-    >
-      <span>{"Birlikte "}</span>
-      <span>{"Üretelim"}</span>
-      <span>{"."}</span>
-    </h2>
+    />
+
   );
 };
 

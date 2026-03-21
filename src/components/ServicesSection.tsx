@@ -235,16 +235,18 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
             alt={service.title}
             className="w-full h-full object-cover"
           />
-          {/* Ghost machine-loop video on hover */}
-          <video
-            src="/machine-loop.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover hidden md:block transition-opacity duration-500"
-            style={{ opacity: isHovered ? 0.12 : 0, mixBlendMode: "lighten" }}
-          />
+          {/* Ghost machine-loop video on hover — lazy loaded */}
+          {isHovered && (
+            <video
+              src="/machine-loop.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover hidden md:block transition-opacity duration-500"
+              style={{ opacity: 0.12, mixBlendMode: "lighten" }}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
         </motion.div>
       </motion.div>
