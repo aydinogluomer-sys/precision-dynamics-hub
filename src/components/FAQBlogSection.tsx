@@ -141,7 +141,7 @@ const FAQBlogSection = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               ))}
             </div>
 
