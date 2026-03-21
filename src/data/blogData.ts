@@ -1,9 +1,9 @@
-import { blog5eksen } from "@/assets/blog-5eksen.jpg";
-import { blogMalzeme } from "@/assets/blog-malzeme.jpg";
-import { blogDfm } from "@/assets/blog-dfm.jpg";
-import { cncWorkshop } from "@/assets/cnc-workshop.jpg";
-import { qualityControl } from "@/assets/quality-control.jpg";
-import { serviceCncFreze } from "@/assets/service-cnc-freze.jpg";
+import blog5eksen from "@/assets/blog-5eksen.jpg";
+import blogMalzeme from "@/assets/blog-malzeme.jpg";
+import blogDfm from "@/assets/blog-dfm.jpg";
+import cncWorkshop from "@/assets/cnc-workshop.jpg";
+import qualityControl from "@/assets/quality-control.jpg";
+import serviceCncFreze from "@/assets/service-cnc-freze.jpg";
 
 export interface BlogPost {
   slug: string;

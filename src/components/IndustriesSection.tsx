@@ -5,19 +5,19 @@ import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
 import { Badge } from "./ui/badge";
 
-import { imgAerospace } from "@/assets/industry-aerospace.jpg";
-import { imgDefense } from "@/assets/industry-defense.jpg";
-import { imgRobotics } from "@/assets/industry-robotics.jpg";
-import { imgAutomotive } from "@/assets/industry-automotive.jpg";
-import { imgMedical } from "@/assets/industry-medical.jpg";
-import { imgMarine } from "@/assets/industry-marine.jpg";
-import { imgHydraulic } from "@/assets/industry-hydraulic.jpg";
-import { imgPiping } from "@/assets/industry-piping.jpg";
-import { imgHvac } from "@/assets/industry-hvac.jpg";
-import { imgRenewable } from "@/assets/industry-renewable.jpg";
-import { imgOilgas } from "@/assets/industry-oilgas.jpg";
-import { imgPower } from "@/assets/industry-power.jpg";
-import { imgMining } from "@/assets/industry-mining.jpg";
+import imgAerospace from "@/assets/industry-aerospace.jpg";
+import imgDefense from "@/assets/industry-defense.jpg";
+import imgRobotics from "@/assets/industry-robotics.jpg";
+import imgAutomotive from "@/assets/industry-automotive.jpg";
+import imgMedical from "@/assets/industry-medical.jpg";
+import imgMarine from "@/assets/industry-marine.jpg";
+import imgHydraulic from "@/assets/industry-hydraulic.jpg";
+import imgPiping from "@/assets/industry-piping.jpg";
+import imgHvac from "@/assets/industry-hvac.jpg";
+import imgRenewable from "@/assets/industry-renewable.jpg";
+import imgOilgas from "@/assets/industry-oilgas.jpg";
+import imgPower from "@/assets/industry-power.jpg";
+import imgMining from "@/assets/industry-mining.jpg";
 
 interface Industry {
   name: string;
