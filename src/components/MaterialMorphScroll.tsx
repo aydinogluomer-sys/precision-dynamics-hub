@@ -184,7 +184,7 @@ const MaterialMorphScroll = () => {
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 1.0, ease: "easeIn" }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
