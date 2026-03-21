@@ -126,6 +126,11 @@ const Malzemeler = () => {
         </div>
       </section>
 
+      {/* Material Morph Scroll — canvas animation */}
+      <Suspense fallback={<div className="h-[50vh] flex items-center justify-center bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" /></div>}>
+        <MaterialMorphScroll />
+      </Suspense>
+
       {/* Category Cards */}
       <section className="container-industrial py-10">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
