@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense, lazy } from "react";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -13,6 +13,8 @@ import { materialsData, materialCategories, type Material } from "@/data/materia
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
 
 const sortOptions = [
   { id: "name", label: "İsim" },
@@ -123,6 +125,11 @@ const Malzemeler = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Material Morph Scroll — canvas animation */}
+      <Suspense fallback={<div className="h-[50vh] flex items-center justify-center bg-background"><div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" /></div>}>
+        <MaterialMorphScroll />
+      </Suspense>
 
       {/* Category Cards */}
       <section className="container-industrial py-10">
