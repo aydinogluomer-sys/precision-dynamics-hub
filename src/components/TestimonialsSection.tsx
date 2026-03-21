@@ -84,9 +84,33 @@ const stats = [
   { value: "%100", label: "Zamanında Teslimat" },
 ];
 
+/* Word scatter component for heading */
+const WordScatter = ({ text, prefersReduced }: { text: string; prefersReduced: boolean }) => {
+  const words = text.split(" ");
+  const rotations = useMemo(() => words.map(() => Math.random() * 16 - 8), [words.length]);
+
+  return (
+    <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          initial={prefersReduced ? { opacity: 1, y: 0, rotate: 0 } : { opacity: 0, y: 20, rotate: rotations[i] }}
+          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </span>
+  );
+};
+
 const TestimonialsSection = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
 
   const logoItems = clients.map((name) => ({
     node: (
