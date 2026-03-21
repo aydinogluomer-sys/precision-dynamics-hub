@@ -136,7 +136,7 @@ const Index = () => {
           </Suspense>
         </div>
 
-        <SectionDivider fillColor="hsl(var(--forge-concrete))" />
+        <SectionDivider fillColor="hsl(var(--forge-steel-mist))" />
 
         <ParallaxSection index={8} variant="slide-up">
           <Suspense fallback={<SectionLoader />}>
