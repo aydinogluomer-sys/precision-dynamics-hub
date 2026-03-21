@@ -183,57 +183,52 @@ export const Index = () => {
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
-        {/* z-index 14 */}
-        <ParallaxSection index={14} variant="wipe-mask">
+        {/* 14 — WhyUs (istatistikler entegre, wipe-mask kaldırıldı) */}
+        <ParallaxSection index={14} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <WhyUsSection />
           </Suspense>
         </ParallaxSection>
 
-        {/* z-index 15 — StatsSection */}
-        <ParallaxSection index={15} variant="zoom-out-blur">
-          <StatsSection />
-        </ParallaxSection>
-
-        <div className="relative" style={{ zIndex: 16 }}>
+        <div className="relative" style={{ zIndex: 15 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" />
         </div>
 
-        {/* z-index 16 */}
-        <ParallaxSection index={16} variant="depth-3d" videoBg="/machine-loop.mp4">
+        {/* 15 — Capabilities (düz wrapper) */}
+        <div className="relative" style={{ zIndex: 15 }}>
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
-        </ParallaxSection>
+        </div>
 
-        <div className="relative" style={{ zIndex: 17 }}>
+        <div className="relative" style={{ zIndex: 16 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
         </div>
 
-        {/* z-index 17 */}
-        <ParallaxSection index={17} variant="stack">
+        {/* 16 — Testimonials */}
+        <ParallaxSection index={16} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 18 }}>
+        <div className="relative" style={{ zIndex: 17 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
         </div>
 
-        {/* z-index 18 */}
-        <ParallaxSection index={18} variant="color-fade">
+        {/* 17 — FAQ/Blog */}
+        <ParallaxSection index={17} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 19 }}>
+        <div className="relative" style={{ zIndex: 18 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
-        {/* z-index 20 — last section */}
-        <ParallaxSection index={20} isLast variant="stack">
+        {/* 18 — Final CTA (last) */}
+        <ParallaxSection index={18} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>
