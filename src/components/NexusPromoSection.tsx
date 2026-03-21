@@ -118,7 +118,23 @@ const NexusDashboardMockup = () => (
     viewport={{ once: true }}
     transition={{ delay: 0.2, duration: 0.6 }}
   >
-    <div className="border border-border bg-card overflow-hidden shadow-xl">
+    <div className="border border-border bg-card overflow-hidden shadow-xl transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl" style={{ boxShadow: "0 0 0 0 transparent" }}>
+      <style>{`
+        @keyframes nexus-scanline {
+          0% { top: -2px; }
+          100% { top: 100%; }
+        }
+      `}</style>
+      {/* Scan-line animation */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+        <div
+          className="absolute left-0 right-0 h-px opacity-20"
+          style={{
+            background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)",
+            animation: "nexus-scanline 4s linear infinite",
+          }}
+        />
+      </div>
       {/* Mockup Header Bar */}
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30">
         <div className="flex gap-1.5">

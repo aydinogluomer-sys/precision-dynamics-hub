@@ -74,9 +74,9 @@ const HowWeWorkSection = () => {
 
   // Desktop: translate strip so cards scroll into view across the full scroll range
   // Cards start off-screen right and end fully visible
-  const x = useTransform(scrollYProgress, [0.05, 0.95], ["75%", "0%"]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.12], [0, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.12], [40, 0]);
+  const x = useTransform(scrollYProgress, [0.05, 0.95], ["40%", "0%"]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+  const headerY = useTransform(scrollYProgress, [0, 0.05], [40, 0]);
 
   // Mobile: simple vertical layout, no sticky scroll
   if (isMobile) {

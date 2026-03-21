@@ -288,7 +288,7 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
             to={service.link}
             className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
           >
-            {"Teknik Detaylar"}
+            {service.cta}
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>

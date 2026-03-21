@@ -359,20 +359,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               </p>
             </TextReveal>
 
-            <motion.div variants={fadeUpVariants} className="mb-8">
-              <span
-                className="inline-block px-5 py-2 text-white font-semibold text-sm"
-                style={{
-                  background:
-                    "linear-gradient(135deg, hsl(var(--forge-molten)) 0%, hsl(var(--forge-amber)) 100%)",
-                  transform: "skewX(-5deg)",
-                }}
-              >
-                <span style={{ display: "block", transform: "skewX(5deg)" }}>
-                  {'"Disiplinli Operasyon, Güvenilir Üretim."'}
-                </span>
-              </span>
-            </motion.div>
+            {/* Badge removed — focus on CTAs */}
 
             <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4">
               <MagneticButton
