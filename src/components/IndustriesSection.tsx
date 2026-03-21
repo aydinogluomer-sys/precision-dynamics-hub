@@ -143,7 +143,7 @@ const PrimaryIndustryCard = ({
   <motion.div
     custom={index}
     variants={cardVariants}
-    className={`group bg-background border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
+    className={`group bg-card border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
   >
     <div className="relative h-52 md:h-60 overflow-hidden bg-card">
       <BlurImage

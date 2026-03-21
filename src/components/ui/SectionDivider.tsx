@@ -39,7 +39,7 @@ const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(({
     <div
       ref={ref}
       className={`relative w-full overflow-hidden pointer-events-none ${className}`}
-      style={{ height: 160, marginTop: -1, marginBottom: -1 }}
+      style={{ height: 160, marginTop: -2, marginBottom: -2 }}
     >
       <motion.div style={{ y, rotateZ: rotateStr }} className="w-full h-full">
         <svg
