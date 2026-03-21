@@ -49,6 +49,8 @@ export const MaterialMorphScroll = () => {
   const cardX = useTransform(scrollYProgress, [0.25, 0.35], [60, 0]);
 
   const ringProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const circumference = 2 * Math.PI * 45;
+  const ringOffset = useTransform(ringProgress, (v: number) => circumference * (1 - v));
   const titleOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25, 0.32], [0, 1, 1, 0]);
 
   // Exit animation — fade + shrink as user scrolls past
@@ -169,7 +171,6 @@ export const MaterialMorphScroll = () => {
     );
   }
 
-  const circumference = 2 * Math.PI * 45;
 
   const burnInitial = prefersReduced ? { filter: "brightness(1)" } : { filter: "brightness(0)" };
   const burnAnimate = { filter: "brightness(1)" };
@@ -254,7 +255,7 @@ export const MaterialMorphScroll = () => {
                   strokeWidth="4"
                   strokeLinecap="round"
                   strokeDasharray={circumference}
-                  style={{ strokeDashoffset: useTransform(ringProgress, (v) => circumference * (1 - v)) }}
+                  style={{ strokeDashoffset: ringOffset }}
                 />
               </svg>
               <div>
