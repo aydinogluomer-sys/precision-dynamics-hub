@@ -8,7 +8,7 @@ import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 const GsapCtaHeadline = () => {
   const ref = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
