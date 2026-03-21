@@ -93,7 +93,7 @@ const LogoLoop = ({
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || seqW <= 0) return;
+    if (!track || seqW <= 0 || prefersReduced) return;
     offset.current = ((offset.current % seqW) + seqW) % seqW;
     track.style.transform = `translate3d(${-offset.current}px,0,0)`;
 
@@ -114,7 +114,7 @@ const LogoLoop = ({
       cancelAnimationFrame(rafRef.current);
       lastTs.current = null;
     };
-  }, [target, seqW, hovered, effHover]);
+  }, [target, seqW, hovered, effHover, prefersReduced]);
 
   const lists = useMemo(
     () =>
