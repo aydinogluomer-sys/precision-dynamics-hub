@@ -1,9 +1,10 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import LogoLoop from "./LogoLoop";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { TestimonialsColumn } from "./ui/testimonials-columns-1";
 
 const testimonials = [
@@ -83,9 +84,33 @@ const stats = [
   { value: "%100", label: "Zamanında Teslimat" },
 ];
 
+/* Word scatter component for heading */
+const WordScatter = ({ text, prefersReduced }: { text: string; prefersReduced: boolean }) => {
+  const words = text.split(" ");
+  const rotations = useMemo(() => words.map(() => Math.random() * 16 - 8), [words.length]);
+
+  return (
+    <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          initial={prefersReduced ? { opacity: 1, y: 0, rotate: 0 } : { opacity: 0, y: 20, rotate: rotations[i] }}
+          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </span>
+  );
+};
+
 const TestimonialsSection = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
 
   const logoItems = clients.map((name) => ({
     node: (
@@ -134,7 +159,7 @@ const TestimonialsSection = () => {
             <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
           <h2 className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
-            Bizi Tercih Edenler
+            <WordScatter text="Bizi Tercih Edenler" prefersReduced={prefersReduced} />
           </h2>
           <p className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak

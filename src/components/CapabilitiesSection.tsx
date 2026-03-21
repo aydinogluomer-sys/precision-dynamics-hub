@@ -55,12 +55,19 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
 
+  const rackInitial = prefersReduced ? { opacity: 1, filter: "blur(0px)", scale: 1 } : { opacity: 0, filter: "blur(8px)", scale: 0.97 };
+  const rackAnimate = { opacity: 1, filter: "blur(0px)", scale: 1 };
+
   return (
-    <section
+    <motion.section
       ref={forwardedRef}
       id="kabiliyetler"
       className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
+      initial={rackInitial}
+      whileInView={rackAnimate}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
 
@@ -169,7 +176,7 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 });
 

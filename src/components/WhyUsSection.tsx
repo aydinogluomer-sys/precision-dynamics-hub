@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import { BlurImage } from "./BlurImage";
@@ -34,6 +35,7 @@ const stats = [
 
 const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 95%", "start 40%"],
@@ -45,6 +47,10 @@ const WhyUsSection = () => {
     ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
   );
   const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+
+  const splitLeftInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 };
+  const splitRightInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: 60, opacity: 0 };
+  const splitAnimate = { x: 0, opacity: 1 };
 
   return (
     <section
@@ -90,10 +96,10 @@ const WhyUsSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            initial={splitLeftInitial}
+            whileInView={splitAnimate}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-primary" />
@@ -145,10 +151,10 @@ const WhyUsSection = () => {
           {/* Right: Images with scroll-driven clipPath reveal */}
           <motion.div
             className="relative"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            initial={splitRightInitial}
+            whileInView={splitAnimate}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="relative">
               <motion.div style={{ clipPath }}>

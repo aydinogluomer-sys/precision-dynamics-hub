@@ -2,6 +2,7 @@ import { ChevronDown, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
 import blogDfm from "@/assets/blog-dfm.jpg";
@@ -74,12 +75,22 @@ const blogPosts = [
 
 const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const prefersReduced = usePrefersReducedMotion();
+
+  const faqCardVariants = {
+    hidden: prefersReduced ? { opacity: 1, rotateY: 0 } : { opacity: 0, rotateY: 90 },
+    visible: (i: number) => ({
+      opacity: 1,
+      rotateY: 0,
+      transition: { duration: 0.5, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
+    }),
+  };
 
   return (
     <section
       id="sss"
       className="section-industrial min-h-screen flex flex-col justify-center border-y border-border"
-      style={{ backgroundColor: "hsl(var(--forge-mist))" }}
+      style={{ backgroundColor: "hsl(var(--forge-mist))", perspective: 1200 }}
     >
       <style>{`.dark #sss { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       <div className="container-industrial">
@@ -90,9 +101,14 @@ const FAQBlogSection = () => {
               <SectionHeader tag="SSS" title="Sıkça Sorulan Sorular" />
             </div>
 
-            <div className="space-y-2">
+            <motion.div
+              className="space-y-2"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+            >
               {faqs.map((faq, index) => (
-                <div key={index} className="border border-border bg-background">
+                <motion.div key={index} className="border border-border bg-background" custom={index} variants={faqCardVariants}>
                   <button
                     onClick={() =>
                       setOpenIndex(openIndex === index ? null : index)
@@ -125,9 +141,9 @@ const FAQBlogSection = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             <div className="text-center md:text-left mt-6">
               <Link

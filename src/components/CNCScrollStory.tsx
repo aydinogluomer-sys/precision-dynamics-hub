@@ -178,6 +178,15 @@ const CNCScrollStory = () => {
           />
         )}
 
+        {/* Scanline texture overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[5]"
+          style={{
+            backgroundImage: "repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 4px)",
+            opacity: 0.04,
+          }}
+        />
+
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.5)" }} />
 

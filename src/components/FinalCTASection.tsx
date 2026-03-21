@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback, useLayoutEffect } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import MagneticButton from "./MagneticButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
@@ -69,6 +70,7 @@ const GsapCtaHeadline = () => {
 
 const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
   const [sweepDirection, setSweepDirection] = useState<"right" | "left">("right");
   const [sweepKey, setSweepKey] = useState(0);
@@ -106,6 +108,17 @@ const FinalCTASection = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Flash cut white overlay */}
+      {!prefersReduced && (
+        <motion.div
+          className="absolute inset-0 z-[30] pointer-events-none"
+          style={{ backgroundColor: "white" }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: [0, 0.6, 0] }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.25, ease: "easeOut", times: [0, 0.5, 1] }}
+        />
+      )}
       {/* Diagonal sweep overlay */}
       <motion.div
         key={sweepKey}

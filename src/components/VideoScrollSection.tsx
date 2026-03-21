@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const features = [
 {
@@ -31,6 +32,7 @@ const VideoScrollSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -74,6 +76,15 @@ const VideoScrollSection = () => {
       style={{ background: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
+      {/* Spotlight sweep overlay */}
+      {!prefersReduced && (
+        <style>{`
+          @keyframes spotlight-sweep {
+            from { -webkit-mask-position: -100% center; mask-position: -100% center; }
+            to { -webkit-mask-position: 200% center; mask-position: 200% center; }
+          }
+        `}</style>
+      )}
       
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
         {/* Video: paused by default, plays on hover, zooms on scroll */}

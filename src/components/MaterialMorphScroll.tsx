@@ -167,8 +167,19 @@ const MaterialMorphScroll = () => {
 
   const circumference = 2 * Math.PI * 45;
 
+  const burnInitial = prefersReduced ? { filter: "brightness(1)" } : { filter: "brightness(0)" };
+  const burnAnimate = { filter: "brightness(1)" };
+
   return (
-    <div ref={containerRef} className="relative" style={{ height: "300vh" }}>
+    <motion.div
+      ref={containerRef}
+      className="relative"
+      style={{ height: "300vh" }}
+      initial={burnInitial}
+      whileInView={burnAnimate}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 1.0, ease: "easeIn" }}
+    >
       <div className="sticky top-0 h-screen overflow-hidden">
         <canvas
           ref={canvasRef}
@@ -274,7 +285,7 @@ const MaterialMorphScroll = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
