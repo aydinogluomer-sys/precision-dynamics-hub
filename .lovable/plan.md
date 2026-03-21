@@ -1,313 +1,129 @@
-You are an Awwwards-level creative developer, combining the design DNA of Beaucoup Studio with high-end industrial branding.
 
-PROJECT:
 
-Mas Technic — premium CNC manufacturing and industrial solutions platform.
+# Çalışmayan, Kullanılmayan ve Sorunlu Kod Denetimi
 
-CORE GOAL:
+## 1. KULLANILMAYAN GSAP HOOKLARİ VE BİLEŞENLERİ
 
-Create a visually striking, high-performance, award-level website that blends:
+### 1a. `GsapTextReveal` bileşeni — ASLA IMPORT EDİLMİYOR
+- **Dosya:** `src/components/GsapTextReveal.tsx`
+- **Sorun:** Bu bileşen hiçbir yerde kullanılmıyor. Hiçbir dosyada `from "@/components/GsapTextReveal"` import'u yok.
+- **Durum:** Ölü kod (dead code)
 
-- Industrial strength
+### 1b. `useGsapHorizontalScroll` hook'u — ASLA KULLANILMIYOR
+- **Dosya:** `src/hooks/use-gsap.ts` (satır 98-130)
+- **Sorun:** `ProjectShowcase.tsx` kendi inline GSAP ScrollTrigger kodunu yazıyor, bu hook'u kullanmıyor.
+- **Durum:** Ölü kod
 
-- Cinematic storytelling
+### 1c. `useGsapParallax` hook'u — ASLA KULLANILMIYOR
+- **Dosya:** `src/hooks/use-gsap.ts` (satır 139-175)
+- **Sorun:** Hiçbir bileşende import edilmiyor.
+- **Durum:** Ölü kod
 
-- Precision engineering feel
-
-DESIGN DNA (MANDATORY):
-
-- Large-scale typography (hero-driven)
-
-- Generous whitespace
-
-- Cinematic scroll experience
-
-- Minimal UI, maximum impact
-
-- Motion as storytelling (not decoration)
-
-VISUAL STYLE:
-
-- Dark industrial palette (obsidian, steel, molten accents)
-
-- Subtle grid textures / blueprint feel
-
-- Glass + metal hybrid UI surfaces
-
-- Sharp edges + soft glow contrast
+### 1d. `useGsapTextReveal` hook'u — SADECE ölü `GsapTextReveal.tsx` tarafından kullanılıyor
+- **Dosya:** `src/hooks/use-gsap.ts` (satır 12-90)
+- **Sorun:** Tek consumer'ı `GsapTextReveal.tsx` ama o da hiçbir yerde kullanılmıyor. Dolaylı ölü kod.
 
 ---
 
-# 🧠 GLOBAL EXPERIENCE SYSTEM
+## 2. REVEAL `line-split` VARİANTI — ASLA KULLANILMIYOR
 
-SCROLL:
-
-- Ultra smooth (Lenis-style)
-
-- Scroll = primary interaction driver
-
-- Sections transition like scenes (not blocks)
-
-CURSOR:
-
-- Custom cursor (dot + ring)
-
-- Expands on hover
-
-- Magnetic interaction on buttons
-
-TRANSITIONS:
-
-- Page transitions: vertical wipe or clip reveal
-
-- Section transitions: layered parallax + opacity blending
+- **Dosya:** `src/components/ui/Reveal.tsx` (satır 65-107, 131-136)
+- **Sorun:** `LineSplit` alt bileşeni oluşturulmuş ama hiçbir yerde `variant="line-split"` ile çağrılmıyor. `SectionHeader.tsx` hâlâ standart `direction="up"` kullanıyor.
+- **Durum:** Ölü kod — plan "section başlıklarında kullan" diyordu ama entegre edilmedi.
 
 ---
 
-# 🎬 SECTION ARCHITECTURE
+## 3. IMAGE SEQUENCE DOSYALARI — MUHTEMELEN EKSİK VEYA BOŞ
 
-## 1. HERO — 3D TYPOGRAPHY SYSTEM
-
-- Massive headline (multi-line)
-
-- Each letter has depth using perspective transforms
-
-- Subtle rotateX based on scroll
-
-- Staggered character reveal (ultra smooth)
-
-Behavior:
-
-- On load: letters fade + rise individually
-
-- On scroll: slight tilt (depth illusion)
-
-Background:
-
-- Abstract industrial gradient or machine-loop ghost video
-
-CTA:
-
-- Magnetic button
-
-- High contrast
+- **Sorun:** `CNCScrollStory` 120 frame (`/sequence-cnc/frame_0001.webp` … `frame_0120.webp`), `MaterialMorphScroll` 80 frame (`/sequence-material/frame_0001.webp` … `frame_0080.webp`) bekliyor.
+- **Risk:** Bu dizinler `public/` altında var ama **içlerinde gerçekten 120+80 adet webp dosyası yoksa**, canvas boş kalır, loading spinner sonsuza kadar döner veya ilk frame gösterilip geri kalanı siyah kalır. `onerror` handler'ı frame'i `null` yapıp `onLoad` çağırıyor — yani 404'ler sessizce yutulur ve `ready` state yanlış pozitif verir.
+- **Etki:** Hem `CNCScrollStory` hem `MaterialMorphScroll` masaüstünde boş/siyah canvas gösterebilir.
 
 ---
 
-## 2. SERVICES — INTERACTIVE CARD SYSTEM
+## 4. `machine-loop.mp4` VİDEO REFERANSLARI — ÇALIŞIYOR AMA PERFORMANS RİSKİ
 
-- Horizontal scroll container
-
-- Large cards
-
-Each card:
-
-- Hover → video preview OR animated texture
-
-- Background ghost machine video (low opacity fallback)
-
-- Title shifts upward on hover
-
-- Subtle glow border (molten effect)
-
-Mobile:
-
-- No video, fallback to static + gradient motion
+- **Dosya:** 4 yerde kullanılıyor (`ServicesSection`, `CapabilitiesSection`, `Malzemeler`, `ServiceDetail`)
+- **Sorun:** `ServicesSection`'da **her bir kart** için ayrı bir `<video>` elementi oluşturuluyor (5 adet). Tüm videolar `autoPlay loop muted` ile yükleniyor — hover olmasa bile. `opacity: 0` CSS ile gizlense de, video decode işlemi devam ediyor.
+- **Etki:** Mobilde video `hidden md:block` ile gizleniyor ama DOM'da hâlâ var ve `autoPlay` sebebiyle decode olabilir.
 
 ---
 
-## 3. PROJECT SHOWCASE — HORIZONTAL SCROLL STORY
+## 5. `ScrollReveal.tsx` vs `Reveal.tsx` — İKİ PARALEL SİSTEM
 
-- Sticky container (long scroll section)
-
-- Content moves horizontally with scroll
-
-Cards:
-
-- Very large (almost full screen)
-
-- Strong imagery + overlay text
-
-- Slight scale interaction
-
-Feeling:
-
-- Gallery + storytelling hybrid
+- **Dosya:** `src/components/ScrollReveal.tsx` ve `src/components/ui/Reveal.tsx`
+- **Sorun:** İki farklı reveal sistemi paralel yaşıyor:
+  - `ScrollReveal.tsx`: `TextReveal`, `Parallax`, `SlideIn`, `ScaleReveal`, `StaggerContainer`, `StaggerItem` (5 bileşende aktif kullanılıyor)
+  - `Reveal.tsx`: `clip`, `word-stagger`, `line-split` variant'ları (sadece `ProjectShowcase` kullanıyor)
+- **Etki:** Duplicate mantık, tutarsız API, `line-split` variant kullanılmıyor.
 
 ---
 
-## 4. SECTION HEADERS — SPLIT TEXT REVEAL
+## 6. `SectionDivider` — YER ALDIĞI AMA ETKİSİ SINIRLI
 
-- Large section titles
-
-- Revealed line-by-line
-
-Animation:
-
-- Each line masked (clip reveal)
-
-- Moves upward into place
-
-- Slight delay between lines
-
-Used across:
-
-- Services
-
-- Projects
-
-- CTA sections
+- **Dosya:** `src/components/ui/SectionDivider.tsx` + `src/pages/Index.tsx`
+- **Sorun:** `Index.tsx`'de sadece 2 yere eklenmiş (`ProjectShowcase` öncesi ve `FinalCTA` öncesi). Planın hedeflediği "tüm section geçişlerinde curved SVG divider" gerçekleşmedi.
+- **Etki:** Çoğu section geçişi hâlâ düz kesim.
 
 ---
 
-## 5. INDUSTRIAL STORY BLOCKS
+## 7. `PageLoader` — isFirstVisit BAĞIMLILIĞI
 
-- Scroll-driven storytelling sections
-
-- Mix of:
-
-  - Text
-
-  - Image
-
-  - Motion
-
-Parallax:
-
-- Background slower than foreground
-
-- Adds depth
+- **Dosya:** `src/components/PageLoader.tsx` + `src/pages/Index.tsx`
+- **Sorun:** `PageLoader` sadece `isFirstVisit=true` iken render ediliyor (sessionStorage ile kontrol). İkinci ziyaretten sonra hiç gösterilmez — bu tasarım gereği. Ancak `isFirstVisit` state'i `Index.tsx` içinde oluşturuluyor ve `PageLoader` ile `Header`'a geçiliyor. `PageLoader`'ın `onComplete` callback'i `Header`'ın gösterilme zamanlamasını etkilemiyor — header hemen visible.
+- **Etki:** PageLoader animasyonu sürerken header'ın arkasında görünebilir (z-index çakışması riski).
 
 ---
 
-## 6. FINAL CTA — TYPOGRAPHY IMPACT ZONE
+## 8. HEADER NAV UNDERLINE — DROPDOWN'LU LİNKLERDE YOK
 
-- Huge headline (almost screen-filling)
-
-- Minimal supporting text
-
-Animation:
-
-- Line-by-line reveal
-
-- Slight delay + easing
-
-Button:
-
-- Magnetic
-
-- Strong glow
-
-Background:
-
-- Dark grid / blueprint texture
+- **Dosya:** `src/components/Header.tsx` (satır 373-374, 388-389)
+- **Sorun:** Underline animasyonu yalnızca `!item.isBold && !item.isFire` koşulunda ekleniyor (Link'ler için) ve `!item.isBold && !item.hasDropdown` koşulunda (button'lar için). Dropdown'lu nav öğeleri (Hizmetler, Kabiliyetler, Endüstriyel) underline almıyor — bu design choice olabilir ama "beaucoup tarzı" hedefle tutarsız.
 
 ---
 
-## 7. FOOTER — MINIMAL SIGNATURE
+## 9. FinalCTASection `GsapCtaHeadline` — GSAP + FRAMER MOTION ÇAKIŞMASI
 
-- Large typographic presence
-
-- Wide spacing
-
-- Clean link groups
+- **Dosya:** `src/components/FinalCTASection.tsx` (satır 8-70)
+- **Sorun:** `GsapCtaHeadline` GSAP ile DOM'u manipüle ediyor (`el.innerHTML = ...`) ama aynı zamanda içinde React children (satır 65-68) var. GSAP `el.innerHTML`'yi üzerine yazıyor, React children hiç render edilmiyor (aslında GSAP innerHTML ile değiştiriliyor). Bu durumda React'in DOM reconciliation'ı ile GSAP'ın DOM manipülasyonu çakışabilir.
+- **Etki:** Şu an çalışıyor gibi görünüyor çünkü `innerHTML` override ediyor ama React rerender'da beklenmeyen davranış riski var.
 
 ---
 
-# 🧩 MICRO INTERACTIONS
+## 10. `ProjectShowcase` GSAP CARD ANIMATION — containerAnimation REF
 
-- Hover = always meaningful
-
-- Cards lift slightly
-
-- Buttons react magnetically
-
-- Cursor changes contextually
+- **Dosya:** `src/components/ProjectShowcase.tsx` (satır 70-90)
+- **Sorun:** Card stagger'da `containerAnimation: tween` kullanılıyor. `tween` bir GSAP Tween referansı — bu `gsap.to()` return değerinden alınıyor. Ancak `gsap.context()` içinde oluşturuluyor ve `tween` değişkeni closure'da yakalanıyor. Bu genelde çalışır ama `invalidateOnRefresh: true` ile resize'da tekrar hesaplanırken sıkıntı çıkarabilir.
 
 ---
 
-# 🧱 COMPONENT SYSTEM
+## ÖZET TABLOSU
 
-- Modular React components
+```text
+#   Sorun                                   Tip         Etki
+──  ──────────────────────────────────────  ──────────  ─────────────────────
+1a  GsapTextReveal kullanılmıyor            Ölü kod     Gereksiz bundle
+1b  useGsapHorizontalScroll kullanılmıyor   Ölü kod     Gereksiz bundle
+1c  useGsapParallax kullanılmıyor           Ölü kod     Gereksiz bundle
+1d  useGsapTextReveal dolaylı ölü           Ölü kod     Gereksiz bundle
+2   Reveal line-split hiç kullanılmıyor     Ölü kod     Plan hedefi eksik
+3   Image sequence frame'leri eksik/boş?    Potansiyel  Canvas siyah kalır
+4   5x video decode (ServicesSection)       Performans  Gereksiz GPU/CPU
+5   İki paralel reveal sistemi              Tutarsız    Bakım zorluğu
+6   SectionDivider yetersiz entegrasyon     Eksik       Plan hedefi eksik
+7   PageLoader z-index çakışma riski        Görsel      Header overlap
+8   Dropdown linkler underline almıyor      Tasarım     Tutarsızlık
+9   GSAP innerHTML + React children         Risk        Rerender hatası
+10  containerAnimation resize riski          Risk        Edge case bug
+```
 
-- Reusable UI primitives
+## ÖNERİLEN AKSİYONLAR
 
-- Clean structure
+1. **Ölü kodu temizle:** `GsapTextReveal.tsx` sil, `use-gsap.ts`'den kullanılmayan hook'ları kaldır, `Reveal.tsx`'den `line-split`'i kaldır VEYA `SectionHeader`'a entegre et.
+2. **Image sequence audit:** `/sequence-cnc` ve `/sequence-material` dizinlerindeki dosya sayısını doğrula, eksikse fallback poster göster.
+3. **ServicesSection video optimize et:** Video'yu tek bir ref ile paylaş veya hover'da lazy load et.
+4. **Reveal sistemlerini birleştir:** `ScrollReveal.tsx` ve `Reveal.tsx`'i tek bir API altında topla.
+5. **GsapCtaHeadline'ı güvenli yap:** React children'ı kaldır (GSAP zaten innerHTML yazıyor) veya ref-based yaklaşıma geç.
+6. **SectionDivider'ı daha fazla geçişe ekle** (plan gereği).
+7. **PageLoader z-index'ini header'ın üstünde tut** (z-50+ olmalı).
 
-COMPONENTS:
-
-- HeroSection
-
-- ServicesSection
-
-- ProjectShowcase
-
-- SectionHeader
-
-- Reveal (multi-variant)
-
-- FinalCTASection
-
-- Footer
-
-- Header
-
-- PageLoader
-
-- SectionDivider
-
----
-
-# 🎥 MOTION RULES
-
-- Motion must feel premium, not playful
-
-- Use easing curves (smooth, cinematic)
-
-- Avoid excessive bounce
-
----
-
-# ⚡ PERFORMANCE
-
-- Lazy load media
-
-- Optimize video usage
-
-- Avoid heavy reflows
-
-- Keep animations GPU-friendly
-
----
-
-# 🧠 BRAND FEELING
-
-The site must feel like:
-
-- A high-end industrial brand
-
-- Precision engineering company
-
-- Premium manufacturing partner
-
-NOT:
-
-- Generic template
-
-- Over-designed agency gimmick
-
----
-
-# 🎯 OUTPUT EXPECTATION
-
-- Clean React-based structure
-
-- TailwindCSS styling
-
-- Production-ready layout
-
-- Visually stunning result
-
-- Unique (not template-like)
-
-Push the design to stand out globally.
