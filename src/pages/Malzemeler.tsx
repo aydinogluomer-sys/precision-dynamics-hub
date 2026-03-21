@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
+
 const sortOptions = [
   { id: "name", label: "İsim" },
   { id: "density", label: "Yoğunluk (Düşük → Yüksek)" },
