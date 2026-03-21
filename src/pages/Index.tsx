@@ -103,10 +103,10 @@ export const Index = () => {
           <SectionDivider fillColor="hsl(var(--forge-concrete))" />
         </div>
 
-        {/* z-index 5 */}
-        <ParallaxSection index={5} variant="slide-up">
+        {/* 5 — HowWeWork (sticky içeride, ParallaxSection yok) */}
+        <div className="relative" style={{ zIndex: 5 }}>
           <HowWeWorkSection />
-        </ParallaxSection>
+        </div>
 
         {/* z-index 6 */}
         <ParallaxSection index={6} variant="stack">
