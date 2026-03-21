@@ -98,7 +98,7 @@ const MaterialMorphScroll = () => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
 
-  if (isMobile) {
+  if (isMobile || isMobile === undefined) {
     return (
       <section
         className="relative min-h-[70vh] flex items-center justify-center"
