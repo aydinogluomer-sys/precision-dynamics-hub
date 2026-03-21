@@ -360,7 +360,7 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   {item.path.startsWith("/") && !item.hasDropdown ? (
                     <Link
                       to={item.path}
-                      className={`flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap ${
+                      className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap group/nav ${
                         item.isBold
                           ? "font-bold text-primary"
                           : item.isFire
@@ -370,17 +370,25 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
                     >
                       {item.isFire && <Flame size={14} className="animate-fire-text" />}
                       {item.label}
+                      {!item.isBold && !item.isFire && (
+                        <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+                      )}
                     </Link>
                   ) : (
                     <button
                       onClick={() => !item.hasDropdown && handleNavClick(item)}
-                      className={`flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none ${
+                      className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none group/nav ${
                         item.isBold
                           ? "font-bold text-primary"
                           : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      {item.label}
+                      <span className="relative">
+                        {item.label}
+                        {!item.isBold && !item.hasDropdown && (
+                          <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+                        )}
+                      </span>
                       {item.hasDropdown && (
                         <motion.span
                           animate={{ rotate: activeDropdown === index ? 180 : 0 }}

@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import MagneticButton from "./MagneticButton";
-import { Reveal } from "./ui/Reveal";
+
 
 const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -79,12 +79,6 @@ const FinalCTASection = () => {
             {"Başlayalım"}
           </motion.p>
 
-          {/* Mega typography with line-split reveal */}
-          <Reveal variant="line-split" duration={0.8} className="mb-8">
-            {"Birlikte\nÜretelim."}
-          </Reveal>
-          {/* Re-style the above via a wrapper */}
-          <div className="sr-only" aria-hidden="true" />
 
           <motion.h2
             className="text-5xl md:text-7xl lg:text-9xl font-bold text-primary-foreground mb-8 tracking-tighter"
