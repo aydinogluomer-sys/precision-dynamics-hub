@@ -150,12 +150,12 @@ export const Index = () => {
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
-        {/* z-index 10 */}
-        <ParallaxSection index={10} variant="stack">
+        {/* 10 — ProjectShowcase (pin içeride, ParallaxSection yok) */}
+        <div className="relative" style={{ zIndex: 10 }}>
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
-        </ParallaxSection>
+        </div>
 
         <div className="relative" style={{ zIndex: 11, backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
