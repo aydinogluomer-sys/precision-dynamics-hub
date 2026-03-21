@@ -85,10 +85,14 @@ const HowWeWorkSection = () => {
   // Mobile: simple vertical layout, no sticky scroll
   if (isMobile) {
     return (
-      <section
+      <motion.section
         id="nasil-calisiyoruz"
         className="relative border-y border-border py-12"
-        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+        style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+        initial={slideInitial}
+        whileInView={slideAnimate}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}>
         
         <div className="container-industrial mb-8">
           <SectionHeader
@@ -102,7 +106,7 @@ const HowWeWorkSection = () => {
           <StepCard key={step.number} step={step} index={i} />
           )}
         </div>
-      </section>);
+      </motion.section>);
 
   }
 
