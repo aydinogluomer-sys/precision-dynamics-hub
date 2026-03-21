@@ -1,4 +1,6 @@
 import { Shield, Plane, Car, HeartPulse, Lock } from "lucide-react";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const certifications = [
   {
