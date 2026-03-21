@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Reveal } from "@/components/ui/Reveal";
+/* HMR refresh */
 import { useNavigate } from "react-router-dom";
 import { Upload } from "lucide-react";
 import { motion } from "framer-motion";
