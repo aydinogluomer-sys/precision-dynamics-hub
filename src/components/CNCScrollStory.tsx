@@ -164,7 +164,7 @@ const CNCScrollStory = () => {
   /* ── Desktop: scroll-driven canvas ── */
   return (
     <div ref={containerRef} className="relative" style={{ height: "350vh" }}>
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
