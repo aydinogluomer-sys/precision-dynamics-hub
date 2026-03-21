@@ -99,7 +99,7 @@ const ParallaxSection = ({
   return (
     <div ref={ref} className="relative text-xs" style={{ zIndex: index }}>
       <motion.div
-        className={className}
+        className={`${className} relative`}
         style={{
           scale,
           opacity,
@@ -111,7 +111,20 @@ const ParallaxSection = ({
           willChange: isAnimating ? "transform, opacity" : "auto",
           ...style
         }}>
-        
+        {/* Ghost video background for depth-3d variant */}
+        {videoBg && variant === "depth-3d" && (
+          <video
+            src={videoBg}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.08] pointer-events-none hidden md:block z-0"
+            style={{ mixBlendMode: "luminosity" }}
+            aria-hidden="true"
+          />
+        )}
         {children}
       </motion.div>
     </div>);

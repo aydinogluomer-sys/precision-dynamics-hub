@@ -128,7 +128,7 @@ const Index = () => {
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
-        <ParallaxSection index={10} variant="depth-3d">
+        <ParallaxSection index={10} variant="depth-3d" videoBg="/machine-loop.mp4">
           <CapabilitiesSection />
         </ParallaxSection>
 
