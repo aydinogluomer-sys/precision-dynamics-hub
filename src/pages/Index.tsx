@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useState, forwardRef } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { NexusPromoSection } from "@/components/NexusPromoSection";
@@ -26,11 +26,12 @@ const CapabilitiesSection = lazy(() => import("@/components/CapabilitiesSection"
 const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then(m => ({ default: m.FAQBlogSection })));
 const FinalCTASection = lazy(() => import("@/components/FinalCTASection").then(m => ({ default: m.FinalCTASection })));
 
-const SectionLoader = () => (
-  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
+  <div ref={ref} className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
-);
+));
+SectionLoader.displayName = "SectionLoader";
 
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
