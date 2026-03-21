@@ -122,11 +122,11 @@ const Index = () => {
         </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
-        <div className="relative" style={{ zIndex: 8 }}>
+        <ParallaxSection index={8} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
-        </div>
+        </ParallaxSection>
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
 
