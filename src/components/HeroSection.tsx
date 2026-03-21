@@ -266,7 +266,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           <TextReveal delay={0.4 + heroDelay}>
             <p
               className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-              style={{ color: "rgba(255,255,255,0.7)", fontStyle: "italic" }}
+              style={{ color: "rgba(255,255,255,0.7)" }}
             >
               {"CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz."}
             </p>
