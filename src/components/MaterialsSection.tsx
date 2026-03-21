@@ -239,7 +239,15 @@ const MaterialsSection = () => {
   const tiltAnimate = { opacity: 1, rotateX: 0 };
 
   return (
-    <section id="malzemeler" className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+    <motion.section
+      id="malzemeler"
+      className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      style={{ backgroundColor: "hsl(var(--forge-mist))", perspective: 1000 }}
+      initial={tiltInitial}
+      whileInView={tiltAnimate}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+    >
       <style>{flipStyles}{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
       {/* Subtle grid */}
       <div
