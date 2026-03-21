@@ -70,6 +70,7 @@ const GsapCtaHeadline = () => {
 
 const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
   const [sweepDirection, setSweepDirection] = useState<"right" | "left">("right");
   const [sweepKey, setSweepKey] = useState(0);
