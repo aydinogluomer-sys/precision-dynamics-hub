@@ -49,9 +49,7 @@ const Index = () => {
         </ParallaxSection>
 
         <div className="relative" style={{ zIndex: 2 }}>
-          <Suspense fallback={<SectionLoader />}>
-            <CNCScrollStory />
-          </Suspense>
+          <CNCScrollStory />
         </div>
 
         <ParallaxSection index={2} variant="color-fade">
