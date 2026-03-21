@@ -16,6 +16,7 @@ import Footer from "@/components/Footer";
 import JsonLdSchema from "@/components/JsonLdSchema";
 import ParallaxSection from "@/components/ParallaxSection";
 import PageLoader from "@/components/PageLoader";
+import QuickQuoteSection from "@/components/QuickQuoteSection";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 
 import CNCScrollStory from "@/components/CNCScrollStory";
@@ -50,6 +51,8 @@ const Index = () => {
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
+
+        <QuickQuoteSection />
 
         <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
 
