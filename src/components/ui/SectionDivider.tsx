@@ -10,11 +10,11 @@ interface SectionDividerProps {
   className?: string;
 }
 
-const SectionDivider = ({
+const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(({
   fillColor = "hsl(var(--forge-obsidian))",
   flip = false,
   className = "",
-}: SectionDividerProps) => {
+}, _forwardedRef) => {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
 
