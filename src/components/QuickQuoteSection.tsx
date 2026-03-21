@@ -1,9 +1,8 @@
 import { useState, useRef, useCallback } from "react";
 import { Reveal } from "@/components/ui/Reveal";
-/* HMR refresh */
 import { useNavigate } from "react-router-dom";
-import { Upload } from "lucide-react";
-import { motion } from "framer-motion";
+import { Upload, CheckCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
@@ -12,6 +11,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const QuickQuoteSection = () => {
   const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadState, setUploadState] = useState<"idle" | "success" | "error">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = (file: File): string | null => {
@@ -28,11 +28,14 @@ const QuickQuoteSection = () => {
   const navigateWithFile = useCallback((file: File) => {
     const error = validateFile(file);
     if (error) {
+      setUploadState("error");
       toast.error(error);
+      setTimeout(() => setUploadState("idle"), 600);
       return;
     }
+    setUploadState("success");
     (window as unknown as Record<string, File>).__heroUploadFile = file;
-    navigate("/teklif-al");
+    setTimeout(() => navigate("/teklif-al"), 500);
   }, [navigate]);
 
   const handleDrop = useCallback(
@@ -51,8 +54,14 @@ const QuickQuoteSection = () => {
     e.target.value = "";
   };
 
+  const shakeVariants = {
+    error: { x: [-8, 8, -4, 4, 0], transition: { duration: 0.4 } },
+    idle: { x: 0 },
+  };
+
   return (
     <section
+      id="hizli-teklif"
       className="relative py-16 md:py-20 overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
@@ -107,6 +116,8 @@ const QuickQuoteSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
+            variants={shakeVariants}
+            animate={uploadState === "error" ? "error" : "idle"}
           >
             {/* Header bar */}
             <div
@@ -132,7 +143,16 @@ const QuickQuoteSection = () => {
             {/* Drop Zone */}
             <div
               className={`relative p-8 md:p-12 cursor-pointer group ${isDragging ? "bg-primary/10" : ""}`}
+              role="button"
+              tabIndex={0}
+              aria-label="CAD dosyası yükle — sürükle bırak veya tıkla"
               onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
@@ -145,15 +165,15 @@ const QuickQuoteSection = () => {
                 onChange={handleFileSelect}
               />
 
-              {/* Animated dashed border */}
+              {/* Animated dashed border with pulse on drag */}
               <motion.div
                 className="absolute inset-6 md:inset-8 pointer-events-none"
                 style={{
                   border: `2px dashed ${isDragging ? "#007190" : "rgba(255,255,255,0.12)"}`,
                   transition: "border-color 0.3s",
                 }}
-                animate={isDragging ? { scale: [1, 1.02, 1] } : {}}
-                transition={{ repeat: Infinity, duration: 1.5 }}
+                animate={isDragging ? { scale: [1, 1.02, 1], borderColor: ["#007190", "#0a9bb8", "#007190"] } : {}}
+                transition={{ repeat: Infinity, duration: 1.2 }}
               />
 
               {/* Scanning line */}
@@ -168,14 +188,34 @@ const QuickQuoteSection = () => {
               />
 
               <div className="relative flex flex-col items-center text-center gap-4 py-6">
-                <motion.div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-white/5"}`}
-                  style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                >
-                  <Upload className="w-6 h-6 text-primary" />
-                </motion.div>
+                <AnimatePresence mode="wait">
+                  {uploadState === "success" ? (
+                    <motion.div
+                      key="check"
+                      className="w-14 h-14 rounded-full flex items-center justify-center bg-green-500/20"
+                      style={{ border: "1px solid rgba(34,197,94,0.4)" }}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <CheckCircle className="w-7 h-7 text-green-400" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="upload"
+                      className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-white/5"}`}
+                      style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
+                      animate={{
+                        y: [0, -6, 0],
+                        scale: isDragging ? 1.15 : 1,
+                      }}
+                      transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                    >
+                      <Upload className="w-6 h-6 text-primary" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <div>
                   <p className="text-base font-bold uppercase tracking-wider text-white/90 font-mono mb-1">
