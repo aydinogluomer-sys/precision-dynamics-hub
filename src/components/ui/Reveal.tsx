@@ -62,6 +62,50 @@ const WordStagger = ({
   );
 };
 
+const LineSplit = ({
+  children,
+  delay = 0,
+  duration = 0.7,
+  className = "",
+}: Pick<RevealProps, "children" | "delay" | "duration" | "className">) => {
+  const text = typeof children === "string" ? children : "";
+  if (!text) return <span className={className}>{children}</span>;
+
+  // Split by explicit newlines or treat as single line
+  const lines = text.includes("\n") ? text.split("\n") : [text];
+
+  return (
+    <motion.div
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={{
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.12, delayChildren: delay } },
+      }}
+    >
+      {lines.map((line, i) => (
+        <div key={i} className="overflow-hidden">
+          <motion.div
+            variants={{
+              hidden: { clipPath: "inset(0 0 100% 0)", y: "100%", opacity: 0 },
+              visible: {
+                clipPath: "inset(0 0 0% 0)",
+                y: "0%",
+                opacity: 1,
+                transition: { duration, ease: EASE },
+              },
+            }}
+          >
+            <span>{line}</span>
+          </motion.div>
+        </div>
+      ))}
+    </motion.div>
+  );
+};
+
 const Reveal = ({
   children,
   direction = "up",
@@ -81,6 +125,14 @@ const Reveal = ({
       <WordStagger delay={delay} duration={duration} className={className}>
         {children}
       </WordStagger>
+    );
+  }
+
+  if (variant === "line-split") {
+    return (
+      <LineSplit delay={delay} duration={duration} className={className}>
+        {children}
+      </LineSplit>
     );
   }
 
