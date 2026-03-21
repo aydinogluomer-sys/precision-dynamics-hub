@@ -100,7 +100,7 @@ const HeadlineStagger = ({ text, scrollRotateX }: { text: string; scrollRotateX?
           transition={{ delay: charIndex * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line text-center"
           style={{
-            fontSize: "clamp(2rem, 5vw, 4.5rem)",
+            fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
             color: "white",
             letterSpacing: "-0.03em",
             lineHeight: 1,
