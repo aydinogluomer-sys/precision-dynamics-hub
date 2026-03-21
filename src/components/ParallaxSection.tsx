@@ -109,7 +109,7 @@ export const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(
     return (
       <div
         ref={ref}
-        className="relative text-xs"
+        className="relative"
         style={{
           zIndex: index,
           perspective: useDepth3d ? 1200 : undefined,
