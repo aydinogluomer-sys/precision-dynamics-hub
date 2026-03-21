@@ -58,6 +58,7 @@ const ServicesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prefersReduced = usePRM();
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -82,11 +83,18 @@ const ServicesSection = () => {
     return () => observer.disconnect();
   }, []);
 
+  const skewInitial = prefersReduced ? { opacity: 1, skewY: 0, y: 0 } : { opacity: 0, skewY: 4, y: 40 };
+  const skewAnimate = { opacity: 1, skewY: 0, y: 0 };
+
   return (
-    <section
+    <motion.section
       id="hizmetler"
       className="section-industrial min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
+      initial={skewInitial}
+      whileInView={skewAnimate}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
     >
       <style>{`.dark #hizmetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
       <div className="container-industrial">
