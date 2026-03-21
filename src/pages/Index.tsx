@@ -47,9 +47,11 @@ const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
-        <Suspense fallback={<SectionLoader />}>
-          <CNCScrollStory />
-        </Suspense>
+        <div className="relative" style={{ zIndex: 2 }}>
+          <Suspense fallback={<SectionLoader />}>
+            <CNCScrollStory />
+          </Suspense>
+        </div>
 
         <ParallaxSection index={2} variant="color-fade">
           <NexusPromoSection />
