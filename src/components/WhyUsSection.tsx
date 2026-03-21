@@ -96,10 +96,10 @@ const WhyUsSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            initial={splitLeftInitial}
+            whileInView={splitAnimate}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-primary" />
