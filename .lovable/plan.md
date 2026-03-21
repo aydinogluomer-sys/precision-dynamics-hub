@@ -1,230 +1,87 @@
 
 
-# Tüm Section'ları 9/10+ Seviyeye Çıkarma Planı
+# Landing Page Section Animasyonları Güncellemesi
 
-Mevcut durum ve hedef arasındaki farkları kapatmak için section bazlı aksiyonlar:
-
----
-
-## 1. HERO SECTION (8/10 → 9/10)
-
-**Sorunlar:** CAD upload widget odağı dağıtıyor, skewed badge amacı belirsiz, headline rotate bazen yarım kare yakalıyor.
-
-**Aksiyonlar:**
-- CAD upload widget'ı sağ sütundan çıkar, Hero'nun altına bağımsız mini "Hızlı Teklif" bölümü olarak taşı (CNCScrollStory öncesine)
-- "Disiplinli Operasyon, Güvenilir Üretim" badge'ini kaldır — CTA butonlarına odak ver
-- Hero'yu full-width tek sütun yap: büyük headline ortada, CTA'lar altta, arka planda video + parallax
-- Headline rotate interval'ı 3s → 4s, `AnimatePresence` exit'e 100ms buffer ekle
+17 bağımsız section'a özel giriş animasyonları eklenecek. Tüm animasyonlar `usePrefersReducedMotion` kontrolü, `whileInView` + `once: true` tetiklemesi ve admin/müşteri paneli dışında çalışma kurallarına uyar. `ParallaxSection` wrapper'larına dokunulmaz.
 
 ---
 
-## 2. CNCScrollStory (6/10 → 9/10)
+## Değişiklik Listesi
 
-**Sorunlar:** Frame'ler 404 olursa siyah canvas, 500vh çok uzun, mobilde basit fallback.
+### 1. HeroSection.tsx — Lens Flare
+- Section'ın en dışına `position: absolute inset-0` beyaz overlay eklenir
+- `filter: brightness(3) blur(8px)` → `brightness(1) blur(0)`, `opacity: 1 → 0`, 0.4s
+- `usePrefersReducedMotion` true → overlay render edilmez
 
-**Aksiyonlar:**
-- `ready` state'e timeout fallback ekle: 5 saniye sonra hâlâ `!ready` ise statik poster göster (siyah ekran engellensin)
-- Scroll mesafesini `500vh` → `350vh`'e düşür
-- Mobil fallback'e parallax image efekti ekle (şu an düz statik görsel)
-- Story overlay text'lerine subtle backdrop-blur ekle (okunabilirlik)
+### 2. CNCScrollStory.tsx — Scanline Overlay
+- Canvas'ın üzerine statik `div` eklenir: `repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 4px)`, opacity 0.04, pointer-events none
+- Animasyon yok, sadece statik doku. Reduced motion'da da gösterilir (statik olduğu için).
 
----
+### 3. NexusPromoSection.tsx — Ink Bleed
+- Section wrapper'a `motion.div` eklenir: `clipPath: circle(0% at 0% 0%)` → `circle(150% at 0% 0%)`, 0.8s, cubic-bezier(0.76,0,0.24,1)
+- Background: forge-obsidian (#0f0f0f)
 
-## 3. NexusPromoSection (7/10 → 9/10)
+### 4. HowWeWorkSection.tsx — Horizontal Slide-in
+- Section container'ına `initial: { opacity: 0, x: -80 }`, `animate: { opacity: 1, x: 0 }`, 0.7s
+- `whileInView` ile tetiklenir
 
-**Sorunlar:** Dashboard mockup statik, feature açıklamaları generic.
+### 5. CertificationsSection.tsx — Venetian Blind
+- İçeriği 6 yatay şeride bölen wrapper oluşturulur
+- Her şerit: `clipPath: inset(0 0 100% 0)` → `inset(0 0 0% 0)`, stagger 80ms, 0.5s
 
-**Aksiyonlar:**
-- Dashboard mockup'a subtle scan-line animasyonu ekle (CSS `@keyframes` — canlılık hissi)
-- Feature açıklamalarını CNC'ye özel concrete metriklerle güncelle ("78 aktif sipariş", "3.2s ortalama CMM ölçüm" gibi)
-- Mockup kartına hover'da hafif `scale(1.02)` + glow border ekle
+### 6. VideoScrollSection.tsx — Spotlight Sweep
+- Giriş anında `mask-image` ile radial-gradient soldan sağa taranır
+- CSS `@keyframes` veya Framer Motion `style` ile 0.9s sürede mask-position animasyonu
 
----
+### 7. ServicesSection.tsx — Skew Entrance
+- Section wrapper: `initial: { opacity: 0, skewY: 4, y: 40 }` → `{ opacity: 1, skewY: 0, y: 0 }`, 0.7s
 
-## 4. HowWeWorkSection (7/10 → 9/10)
+### 8. IndustriesSection.tsx — Grid Explode
+- Her kart: `initial: { opacity: 0, scale: 0.85, y: 30 }` → `{ opacity: 1, scale: 1, y: 0 }`
+- `transition: { delay: index * 0.06, duration: 0.5 }`
 
-**Sorunlar:** Section'a girişte boş alan, ilk kart ekranda yok.
+### 9. ProjectShowcase.tsx — Chromatic Aberration
+- 3 overlay katman (R, G, B), mix-blend-mode: screen
+- CSS `@keyframes chroma`: farklı translateX offset → 0, sonra opacity 0
+- 0.3s toplam süre, sonra katmanlar kaybolur
 
-**Aksiyonlar:**
-- Header opacity range'ini `[0, 0.05]`'e çek — kullanıcı section'a girer girmez başlık görünsün
-- İlk kartın x offset'ini `75%` → `40%`'e düşür — giriş anında kart kısmen görünsün
-- Her kartın checklist öğelerine stagger reveal ekle (scroll'a bağlı)
+### 10. MaterialMorphScroll.tsx — Exposure Burn
+- Container: `initial: { filter: "brightness(0)" }` → `{ filter: "brightness(1)" }`, 1.0s, easeIn
 
----
+### 11. MaterialsSection.tsx — Perspective Tilt
+- Container'a `perspective: 1000px`
+- `initial: { opacity: 0, rotateX: 12 }` → `{ opacity: 1, rotateX: 0 }`, 0.8s
 
-## 5. CertificationsSection (4/10 → 9/10) — EN KRİTİK
+### 12. WhyUsSection.tsx — Split Reveal
+- İçerik iki yarıya bölünür (sol/sağ overflow hidden wrapper)
+- Sol: `x: -60 → 0`, Sağ: `x: 60 → 0`, 0.7s, aynı anda
 
-**Sorunlar:** Sadece text marquee, logo yok, çok soluk, çok dar, filler hissi.
+### 13. CapabilitiesSection.tsx — Rack Focus
+- `initial: { opacity: 0, filter: "blur(8px)", scale: 0.97 }` → `{ opacity: 1, filter: "blur(0px)", scale: 1 }`, 0.8s
 
-**Aksiyonlar:**
-- Her sertifika için SVG/ikon badge ekle (ISO kalkan ikonu, AS9100 havacılık ikonu vb.)
-- Opacity 0.5 → 0.8
-- Padding `py-6` → `py-12 md:py-16`
-- Arka plana subtle metalik doku/gradient ekle
-- Marquee hızını 20s → 25s (daha zarif)
-- Sertifika adının altına küçük açıklama satırı ekle ("Kalite Yönetimi" gibi)
+### 14. StatsSection.tsx — Circle Expand
+- `clipPath: "circle(0% at 50% 50%)"` → `"circle(150% at 50% 50%)"`, 0.8s
 
----
+### 15. TestimonialsSection.tsx — Word Scatter
+- Section başlığındaki metin kelimelere bölünür
+- Her kelime: `initial: { opacity: 0, y: 20, rotate: random(-8,8) }` → `{ opacity: 1, y: 0, rotate: 0 }`, stagger 50ms, 0.5s
 
-## 6. VideoScrollSection (6/10 → 9/10)
+### 16. FAQBlogSection.tsx — Tile Flip
+- Container'a `perspective: 1200px`
+- Her kart: `initial: { opacity: 0, rotateY: 90 }` → `{ opacity: 1, rotateY: 0 }`, stagger 80ms, 0.5s
 
-**Sorunlar:** Typo "ÜÜHENDİSLİK", feature kartları scroll-reveal yok, 200vh uzun.
-
-**Aksiyonlar:**
-- Typo düzelt: "ÜÜHENDİSLİK" → "MÜHENDİSLİK"
-- Feature kartlarına scroll-driven stagger opacity ekle (şu an hepsi static opacity:1)
-- Scroll height'ı `200vh` → `150vh`'e düşür
-- `autoPlay` + `preload="none"` çelişkisini çöz: `preload="metadata"` yap
-
----
-
-## 7. Aurora "Çözümlerimizi Keşfedin" (3/10 → 9/10) — KRİTİK
-
-**Sorunlar:** Sadece başlık, CTA yok, 50vh boş alan, değer üretmiyor.
-
-**Aksiyonlar:**
-- Bu section'ı tamamen kaldır — Services section'ın kendi başlığı yeterli
-- Alternatif: Aurora'yı ServicesSection'ın header'ına embed et (ayrı section yerine)
-
----
-
-## 8. ServicesSection (7/10 → 9/10)
-
-**Sorunlar:** Tüm kartlarda aynı CTA metni, video lazy-mount doğrulanmalı.
-
-**Aksiyonlar:**
-- Her karta özel CTA metni: "Frezeleme Detayları", "Torna İşleme", "Yüzey İşleme" vb.
-- Video lazy-mount'un çalıştığını doğrula (sadece hover'da `<video>` render)
-- Kart hover'da title'ın hafif yukarı kayması (translateY -4px)
+### 17. FinalCTASection.tsx — Flash Cut
+- Beyaz overlay: `opacity: 0 → 0.6 → 0`, 0.25s
+- Ardından section content: `opacity: 0 → 1, y: 10 → 0`, 0.4s
 
 ---
 
-## 9. IndustriesSection (5/10 → 9/10) — KRİTİK
+## Teknik Detaylar
 
-**Sorunlar:** 13 endüstri eşit ağırlıkta, wall of cards, monoton.
-
-**Aksiyonlar:**
-- İlk 5 endüstriyi büyük kartlarla göster (Havacılık, Savunma, Otomotiv, Medikal, Robotik)
-- Kalan 8 endüstriyi küçük chip/badge grid olarak alt satıra taşı
-- 3D canvas'ı kaldır — her karta gerçek fotoğrafı (zaten var: `imgAerospace` vb.) daha belirgin göster
-- Masaüstü card-stack scroll yüksekliğini azalt (13×40vh → 5×50vh ana kartlar)
-
----
-
-## 10. ProjectShowcase (8/10 → 9/10)
-
-**Sorunlar:** Kartlarda görsel yok (sadece gradient), 4 proje az.
-
-**Aksiyonlar:**
-- Her karta arka plan olarak gerçek proje fotoğrafı/render ekle (gradient üzerinde)
-- En az 2 proje daha ekle (6 toplam)
-- Kart genişliğini `w-[75vw]` → `w-[80vw]` yap
-
----
-
-## 11. MaterialMorphScroll (5/10 → 9/10)
-
-**Sorunlar:** Frame'ler 404 olursa siyah canvas, floating kart kısa süre görünüyor.
-
-**Aksiyonlar:**
-- CNCScrollStory ile aynı timeout fallback mekanizmasını uygula
-- Floating properties kartının görünürlük aralığını genişlet: `[0.35, 0.82]` → `[0.25, 0.88]`
-- Mobil fallback'e malzeme özellikleri kartını da ekle (şu an sadece başlık var)
-
----
-
-## 12. MaterialsSection (7/10 → 9/10)
-
-**Aksiyonlar:**
-- `BlurImage` bileşenine `forwardRef` ekle (console uyarısı)
-- Kart hover efektine subtle border-glow ekle (molten renk)
-
----
-
-## 13. WhyUsSection (7/10 → 9/10)
-
-**Aksiyonlar:**
-- Advantage kartlarına scroll-driven stagger ekle
-- Clip-path reveal'ın mobilde de çalıştığını doğrula
-
----
-
-## 14. CapabilitiesSection (7/10 → 9/10)
-
-**Aksiyonlar:**
-- Tablo satırlarına hover highlight ekle
-- Counter animasyonu başlangıcını viewport giriş anına bağla
-
----
-
-## 15. StatsSection (7/10 → 9/10)
-
-**Aksiyonlar:**
-- Counter sayılarına GSAP `TextPlugin` veya mevcut animasyona subtle glow efekti ekle
-- Stat kartlarına stagger reveal ekle
-
----
-
-## 16. TestimonialsSection (6/10 → 9/10)
-
-**Sorunlar:** `randomuser.me` fake avatarlar, büyük marka isimleri (TAI, ASELSAN, Ford Otosan) gerçek değilse güven kırıcı.
-
-**Aksiyonlar:**
-- Avatar'ları kaldır — yerine şirket logosu veya baş harfi ikonu koy
-- Şirket isimlerini gerçek müşteri listesiyle (`clients` dizisi zaten var: Emir Alüminyum, Mert Teknik vb.) değiştir
-- İsimleri anonim yap veya sadece unvan + şirket göster
-
----
-
-## 17. FAQBlogSection (7/10 → 9/10)
-
-**Aksiyonlar:**
-- Blog kartlarına hover'da subtle image zoom efekti ekle
-- FAQ accordion açılma animasyonunu smooth yap (height transition)
-
----
-
-## 18. FinalCTASection (8/10 → 9/10)
-
-**Sorunlar:** GSAP innerHTML React ile çakışma riski.
-
-**Aksiyonlar:**
-- `GsapCtaHeadline` bileşeninde `aria-label`'ı koru ama `useLayoutEffect` kullan (flicker önleme)
-- Sweep overlay'a subtle grain texture ekle
-
----
-
-## 19. GENEL İYİLEŞTİRMELER (Tüm Section'ları Etkiler)
-
-- **Aurora section'ı kaldır** — Index.tsx'den çıkar
-- **SectionDivider'ları doğru renk eşleştirmesi** ile kontrol et (her geçişte önceki/sonraki bg rengine uyumlu)
-- **PageLoader z-index** → `z-[9999]` olduğunu doğrula
-- **Console uyarılarını temizle** — `forwardRef` eksik bileşenlere ekle
-
----
-
-## ÖNCELİK SIRASI
-
-```text
-Sıra  Section                    Mevcut  Hedef  Efor
-────  ─────────────────────────  ──────  ─────  ────
-1     CertificationsSection      4/10    9/10   Orta
-2     Aurora section kaldır       3/10    —      Düşük
-3     IndustriesSection           5/10    9/10   Yüksek
-4     VideoScrollSection typo+    6/10    9/10   Orta
-5     CNCScrollStory fallback    6/10    9/10   Orta
-6     MaterialMorphScroll         5/10    9/10   Orta
-7     TestimonialsSection         6/10    9/10   Orta
-8     HeroSection refactor       8/10    9/10   Yüksek
-9     ProjectShowcase görseller   8/10    9/10   Orta
-10    HowWeWorkSection offset    7/10    9/10   Düşük
-11    NexusPromoSection           7/10    9/10   Düşük
-12    ServicesSection             7/10    9/10   Düşük
-13    WhyUs/Capabilities/Stats   7/10    9/10   Düşük
-14    FinalCTA/FAQ/Materials     7-8/10  9/10   Düşük
-```
-
-## TEKNİK DETAY
-
-Toplam **11 dosya** büyük değişiklik, **8 dosya** küçük iyileştirme alacak. Aurora section kaldırılması ile sayfa 1 section kısalacak. IndustriesSection'da 13→5+8 chip yapısı en büyük refactor. Hero'da CAD upload'ın ayrı section'a taşınması layout değişikliği gerektirir.
+- **Ortak pattern**: Her section'da `const prefersReduced = usePrefersReducedMotion()` import edilir. `prefersReduced` true ise `initial` = `animate` (animasyonsuz).
+- **whileInView**: Tüm animasyonlar `viewport={{ once: true, amount: 0.2 }}` ile tetiklenir.
+- **Ease curve**: `[0.76, 0, 0.24, 1]` — çoğu animasyonda kullanılır (easeInOutQuart benzeri).
+- **Admin/müşteri paneli**: Bu dosyalar zaten yalnızca landing page'de (`Index.tsx`) render edilir, ek kontrol gerekmez.
+- **ParallaxSection**: Dokunulmaz, animasyonlar section'ların iç JSX'inde uygulanır.
+- **Dosya sayısı**: 17 dosya düzenlenecek, her biri bağımsız.
 
