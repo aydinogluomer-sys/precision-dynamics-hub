@@ -27,7 +27,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
+export const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
   ({ activeTab, onTabChange, collapsed, displayName, userEmail, onLogout }, ref) => {
     const [unreadCount, setUnreadCount] = useState(0);
 
@@ -121,5 +121,3 @@ const MusteriSidebar = React.forwardRef<HTMLElement, Props>(
 );
 
 MusteriSidebar.displayName = "MusteriSidebar";
-
-export default MusteriSidebar;

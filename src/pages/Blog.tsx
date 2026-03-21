@@ -10,7 +10,7 @@ import { blogPosts, blogCategories } from "@/data/blogData";
 
 type SortOption = "newest" | "oldest" | "popular";
 
-const Blog = () => {
+export const Blog = () => {
   usePageMeta({ title: "Blog", description: "CNC işleme, talaşlı imalat ve mühendislik konularında teknik makaleler ve sektör haberleri." });
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
@@ -290,5 +290,3 @@ const Blog = () => {
     </div>
   );
 };
-
-export default Blog;

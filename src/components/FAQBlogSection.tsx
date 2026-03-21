@@ -73,7 +73,7 @@ const blogPosts = [
   },
 ];
 
-const FAQBlogSection = () => {
+export const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -217,5 +217,3 @@ const FAQBlogSection = () => {
     </section>
   );
 };
-
-export default FAQBlogSection;

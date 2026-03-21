@@ -43,7 +43,7 @@ const RatingBar = ({ value, max = 5, label }: { value: number; max?: number; lab
   </div>
 );
 
-const Malzemeler = () => {
+export const Malzemeler = () => {
   usePageMeta({ title: "Malzemeler", description: "CNC işlemede kullanılan alüminyum, çelik, titanyum ve mühendislik plastikleri — teknik özellikler ve karşılaştırma." });
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -346,5 +346,3 @@ const Malzemeler = () => {
     </div>
   );
 };
-
-export default Malzemeler;

@@ -53,7 +53,7 @@ const services = [
   },
 ];
 
-const ServicesSection = () => {
+export const ServicesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -315,5 +315,3 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
     </motion.div>
   );
 };
-
-export default ServicesSection;

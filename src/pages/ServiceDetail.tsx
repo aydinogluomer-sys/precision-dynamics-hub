@@ -118,7 +118,7 @@ const staggerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-const ServiceDetail = () => {
+export const ServiceDetail = () => {
   const { slug } = useParams<{ category: string; slug: string }>();
   const page = slug ? getPageBySlug(slug) : undefined;
   const heroRef = useRef<HTMLDivElement>(null);
@@ -581,5 +581,3 @@ const ServiceDetail = () => {
     </div>
   );
 };
-
-export default ServiceDetail;

@@ -28,7 +28,7 @@ const features = [
   { icon: Clock, label: "Otomatik Bildirimler", desc: "Sipariş ve üretim durum güncellemeleri" },
 ];
 
-const NexusPromoSection = () => {
+export const NexusPromoSection = () => {
   const prefersReduced = usePrefersReducedMotion();
   const inkInitial = prefersReduced ? { clipPath: "circle(150% at 0% 0%)" } : { clipPath: "circle(0% at 0% 0%)" };
   const inkAnimate = { clipPath: "circle(150% at 0% 0%)" };
@@ -261,5 +261,3 @@ const NexusDashboardMockup = () => (
     </motion.div>
   </motion.div>
 );
-
-export default NexusPromoSection;

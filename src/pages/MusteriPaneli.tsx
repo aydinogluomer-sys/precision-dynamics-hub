@@ -27,7 +27,7 @@ interface Profile {
   city: string | null;
 }
 
-const MusteriPaneli = () => {
+export const MusteriPaneli = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "genel";
@@ -120,5 +120,3 @@ const MusteriPaneli = () => {
     </div>
   );
 };
-
-export default MusteriPaneli;

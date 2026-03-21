@@ -7,7 +7,7 @@ interface Props {
   index: number;
 }
 
-const ComparisonTable = ({ table, index }: Props) => {
+export const ComparisonTable = ({ table, index }: Props) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -70,5 +70,3 @@ const ComparisonTable = ({ table, index }: Props) => {
     </motion.div>
   );
 };
-
-export default ComparisonTable;

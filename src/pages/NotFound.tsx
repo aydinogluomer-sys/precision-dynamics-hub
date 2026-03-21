@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Home, Search, FileQuestion, HelpCircle } from "lucide-react";
 
-const NotFound = () => {
+export const NotFound = () => {
   const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [countdown, setCountdown] = useState(15);
@@ -280,5 +280,3 @@ const NotFound = () => {
     </div>
   );
 };
-
-export default NotFound;

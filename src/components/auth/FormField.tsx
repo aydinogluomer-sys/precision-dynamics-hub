@@ -5,7 +5,7 @@ interface FormFieldProps {
   children: React.ReactNode;
 }
 
-const FormField = ({ label, icon: Icon, required = false, children }: FormFieldProps) => (
+export const FormField = ({ label, icon: Icon, required = false, children }: FormFieldProps) => (
   <div>
     <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
       {label} {!required && <span className="normal-case tracking-normal font-normal">(opsiyonel)</span>}
@@ -16,5 +16,3 @@ const FormField = ({ label, icon: Icon, required = false, children }: FormFieldP
     </div>
   </div>
 );
-
-export default FormField;

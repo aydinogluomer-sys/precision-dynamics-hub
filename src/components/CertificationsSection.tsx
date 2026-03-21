@@ -32,7 +32,7 @@ const certifications = [
 
 const VENETIAN_STRIPS = 6;
 
-const CertificationsSection = () => {
+export const CertificationsSection = () => {
   const prefersReduced = usePrefersReducedMotion();
 
   const marqueeContent = (
@@ -131,5 +131,3 @@ const CertificationsSection = () => {
     </section>
   );
 };
-
-export default CertificationsSection;

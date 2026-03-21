@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TrendingUp, DollarSign, Calculator, Target, BarChart3 } from "lucide-react";
 
-const FinancialView = () => {
+export const FinancialView = () => {
   const [fixedCost, setFixedCost] = useState(85000);
   const [unitPrice, setUnitPrice] = useState(285);
   const [variableCost, setVariableCost] = useState(142);
@@ -134,5 +134,3 @@ const FinancialView = () => {
     </div>
   );
 };
-
-export default FinancialView;

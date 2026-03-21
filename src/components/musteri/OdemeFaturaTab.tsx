@@ -67,7 +67,7 @@ const StripeLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const OdemeFaturaTab = () => {
+export const OdemeFaturaTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [summary, setSummary] = useState<SummaryData>({ totalCount: 0, totalPaid: 0, totalUnpaid: 0 });
   const [loading, setLoading] = useState(true);
@@ -562,5 +562,3 @@ const OdemeFaturaTab = () => {
     </div>
   );
 };
-
-export default OdemeFaturaTab;

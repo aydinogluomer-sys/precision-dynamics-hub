@@ -34,7 +34,7 @@ const statusColors: Record<string, string> = {
   pending: "bg-blue-500/20 text-blue-400",
 };
 
-const RFQManager = () => {
+export const RFQManager = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Tümü");
@@ -519,5 +519,3 @@ const RFQManager = () => {
     </div>
   );
 };
-
-export default RFQManager;

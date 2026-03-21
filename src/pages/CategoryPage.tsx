@@ -5,7 +5,7 @@ import { categoryPages } from "@/data/categoryPages";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-const CategoryPage = () => {
+export const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const pathname = window.location.pathname;
   const prefix = pathname.startsWith("/hizmetler") ? "hizmetler" : pathname.startsWith("/kabiliyetler") ? "kabiliyetler" : "endustriyel";
@@ -114,5 +114,3 @@ const CategoryPage = () => {
     </div>
   );
 };
-
-export default CategoryPage;

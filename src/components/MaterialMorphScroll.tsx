@@ -14,7 +14,7 @@ const materialProps = [
   { label: "Termal Dayanım", value: 3, max: 5 },
 ];
 
-const MaterialMorphScroll = () => {
+export const MaterialMorphScroll = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentFrameRef = useRef(0);
@@ -292,5 +292,3 @@ const MaterialMorphScroll = () => {
     </motion.div>
   );
 };
-
-export default MaterialMorphScroll;

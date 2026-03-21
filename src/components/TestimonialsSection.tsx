@@ -107,7 +107,7 @@ const WordScatter = ({ text, prefersReduced }: { text: string; prefersReduced: b
   );
 };
 
-const TestimonialsSection = () => {
+export const TestimonialsSection = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
@@ -287,5 +287,3 @@ const TestimonialsSection = () => {
     </section>
   );
 };
-
-export default TestimonialsSection;

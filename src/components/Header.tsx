@@ -231,7 +231,7 @@ interface HeaderProps {
   isFirstVisit?: boolean;
 }
 
-const Header = ({ isFirstVisit = false }: HeaderProps) => {
+export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -627,5 +627,3 @@ const Header = ({ isFirstVisit = false }: HeaderProps) => {
     </>
   );
 };
-
-export default Header;

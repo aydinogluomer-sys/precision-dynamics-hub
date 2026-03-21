@@ -39,7 +39,7 @@ const getMonday = (d: Date): Date => {
 
 const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
-const SchedulingView = () => {
+export const SchedulingView = () => {
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
   const [schedule, setSchedule] = useState<ScheduleEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -226,5 +226,3 @@ const SchedulingView = () => {
     </div>
   );
 };
-
-export default SchedulingView;

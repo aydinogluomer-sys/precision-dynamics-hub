@@ -67,7 +67,7 @@ const matchesFilter = (r: RFQ, filter: FilterKey): boolean => {
   }
 };
 
-const TekliflerimTab = () => {
+export const TekliflerimTab = () => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState<string | null>(null);
@@ -326,5 +326,3 @@ const TekliflerimTab = () => {
     </div>
   );
 };
-
-export default TekliflerimTab;

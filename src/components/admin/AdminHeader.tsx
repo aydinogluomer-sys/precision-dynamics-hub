@@ -44,7 +44,7 @@ interface Props {
   exporting?: boolean;
 }
 
-const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar, exporting }: Props) => {
+export const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobileSidebar, exporting }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -275,5 +275,3 @@ const AdminHeader = ({ activeTab, onToggleSidebar, onExportCSV, onNavigate, mobi
     </header>
   );
 };
-
-export default AdminHeader;

@@ -16,7 +16,7 @@ import {
 } from "./dashboardConstants";
 import DashboardCustomerModal from "./DashboardCustomerModal";
 
-const DashboardHome = () => {
+export const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DashData | null>(null);
   const [rawFins, setRawFins] = useState<any[]>([]);
@@ -1023,5 +1023,3 @@ const DashboardHome = () => {
     </motion.div>
   );
 };
-
-export default DashboardHome;

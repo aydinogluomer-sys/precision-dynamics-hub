@@ -40,7 +40,7 @@ const isCadFile = (name: string) => {
 
 type FilterType = "all" | "upload" | "rfq";
 
-const TeknikArsivTab = () => {
+export const TeknikArsivTab = () => {
   const [uploadedFiles, setUploadedFiles] = useState<CustomerFile[]>([]);
   const [rfqFiles, setRfqFiles] = useState<CustomerFile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -314,5 +314,3 @@ const TeknikArsivTab = () => {
     </div>
   );
 };
-
-export default TeknikArsivTab;

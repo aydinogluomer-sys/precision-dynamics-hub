@@ -63,8 +63,7 @@ const steps = [
   stat: { value: "%100", label: "Kalite Kontrol" }
 }];
 
-
-const HowWeWorkSection = () => {
+export const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
@@ -156,8 +155,6 @@ const StepCard = ({
   step,
   index
 
-
-
 }: {step: (typeof steps)[number];index: number;}) => {
   return (
     <div
@@ -205,5 +202,3 @@ const StepCard = ({
     </div>);
 
 };
-
-export default HowWeWorkSection;

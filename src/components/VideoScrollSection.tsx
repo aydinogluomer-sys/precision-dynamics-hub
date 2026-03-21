@@ -27,8 +27,7 @@ const features = [
   desc: "Prototipten seriye optimum üretim süreleri."
 }];
 
-
-const VideoScrollSection = () => {
+export const VideoScrollSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -130,7 +129,6 @@ const VideoScrollSection = () => {
               opacity: labelOpacity
             }}>{"MÜHENDİSLİK & ÜRETİM"}
 
-
           </motion.span>
 
           {/* Big heading - on.energy style */}
@@ -146,7 +144,6 @@ const VideoScrollSection = () => {
             className="text-base md:text-lg max-w-xl mb-12"
             style={{ color: "rgba(255,255,255,0.6)", opacity: descOpacity }}>
             Gelişmiş çok eksenli CNC tezgâhlarımızla mikron düzeyinde hassasiyetle en karmaşık parça geometrilerini üretiyoruz.
-
 
           </motion.p>
 
@@ -197,5 +194,3 @@ const VideoScrollSection = () => {
     </div>);
 
 };
-
-export default VideoScrollSection;

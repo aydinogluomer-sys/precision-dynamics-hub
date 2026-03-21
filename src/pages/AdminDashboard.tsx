@@ -24,7 +24,7 @@ import FinanceDocsView from "@/components/admin/FinanceDocsView";
 import SupportView from "@/components/admin/SupportView";
 import ChatbotAnalyticsView from "@/components/admin/ChatbotAnalyticsView";
 
-const AdminDashboard = () => {
+export const AdminDashboard = () => {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -146,5 +146,3 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
-export default AdminDashboard;

@@ -67,8 +67,7 @@ const GsapCtaHeadline = () => {
   );
 };
 
-
-const FinalCTASection = () => {
+export const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
@@ -196,5 +195,3 @@ const FinalCTASection = () => {
     </section>
   );
 };
-
-export default FinalCTASection;

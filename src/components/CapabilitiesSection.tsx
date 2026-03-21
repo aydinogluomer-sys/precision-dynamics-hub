@@ -51,7 +51,7 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
   return { value, ref };
 };
 
-const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
+export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
 
@@ -181,5 +181,3 @@ const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
 });
 
 CapabilitiesSection.displayName = "CapabilitiesSection";
-
-export default CapabilitiesSection;

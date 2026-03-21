@@ -29,7 +29,7 @@ interface Props {
   onNavigate?: (tab: string) => void;
 }
 
-const AdminNotifications = ({ onNavigate }: Props) => {
+export const AdminNotifications = ({ onNavigate }: Props) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -287,5 +287,3 @@ const AdminNotifications = ({ onNavigate }: Props) => {
     </Popover>
   );
 };
-
-export default AdminNotifications;

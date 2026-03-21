@@ -41,7 +41,7 @@ const BANK_ACCOUNTS = [
   { bank: "İş Bankası", iban: "TR00 0000 0000 0000 0000 0000 02", branch: "OSB Şubesi" },
 ];
 
-const OdemeTab = () => {
+export const OdemeTab = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
@@ -436,5 +436,3 @@ const OdemeTab = () => {
     </div>
   );
 };
-
-export default OdemeTab;

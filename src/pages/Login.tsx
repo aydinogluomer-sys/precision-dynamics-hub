@@ -27,7 +27,7 @@ import FormField from "@/components/auth/FormField";
 
 const HCAPTCHA_SITE_KEY = "95ae4f14-f512-4a34-ad44-8e04ce323240";
 
-const Login = () => {
+export const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -256,5 +256,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;

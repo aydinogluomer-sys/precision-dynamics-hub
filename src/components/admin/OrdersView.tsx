@@ -39,7 +39,7 @@ function calcProgress(completed: number, qc: number, packed: number, total: numb
   return Math.min(100, Math.round((completed / total) * 50 + (qc / total) * 30 + (packed / total) * 20));
 }
 
-const OrdersView = () => {
+export const OrdersView = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Order | null>(null);
@@ -271,5 +271,3 @@ const OrdersView = () => {
     </>
   );
 };
-
-export default OrdersView;

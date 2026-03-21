@@ -12,7 +12,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, onLogout }: Props) => {
+export const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, onLogout }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -42,5 +42,3 @@ const MusteriMobileSidebar = ({ activeTab, onTabChange, displayName, userEmail, 
     </Sheet>
   );
 };
-
-export default MusteriMobileSidebar;

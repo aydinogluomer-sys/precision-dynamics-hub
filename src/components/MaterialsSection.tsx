@@ -232,7 +232,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; in
   );
 };
 
-const MaterialsSection = () => {
+export const MaterialsSection = () => {
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
   const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
@@ -309,5 +309,3 @@ const MaterialsSection = () => {
     </motion.section>
   );
 };
-
-export default MaterialsSection;

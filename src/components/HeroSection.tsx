@@ -32,7 +32,7 @@ interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
-const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
+export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const { scrollY } = useScroll();
   const prefersReduced = usePrefersReducedMotion();
@@ -223,5 +223,3 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     </section>
   );
 };
-
-export default HeroSection;

@@ -42,7 +42,7 @@ const statusLabels: Record<string, string> = {
   issue: "SORUN VAR",
 };
 
-const WBSView = () => {
+export const WBSView = () => {
   const [wbsList, setWbsList] = useState<WBS[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -161,5 +161,3 @@ const WBSView = () => {
     </div>
   );
 };
-
-export default WBSView;

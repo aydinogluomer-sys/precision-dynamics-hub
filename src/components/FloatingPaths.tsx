@@ -4,7 +4,7 @@ interface FloatingPathsProps {
   position: number;
 }
 
-const FloatingPaths = ({ position }: FloatingPathsProps) => {
+export const FloatingPaths = ({ position }: FloatingPathsProps) => {
   const paths = Array.from({ length: 36 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
@@ -51,5 +51,3 @@ const FloatingPaths = ({ position }: FloatingPathsProps) => {
     </div>
   );
 };
-
-export default FloatingPaths;

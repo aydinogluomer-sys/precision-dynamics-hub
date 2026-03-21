@@ -19,7 +19,7 @@ interface Props {
   customerDetail: CustomerDetail;
 }
 
-const DashboardCustomerModal = ({ selectedCustomer, onClose, customerDetail }: Props) => {
+export const DashboardCustomerModal = ({ selectedCustomer, onClose, customerDetail }: Props) => {
   return (
     <Dialog open={!!selectedCustomer} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto dark:bg-[#0F172A] dark:border-[#334155]">
@@ -236,5 +236,3 @@ const DashboardCustomerModal = ({ selectedCustomer, onClose, customerDetail }: P
     </Dialog>
   );
 };
-
-export default DashboardCustomerModal;

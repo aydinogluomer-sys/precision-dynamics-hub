@@ -22,7 +22,7 @@ interface Profile {
   avatar_url: string | null;
 }
 
-const ProfilAyarlari = () => {
+export const ProfilAyarlari = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -265,5 +265,3 @@ const ProfilAyarlari = () => {
     </div>
   );
 };
-
-export default ProfilAyarlari;

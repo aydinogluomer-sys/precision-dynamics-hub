@@ -186,7 +186,7 @@ const services = [
 ];
 
 // ── Ana Bileşen ──
-const TeklifAl = () => {
+export const TeklifAl = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFinish, setSelectedFinish] = useState("machined");
   const [delivery, setDelivery] = useState<"standard" | "express">("standard");
@@ -1239,5 +1239,3 @@ const TeklifAl = () => {
     </div>
   );
 };
-
-export default TeklifAl;

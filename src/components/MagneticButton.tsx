@@ -10,7 +10,7 @@ interface MagneticButtonProps {
   strength?: number;
 }
 
-const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
+export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
   ({ children, className = "", as = "a", href, onClick, strength = 0.3 }, forwardedRef) => {
     const innerRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -83,5 +83,3 @@ const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
 );
 
 MagneticButton.displayName = "MagneticButton";
-
-export default MagneticButton;

@@ -35,7 +35,7 @@ const paymentLabel = (s: string | null) => {
   }
 };
 
-const FinansTab = () => {
+export const FinansTab = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -169,5 +169,3 @@ const FinansTab = () => {
     </div>
   );
 };
-
-export default FinansTab;

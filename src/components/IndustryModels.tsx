@@ -231,7 +231,6 @@ const FanModel = () => {
   );
 };
 
-
 /* 11 — Yenilenebilir Enerji: Wind turbine */
 const WindTurbineModel = () => {
   const blades = useRef<THREE.Group>(null);
@@ -331,7 +330,7 @@ const modelMap: Record<IndustryType, React.FC> = {
 };
 
 /** Single Canvas for active industry model */
-const IndustryCanvas = ({ type }: { type: IndustryType }) => {
+export const IndustryCanvas = ({ type }: { type: IndustryType }) => {
   const ModelComponent = modelMap[type];
   return (
     <div className="w-full h-full" style={{ minHeight: "192px" }}>
@@ -360,4 +359,3 @@ const IndustryCanvas = ({ type }: { type: IndustryType }) => {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export { IndustryCanvas };
-export default IndustryCanvas;

@@ -24,7 +24,7 @@ interface LogoLoopProps {
   style?: CSSProperties;
 }
 
-const LogoLoop = ({
+export const LogoLoop = ({
   logos,
   speed = 120,
   direction = "left",
@@ -227,5 +227,3 @@ const LogoLoop = ({
     </div>
   );
 };
-
-export default LogoLoop;

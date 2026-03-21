@@ -28,7 +28,7 @@ const categories = [
   { key: "finance", label: "Finansal Belgeler", desc: "Fatura, ödeme ve finansal belge bildirimleri" },
 ];
 
-const BildirimTercihleri = () => {
+export const BildirimTercihleri = () => {
   const [prefs, setPrefs] = useState<Preferences>(defaultPrefs);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -126,5 +126,3 @@ const BildirimTercihleri = () => {
     </div>
   );
 };
-
-export default BildirimTercihleri;

@@ -50,7 +50,7 @@ const statusLabel = (s: string | null) => {
   }
 };
 
-const DestekTab = () => {
+export const DestekTab = () => {
   const isMobile = useIsMobile();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -366,5 +366,3 @@ const DestekTab = () => {
     </div>
   );
 };
-
-export default DestekTab;

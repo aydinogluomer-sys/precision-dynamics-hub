@@ -52,7 +52,7 @@ const SECTIONS = [
   { id: "iletisim", label: "İletişim" },
 ];
 
-const Index = () => {
+export const Index = () => {
   const [isFirstVisit] = useState(() => {
     const visited = sessionStorage.getItem("mas_visited");
     if (!visited) {
@@ -232,5 +232,3 @@ const Index = () => {
     </div>
   );
 };
-
-export default Index;

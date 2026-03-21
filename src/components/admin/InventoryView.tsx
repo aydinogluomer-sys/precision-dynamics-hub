@@ -29,7 +29,7 @@ interface RawMaterial {
 const emptyTool = { code: "", name: "", category: "", stock: 0, min_stock: 5, unit_cost: 0, supplier: "" };
 const emptyMaterial = { code: "", name: "", spec: "", stock: 0, unit: "adet", unit_cost: 0, waste_rate: 0 };
 
-const InventoryView = () => {
+export const InventoryView = () => {
   const [tab, setTab] = useState<"tools" | "materials">("tools");
   const [tools, setTools] = useState<Tool[]>([]);
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
@@ -288,5 +288,3 @@ const InventoryView = () => {
     </div>
   );
 };
-
-export default InventoryView;

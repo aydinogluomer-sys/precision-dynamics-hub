@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { blogPosts } from "@/data/blogData";
 
-const BlogDetail = () => {
+export const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
   const [commentName, setCommentName] = useState("");
@@ -234,5 +234,3 @@ const BlogDetail = () => {
     </div>
   );
 };
-
-export default BlogDetail;

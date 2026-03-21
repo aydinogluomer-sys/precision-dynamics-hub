@@ -84,7 +84,7 @@ interface CustomerProfile {
   email?: string;
 }
 
-const FinanceDocsView = () => {
+export const FinanceDocsView = () => {
   const [docs, setDocs] = useState<FinDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -915,5 +915,3 @@ const FinanceDocsView = () => {
     </div>
   );
 };
-
-export default FinanceDocsView;

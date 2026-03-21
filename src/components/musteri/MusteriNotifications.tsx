@@ -20,7 +20,7 @@ interface Props {
   onTabChange?: (tab: string) => void;
 }
 
-const MusteriNotifications = ({ onTabChange }: Props = {}) => {
+export const MusteriNotifications = ({ onTabChange }: Props = {}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const initialized = useRef(false);
@@ -237,5 +237,3 @@ const MusteriNotifications = ({ onTabChange }: Props = {}) => {
     </div>
   );
 };
-
-export default MusteriNotifications;

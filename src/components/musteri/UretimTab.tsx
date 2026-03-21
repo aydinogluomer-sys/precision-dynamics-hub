@@ -54,7 +54,7 @@ const estimateCompletion = (progress: number, createdAt: string, deadline: strin
   return estimatedEnd.toISOString().split("T")[0];
 };
 
-const UretimTab = () => {
+export const UretimTab = () => {
   const [items, setItems] = useState<OrderProduction[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -192,5 +192,3 @@ const UretimTab = () => {
     </div>
   );
 };
-
-export default UretimTab;

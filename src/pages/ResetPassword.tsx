@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import LoginLeftPanel from "@/components/auth/LoginLeftPanel";
 
-const ResetPassword = () => {
+export const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -142,5 +142,3 @@ const ResetPassword = () => {
     </div>
   );
 };
-
-export default ResetPassword;

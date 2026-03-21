@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import LoginLeftPanel from "@/components/auth/LoginLeftPanel";
 
-const ForgotPassword = () => {
+export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -98,5 +98,3 @@ const ForgotPassword = () => {
     </div>
   );
 };
-
-export default ForgotPassword;

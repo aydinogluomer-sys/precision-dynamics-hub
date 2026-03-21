@@ -59,7 +59,7 @@ const statusColor = (s: string | null) => {
   }
 };
 
-const GenelBakisTab = () => {
+export const GenelBakisTab = () => {
   const [stats, setStats] = useState<Stats>({ totalRfqs: 0, pendingRfqs: 0, approvedRfqs: 0, totalOrders: 0, activeOrders: 0, openTickets: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [recentRfqs, setRecentRfqs] = useState<RecentRfq[]>([]);
@@ -221,5 +221,3 @@ const GenelBakisTab = () => {
     </div>
   );
 };
-
-export default GenelBakisTab;

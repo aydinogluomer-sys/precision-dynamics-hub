@@ -15,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import Header from "@/components/Header";
 
-
 // ── Part Table Data ──
 const partData = [
   { id: "SB 2310-63-001", length: "0.6300", headDia: "2.358", bodyDia: "1.000", headThk: "0.179", insideDia: "0.118", step: "0.451", holeDist: "0.865", cboreDia: "0.318", drill: "0.159", insideOD: "0.000", depth: "0.000", checked: false },
@@ -152,7 +151,7 @@ const COLORS = [
 ];
 
 // ── Main Dashboard ──
-const CADDashboard = () => {
+export const CADDashboard = () => {
   const [checkedRows, setCheckedRows] = useState<Record<string, boolean>>(
     Object.fromEntries(partData.map((p) => [p.id, p.checked]))
   );
@@ -804,5 +803,3 @@ const CADDashboard = () => {
     </div>
   );
 };
-
-export default CADDashboard;

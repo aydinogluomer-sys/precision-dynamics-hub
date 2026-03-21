@@ -16,7 +16,7 @@ const stories = [
   { range: [0.58, 0.82], text: "Prototipten\n50.000 adete.", align: "left" as const, size: "text-3xl md:text-5xl" },
 ];
 
-const CNCScrollStory = () => {
+export const CNCScrollStory = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentFrameRef = useRef(0);
@@ -250,5 +250,3 @@ const CNCScrollStory = () => {
     </div>
   );
 };
-
-export default CNCScrollStory;

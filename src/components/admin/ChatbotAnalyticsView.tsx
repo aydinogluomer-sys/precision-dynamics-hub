@@ -17,7 +17,7 @@ interface AnalyticsRow {
 
 const COLORS = ["#0AA2CD", "#F59E0B", "#10B981", "#EF4444", "#8B5CF6", "#EC4899"];
 
-const ChatbotAnalyticsView = () => {
+export const ChatbotAnalyticsView = () => {
   const [data, setData] = useState<AnalyticsRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -219,5 +219,3 @@ const ChatbotAnalyticsView = () => {
     </div>
   );
 };
-
-export default ChatbotAnalyticsView;

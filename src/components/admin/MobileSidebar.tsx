@@ -11,7 +11,7 @@ interface Props {
   onLogout: () => void;
 }
 
-const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) => {
+export const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,5 +41,3 @@ const MobileSidebar = ({ activeTab, onTabChange, userEmail, onLogout }: Props) =
     </Sheet>
   );
 };
-
-export default MobileSidebar;

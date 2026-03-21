@@ -21,7 +21,7 @@ interface Props {
   onClose: () => void;
 }
 
-const QuickActionModals = ({ activeModal, onClose }: Props) => {
+export const QuickActionModals = ({ activeModal, onClose }: Props) => {
   const [saving, setSaving] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -391,5 +391,4 @@ const QuickActionModals = ({ activeModal, onClose }: Props) => {
   );
 };
 
-export default QuickActionModals;
 export type { ModalType };

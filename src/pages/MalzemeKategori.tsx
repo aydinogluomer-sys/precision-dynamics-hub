@@ -14,7 +14,7 @@ const getPriceLabel = (p: string) => {
   }
 };
 
-const MalzemeKategori = () => {
+export const MalzemeKategori = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = findMaterialCategory(slug || "");
 
@@ -165,5 +165,3 @@ const MalzemeKategori = () => {
     </div>
   );
 };
-
-export default MalzemeKategori;

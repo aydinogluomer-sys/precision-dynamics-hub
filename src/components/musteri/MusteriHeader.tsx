@@ -25,7 +25,7 @@ interface Props {
   onToggleSidebar?: () => void;
 }
 
-const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed, onToggleSidebar }: Props) => {
+export const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed, onToggleSidebar }: Props) => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -89,5 +89,3 @@ const MusteriHeader = ({ activeTab, mobileSidebar, onTabChange, sidebarCollapsed
     </div>
   );
 };
-
-export default MusteriHeader;

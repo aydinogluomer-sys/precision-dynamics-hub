@@ -67,7 +67,7 @@ const ORGANIZATION = {
   url: typeof window !== "undefined" ? window.location.origin : "",
 };
 
-const JsonLdSchema = (props: JsonLdSchemaProps) => {
+export const JsonLdSchema = (props: JsonLdSchemaProps) => {
   useEffect(() => {
     const existingScripts = document.querySelectorAll("script[data-jsonld]");
     existingScripts.forEach((s) => s.remove());
@@ -217,5 +217,3 @@ const JsonLdSchema = (props: JsonLdSchemaProps) => {
 
   return null;
 };
-
-export default JsonLdSchema;

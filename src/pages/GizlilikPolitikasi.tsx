@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const GizlilikPolitikasi = () => (
+export const GizlilikPolitikasi = () => (
   <div className="min-h-screen bg-background">
     <Header />
     <main className="pt-24 pb-16">
@@ -23,5 +23,3 @@ const GizlilikPolitikasi = () => (
     <Footer />
   </div>
 );
-
-export default GizlilikPolitikasi;

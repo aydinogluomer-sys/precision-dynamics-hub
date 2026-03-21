@@ -14,7 +14,7 @@ interface ParallaxSectionProps {
   videoBg?: string;
 }
 
-const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
+export const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
   children,
   className = "",
   index = 0,
@@ -155,5 +155,3 @@ const ParallaxSection = forwardRef<HTMLDivElement, ParallaxSectionProps>(({
 });
 
 ParallaxSection.displayName = "ParallaxSection";
-
-export default ParallaxSection;
