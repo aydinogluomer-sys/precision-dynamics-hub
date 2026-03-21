@@ -87,6 +87,7 @@ const IndustriesSection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
         >
           {primaryIndustries.map((industry, i) => (
             <PrimaryIndustryCard key={industry.name} industry={industry} index={i} isWide={i >= 3} />

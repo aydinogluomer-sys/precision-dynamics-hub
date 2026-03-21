@@ -76,9 +76,9 @@ const HowWeWorkSection = () => {
     offset: ["start start", "end end"]
   });
 
-  // Desktop: translate strip so cards scroll into view across the full scroll range
-  // Cards start off-screen right and end fully visible
-  const x = useTransform(scrollYProgress, [0.05, 0.95], ["40%", "0%"]);
+  // Desktop: translate strip so all 4 cards scroll horizontally into view
+  // Start offset = (totalCardWidth - viewport) expressed as % of strip width
+  const x = useTransform(scrollYProgress, [0.05, 0.95], ["60%", "-10%"]);
   const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
   const headerY = useTransform(scrollYProgress, [0, 0.05], [40, 0]);
 
