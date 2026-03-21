@@ -189,7 +189,7 @@ export const MaterialMorphScroll = () => {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style=style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
 ```
 
 ---
