@@ -116,6 +116,32 @@ const LogoLoop = ({
     };
   }, [target, seqW, hovered, effHover, prefersReduced]);
 
+  // Static grid for reduced motion
+  if (prefersReduced) {
+    return (
+      <div
+        className={className}
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap,
+          justifyContent: "center",
+          alignItems: "center",
+          ...style,
+        }}
+      >
+        {logos.map((item, i) => (
+          <div
+            key={i}
+            style={{ height: logoHeight, display: "flex", alignItems: "center" }}
+          >
+            {renderItem ? renderItem(item, `static-${i}`) : item.node}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const lists = useMemo(
     () =>
       Array.from({ length: copies }, (_, ci) => (
