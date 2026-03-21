@@ -79,7 +79,7 @@ const HeadlineStagger = ({ text, scrollRotateX }: { text: string; scrollRotateX?
                   exit="exit"
                   className="inline-block font-extrabold uppercase"
                   style={{
-                    fontSize: "clamp(2rem, 5vw, 4.5rem)",
+                    fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
                     color: "white",
                     letterSpacing: "-0.03em",
                     lineHeight: 1,
@@ -100,7 +100,7 @@ const HeadlineStagger = ({ text, scrollRotateX }: { text: string; scrollRotateX?
           transition={{ delay: charIndex * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line text-center"
           style={{
-            fontSize: "clamp(2rem, 5vw, 4.5rem)",
+            fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
             color: "white",
             letterSpacing: "-0.03em",
             lineHeight: 1,
@@ -225,7 +225,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       >
         {/* Full-width single column — centered */}
         <motion.div
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-6xl mx-auto text-center"
           variants={containerVariants}
           initial={isFirstVisit ? "hidden" : false}
           whileInView="visible"
@@ -242,7 +242,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             <span
               className="text-xs uppercase tracking-widest"
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
                 color: "rgba(255,255,255,0.5)",
               }}
             >
@@ -257,7 +257,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           </motion.div>
 
           {/* Character Stagger Headlines */}
-          <motion.div variants={fadeUpVariants} className="relative h-28 sm:h-36 md:h-48 overflow-hidden mb-8">
+          <motion.div variants={fadeUpVariants} className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
             <AnimatePresence mode="wait">
               <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
             </AnimatePresence>
@@ -266,7 +266,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           <TextReveal delay={0.4 + heroDelay}>
             <p
               className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-              style={{ color: "rgba(255,255,255,0.7)", fontStyle: "italic" }}
+              style={{ color: "rgba(255,255,255,0.7)" }}
             >
               {"CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz."}
             </p>
@@ -302,7 +302,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           className="text-xs uppercase tracking-widest"
           style={{
             color: "rgba(255,255,255,0.4)",
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "'IBM Plex Mono', monospace",
           }}
         >
           {"Keşfet"}

@@ -112,7 +112,7 @@ const ServicesSection = () => {
                 {"Kabiliyetler"}
               </span>
             </div>
-            <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
+            <h2 className="heading-industrial text-4xl md:text-5xl mb-3 tracking-tighter">
               {"Üretim Hizmetlerimiz"}
             </h2>
             <p className="text-sm text-foreground/60 max-w-lg">
@@ -238,7 +238,7 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
       {/* Image with clipPath mask reveal */}
       <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
         <motion.div
-          className="relative h-52 overflow-hidden"
+          className="relative h-64 md:h-72 overflow-hidden"
           initial={{ clipPath: clipFrom }}
           whileInView={{ clipPath: clipTo }}
           viewport={{ once: true }}
