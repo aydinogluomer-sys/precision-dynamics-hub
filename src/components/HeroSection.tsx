@@ -225,7 +225,7 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       >
         {/* Full-width single column — centered */}
         <motion.div
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-6xl mx-auto text-center"
           variants={containerVariants}
           initial={isFirstVisit ? "hidden" : false}
           whileInView="visible"
