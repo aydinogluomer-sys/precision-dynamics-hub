@@ -180,6 +180,9 @@ const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const gridY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 400]);
   const overlayOpacity = useTransform(scrollY, [0, 600], prefersReduced ? [0.85, 0.85] : [0.85, 1]);
 
+  // 3D scroll-driven headline tilt
+  const headlineRotateX = useTransform(scrollY, [0, 400], prefersReduced ? [0, 0] : [0, -12]);
+
   // 3D mouse perspective (disabled for reduced motion)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
