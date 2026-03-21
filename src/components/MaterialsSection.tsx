@@ -234,6 +234,9 @@ const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; in
 
 const MaterialsSection = () => {
   const isMobile = useIsMobile();
+  const prefersReduced = usePrefersReducedMotion();
+  const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
+  const tiltAnimate = { opacity: 1, rotateX: 0 };
 
   return (
     <section id="malzemeler" className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
