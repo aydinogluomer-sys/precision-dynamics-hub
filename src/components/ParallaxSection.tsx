@@ -12,6 +12,7 @@ interface ParallaxSectionProps {
   isLast?: boolean;
   variant?: TransitionVariant;
   style?: React.CSSProperties;
+  videoBg?: string;
 }
 
 const ParallaxSection = ({
