@@ -108,7 +108,7 @@ const WhyUsSection = () => {
               </span>
             </div>
             <Reveal variant="word-stagger" duration={0.6}>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+              <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tighter">
                 {"Endüstri Liderlerinin Mas Technic'i Tercih Etme Nedenleri."}
               </h2>
             </Reveal>
