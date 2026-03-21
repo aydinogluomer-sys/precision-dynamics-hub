@@ -27,11 +27,36 @@ interface Industry {
 }
 
 const primaryIndustries: Industry[] = [
-  { name: "Havacılık & Uzay", description: "AS9100D sertifikalı havacılık parçaları. Kritik uçuş bileşenlerinde kanıtlanmış üretim yetkinliği.", highlight: "±0.005mm tolerans", image: imgAerospace },
-  { name: "Savunma Sanayi", description: "MIL-SPEC standartlarında kritik bileşenler. Yüksek güvenilirlik gerektiren savunma projeleri.", highlight: "Yüksek güvenilirlik", image: imgDefense },
-  { name: "Otomotiv", description: "IATF 16949 kalite standartlarında seri ve prototip üretim kapasitesi.", highlight: "Seri üretim kapasitesi", image: imgAutomotive },
-  { name: "Medikal", description: "ISO 13485 uyumlu, biyouyumlu malzemelerle medikal cihaz bileşenleri.", highlight: "Biyouyumlu malzemeler", image: imgMedical },
-  { name: "Robotik", description: "Hassas hareket sistemleri, aktüatörler ve yüksek tekrarlanabilirlik gerektiren parçalar.", highlight: "Yüksek tekrarlanabilirlik", image: imgRobotics },
+  {
+    name: "Havacılık & Uzay",
+    description: "AS9100D sertifikalı havacılık parçaları. Kritik uçuş bileşenlerinde kanıtlanmış üretim yetkinliği.",
+    highlight: "±0.005mm tolerans",
+    image: imgAerospace,
+  },
+  {
+    name: "Savunma Sanayi",
+    description: "MIL-SPEC standartlarında kritik bileşenler. Yüksek güvenilirlik gerektiren savunma projeleri.",
+    highlight: "Yüksek güvenilirlik",
+    image: imgDefense,
+  },
+  {
+    name: "Otomotiv",
+    description: "IATF 16949 kalite standartlarında seri ve prototip üretim kapasitesi.",
+    highlight: "Seri üretim kapasitesi",
+    image: imgAutomotive,
+  },
+  {
+    name: "Medikal",
+    description: "ISO 13485 uyumlu, biyouyumlu malzemelerle medikal cihaz bileşenleri.",
+    highlight: "Biyouyumlu malzemeler",
+    image: imgMedical,
+  },
+  {
+    name: "Robotik",
+    description: "Hassas hareket sistemleri, aktüatörler ve yüksek tekrarlanabilirlik gerektiren parçalar.",
+    highlight: "Yüksek tekrarlanabilirlik",
+    image: imgRobotics,
+  },
 ];
 
 const secondaryIndustries: Industry[] = [
@@ -68,7 +93,7 @@ const chipVariants = {
 
 export const IndustriesSection = () => {
   return (
-    <section id="endustriler" className="border-y border-border" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <section id="endustriler" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
       <div className="container-industrial py-24 md:py-32 lg:py-40">
         {/* Header */}
         <TextReveal className="text-center mb-12 md:mb-16">
@@ -78,7 +103,9 @@ export const IndustriesSection = () => {
             <div className="w-8 h-px bg-border" />
           </div>
           <h2 className="heading-industrial text-2xl sm:text-3xl md:text-4xl mb-4">Hizmet Verdiğimiz Endüstriler</h2>
-          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">Talaşlı imalatın öncelikli olduğu sektörlerde kanıtlanmış operasyonel yetkinlik.</p>
+          <p className="subheading-industrial text-base sm:text-lg max-w-2xl mx-auto">
+            Talaşlı imalatın öncelikli olduğu sektörlerde kanıtlanmış operasyonel yetkinlik.
+          </p>
         </TextReveal>
 
         {/* Primary Industries — Large Cards */}
@@ -116,8 +143,13 @@ export const IndustriesSection = () => {
                   <div className="w-8 h-8 rounded-sm overflow-hidden flex-shrink-0">
                     <BlurImage src={industry.image} alt={industry.name} className="w-full h-full object-cover" />
                   </div>
-                  <span className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">{industry.name}</span>
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-border text-foreground/50 hidden sm:inline-flex">
+                  <span className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors">
+                    {industry.name}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1.5 py-0 h-5 border-border text-foreground/50 hidden sm:inline-flex"
+                  >
                     {industry.highlight}
                   </Badge>
                 </a>
@@ -131,15 +163,7 @@ export const IndustriesSection = () => {
 };
 
 /* Primary card — large image + content */
-const PrimaryIndustryCard = ({
-  industry,
-  index,
-  isWide,
-}: {
-  industry: Industry;
-  index: number;
-  isWide: boolean;
-}) => (
+const PrimaryIndustryCard = ({ industry, index, isWide }: { industry: Industry; index: number; isWide: boolean }) => (
   <motion.div
     custom={index}
     variants={cardVariants}
@@ -153,15 +177,23 @@ const PrimaryIndustryCard = ({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
       <div className="absolute bottom-3 left-4 z-10">
-        <div className="px-2.5 py-1 border border-border/60 backdrop-blur-sm inline-block" style={{ backgroundColor: "hsl(var(--forge-molten) / 0.12)" }}>
-          <span className="text-technical text-[11px] font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>{industry.highlight}</span>
+        <div
+          className="px-2.5 py-1 border border-border/60 backdrop-blur-sm inline-block"
+          style={{ backgroundColor: "hsl(var(--forge-molten) / 0.12)" }}
+        >
+          <span className="text-technical text-[11px] font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>
+            {industry.highlight}
+          </span>
         </div>
       </div>
     </div>
     <div className="p-5 md:p-6 flex-1 flex flex-col">
       <h3 className="font-semibold text-base md:text-lg mb-2">{industry.name}</h3>
       <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
-      <a href="#teklif" className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors mt-auto">
+      <a
+        href="#teklif"
+        className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors mt-auto"
+      >
         <span>Detaylı Bilgi</span> <ArrowRight className="w-3.5 h-3.5" />
       </a>
     </div>

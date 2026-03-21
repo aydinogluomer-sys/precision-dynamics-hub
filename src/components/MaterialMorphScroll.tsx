@@ -179,7 +179,7 @@ export const MaterialMorphScroll = () => {
     <motion.div
       ref={containerRef}
       className="relative"
-      style={{ height: "300vh", backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ height: "300vh" }}
       initial={burnInitial}
       whileInView={burnAnimate}
       viewport={{ once: true, amount: 0.1 }}
@@ -189,7 +189,18 @@ export const MaterialMorphScroll = () => {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          style=style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+```
+
+---
+
+### Dokunulmayacaklar
+```
+Index.tsx              → değişiklik yok
+SectionDivider bg      → transparent kalır, fillColor eklenmez
+text-white değerleri   → kasıtlı, değiştirilmez
+Grup 4 overlap         → marginTop: -2 yeterli
+Grup 6 test            → manuel scroll ile doğrula
           aria-label="Malzeme dönüşüm animasyonu"
           role="img"
         />
