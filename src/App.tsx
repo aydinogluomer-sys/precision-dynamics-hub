@@ -5,38 +5,38 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import ScrollToTop from "@/components/ScrollToTop";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { Index } from "./pages/Index";
+import { NotFound } from "./pages/NotFound";
 
-const SSS = lazy(() => import("./pages/SSS"));
-const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi"));
-const KVKK = lazy(() => import("./pages/KVKK"));
-const CerezPolitikasi = lazy(() => import("./pages/CerezPolitikasi"));
-const Hakkimizda = lazy(() => import("./pages/Hakkimizda"));
-const Iletisim = lazy(() => import("./pages/Iletisim"));
-const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogDetail = lazy(() => import("./pages/BlogDetail"));
-const AdminLogin = lazy(() => import("./pages/AdminLogin"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const Login = lazy(() => import("./pages/Login"));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const Malzemeler = lazy(() => import("./pages/Malzemeler"));
-const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori"));
-const TeklifAl = lazy(() => import("./pages/TeklifAl"));
-const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli"));
-const CategoryPage = lazy(() => import("./pages/CategoryPage"));
-const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork"));
+const SSS = lazy(() => import("./pages/SSS").then(m => ({ default: m.SSS })));
+const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi").then(m => ({ default: m.GizlilikPolitikasi })));
+const KVKK = lazy(() => import("./pages/KVKK").then(m => ({ default: m.KVKK })));
+const CerezPolitikasi = lazy(() => import("./pages/CerezPolitikasi").then(m => ({ default: m.CerezPolitikasi })));
+const Hakkimizda = lazy(() => import("./pages/Hakkimizda").then(m => ({ default: m.Hakkimizda })));
+const Iletisim = lazy(() => import("./pages/Iletisim").then(m => ({ default: m.Iletisim })));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail").then(m => ({ default: m.ServiceDetail })));
+const Blog = lazy(() => import("./pages/Blog").then(m => ({ default: m.Blog })));
+const BlogDetail = lazy(() => import("./pages/BlogDetail").then(m => ({ default: m.BlogDetail })));
+const AdminLogin = lazy(() => import("./pages/AdminLogin").then(m => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
+const Login = lazy(() => import("./pages/Login").then(m => ({ default: m.Login })));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword").then(m => ({ default: m.ForgotPassword })));
+const ResetPassword = lazy(() => import("./pages/ResetPassword").then(m => ({ default: m.ResetPassword })));
+const Malzemeler = lazy(() => import("./pages/Malzemeler").then(m => ({ default: m.Malzemeler })));
+const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori").then(m => ({ default: m.MalzemeKategori })));
+const TeklifAl = lazy(() => import("./pages/TeklifAl").then(m => ({ default: m.TeklifAl })));
+const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli").then(m => ({ default: m.MusteriPaneli })));
+const CategoryPage = lazy(() => import("./pages/CategoryPage").then(m => ({ default: m.CategoryPage })));
+const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork").then(m => ({ default: m.TestHowWeWork })));
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import CustomerProtectedRoute from "./components/CustomerProtectedRoute";
-import ChatBot from "@/components/ChatBot";
-import CursorFollower from "@/components/CursorFollower";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { CustomerProtectedRoute } from "./components/CustomerProtectedRoute";
+import { ChatBot } from "@/components/ChatBot";
+import { CursorFollower } from "@/components/CursorFollower";
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">

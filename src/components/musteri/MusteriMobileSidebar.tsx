@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import MusteriSidebar from "./MusteriSidebar";
+import { MusteriSidebar } from "./MusteriSidebar";
 import { useState } from "react";
 
 interface Props {

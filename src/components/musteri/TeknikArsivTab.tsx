@@ -8,7 +8,7 @@ import { CardListSkeleton } from "./MusteriSkeletons";
 import { toast } from "sonner";
 import { lazy, Suspense } from "react";
 
-const CustomerCadPreview = lazy(() => import("./CustomerCadPreview"));
+const CustomerCadPreview = lazy(() => import("./CustomerCadPreview").then(m => ({ default: m.CustomerCadPreview })));
 
 interface CustomerFile {
   id: string;

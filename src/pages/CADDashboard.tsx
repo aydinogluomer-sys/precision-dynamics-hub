@@ -13,7 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import Header from "@/components/Header";
+import { Header } from "@/components/Header";
 
 // ── Part Table Data ──
 const partData = [

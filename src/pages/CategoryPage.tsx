@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { categoryPages } from "@/data/categoryPages";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";

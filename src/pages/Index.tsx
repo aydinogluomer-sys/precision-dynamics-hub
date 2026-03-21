@@ -1,30 +1,30 @@
 import { Suspense, lazy, useState } from "react";
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import NexusPromoSection from "@/components/NexusPromoSection";
-import HowWeWorkSection from "@/components/HowWeWorkSection";
-import CertificationsSection from "@/components/CertificationsSection";
-import Footer from "@/components/Footer";
-import JsonLdSchema from "@/components/JsonLdSchema";
-import ParallaxSection from "@/components/ParallaxSection";
-import PageLoader from "@/components/PageLoader";
-import QuickQuoteSection from "@/components/QuickQuoteSection";
+import { Header } from "@/components/Header";
+import { HeroSection } from "@/components/HeroSection";
+import { NexusPromoSection } from "@/components/NexusPromoSection";
+import { HowWeWorkSection } from "@/components/HowWeWorkSection";
+import { CertificationsSection } from "@/components/CertificationsSection";
+import { Footer } from "@/components/Footer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
+import { ParallaxSection } from "@/components/ParallaxSection";
+import { PageLoader } from "@/components/PageLoader";
+import { QuickQuoteSection } from "@/components/QuickQuoteSection";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
-import CNCScrollStory from "@/components/CNCScrollStory";
+import { CNCScrollStory } from "@/components/CNCScrollStory";
 
-const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection"));
-const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
-const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll"));
-const ProjectShowcase = lazy(() => import("@/components/ProjectShowcase"));
-const ServicesSection = lazy(() => import("@/components/ServicesSection"));
-const IndustriesSection = lazy(() => import("@/components/IndustriesSection"));
-const MaterialsSection = lazy(() => import("@/components/MaterialsSection"));
-const WhyUsSection = lazy(() => import("@/components/WhyUsSection"));
-const CapabilitiesSection = lazy(() => import("@/components/CapabilitiesSection"));
-const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection"));
-const FinalCTASection = lazy(() => import("@/components/FinalCTASection"));
+const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection").then(m => ({ default: m.VideoScrollSection })));
+const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll").then(m => ({ default: m.MaterialMorphScroll })));
+const ProjectShowcase = lazy(() => import("@/components/ProjectShowcase").then(m => ({ default: m.ProjectShowcase })));
+const ServicesSection = lazy(() => import("@/components/ServicesSection").then(m => ({ default: m.ServicesSection })));
+const IndustriesSection = lazy(() => import("@/components/IndustriesSection").then(m => ({ default: m.IndustriesSection })));
+const MaterialsSection = lazy(() => import("@/components/MaterialsSection").then(m => ({ default: m.MaterialsSection })));
+const WhyUsSection = lazy(() => import("@/components/WhyUsSection").then(m => ({ default: m.WhyUsSection })));
+const CapabilitiesSection = lazy(() => import("@/components/CapabilitiesSection").then(m => ({ default: m.CapabilitiesSection })));
+const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then(m => ({ default: m.FAQBlogSection })));
+const FinalCTASection = lazy(() => import("@/components/FinalCTASection").then(m => ({ default: m.FinalCTASection })));
 
 const SectionLoader = () => (
   <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>

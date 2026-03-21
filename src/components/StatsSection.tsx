@@ -24,7 +24,7 @@ const StaggerContainer = ({ children, className = "" }: { children: React.ReactN
     {children}
   </motion.div>
 );
-import SectionHeader from "./SectionHeader";
+import { SectionHeader } from "./SectionHeader";
 
 const stats = [
   { value: 35, suffix: "+", label: "CNC Tezgâh", isDecimal: false },

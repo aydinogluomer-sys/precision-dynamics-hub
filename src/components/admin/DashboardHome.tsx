@@ -14,7 +14,7 @@ import {
   navigateTo, containerVariants, itemVariants, cardBase, clickableCard,
   type DashData, type ActivityItem,
 } from "./dashboardConstants";
-import DashboardCustomerModal from "./DashboardCustomerModal";
+import { DashboardCustomerModal } from "./DashboardCustomerModal";
 
 export const DashboardHome = () => {
   const [loading, setLoading] = useState(true);

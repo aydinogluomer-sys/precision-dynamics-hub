@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import HowWeWorkSection from "@/components/HowWeWorkSection";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 
 export const TestHowWeWork = () => {
   return (

@@ -1,6 +1,6 @@
 import { CheckCircle, Shield } from "lucide-react";
 import { motion } from "framer-motion";
-import FloatingPaths from "@/components/FloatingPaths";
+import { FloatingPaths } from "@/components/FloatingPaths";
 
 const benefits = [
   "Teklif taleplerinizi anlık takip edin",

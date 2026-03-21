@@ -4,10 +4,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import materialAluminium from "@/assets/material-aluminium.jpg";
-import materialSteel from "@/assets/material-steel.jpg";
-import materialStainless from "@/assets/material-stainless.jpg";
-import materialBrass from "@/assets/material-brass.jpg";
+import { materialAluminium } from "@/assets/material-aluminium.jpg";
+import { materialSteel } from "@/assets/material-steel.jpg";
+import { materialStainless } from "@/assets/material-stainless.jpg";
+import { materialBrass } from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
 
 const materials = [

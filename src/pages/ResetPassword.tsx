@@ -6,7 +6,7 @@ import { Loader2, Lock, Eye, EyeOff, CheckCircle, ChevronLeft } from "lucide-rea
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import LoginLeftPanel from "@/components/auth/LoginLeftPanel";
+import { LoginLeftPanel } from "@/components/auth/LoginLeftPanel";
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");

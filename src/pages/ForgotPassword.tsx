@@ -6,7 +6,7 @@ import { Loader2, AtSign, ChevronLeft, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import LoginLeftPanel from "@/components/auth/LoginLeftPanel";
+import { LoginLeftPanel } from "@/components/auth/LoginLeftPanel";
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");

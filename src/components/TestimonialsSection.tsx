@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal as TextReveal } from "./ui/Reveal";
-import LogoLoop from "./LogoLoop";
+import { LogoLoop } from "./LogoLoop";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { TestimonialsColumn } from "./ui/testimonials-columns-1";

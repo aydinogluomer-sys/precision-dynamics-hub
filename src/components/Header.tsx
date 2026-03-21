@@ -19,7 +19,7 @@ import {
   Cog,
   Flame,
 } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
+import { ThemeToggle } from "./ThemeToggle";
 
 // ── Mega menu data ──────────────────────────────────────────────
 

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-const RFQCadPreview = lazy(() => import("./RFQCadPreview"));
+const RFQCadPreview = lazy(() => import("./RFQCadPreview").then(m => ({ default: m.RFQCadPreview })));
 
 interface RFQ {
   id: string;

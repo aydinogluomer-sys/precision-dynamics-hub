@@ -1,7 +1,7 @@
 import { Search, Download, Activity, Sun, Moon, Loader2, X, Command, FileText, Package, Users, AlertTriangle, Wrench, DollarSign, TrendingUp, Boxes, Wallet, MessageSquare, GitBranch, CalendarDays, Settings, LayoutDashboard } from "lucide-react";
 import { useState, useEffect, useRef, useCallback, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import AdminNotifications from "./AdminNotifications";
+import { AdminNotifications } from "./AdminNotifications";
 
 const tabTitles: Record<string, string> = {
   dashboard: "Kontrol Paneli",

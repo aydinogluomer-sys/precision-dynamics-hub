@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import SectionHeader from "./SectionHeader";
+import { SectionHeader } from "./SectionHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const steps = [

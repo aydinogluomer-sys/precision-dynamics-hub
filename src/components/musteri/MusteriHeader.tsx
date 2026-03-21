@@ -1,5 +1,5 @@
 import { Activity, Sun, Moon, Home, ChevronRight, PanelLeft, PanelLeftClose } from "lucide-react";
-import MusteriNotifications from "./MusteriNotifications";
+import { MusteriNotifications } from "./MusteriNotifications";
 import { useState, useEffect, ReactNode } from "react";
 import { Link } from "react-router-dom";
 

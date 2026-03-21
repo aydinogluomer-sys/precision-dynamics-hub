@@ -20,10 +20,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import LoginLeftPanel from "@/components/auth/LoginLeftPanel";
-import SocialButtons from "@/components/auth/SocialButtons";
-import AuthSeparator from "@/components/auth/AuthSeparator";
-import FormField from "@/components/auth/FormField";
+import { LoginLeftPanel } from "@/components/auth/LoginLeftPanel";
+import { SocialButtons } from "@/components/auth/SocialButtons";
+import { AuthSeparator } from "@/components/auth/AuthSeparator";
+import { FormField } from "@/components/auth/FormField";
 
 const HCAPTCHA_SITE_KEY = "95ae4f14-f512-4a34-ad44-8e04ce323240";
 
