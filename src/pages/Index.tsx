@@ -202,34 +202,34 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 16 }}>
+        <div className="relative" style={{ zIndex: 17 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" flip />
         </div>
 
-        {/* z-index 16 */}
-        <ParallaxSection index={16} variant="stack">
+        {/* z-index 17 */}
+        <ParallaxSection index={17} variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 17 }}>
+        <div className="relative" style={{ zIndex: 18 }}>
           <SectionDivider fillColor="hsl(var(--forge-iron))" flip />
         </div>
 
-        {/* z-index 17 */}
-        <ParallaxSection index={17} variant="color-fade">
+        {/* z-index 18 */}
+        <ParallaxSection index={18} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
         </ParallaxSection>
 
-        <div className="relative" style={{ zIndex: 18 }}>
+        <div className="relative" style={{ zIndex: 19 }}>
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
-        {/* z-index 19 — last section */}
-        <ParallaxSection index={19} isLast variant="stack">
+        {/* z-index 20 — last section */}
+        <ParallaxSection index={20} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>
