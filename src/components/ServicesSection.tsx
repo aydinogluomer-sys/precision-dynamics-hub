@@ -112,7 +112,7 @@ const ServicesSection = () => {
                 {"Kabiliyetler"}
               </span>
             </div>
-            <h2 className="heading-industrial text-3xl md:text-4xl mb-2">
+            <h2 className="heading-industrial text-4xl md:text-5xl mb-3 tracking-tighter">
               {"Üretim Hizmetlerimiz"}
             </h2>
             <p className="text-sm text-foreground/60 max-w-lg">
