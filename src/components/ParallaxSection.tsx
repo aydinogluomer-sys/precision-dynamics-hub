@@ -1,6 +1,7 @@
-import { useRef, type ReactNode } from "react";
+import { useRef, forwardRef, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, useMotionTemplate } from "framer-motion";
 import { useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 type TransitionVariant = "stack" | "zoom-out-blur" | "slide-up" | "zoom-in" | "wipe-mask" | "color-fade" | "depth-3d";
