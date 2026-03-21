@@ -1,22 +1,38 @@
-const certifications = [
-  "ISO 9001:2015",
-  "AS9100D",
-  "IATF 16949",
-  "ISO 13485",
-  "NIST 800-171",
-];
+import { Shield, Plane, Car, HeartPulse, Lock } from "lucide-react";
 
-const separator = " · ";
-const marqueeContent = certifications.flatMap((cert, i) => [
-  cert,
-  ...(i < certifications.length - 1 ? [separator] : [separator]),
-]);
+const certifications = [
+  {
+    name: "ISO 9001:2015",
+    description: "Kalite Yönetim Sistemi",
+    icon: Shield,
+  },
+  {
+    name: "AS9100D",
+    description: "Havacılık Kalite Standardı",
+    icon: Plane,
+  },
+  {
+    name: "IATF 16949",
+    description: "Otomotiv Kalite Standardı",
+    icon: Car,
+  },
+  {
+    name: "ISO 13485",
+    description: "Medikal Cihaz Kalitesi",
+    icon: HeartPulse,
+  },
+  {
+    name: "NIST 800-171",
+    description: "Siber Güvenlik Uyumu",
+    icon: Lock,
+  },
+];
 
 const CertificationsSection = () => {
   return (
     <section
       id="sertifikalar"
-      className="py-6 border-y border-border overflow-hidden"
+      className="py-12 md:py-16 border-y border-border overflow-hidden relative"
       style={{ backgroundColor: "hsl(var(--forge-iron))" }}
     >
       <style>{`
@@ -25,27 +41,67 @@ const CertificationsSection = () => {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
-        .marquee-track {
-          animation: marquee 20s linear infinite;
+        .cert-marquee-track {
+          animation: marquee 30s linear infinite;
         }
-        .marquee-track:hover {
+        .cert-marquee-track:hover {
           animation-play-state: paused;
         }
       `}</style>
+
+      {/* Subtle metallic gradient overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.01) 100%)",
+        }}
+      />
+
       <div className="relative">
-        <div className="marquee-track flex whitespace-nowrap">
-          {/* Render content 2x for seamless loop */}
-          {[...marqueeContent, ...marqueeContent].map((item, i) => (
-            <span
+        <div className="cert-marquee-track flex whitespace-nowrap">
+          {/* Render 2x for seamless loop */}
+          {[...certifications, ...certifications].map((cert, i) => (
+            <div
               key={i}
-              className="text-3xl md:text-4xl font-bold uppercase tracking-[0.15em] opacity-50 cursor-default mx-5"
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                color: "hsl(var(--forge-silver))",
-              }}
+              className="inline-flex items-center gap-4 mx-8 md:mx-12 cursor-default group"
             >
-              {item}
-            </span>
+              <div
+                className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-white/10"
+                style={{
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  backgroundColor: "rgba(255,255,255,0.04)",
+                }}
+              >
+                <cert.icon
+                  className="w-5 h-5 md:w-6 md:h-6 transition-colors duration-300"
+                  style={{ color: "hsl(var(--forge-silver) / 0.6)" }}
+                  strokeWidth={1.5}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span
+                  className="text-lg md:text-xl font-bold uppercase tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "hsl(var(--forge-silver))",
+                  }}
+                >
+                  {cert.name}
+                </span>
+                <span
+                  className="text-[10px] md:text-xs uppercase tracking-[0.15em]"
+                  style={{ color: "hsl(var(--forge-silver) / 0.4)" }}
+                >
+                  {cert.description}
+                </span>
+              </div>
+
+              {/* Separator dot */}
+              <span
+                className="w-1.5 h-1.5 rounded-full ml-4 md:ml-8 shrink-0"
+                style={{ backgroundColor: "hsl(var(--forge-molten) / 0.4)" }}
+              />
+            </div>
           ))}
         </div>
       </div>

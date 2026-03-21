@@ -117,7 +117,7 @@ const VideoScrollSection = () => {
               color: "hsl(var(--primary))",
               fontFamily: "'JetBrains Mono', monospace",
               opacity: labelOpacity
-            }}>ÜÜHENDİSLİK & ÜRETİM
+            }}>{"MÜHENDİSLİK & ÜRETİM"}
 
 
           </motion.span>
