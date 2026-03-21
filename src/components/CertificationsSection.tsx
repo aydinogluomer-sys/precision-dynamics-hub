@@ -31,10 +31,6 @@ const certifications = [
 ];
 
 const VENETIAN_STRIPS = 6;
-const stripVariants = {
-  hidden: (prefersReduced: boolean) => prefersReduced ? { clipPath: "inset(0 0 0% 0)" } : { clipPath: "inset(0 0 100% 0)" },
-  visible: { clipPath: "inset(0 0 0% 0)" },
-};
 
 const CertificationsSection = () => {
   const prefersReduced = usePrefersReducedMotion();
@@ -112,27 +108,25 @@ const CertificationsSection = () => {
         }}
       />
 
-      {/* Venetian blind reveal: 6 horizontal strips revealing the marquee */}
+      {/* Venetian blind reveal: colored strips that slide away to reveal marquee */}
       <div className="relative">
+        {marqueeContent}
         {Array.from({ length: VENETIAN_STRIPS }).map((_, idx) => (
           <motion.div
             key={idx}
-            className="absolute inset-0"
+            className="absolute left-0 right-0 pointer-events-none z-10"
             style={{
               top: `${(idx / VENETIAN_STRIPS) * 100}%`,
               height: `${100 / VENETIAN_STRIPS}%`,
-              overflow: "hidden",
+              backgroundColor: "hsl(var(--forge-iron))",
+              willChange: "clip-path",
             }}
-            custom={prefersReduced}
-            variants={stripVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            initial={prefersReduced ? { clipPath: "inset(0 0 100% 0)" } : { clipPath: "inset(0 0 0% 0)" }}
+            whileInView={{ clipPath: "inset(0 0 100% 0)" }}
+            viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] }}
           />
         ))}
-        {/* Actual content underneath */}
-        {marqueeContent}
       </div>
     </section>
   );

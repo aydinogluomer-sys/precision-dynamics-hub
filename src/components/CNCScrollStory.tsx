@@ -182,8 +182,9 @@ const CNCScrollStory = () => {
         <div
           className="absolute inset-0 pointer-events-none z-[5]"
           style={{
-            backgroundImage: "repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 4px)",
-            opacity: 0.04,
+            backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px)",
+            mixBlendMode: "screen",
+            opacity: 0.5,
           }}
         />
 

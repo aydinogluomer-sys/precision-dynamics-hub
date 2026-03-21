@@ -157,16 +157,28 @@ const ProjectShowcase = () => {
       className="relative"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
-      {/* Chromatic aberration overlay */}
+      {/* Chromatic aberration overlay — triggered on viewport entry */}
       <style>{`
         @keyframes chroma-r { 0% { transform: translateX(8px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
         @keyframes chroma-g { 0% { transform: translateX(-6px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
         @keyframes chroma-b { 0% { transform: translateX(4px); opacity: 0.6; } 70% { transform: translateX(0); opacity: 0.3; } 100% { opacity: 0; } }
-        .chroma-layer { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; animation-duration: 0.3s; animation-fill-mode: forwards; animation-timing-function: ease-out; }
+        .chroma-layer { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0; }
+        .chroma-active .chroma-layer { animation-duration: 0.4s; animation-fill-mode: forwards; animation-timing-function: ease-out; }
+        .chroma-active .chroma-r { animation-name: chroma-r; }
+        .chroma-active .chroma-g { animation-name: chroma-g; }
+        .chroma-active .chroma-b { animation-name: chroma-b; }
       `}</style>
-      <div className="chroma-layer" style={{ backgroundColor: "rgba(255,0,0,0.15)", animation: "chroma-r 0.3s ease-out forwards" }} />
-      <div className="chroma-layer" style={{ backgroundColor: "rgba(0,255,0,0.1)", animation: "chroma-g 0.3s ease-out forwards" }} />
-      <div className="chroma-layer" style={{ backgroundColor: "rgba(0,0,255,0.15)", animation: "chroma-b 0.3s ease-out forwards" }} />
+      <motion.div
+        className="absolute inset-0 z-[1] pointer-events-none"
+        onViewportEnter={() => {
+          const el = containerRef.current;
+          if (el) el.classList.add("chroma-active");
+        }}
+        viewport={{ once: true }}
+      />
+      <div className="chroma-layer chroma-r" style={{ backgroundColor: "rgba(255,0,0,0.15)" }} />
+      <div className="chroma-layer chroma-g" style={{ backgroundColor: "rgba(0,255,0,0.1)" }} />
+      <div className="chroma-layer chroma-b" style={{ backgroundColor: "rgba(0,0,255,0.15)" }} />
       <div className="h-screen flex flex-col justify-center">
         {/* Header */}
         <div className="container-industrial pt-12 pb-8">
