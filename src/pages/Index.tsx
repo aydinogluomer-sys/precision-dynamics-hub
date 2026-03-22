@@ -186,10 +186,7 @@ export const Index = () => {
         </ParallaxSection>
 
         {/* Divider: gunmetal → gunmetal */}
-        <div
-          className="relative"
-          style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}
-        >
+        <div 
           <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
