@@ -151,7 +151,7 @@ export const QuickQuoteSection = () => {
       </div>
 
       <div className="container-industrial relative z-10">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Header */}
           <motion.div
             className="text-center mb-8"
