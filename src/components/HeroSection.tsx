@@ -124,7 +124,6 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       id="hero"
       className="relative flex items-center justify-center pt-24 pb-28"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))", minHeight: "100svh" }}
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
       {!prefersReduced && (
         <motion.div
