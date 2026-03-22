@@ -162,19 +162,12 @@ export const QuickQuoteSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <div className="inline-flex items-center gap-3 mb-3">
-              <div className="w-8 h-px bg-primary" />
-              <span
-                className="text-[10px] uppercase tracking-[0.4em] font-mono"
-                style={{ color: "rgba(255,255,255,0.5)" }}
-              >
-                {"Hızlı Teklif"}
-              </span>
-              <div className="w-8 h-px bg-primary" />
-            </div>
-            <Reveal variant="word-stagger" duration={0.6}>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{"CAD Dosyanızı Yükleyin"}</h2>
-            </Reveal>
+            <h2
+              className="text-2xl md:text-3xl font-bold mb-2 font-mono uppercase tracking-[0.3em]"
+              style={{ color: "rgba(255,255,255,0.9)" }}
+            >
+              {"CAD DOSYANIZI YÜKLEYİN"}
+            </h2>
             <p className="text-sm text-white/50">{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
