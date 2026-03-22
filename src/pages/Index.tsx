@@ -172,9 +172,9 @@ export const Index = () => {
           </Suspense>
         </div>
 
-        {/* Divider: dark → light (obsidian → mist) */}
+        {/* Divider: flip → dalga yukarı bakıyor → üstteki (MaterialMorph/obsidian) rengi */}
         <div className="relative" style={{ zIndex: 13 }}>
-          <SectionDivider fillColor="hsl(var(--forge-mist))" flip />
+          <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
         </div>
 
         {/* z-index 13 — Materials */}
