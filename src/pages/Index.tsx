@@ -134,9 +134,9 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
-        {/* Divider: dark → light (obsidian → concrete) */}
+        {/* Divider: flip → dalga yukarı bakıyor → üstteki (Video/obsidian) rengi */}
         <div className="relative" style={{ zIndex: 8 }}>
-          <SectionDivider fillColor="hsl(var(--forge-concrete))" flip />
+          <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
         </div>
 
         {/* z-index 8 — Services */}
@@ -172,9 +172,9 @@ export const Index = () => {
           </Suspense>
         </div>
 
-        {/* Divider: dark → light (obsidian → mist) */}
+        {/* Divider: flip → dalga yukarı bakıyor → üstteki (MaterialMorph/obsidian) rengi */}
         <div className="relative" style={{ zIndex: 13 }}>
-          <SectionDivider fillColor="hsl(var(--forge-mist))" flip />
+          <SectionDivider fillColor="hsl(var(--forge-obsidian))" flip />
         </div>
 
         {/* z-index 13 — Materials */}
