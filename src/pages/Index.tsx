@@ -208,27 +208,14 @@ export const Index = () => {
           </Suspense>
         </div>
 
-        {/* 15 — Capabilities */}
+        {/* 15 — Capabilities + Testimonials */}
         <div className="relative" style={{ zIndex: 15 }}>
-          <video
-            src="/machine-loop.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="none"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
-            style={{ opacity: 0.06, zIndex: 0 }}
-            aria-hidden="true"
-          />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <Suspense fallback={<SectionLoader />}>
-              <CapabilitiesSection />
-            </Suspense>
-            <Suspense fallback={<SectionLoader />}>
-              <TestimonialsSection />
-            </Suspense>
-          </div>
+          <Suspense fallback={<SectionLoader />}>
+            <CapabilitiesSection />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <TestimonialsSection />
+          </Suspense>
         </div>
 
         {/* 16 — FAQ/Blog */}

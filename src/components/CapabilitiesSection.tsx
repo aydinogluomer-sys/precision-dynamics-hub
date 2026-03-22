@@ -70,7 +70,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
     <motion.section
       ref={forwardedRef}
       id="kabiliyetler"
-      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border overflow-hidden"
+      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       initial={rackInitial}
       whileInView={rackAnimate}
