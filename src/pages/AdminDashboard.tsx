@@ -146,7 +146,7 @@ export const AdminDashboard = () => {
           {renderContent()}
         </main>
       </div>
-      <ExportProgress visible={exporting} fileName={exportFileName} progress={exporting ? 0.85 : 0} />
+      <ExportProgress visible={exporting} fileName={exportFileName} progress={exportProgress} />
     </div>
   );
 };
