@@ -74,47 +74,79 @@ export const QuickQuoteSection = () => {
         }}
       />
 
-      {/* Geometric shape decorations */}
+      {/* Geometric shape decorations — based on kokonutui/shape-hero */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <ElegantShape
+          borderRadius={24}
+          className="top-[-10%] left-[-15%]"
           delay={0.3}
-          width={600}
-          height={140}
-          rotate={12}
-          gradient="from-primary/[0.07]"
-          className="-top-20 -left-32"
-        />
-        <ElegantShape
-          delay={0.5}
-          width={500}
-          height={120}
-          rotate={-15}
-          gradient="from-primary/[0.05]"
-          className="-top-10 -right-24"
-        />
-        <ElegantShape
-          delay={0.4}
-          width={300}
-          height={80}
+          gradient="from-primary/[0.15]"
+          height={500}
           rotate={-8}
-          gradient="from-white/[0.04]"
-          className="-bottom-16 -left-16"
+          width={300}
         />
         <ElegantShape
+          borderRadius={20}
+          className="right-[-20%] bottom-[-5%]"
+          delay={0.5}
+          gradient="from-primary/[0.12]"
+          height={200}
+          rotate={15}
+          width={600}
+        />
+        <ElegantShape
+          borderRadius={32}
+          className="top-[40%] left-[-5%]"
+          delay={0.4}
+          gradient="from-white/[0.08]"
+          height={300}
+          rotate={24}
+          width={300}
+        />
+        <ElegantShape
+          borderRadius={12}
+          className="top-[5%] right-[10%]"
           delay={0.6}
-          width={350}
-          height={90}
-          rotate={20}
-          gradient="from-primary/[0.06]"
-          className="-bottom-12 -right-20"
+          gradient="from-primary/[0.1]"
+          height={100}
+          rotate={-20}
+          width={250}
         />
         <ElegantShape
+          borderRadius={16}
+          className="top-[45%] right-[-10%]"
           delay={0.7}
-          width={200}
-          height={60}
+          gradient="from-white/[0.06]"
+          height={150}
+          rotate={35}
+          width={400}
+        />
+        <ElegantShape
+          borderRadius={28}
+          className="bottom-[10%] left-[20%]"
+          delay={0.2}
+          gradient="from-primary/[0.08]"
+          height={200}
           rotate={-25}
-          gradient="from-white/[0.03]"
-          className="top-1/3 -right-10"
+          width={200}
+        />
+        <ElegantShape
+          borderRadius={10}
+          className="top-[15%] left-[40%]"
+          delay={0.8}
+          gradient="from-white/[0.05]"
+          height={80}
+          rotate={45}
+          width={150}
+        />
+        <ElegantShape
+          borderRadius={18}
+          className="top-[60%] left-[25%]"
+          delay={0.9}
+          gradient="from-primary/[0.07]"
+          height={120}
+          rotate={-12}
+          width={450}
         />
       </div>
 
