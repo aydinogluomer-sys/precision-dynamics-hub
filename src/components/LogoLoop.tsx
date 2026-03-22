@@ -76,7 +76,10 @@ export const LogoLoop = ({
     const imgs = seqRef.current?.querySelectorAll("img") ?? [];
     let rem = imgs.length;
     if (!rem) return;
-    const done = () => { rem--; if (!rem) measure(); };
+    const done = () => {
+      rem--;
+      if (!rem) measure();
+    };
     imgs.forEach((i) => {
       if (i.complete) done();
       else {
@@ -138,15 +141,13 @@ export const LogoLoop = ({
               {renderItem ? (
                 renderItem(item, `${ci}-${ii}`)
               ) : (
-                <div style={{ height: logoHeight, display: "flex", alignItems: "center" }}>
-                  {item.node}
-                </div>
+                <div style={{ height: logoHeight, display: "flex", alignItems: "center" }}>{item.node}</div>
               )}
             </div>
           ))}
         </div>
       )),
-    [copies, logos, gap, logoHeight, renderItem]
+    [copies, logos, gap, logoHeight, renderItem],
   );
 
   // Static grid for reduced motion
@@ -164,10 +165,7 @@ export const LogoLoop = ({
         }}
       >
         {logos.map((item, i) => (
-          <div
-            key={i}
-            style={{ height: logoHeight, display: "flex", alignItems: "center" }}
-          >
+          <div key={i} style={{ height: logoHeight, display: "flex", alignItems: "center" }}>
             {renderItem ? renderItem(item, `static-${i}`) : item.node}
           </div>
         ))}
@@ -175,7 +173,7 @@ export const LogoLoop = ({
     );
   }
 
-  const fadeColor = fadeOutColor || "#0F172A";
+  const fadeColor = fadeOutColor || "var(--background)";
 
   return (
     <div
