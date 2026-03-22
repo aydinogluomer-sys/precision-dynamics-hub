@@ -208,14 +208,27 @@ export const Index = () => {
           </Suspense>
         </div>
 
-        {/* 15 — Capabilities + Testimonials */}
-        <div className="relative" style={{ zIndex: 15 }}>
-          <Suspense fallback={<SectionLoader />}>
-            <CapabilitiesSection />
-          </Suspense>
-          <Suspense fallback={<SectionLoader />}>
-            <TestimonialsSection />
-          </Suspense>
+        {/* 15 — Capabilities + Testimonials — tek ghost video */}
+        <div className="relative" style={{ zIndex: 15, backgroundColor: "hsl(var(--forge-workshop))" }}>
+          <video
+            src="/machine-loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
+            style={{ opacity: 0.06, zIndex: 0 }}
+            aria-hidden="true"
+          />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <Suspense fallback={<SectionLoader />}>
+              <CapabilitiesSection />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <TestimonialsSection />
+            </Suspense>
+          </div>
         </div>
 
         {/* 16 — FAQ/Blog */}

@@ -77,19 +77,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
-      <video
-        src="/machine-loop.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-        aria-hidden="true"
-      />
-
-      {/* Ghost background video */}
+      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.92) !important; }`}</style>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
