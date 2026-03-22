@@ -1,36 +1,53 @@
-**Yapılacaklar:**
+## Plan: Tek ghost video ile iki section'u birleştir
 
-**1.** `CapabilitiesSection.tsx`
+### Yapılacaklar
 
-- `className` içindeki `border-t border-border` kaldır — aradaki çizgi gider
-- Mevcut `<video>` elementi olduğu gibi kalır
+#### 1. `CapabilitiesSection.tsx`
 
-**2.** `TestimonialsSection.tsx`
+- **Satır 73:** `overflow-hidden` kaldır, `border-t border-border` zaten yok
+- **Satır 74:** `backgroundColor` → `"rgba(240, 237, 232, 0.92)"`
+- **Satır 80:** Dark override → `.dark #kabiliyetler { background-color: rgba(15,15,15,0.92) !important; }`
+- **Satır 81-92:** `<video>` ve altındaki yorum satırını sil
 
-- `backgroundColor: "hsl(var(--forge-workshop))"` korunur — değiştirme
-- `<style>` bloğundan hemen sonra şu video ekle:
+#### 2. `TestimonialsSection.tsx`
 
-tsx
+- **Satır 150:** `overflow-hidden` kaldır
+- **Satır 151:** `backgroundColor` → `"rgba(240, 237, 232, 0.92)"`
+- **Satır 154:** Dark override → `.dark #referanslar { background-color: rgba(15,15,15,0.92) !important; }`
+- **Satır 166-176:** `<video>` elementini sil
+
+#### 3. `Index.tsx` — Wrapper'a tek video ekle
+
+Satır 212-219'u şu yapıyla değiştir:
 
 ```tsx
-<video
-  src="/machine-loop.mp4"
-  autoPlay
-  loop
-  muted
-  playsInline
-  preload="none"
-  className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-  style={{ zIndex: 0 }}
-  aria-hidden="true"
-/>
+<div className="relative" style={{ zIndex: 15, backgroundColor: "hsl(var(--forge-workshop))" }}>
+  <video
+    src="/machine-loop.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    preload="none"
+    className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
+    style={{ opacity: 0.06, zIndex: 0 }}
+    aria-hidden="true"
+  />
+  <div style={{ position: "relative", zIndex: 1 }}>
+    <Suspense fallback={<SectionLoader />}>
+      <CapabilitiesSection />
+    </Suspense>
+    <Suspense fallback={<SectionLoader />}>
+      <TestimonialsSection />
+    </Suspense>
+  </div>
+</div>
 ```
 
-- `container-industrial` div'ine `relative z-10` ekle
+### Sonuç
 
-**3.** `Index.tsx`
+Video wrapper seviyesinde tek sefer yüklenir, her iki section yarı-şeffaf arka planla videonun hafifçe görünmesine izin verir. Scroll sırasında video hiç kesilmez — tek sinematik blok.
 
-- Wrapper `div`'deki `<video>` elementini kaldır — her section kendi videosunu taşıyor
-- Wrapper div'i sadeleştir, gereksiz z-index katmanını temizle
+Not
 
-**Önemli teknik not:** SVG `fill` attribute'unda `hsl(var(--token))` çalışmaz, hardcoded hex kullan.
+Her iki section'ın içerik wrapper div'leri `position: relative; z-index: 1` olsun.
