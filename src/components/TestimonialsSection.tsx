@@ -323,15 +323,5 @@ export const TestimonialsSection = () => {
         </div>
       </div>
     </section>
-    <video
-  src="/machine-loop.mp4"
-  autoPlay
-  loop
-  muted
-  playsInline
-  preload="none"
-  className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-  aria-hidden="true"
-/>
   );
 };
