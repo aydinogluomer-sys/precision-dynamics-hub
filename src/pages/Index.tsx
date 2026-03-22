@@ -185,6 +185,11 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
+        {/* Divider: gunmetal → gunmetal */}
+        <div 
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
+        </div>
+
         {/* 14 — WhyUs */}
         <ParallaxSection index={14} variant="stack" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
