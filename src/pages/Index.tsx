@@ -191,13 +191,13 @@ export const Index = () => {
           style={{
             height: 80,
             overflow: "hidden",
-            backgroundColor: "hsl(var(--forge-mist))",
+            backgroundColor: "#dde3e8",
             zIndex: 14,
             position: "relative",
           }}
         >
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
-            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" fill="hsl(var(--forge-gunmetal))" />
+            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" fill="#1a1a2e" />
           </svg>
         </div>
 
