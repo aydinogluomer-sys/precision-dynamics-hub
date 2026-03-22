@@ -57,7 +57,6 @@ SectionLoader.displayName = "SectionLoader";
 
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "hizli-teklif", label: "Hızlı Teklif" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
