@@ -71,13 +71,13 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
       ref={forwardedRef}
       id="kabiliyetler"
       className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center"
-      style={{ backgroundColor: "rgba(240, 237, 232, 0.92)" }}
+      style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
       initial={rackInitial}
       whileInView={rackAnimate}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.92) !important; }`}</style>
+      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.88) !important; }`}</style>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
