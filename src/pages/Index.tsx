@@ -187,8 +187,7 @@ export const Index = () => {
 
         {/* Divider: light → dark (mist → gunmetal) */}
         <div className="relative" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}>
-  <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
-</div>
+          <SectionDivider fillColor="hsl(var(--forge-gunmetal))" />
         </div>
 
         {/* 14 — WhyUs */}
