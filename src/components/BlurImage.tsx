@@ -23,14 +23,14 @@ export const BlurImage = forwardRef<HTMLDivElement, BlurImageProps>(
           style={{
             ...style,
             filter: loaded ? "blur(0px)" : "blur(20px)",
-            transform: disableScaleTransform ? undefined : (loaded ? "scale(1)" : "scale(1.1)"),
+            transform: disableScaleTransform ? undefined : loaded ? "scale(1)" : "scale(1.1)",
             transition: "filter 0.5s ease, transform 0.5s ease",
-            willChange: "filter, transform",
+            willChange: loaded ? "auto" : "filter, transform",
           }}
         />
       </div>
     );
-  }
+  },
 );
 
 BlurImage.displayName = "BlurImage";

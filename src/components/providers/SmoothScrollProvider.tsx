@@ -37,7 +37,10 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", () => {
+      ScrollTrigger.update();
+      window.dispatchEvent(new Event("scroll"));
+    });
 
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
