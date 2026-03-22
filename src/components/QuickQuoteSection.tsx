@@ -26,18 +26,21 @@ export const QuickQuoteSection = () => {
     return null;
   };
 
-  const navigateWithFile = useCallback((file: File) => {
-    const error = validateFile(file);
-    if (error) {
-      setUploadState("error");
-      toast.error(error);
-      setTimeout(() => setUploadState("idle"), 600);
-      return;
-    }
-    setUploadState("success");
-    (window as unknown as Record<string, File>).__heroUploadFile = file;
-    setTimeout(() => navigate("/teklif-al"), 500);
-  }, [navigate]);
+  const navigateWithFile = useCallback(
+    (file: File) => {
+      const error = validateFile(file);
+      if (error) {
+        setUploadState("error");
+        toast.error(error);
+        setTimeout(() => setUploadState("idle"), 600);
+        return;
+      }
+      setUploadState("success");
+      (window as unknown as Record<string, File>).__heroUploadFile = file;
+      setTimeout(() => navigate("/teklif-al"), 500);
+    },
+    [navigate],
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -46,7 +49,7 @@ export const QuickQuoteSection = () => {
       const file = e.dataTransfer.files[0];
       if (file) navigateWithFile(file);
     },
-    [navigateWithFile]
+    [navigateWithFile],
   );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,8 +153,8 @@ export const QuickQuoteSection = () => {
         />
       </div>
 
-      <div className="container-industrial relative z-10">
-        <div className="max-w-5xl mx-auto">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
+        <div className="w-full">
           {/* Header */}
           <motion.div
             className="text-center mb-8"
@@ -170,13 +173,9 @@ export const QuickQuoteSection = () => {
               <div className="w-8 h-px bg-primary" />
             </div>
             <Reveal variant="word-stagger" duration={0.6}>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                {"CAD Dosyanızı Yükleyin"}
-              </h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">{"CAD Dosyanızı Yükleyin"}</h2>
             </Reveal>
-            <p className="text-sm text-white/50">
-              {"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}
-            </p>
+            <p className="text-sm text-white/50">{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
           {/* Upload Card */}
@@ -230,7 +229,10 @@ export const QuickQuoteSection = () => {
                   fileInputRef.current?.click();
                 }
               }}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
             >
@@ -365,10 +367,7 @@ export const QuickQuoteSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <div
-                  className="text-lg font-bold font-mono"
-                  style={{ color: "hsl(var(--forge-molten))" }}
-                >
+                <div className="text-lg font-bold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
                   {stat.value}
                 </div>
                 <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
