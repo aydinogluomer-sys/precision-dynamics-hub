@@ -229,7 +229,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             </p>
           </TextReveal>
 
-          <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+          <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <MagneticButton
               href="/teklif-al"
               className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
