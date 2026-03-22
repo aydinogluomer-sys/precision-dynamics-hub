@@ -32,6 +32,10 @@ const usePageMeta = ({ title, description }: PageMetaOptions) => {
 
     return () => {
       document.title = "Mas Technic | Yüksek Hassasiyetli CNC Üretim & Talaşlı İmalat";
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute("content", "");
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute("content", "Mas Technic");
     };
   }, [title, description]);
 };

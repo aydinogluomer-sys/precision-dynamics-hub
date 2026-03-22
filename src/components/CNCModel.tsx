@@ -9,7 +9,7 @@ const CNCGear = () => {
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.4;
-      meshRef.current.rotation.x = Math.sin(Date.now() * 0.0005) * 0.1;
+      meshRef.current.rotation.x = Math.sin(performance.now() * 0.0005) * 0.1;
     }
   });
 
@@ -28,7 +28,13 @@ const CNCGear = () => {
       {/* Inner ring */}
       <mesh position={[0, 0, 0]}>
         <torusGeometry args={[1.2, 0.12, 16, 32]} />
-        <meshStandardMaterial color={tealColor} metalness={0.9} roughness={0.15} emissive={tealColor} emissiveIntensity={0.3} />
+        <meshStandardMaterial
+          color={tealColor}
+          metalness={0.9}
+          roughness={0.15}
+          emissive={tealColor}
+          emissiveIntensity={0.3}
+        />
       </mesh>
 
       {/* Center hole */}
@@ -41,11 +47,7 @@ const CNCGear = () => {
       {Array.from({ length: 16 }).map((_, i) => {
         const angle = (i / 16) * Math.PI * 2;
         return (
-          <mesh
-            key={i}
-            position={[Math.cos(angle) * 1.95, 0, Math.sin(angle) * 1.95]}
-            rotation={[0, -angle, 0]}
-          >
+          <mesh key={i} position={[Math.cos(angle) * 1.95, 0, Math.sin(angle) * 1.95]} rotation={[0, -angle, 0]}>
             <boxGeometry args={[0.35, 0.5, 0.25]} />
             <meshStandardMaterial color={metalColor} metalness={0.85} roughness={0.2} />
           </mesh>
@@ -56,10 +58,7 @@ const CNCGear = () => {
       {Array.from({ length: 6 }).map((_, i) => {
         const angle = (i / 6) * Math.PI * 2;
         return (
-          <mesh
-            key={`hole-${i}`}
-            position={[Math.cos(angle) * 0.9, 0.26, Math.sin(angle) * 0.9]}
-          >
+          <mesh key={`hole-${i}`} position={[Math.cos(angle) * 0.9, 0.26, Math.sin(angle) * 0.9]}>
             <cylinderGeometry args={[0.1, 0.1, 0.1, 16]} />
             <meshStandardMaterial color={darkColor} metalness={0.95} roughness={0.05} />
           </mesh>
@@ -74,16 +73,18 @@ const CNCGear = () => {
         </mesh>
         <mesh>
           <torusGeometry args={[0.65, 0.08, 12, 24]} />
-          <meshStandardMaterial color={tealColor} metalness={0.9} roughness={0.15} emissive={tealColor} emissiveIntensity={0.2} />
+          <meshStandardMaterial
+            color={tealColor}
+            metalness={0.9}
+            roughness={0.15}
+            emissive={tealColor}
+            emissiveIntensity={0.2}
+          />
         </mesh>
         {Array.from({ length: 12 }).map((_, i) => {
           const angle = (i / 12) * Math.PI * 2;
           return (
-            <mesh
-              key={i}
-              position={[Math.cos(angle) * 1.1, 0, Math.sin(angle) * 1.1]}
-              rotation={[0, -angle, 0]}
-            >
+            <mesh key={i} position={[Math.cos(angle) * 1.1, 0, Math.sin(angle) * 1.1]} rotation={[0, -angle, 0]}>
               <boxGeometry args={[0.25, 0.4, 0.18]} />
               <meshStandardMaterial color={metalColor} metalness={0.85} roughness={0.2} />
             </mesh>

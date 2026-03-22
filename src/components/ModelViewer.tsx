@@ -4,9 +4,7 @@ import { Suspense, useEffect, useMemo, useRef, useState, useCallback } from "rea
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-import {
-  RotateCcw, Grid3x3, Scissors, Loader2, Box, Palette, TriangleRight, Ruler,
-} from "lucide-react";
+import { RotateCcw, Grid3x3, Scissors, Loader2, Box, Palette, TriangleRight, Ruler } from "lucide-react";
 
 // ── Types ──
 interface ModelViewerProps {
@@ -31,13 +29,7 @@ const COLOR_PRESETS = [
 ];
 
 // ── Measurement Points Visual ──
-const MeasurementPoints = ({
-  points,
-  distance,
-}: {
-  points: THREE.Vector3[];
-  distance: number | null;
-}) => {
+const MeasurementPoints = ({ points, distance }: { points: THREE.Vector3[]; distance: number | null }) => {
   if (points.length === 0) return null;
 
   return (
@@ -49,22 +41,17 @@ const MeasurementPoints = ({
         </mesh>
       ))}
       {points.length === 2 && (
-        <>
-          <line>
-            <bufferGeometry>
-              <bufferAttribute
-                attach="attributes-position"
-                args={[new Float32Array([
-                  points[0].x, points[0].y, points[0].z,
-                  points[1].x, points[1].y, points[1].z,
-                ]), 3]}
-                count={2}
-                itemSize={3}
-              />
-            </bufferGeometry>
-            <lineBasicMaterial color="#ef4444" linewidth={2} />
-          </line>
-        </>
+        <line>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              array={new Float32Array([points[0].x, points[0].y, points[0].z, points[1].x, points[1].y, points[1].z])}
+              count={2}
+              itemSize={3}
+            />
+          </bufferGeometry>
+          <lineBasicMaterial color="#ef4444" linewidth={2} />
+        </line>
       )}
     </group>
   );
@@ -87,7 +74,7 @@ const MeasureClickHandler = ({
       const rect = canvas.getBoundingClientRect();
       const mouse = new THREE.Vector2(
         ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1
+        -((e.clientY - rect.top) / rect.height) * 2 + 1,
       );
       raycaster.setFromCamera(mouse, camera);
       const meshes: THREE.Object3D[] = [];
@@ -295,7 +282,6 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
   const handleMeasurePoint = useCallback((point: THREE.Vector3) => {
     setMeasurePoints((prev) => {
       if (prev.length >= 2) {
-        // Reset and start new measurement
         const newPoints = [point];
         setMeasureDistance(null);
         return newPoints;
@@ -390,7 +376,6 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
 
         <div className="w-px h-5 bg-border" />
 
-        {/* Wireframe */}
         <button
           onClick={() => setWireframe((w) => !w)}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -403,7 +388,6 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
 
         <div className="w-px h-5 bg-border" />
 
-        {/* Color */}
         <div className="relative">
           <button
             onClick={() => setShowColors((c) => !c)}
@@ -413,17 +397,17 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
             title="Renk Değiştir"
           >
             <Palette size={14} />
-            <span
-              className="w-3 h-3 border border-border"
-              style={{ backgroundColor: modelColor }}
-            />
+            <span className="w-3 h-3 border border-border" style={{ backgroundColor: modelColor }} />
           </button>
           {showColors && (
             <div className="absolute top-full left-0 mt-1 z-20 bg-card border border-border p-2 flex gap-1.5 shadow-lg">
               {COLOR_PRESETS.map((c) => (
                 <button
                   key={c.color}
-                  onClick={() => { setModelColor(c.color); setShowColors(false); }}
+                  onClick={() => {
+                    setModelColor(c.color);
+                    setShowColors(false);
+                  }}
                   className={`w-6 h-6 border-2 transition-all ${
                     modelColor === c.color ? "border-primary scale-110" : "border-border hover:border-primary/50"
                   }`}
@@ -437,11 +421,12 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
 
         <div className="w-px h-5 bg-border" />
 
-        {/* Measurement */}
         <button
           onClick={toggleMeasure}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
-            measuring ? "text-destructive bg-destructive/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            measuring
+              ? "text-destructive bg-destructive/10"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
           title="Ölçüm Aracı"
         >
@@ -449,29 +434,27 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
         </button>
 
         {measureDistance !== null && (
-          <span className="text-xs font-mono text-destructive font-bold ml-1">
-            {measureDistance} mm
-          </span>
+          <span className="text-xs font-mono text-destructive font-bold ml-1">{measureDistance} mm</span>
         )}
 
-        {/* Dimensions badge */}
         {dimensions && (
           <div className="ml-auto flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-            <span className="text-primary font-semibold">X</span>{dimensions.x}
-            <span className="text-primary font-semibold">Y</span>{dimensions.y}
-            <span className="text-primary font-semibold">Z</span>{dimensions.z}mm
+            <span className="text-primary font-semibold">X</span>
+            {dimensions.x}
+            <span className="text-primary font-semibold">Y</span>
+            {dimensions.y}
+            <span className="text-primary font-semibold">Z</span>
+            {dimensions.z}mm
           </div>
         )}
       </div>
 
-      {/* Measuring hint */}
       {measuring && (
         <div className="px-3 py-1.5 bg-destructive/10 border-b border-destructive/20 text-xs text-destructive font-medium text-center">
           Ölçüm modu aktif — Model üzerinde 2 noktaya tıklayarak mesafe ölçün
         </div>
       )}
 
-      {/* Canvas */}
       <div className="flex-1 relative bg-muted/20">
         {loading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/70">
@@ -531,20 +514,10 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
               />
             )}
 
-            <OrbitControls
-              makeDefault
-              enableDamping
-              dampingFactor={0.1}
-              minDistance={0.5}
-              maxDistance={500}
-            />
+            <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={500} />
 
-            {/* GizmoHelper - ViewCube */}
             <GizmoHelper alignment="bottom-right" margin={[60, 60]}>
-              <GizmoViewport
-                axisColors={["#ef4444", "#22c55e", "#3b82f6"]}
-                labelColor="white"
-              />
+              <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
             </GizmoHelper>
 
             <CameraReset trigger={resetTrigger} />
@@ -552,14 +525,15 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
         </Canvas>
       </div>
 
-      {/* Dimensions Card */}
       {dimensions && (
         <div className="p-3 bg-card border-t border-border shrink-0">
           <div className="grid grid-cols-3 gap-2">
             {(["x", "y", "z"] as const).map((axis) => (
               <div key={axis} className="text-center p-2 bg-muted/50">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{axis} Ekseni</p>
-                <p className="text-sm font-bold font-mono text-foreground">{dimensions[axis]} <span className="text-muted-foreground font-normal text-[10px]">mm</span></p>
+                <p className="text-sm font-bold font-mono text-foreground">
+                  {dimensions[axis]} <span className="text-muted-foreground font-normal text-[10px]">mm</span>
+                </p>
               </div>
             ))}
           </div>
