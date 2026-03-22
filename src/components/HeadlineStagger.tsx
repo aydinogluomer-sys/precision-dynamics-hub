@@ -76,7 +76,7 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
           transition={{ delay: staggerWordChars * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line text-center"
           style={{
-            fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
+            fontSize: "clamp(2.75rem, 7vw, 7.5rem)",
             color: "white",
             letterSpacing: "-0.03em",
             lineHeight: 1,
