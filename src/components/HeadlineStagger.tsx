@@ -55,7 +55,7 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
                   exit={prefersReduced ? "enter" : "exit"}
                   className="inline-block font-extrabold uppercase"
                   style={{
-                    fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
+                    fontSize: "clamp(2.75rem, 7vw, 7.5rem)",
                     color: "white",
                     letterSpacing: "-0.03em",
                     lineHeight: 1,
