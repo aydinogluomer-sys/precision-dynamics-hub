@@ -218,7 +218,7 @@ export const Index = () => {
             playsInline
             preload="none"
             className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
-            style={{ opacity: 0.06, zIndex: 0 }}
+            style={{ opacity: 0.08, zIndex: 0 }}
             aria-hidden="true"
           />
           <div style={{ position: "relative", zIndex: 1 }}>
