@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { Link } from "react-router-dom";
-import { Reveal as <TextReveal variant="clip" direction="up"> } from "./ui/Reveal";
+import { Reveal } from "./ui/Reveal";
 import {
   LayoutDashboard, FileText, Package, Factory,
   ShieldCheck, ArrowRight, BarChart3,
