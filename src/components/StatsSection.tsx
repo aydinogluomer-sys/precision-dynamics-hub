@@ -1,4 +1,5 @@
 // StatsSection - each stat uses its own StatCard component for proper hook usage
+import { SectionHeader } from "./SectionHeader";
 import { useEffect, useState, useRef, forwardRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -24,8 +25,6 @@ const StaggerContainer = ({ children, className = "" }: { children: React.ReactN
     {children}
   </motion.div>
 );
-import { SectionHeader } from "./SectionHeader";
-
 const stats = [
   { value: 35, suffix: "+", label: "CNC Tezgâh", isDecimal: false },
   { value: 0.01, suffix: "mm", label: "Tolerans", isDecimal: true },
@@ -72,7 +71,14 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
       <motion.div
         ref={ref}
         className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
-        whileHover={{ scale: 1.05 }}
+        style={{
+          background: "rgba(255, 255, 255, 0.05)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+        whileHover={{
+          borderColor: "rgba(232, 97, 10, 0.4)",
+          boxShadow: "0 0 30px rgba(232, 97, 10, 0.15)",
+        }}
         transition={{ delay: 0.15 * index }}
       >
         <div
@@ -115,10 +121,10 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
   return (
     <motion.section
       ref={(node) => {
-  (sectionRef as React.MutableRefObject<HTMLElement | null>).current = node;
-  if (typeof forwardedRef === "function") forwardedRef(node);
-  else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLElement | null>).current = node;
-}}
+        (sectionRef as React.MutableRefObject<HTMLElement | null>).current = node;
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      }}
       id="rakamlar"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}

@@ -22,6 +22,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
         <motion.div
           className="fixed inset-0 z-[9999] flex items-center justify-center"
           style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          initial={{ clipPath: "inset(0 0 0% 0)" }}
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
         >
@@ -44,9 +45,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="text-primary-foreground font-bold text-2xl">
-                {"MT"}
-              </span>
+              <span className="text-primary-foreground font-bold text-2xl">{"MT"}</span>
             </motion.div>
 
             {/* Brand text */}
@@ -56,19 +55,14 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
               animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
               transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
             >
-              <span className="font-bold text-xl tracking-tight text-white">
-                {"MAS TECHNIC"}
-              </span>
+              <span className="font-bold text-xl tracking-tight text-white">{"MAS TECHNIC"}</span>
               <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-mono mt-1">
                 {"Precision CNC"}
               </span>
             </motion.div>
 
             {/* Loading bar */}
-            <motion.div
-              className="w-32 h-px mt-4 overflow-hidden"
-              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-            >
+            <motion.div className="w-32 h-px mt-4 overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
               <motion.div
                 className="h-full"
                 style={{

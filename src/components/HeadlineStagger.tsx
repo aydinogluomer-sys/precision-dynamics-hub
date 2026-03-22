@@ -1,4 +1,5 @@
 import { motion, useTransform } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 const charVariants = {
   enter: (i: number) => ({
@@ -24,11 +25,11 @@ interface HeadlineStaggerProps {
 }
 
 export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) => {
+  const prefersReduced = usePrefersReducedMotion();
   const allWords = text.replace(/\n/g, " ").split(" ");
   const staggerWords = allWords.slice(0, 2);
   const restWords = allWords.slice(2);
-
-  let charIndex = 0;
+  const staggerWordChars = staggerWords.join("").length;
 
   return (
     <motion.div
@@ -42,16 +43,16 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
       <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
         {staggerWords.map((word, wi) => (
           <span key={wi} className="inline-flex whitespace-nowrap">
-            {word.split("").map((char) => {
-              const i = charIndex++;
+            {word.split("").map((char, ci) => {
+              const i = staggerWords.slice(0, wi).join("").length + ci;
               return (
                 <motion.span
                   key={`${char}-${i}`}
                   custom={i}
                   variants={charVariants}
-                  initial="initial"
+                  initial={prefersReduced ? "enter" : "initial"}
                   animate="enter"
-                  exit="exit"
+                  exit={prefersReduced ? "enter" : "exit"}
                   className="inline-block font-extrabold uppercase"
                   style={{
                     fontSize: "clamp(3.5rem, 9vw, 8.75rem)",
@@ -72,7 +73,7 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
-          transition={{ delay: charIndex * 0.02 + 0.1, duration: 0.4 }}
+          transition={{ delay: staggerWordChars * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line text-center"
           style={{
             fontSize: "clamp(3.5rem, 9vw, 8.75rem)",

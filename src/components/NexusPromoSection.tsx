@@ -1,14 +1,21 @@
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { Link } from "react-router-dom";
-import { Reveal } from "./ui/Reveal";
+import { Reveal as TextReveal } from "./ui/Reveal";
 import {
-  LayoutDashboard, FileText, Package, Factory,
-  ShieldCheck, ArrowRight, BarChart3,
-  Clock, CheckCircle2, Upload, Eye
+  LayoutDashboard,
+  FileText,
+  Package,
+  Factory,
+  ShieldCheck,
+  ArrowRight,
+  BarChart3,
+  Clock,
+  CheckCircle2,
+  Upload,
+  Eye,
 } from "lucide-react";
 
-/* Fake dashboard data for the mockup */
 const recentOrders = [
   { id: "ORD-2847", part: "Flanş Bağlantı", status: "Üretimde", progress: 72, machine: "DMG MORI" },
   { id: "ORD-2846", part: "Vana Gövdesi", status: "KK Bekliyor", progress: 95, machine: "Mazak" },
@@ -35,18 +42,15 @@ export const NexusPromoSection = () => {
 
   return (
     <motion.section
-      className="relative min-h-screen"
+      className="relative min-h-screen bg-[hsl(var(--forge-gunmetal))]"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
       initial={inkInitial}
       whileInView={inkAnimate}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
-
-      {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
-        {/* Header */}
-        <Reveal>
+        <TextReveal>
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-white/40" />
@@ -60,11 +64,9 @@ export const NexusPromoSection = () => {
               <span>Yönetim Paneli</span>
             </h2>
           </div>
-        </Reveal>
+        </TextReveal>
 
-        {/* Main Content: Left features + Right dashboard mockup */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Left: Description + Features */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -72,8 +74,8 @@ export const NexusPromoSection = () => {
             transition={{ duration: 0.5 }}
           >
             <p className="text-white/70 leading-relaxed mb-8 max-w-lg">
-              Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin.
-              Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu.
+              Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. Hassas mühendislik
+              için optimize edilmiş dijital tedarik zinciri entegrasyonu.
             </p>
 
             <div className="space-y-5 mb-10">
@@ -91,7 +93,7 @@ export const NexusPromoSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-foreground mb-0.5">{f.label}</h4>
-                    <p className="text-xs text-primary-foreground">{f.desc}</p>
+                    <p className="text-xs text-white/60">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -109,7 +111,6 @@ export const NexusPromoSection = () => {
             </Link>
           </motion.div>
 
-          {/* Right: Dashboard Mockup */}
           <NexusDashboardMockup />
         </div>
       </div>
@@ -117,7 +118,6 @@ export const NexusPromoSection = () => {
   );
 };
 
-/* Extracted dashboard mockup to keep main component clean */
 const NexusDashboardMockup = () => (
   <motion.div
     className="relative"
@@ -126,14 +126,16 @@ const NexusDashboardMockup = () => (
     viewport={{ once: true }}
     transition={{ delay: 0.2, duration: 0.6 }}
   >
-    <div className="border border-border bg-card overflow-hidden shadow-xl transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl" style={{ boxShadow: "0 0 0 0 transparent" }}>
+    <div
+      className="relative border border-border bg-card overflow-hidden shadow-xl transition-transform duration-300 hover:scale-[1.01] hover:shadow-2xl"
+      style={{ boxShadow: "0 0 0 0 transparent" }}
+    >
       <style>{`
         @keyframes nexus-scanline {
           0% { top: -2px; }
           100% { top: 100%; }
         }
       `}</style>
-      {/* Scan-line animation */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
         <div
           className="absolute left-0 right-0 h-px opacity-20"
@@ -143,7 +145,7 @@ const NexusDashboardMockup = () => (
           }}
         />
       </div>
-      {/* Mockup Header Bar */}
+
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-muted/30">
         <div className="flex gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
@@ -155,9 +157,7 @@ const NexusDashboardMockup = () => (
         </div>
       </div>
 
-      {/* Mockup Content */}
       <div className="flex">
-        {/* Mini Sidebar */}
         <div className="w-12 border-r border-border bg-muted/20 py-3 hidden sm:flex flex-col items-center gap-3">
           <div className="w-7 h-7 bg-primary flex items-center justify-center">
             <span className="text-[8px] font-bold text-primary-foreground">MT</span>
@@ -176,9 +176,7 @@ const NexusDashboardMockup = () => (
           </div>
         </div>
 
-        {/* Main Area */}
         <div className="flex-1 p-4 sm:p-5">
-          {/* Dashboard Header */}
           <div className="flex items-center justify-between mb-4">
             <div>
               <h4 className="text-sm font-bold text-foreground">Sipariş Takibi</h4>
@@ -194,7 +192,6 @@ const NexusDashboardMockup = () => (
             </div>
           </div>
 
-          {/* Order Table */}
           <div className="border border-border mb-4">
             <div className="grid grid-cols-4 gap-2 px-3 py-2 bg-muted/30 border-b border-border">
               <span className="text-[9px] font-semibold text-foreground/50 uppercase tracking-wider">Sipariş</span>
@@ -203,14 +200,21 @@ const NexusDashboardMockup = () => (
               <span className="text-[9px] font-semibold text-foreground/50 uppercase tracking-wider">İlerleme</span>
             </div>
             {recentOrders.map((order) => (
-              <div key={order.id} className="grid grid-cols-4 gap-2 px-3 py-2.5 border-b border-border last:border-0 items-center">
+              <div
+                key={order.id}
+                className="grid grid-cols-4 gap-2 px-3 py-2.5 border-b border-border last:border-0 items-center"
+              >
                 <span className="text-[10px] font-mono font-semibold text-primary">{order.id}</span>
                 <span className="text-[10px] text-foreground/70 truncate">{order.part}</span>
-                <span className={`text-[9px] font-semibold px-1.5 py-0.5 inline-block w-fit ${
-                  order.status === "Tamamlandı" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-                  order.status === "KK Bekliyor" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
-                  "bg-primary/10 text-primary"
-                }`}>
+                <span
+                  className={`text-[9px] font-semibold px-1.5 py-0.5 inline-block w-fit ${
+                    order.status === "Tamamlandı"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : order.status === "KK Bekliyor"
+                        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        : "bg-primary/10 text-primary"
+                  }`}
+                >
                   {order.status}
                 </span>
                 <div className="flex items-center gap-2">
@@ -229,9 +233,10 @@ const NexusDashboardMockup = () => (
             ))}
           </div>
 
-          {/* Recent Files */}
           <div>
-            <span className="text-[10px] font-semibold text-foreground/50 uppercase tracking-wider mb-2 block">Son Dosyalar</span>
+            <span className="text-[10px] font-semibold text-foreground/50 uppercase tracking-wider mb-2 block">
+              Son Dosyalar
+            </span>
             {recentFiles.map((file) => (
               <div key={file.name} className="flex items-center gap-2 py-1.5 group">
                 <FileText className="w-3 h-3 text-primary/60 shrink-0" />
@@ -245,7 +250,6 @@ const NexusDashboardMockup = () => (
       </div>
     </div>
 
-    {/* Floating badge */}
     <motion.div
       className="absolute -bottom-4 -right-4 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider shadow-lg"
       style={{ backgroundColor: "hsl(var(--forge-molten))", color: "#ffffff" }}
