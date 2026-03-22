@@ -52,10 +52,9 @@ export const WhyUsSection = () => {
     <section
       ref={sectionRef}
       id="neden-biz"
-      className="min-h-screen relative overflow-hidden flex flex-col justify-center"
-      style={{ backgroundColor: "#3d3d5c", perspective: 1000 }}
+      className="min-h-screen relative overflow-hidden flex flex-col justify-center bg-forge-gunmetal"
+      style={{ perspective: 1000 }}
     >
-      <style>{`.dark #neden-biz { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
       {/* Stats Bar */}
       <div className="border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
