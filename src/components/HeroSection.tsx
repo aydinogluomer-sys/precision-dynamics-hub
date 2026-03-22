@@ -122,7 +122,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-end justify-center pt-24 pb-28 overflow-hidden"
+      className="relative flex items-center justify-center pt-24 pb-28"
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))", minHeight: "100svh" }}
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
       {!prefersReduced && (
