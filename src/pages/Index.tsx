@@ -96,11 +96,6 @@ export const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
 
-        {/* z-index 2 */}
-        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <QuickQuoteSection />
-        </div>
-
         {/* z-index 3 — CNCScrollStory */}
         <div className="relative" style={{ zIndex: 3 }}>
           <CNCScrollStory />
