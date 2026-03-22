@@ -37,8 +37,8 @@ const features = [
 
 export const NexusPromoSection = () => {
   const prefersReduced = usePrefersReducedMotion();
-  const inkInitial = prefersReduced ? { clipPath: "circle(150% at 0% 0%)" } : { clipPath: "circle(0% at 0% 0%)" };
-  const inkAnimate = { clipPath: "circle(150% at 0% 0%)" };
+  const inkInitial = prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 };
+  const inkAnimate = { opacity: 1, y: 0 };
 
   return (
     <motion.section
