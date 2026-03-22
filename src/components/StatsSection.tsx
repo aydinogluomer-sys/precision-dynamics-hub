@@ -70,21 +70,12 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
   return (
     <StaggerItem>
       <motion.div
-        ref={ref}
-        className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
-        style={{
-          background: "rgba(255, 255, 255, 0.05)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-        }}
-        whileHover={{
-          borderColor: "rgba(232, 97, 10, 0.4)",
-          boxShadow: "0 0 30px rgba(232, 97, 10, 0.15)",
-        }}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.15 * index }}
-      >
+  ref={ref}
+  className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
+  style={{...}}
+  whileHover={{...}}
+  transition={{ delay: 0.15 * index }}
+>
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
           style={{
@@ -124,7 +115,11 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
 
   return (
     <motion.section
-      ref={(forwardedRef as React.RefObject<HTMLElement>) ?? sectionRef}
+      ref={(node) => {
+  (sectionRef as React.MutableRefObject<HTMLElement | null>).current = node;
+  if (typeof forwardedRef === "function") forwardedRef(node);
+  else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLElement | null>).current = node;
+}}
       id="rakamlar"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
@@ -147,7 +142,7 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
             tag="Rakamlar"
             title="Rakamlarla Mas Technic"
             align="center"
-            titleClassName="text-3xl md:text-4xl font-bold text-white"
+            titleClassName="text-4xl md:text-6xl font-bold text-white tracking-tighter"
           />
         </div>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8">
