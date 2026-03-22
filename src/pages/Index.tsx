@@ -16,65 +16,65 @@ import { SectionDotNav } from "@/components/SectionDotNav";
 import { CNCScrollStory } from "@/components/CNCScrollStory";
 
 const VideoScrollSection = lazy(() =>
-  import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
+import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection }))
 );
 const TestimonialsSection = lazy(() =>
-  import("@/components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+import("@/components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection }))
 );
 const MaterialMorphScroll = lazy(() =>
-  import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll })),
+import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll }))
 );
 const ProjectShowcase = lazy(() =>
-  import("@/components/ProjectShowcase").then((m) => ({ default: m.ProjectShowcase })),
+import("@/components/ProjectShowcase").then((m) => ({ default: m.ProjectShowcase }))
 );
 const ServicesSection = lazy(() =>
-  import("@/components/ServicesSection").then((m) => ({ default: m.ServicesSection })),
+import("@/components/ServicesSection").then((m) => ({ default: m.ServicesSection }))
 );
 const IndustriesSection = lazy(() =>
-  import("@/components/IndustriesSection").then((m) => ({ default: m.IndustriesSection })),
+import("@/components/IndustriesSection").then((m) => ({ default: m.IndustriesSection }))
 );
 const MaterialsSection = lazy(() =>
-  import("@/components/MaterialsSection").then((m) => ({ default: m.MaterialsSection })),
+import("@/components/MaterialsSection").then((m) => ({ default: m.MaterialsSection }))
 );
 const WhyUsSection = lazy(() => import("@/components/WhyUsSection").then((m) => ({ default: m.WhyUsSection })));
 const CapabilitiesSection = lazy(() =>
-  import("@/components/CapabilitiesSection").then((m) => ({ default: m.CapabilitiesSection })),
+import("@/components/CapabilitiesSection").then((m) => ({ default: m.CapabilitiesSection }))
 );
 const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then((m) => ({ default: m.FAQBlogSection })));
 const FinalCTASection = lazy(() =>
-  import("@/components/FinalCTASection").then((m) => ({ default: m.FinalCTASection })),
+import("@/components/FinalCTASection").then((m) => ({ default: m.FinalCTASection }))
 );
 
-const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
-  <div
-    ref={ref}
-    className="min-h-screen flex items-center justify-center"
-    style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
-  >
+const SectionLoader = forwardRef<HTMLDivElement>((_, ref) =>
+<div
+  ref={ref}
+  className="min-h-screen flex items-center justify-center"
+  style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+  
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
-));
+);
 SectionLoader.displayName = "SectionLoader";
 
 const SECTIONS = [
-  { id: "hero", label: "Ana Sayfa" },
-  { id: "hizli-teklif", label: "Hızlı Teklif" },
-  { id: "cnc-story", label: "CNC Story" },
-  { id: "nexus", label: "Nexus" },
-  { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
-  { id: "sertifikalar", label: "Sertifikalar" },
-  { id: "video", label: "Video" },
-  { id: "hizmetler", label: "Hizmetler" },
-  { id: "endustriler", label: "Endüstriler" },
-  { id: "projeler", label: "Projeler" },
-  { id: "malzeme-morph", label: "Malzeme" },
-  { id: "malzemeler", label: "Malzemeler" },
-  { id: "neden-biz", label: "Neden Biz" },
-  { id: "kabiliyetler", label: "Kabiliyetler" },
-  { id: "referanslar", label: "Referanslar" },
-  { id: "sss-blog", label: "SSS & Blog" },
-  { id: "iletisim", label: "İletişim" },
-];
+{ id: "hero", label: "Ana Sayfa" },
+{ id: "hizli-teklif", label: "Hızlı Teklif" },
+{ id: "cnc-story", label: "CNC Story" },
+{ id: "nexus", label: "Nexus" },
+{ id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
+{ id: "sertifikalar", label: "Sertifikalar" },
+{ id: "video", label: "Video" },
+{ id: "hizmetler", label: "Hizmetler" },
+{ id: "endustriler", label: "Endüstriler" },
+{ id: "projeler", label: "Projeler" },
+{ id: "malzeme-morph", label: "Malzeme" },
+{ id: "malzemeler", label: "Malzemeler" },
+{ id: "neden-biz", label: "Neden Biz" },
+{ id: "kabiliyetler", label: "Kabiliyetler" },
+{ id: "referanslar", label: "Referanslar" },
+{ id: "sss-blog", label: "SSS & Blog" },
+{ id: "iletisim", label: "İletişim" }];
+
 
 export const Index = () => {
   const [isFirstVisit] = useState(() => {
@@ -186,7 +186,7 @@ export const Index = () => {
         </ParallaxSection>
 
         {/* Divider: light → dark (mist → gunmetal) */}
-        <div className="relative" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        <div className="relative bg-primary-foreground" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <SectionDivider fillColor="hsl(var(--forge-mist))" flip />
         </div>
 
@@ -231,6 +231,6 @@ export const Index = () => {
         </ParallaxSection>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
