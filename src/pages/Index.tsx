@@ -217,15 +217,18 @@ export const Index = () => {
             muted
             playsInline
             preload="none"
-            className="absolute inset-0 w-full h-full object-cover opacity-[0.06] pointer-events-none hidden md:block"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
+            style={{ opacity: 0.06, zIndex: 0 }}
             aria-hidden="true"
           />
-          <Suspense fallback={<SectionLoader />}>
-            <CapabilitiesSection />
-          </Suspense>
-          <Suspense fallback={<SectionLoader />}>
-            <TestimonialsSection />
-          </Suspense>
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <Suspense fallback={<SectionLoader />}>
+              <CapabilitiesSection />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <TestimonialsSection />
+            </Suspense>
+          </div>
         </div>
 
         {/* 16 — FAQ/Blog */}
