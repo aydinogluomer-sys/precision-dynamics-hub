@@ -77,7 +77,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.92) !important; }`}</style>
+      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.88) !important; }`}</style>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">

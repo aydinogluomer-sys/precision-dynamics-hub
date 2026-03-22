@@ -151,7 +151,7 @@ export const TestimonialsSection = () => {
       style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
     >
       <style>{`
-        .dark #referanslar { background-color: rgba(15,15,15,0.92) !important; }
+        .dark #referanslar { background-color: rgba(15,15,15,0.88) !important; }
         .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
         .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
         .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
