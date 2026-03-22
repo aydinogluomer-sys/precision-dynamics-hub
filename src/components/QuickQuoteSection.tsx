@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Upload, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { ElegantShape } from "@/components/ui/ElegantShape";
 
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -62,7 +63,7 @@ export const QuickQuoteSection = () => {
   return (
     <section
       id="hizli-teklif"
-      className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden"
+      className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
       {/* Subtle gradient */}
@@ -72,6 +73,50 @@ export const QuickQuoteSection = () => {
           background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.08) 0%, transparent 60%)",
         }}
       />
+
+      {/* Geometric shape decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <ElegantShape
+          delay={0.3}
+          width={600}
+          height={140}
+          rotate={12}
+          gradient="from-primary/[0.07]"
+          className="-top-20 -left-32"
+        />
+        <ElegantShape
+          delay={0.5}
+          width={500}
+          height={120}
+          rotate={-15}
+          gradient="from-primary/[0.05]"
+          className="-top-10 -right-24"
+        />
+        <ElegantShape
+          delay={0.4}
+          width={300}
+          height={80}
+          rotate={-8}
+          gradient="from-white/[0.04]"
+          className="-bottom-16 -left-16"
+        />
+        <ElegantShape
+          delay={0.6}
+          width={350}
+          height={90}
+          rotate={20}
+          gradient="from-primary/[0.06]"
+          className="-bottom-12 -right-20"
+        />
+        <ElegantShape
+          delay={0.7}
+          width={200}
+          height={60}
+          rotate={-25}
+          gradient="from-white/[0.03]"
+          className="top-1/3 -right-10"
+        />
+      </div>
 
       <div className="container-industrial relative z-10">
         <div className="max-w-3xl mx-auto">
