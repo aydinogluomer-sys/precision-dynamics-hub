@@ -20,6 +20,7 @@ export function useImagePreloader({
   useEffect(() => {
     const images: (HTMLImageElement | null)[] = new Array(totalFrames).fill(null);
     let loaded = 0;
+    let cancelled = false;
 
     const framePath = (i: number) => {
       const num = String(i + 1).padStart(4, "0");
@@ -27,6 +28,7 @@ export function useImagePreloader({
     };
 
     const onLoad = () => {
+      if (cancelled) return;
       loaded++;
       setLoadedCount(loaded);
       if (loaded >= eagerCount) setReady(true);
@@ -37,21 +39,23 @@ export function useImagePreloader({
       img.src = framePath(i);
       img.onload = onLoad;
       img.onerror = () => {
+        if (cancelled) return;
         images[i] = null;
-        onLoad();
+        // Başarısız frame sayılmaz — ready yanlış pozitif vermez
       };
       images[i] = img;
     };
 
-    // Eager: first N frames immediately
+    // Eager: ilk N frame hemen yükle
     for (let i = 0; i < Math.min(eagerCount, totalFrames); i++) {
       loadFrame(i);
     }
 
-    // Lazy: remaining frames via requestIdleCallback
+    // Lazy: kalan frame'ler requestIdleCallback ile
     const loadRemaining = () => {
       let idx = eagerCount;
       const loadNext = (deadline?: IdleDeadline) => {
+        if (cancelled) return;
         while (idx < totalFrames && (!deadline || deadline.timeRemaining() > 2)) {
           loadFrame(idx);
           idx++;
@@ -75,6 +79,7 @@ export function useImagePreloader({
     imagesRef.current = images;
 
     return () => {
+      cancelled = true;
       imagesRef.current = [];
     };
   }, [basePath, totalFrames, filePrefix, eagerCount]);
