@@ -226,7 +226,9 @@ function kpiRow(category: string, metric: string, value: number | string) {
 }
 
 /* ── MAIN EXPORT ── */
-export async function exportExcelReport(activeTab: string) {
+export type ExportProgressCallback = (progress: number) => void;
+
+export async function exportExcelReport(activeTab: string, onProgress?: ExportProgressCallback) {
   const now = new Date().toISOString().split("T")[0];
   const wb = XLSX.utils.book_new();
 
