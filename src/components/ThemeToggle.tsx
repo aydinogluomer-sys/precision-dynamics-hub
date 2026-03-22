@@ -7,6 +7,7 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
+      type="button"
       className="w-9 h-9 flex items-center justify-center border border-border text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
       aria-label={theme === "dark" ? "Açık temaya geç" : "Koyu temaya geç"}
     >
