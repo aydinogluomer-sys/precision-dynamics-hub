@@ -178,7 +178,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             </p>
           </TextReveal>
 
-          <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div variants={fadeUpVariants} className="flex justify-center">
             <MagneticButton
               href="/teklif-al"
               className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
@@ -186,22 +186,21 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               <span>{"Teklif Al"}</span>
               <ArrowRight className="w-4 h-4" />
             </MagneticButton>
-            <MagneticButton
-              href="#kabiliyetler"
-              className="font-semibold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-all hover:bg-white/10 border-2 border-white text-white"
-              strength={0.2}
-            >
-              <span>{"Kabiliyetleri Gör"}</span>
-            </MagneticButton>
           </motion.div>
         </motion.div>
       </motion.div>
 
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+      {/* Scroll down arrow → QuickQuoteSection */}
+      <motion.button
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 bg-transparent border-none cursor-pointer"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5 + heroDelay, duration: 0.6 }}
+        onClick={() => {
+          const el = document.getElementById("hizli-teklif");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }}
+        aria-label="Hızlı Teklif bölümüne git"
       >
         <span
           className="text-xs uppercase tracking-widest"
@@ -219,7 +218,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         >
           <div className="w-1 h-2 bg-primary rounded-full" />
         </motion.div>
-      </motion.div>
+      </motion.button>
     </section>
   );
 };
