@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-sequence-scroll.mp4";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
@@ -31,21 +31,47 @@ const features = [
 export const VideoScrollSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
 
-  // Zoom: starts at scale 1, zooms to 2.5 as user scrolls
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 2.5]);
-  // Opacity: fully visible from start, fade out at end
-  const opacity = useTransform(scrollYProgress, [0, 0.7, 0.9], [1, 1, 0]);
+  // Scroll-driven video playback
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-  // Content always visible from start
-  // Scroll-driven stagger for feature cards
+    // Wait for metadata to load
+    const handleMetadata = () => {
+      const unsubscribe = scrollYProgress.on("change", (progress) => {
+        if (video.duration && isFinite(video.duration)) {
+          video.currentTime = progress * video.duration;
+        }
+      });
+      return unsubscribe;
+    };
+
+    let unsubscribe: (() => void) | undefined;
+
+    if (video.readyState >= 1) {
+      unsubscribe = handleMetadata();
+    } else {
+      const onLoaded = () => {
+        unsubscribe = handleMetadata();
+      };
+      video.addEventListener("loadedmetadata", onLoaded, { once: true });
+      return () => video.removeEventListener("loadedmetadata", onLoaded);
+    }
+
+    return () => unsubscribe?.();
+  }, [scrollYProgress]);
+
+  // Opacity for video
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.85, 1], [0.3, 1, 1, 0]);
+
+  // Content reveals based on scroll progress
   const labelOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
   const titleOpacity = useTransform(scrollYProgress, [0.02, 0.1], [0, 1]);
   const titleY = useTransform(scrollYProgress, [0.02, 0.1], [20, 0]);
@@ -54,50 +80,24 @@ export const VideoScrollSection = () => {
   const cardsY = useTransform(scrollYProgress, [0.06, 0.18], [30, 0]);
 
   // Exit transition overlay
-  const exitOpacity = useTransform(scrollYProgress, [0.75, 0.9], [0, 1]);
-  const exitY = useTransform(scrollYProgress, [0.78, 1], [0, -60]);
-
-  const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
-    videoRef.current?.play().catch(() => {});
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-  }, []);
+  const exitOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
 
   return (
     <div
       ref={containerRef}
-      className="relative h-[150vh]"
+      className="relative h-[300vh]"
       style={{ background: "hsl(var(--forge-obsidian))" }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
-      {/* Spotlight sweep overlay */}
-      {!prefersReduced && (
-        <style>{`
-          @keyframes spotlight-sweep {
-            from { -webkit-mask-position: -100% center; mask-position: -100% center; }
-            to { -webkit-mask-position: 200% center; mask-position: 200% center; }
-          }
-        `}</style>
-      )}
-
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
-        {/* Video: paused by default, plays on hover, zooms on scroll */}
-        <motion.div className="absolute inset-0 will-change-transform" style={{ scale, opacity }}>
+        {/* Video — no zoom, scrubbed by scroll */}
+        <motion.div className="absolute inset-0" style={{ opacity }}>
           <video
             ref={videoRef}
             src={cncVideo}
             poster={cncWorkshop}
-            loop
             muted
             playsInline
-            preload="none"
+            preload="auto"
             className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }}
           />
@@ -108,9 +108,8 @@ export const VideoScrollSection = () => {
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ background: "rgba(15, 15, 15, 0.6)" }} />
 
-        {/* ON.energy-style content layout */}
+        {/* Content */}
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 lg:px-8">
-          {/* Top label */}
           <motion.span
             className="text-xs uppercase tracking-[0.3em] mb-6 block"
             style={{
@@ -122,7 +121,6 @@ export const VideoScrollSection = () => {
             {"MÜHENDİSLİK & ÜRETİM"}
           </motion.span>
 
-          {/* Big heading - on.energy style */}
           <motion.h2
             className="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white mb-4"
             style={{ lineHeight: 1, opacity: titleOpacity, y: titleY }}
@@ -130,7 +128,6 @@ export const VideoScrollSection = () => {
             Hassas İşleme
           </motion.h2>
 
-          {/* Description */}
           <motion.p
             className="text-base md:text-lg max-w-xl mb-12"
             style={{ color: "rgba(255,255,255,0.6)", opacity: descOpacity }}
@@ -139,7 +136,6 @@ export const VideoScrollSection = () => {
             üretiyoruz.
           </motion.p>
 
-          {/* Feature cards grid - on.energy style */}
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
             style={{ opacity: cardsOpacity, y: cardsY }}
@@ -155,7 +151,6 @@ export const VideoScrollSection = () => {
                 }}
               >
                 <f.icon className="w-6 h-6 mb-3" style={{ color: "hsl(var(--primary))" }} strokeWidth={1.5} />
-
                 <h3 className="text-sm font-semibold text-white mb-1">{f.title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
                   {f.desc}
@@ -171,7 +166,6 @@ export const VideoScrollSection = () => {
           style={{
             opacity: exitOpacity,
             background: "hsl(var(--forge-obsidian))",
-            y: exitY,
           }}
         />
       </div>

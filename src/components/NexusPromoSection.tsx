@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { Link } from "react-router-dom";
-import { Reveal as TextReveal } from "./ui/Reveal";
+import { SectionHeader } from "./SectionHeader";
 import {
   LayoutDashboard,
   FileText,
@@ -11,9 +11,9 @@ import {
   ArrowRight,
   BarChart3,
   Clock,
-  CheckCircle2,
   Upload,
   Eye,
+  CheckCircle2,
 } from "lucide-react";
 
 const recentOrders = [
@@ -50,21 +50,14 @@ export const NexusPromoSection = () => {
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
-        <TextReveal>
-          <div className="mb-4">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-px bg-white/40" />
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/80 font-mono">
-                Dijital Platform
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white max-w-2xl">
-              <span>Nexus Endüstriyel</span>
-              <br />
-              <span>Yönetim Paneli</span>
-            </h2>
-          </div>
-        </TextReveal>
+        {/* Standardized SectionHeader */}
+        <div className="mb-12">
+          <SectionHeader
+            tag="Dijital Platform"
+            title="Nexus Endüstriyel Yönetim Paneli"
+            description="Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu."
+          />
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           <motion.div
@@ -73,11 +66,6 @@ export const NexusPromoSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-white/70 leading-relaxed mb-8 max-w-lg">
-              Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. Hassas mühendislik
-              için optimize edilmiş dijital tedarik zinciri entegrasyonu.
-            </p>
-
             <div className="space-y-5 mb-10">
               {features.map((f, i) => (
                 <motion.div
@@ -92,8 +80,8 @@ export const NexusPromoSection = () => {
                     <f.icon className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-foreground mb-0.5">{f.label}</h4>
-                    <p className="text-xs text-white/60">{f.desc}</p>
+                    <h4 className="font-semibold text-base text-foreground mb-0.5">{f.label}</h4>
+                    <p className="text-sm text-muted-foreground">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}

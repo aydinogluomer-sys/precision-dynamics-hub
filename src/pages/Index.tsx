@@ -8,7 +8,7 @@ import { Footer } from "@/components/Footer";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { ParallaxSection } from "@/components/ParallaxSection";
 import { PageLoader } from "@/components/PageLoader";
-import { QuickQuoteSection } from "@/components/QuickQuoteSection";
+
 import { SectionDivider } from "@/components/ui/SectionDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
@@ -57,7 +57,6 @@ SectionLoader.displayName = "SectionLoader";
 
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "hizli-teklif", label: "Hızlı Teklif" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
@@ -96,11 +95,6 @@ export const Index = () => {
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
-
-        {/* z-index 2 */}
-        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <QuickQuoteSection />
-        </div>
 
         {/* z-index 3 — CNCScrollStory */}
         <div className="relative" style={{ zIndex: 3 }}>
