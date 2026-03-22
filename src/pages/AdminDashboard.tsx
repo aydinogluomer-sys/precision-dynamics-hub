@@ -53,19 +53,23 @@ export const AdminDashboard = () => {
 
   const [exporting, setExporting] = useState(false);
   const [exportFileName, setExportFileName] = useState("");
+  const [exportProgress, setExportProgress] = useState(0);
 
   const handleExportExcel = async () => {
     setExporting(true);
+    setExportProgress(0.1);
     setExportFileName("rapor.xlsx");
     try {
-      const fileName = await exportExcelReport(activeTab);
+      const fileName = await exportExcelReport(activeTab, (p) => {
+        setExportProgress(p);
+      });
       setExportFileName(fileName);
       toast.success(`${fileName} indirildi`);
     } catch (err) {
       console.error(err);
       toast.error("Rapor oluşturulurken hata oluştu");
     } finally {
-      setTimeout(() => setExporting(false), 1200);
+      setExporting(false);
     }
   };
 
