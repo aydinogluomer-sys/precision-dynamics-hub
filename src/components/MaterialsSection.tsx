@@ -89,7 +89,7 @@ const flipStyles = `
 `;
 
 /* ── Mobile Material Card ── */
-const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
+const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -134,7 +134,9 @@ const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
           </div>
         </div>
 
-        <div className={`absolute inset-0 p-4 flex flex-col justify-end transition-opacity duration-200 ${flipped ? "opacity-100" : "opacity-0"}`}>
+        <div
+          className={`absolute inset-0 p-4 flex flex-col justify-end transition-opacity duration-200 ${flipped ? "opacity-100" : "opacity-0"}`}
+        >
           <div className="pt-2">
             {mat.specs.map((spec) => (
               <div key={spec.label} className="flex justify-between mb-2 font-mono" style={{ fontSize: "10px" }}>
@@ -150,10 +152,19 @@ const MobileMaterialCard = ({ mat }: { mat: typeof materials[number] }) => {
 };
 
 /* ── Desktop Material Card — 3D CSS Flip ── */
-const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; index: number }) => {
+const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
     <div className="flip-card h-[400px] md:h-[440px] cursor-pointer group/card">
-      <div className="flip-card-inner w-full h-full" style={{ filter: "drop-shadow(0 0 0px transparent)" }} onMouseEnter={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 12px rgba(232,97,10,0.25))"; }} onMouseLeave={(e) => { e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)"; }}>
+      <div
+        className="flip-card-inner w-full h-full"
+        style={{ filter: "drop-shadow(0 0 0px transparent)" }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgba(232,97,10,0.25))";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)";
+        }}
+      >
         {/* Front face */}
         <div className="flip-card-front absolute inset-0 overflow-hidden border border-border/30 group">
           <div className="absolute inset-0 z-10">
@@ -187,10 +198,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: typeof materials[number]; in
           </div>
 
           <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
-            <div
-              className="w-12 h-1 mb-5 transition-all duration-300"
-              style={{ background: mat.color }}
-            />
+            <div className="w-12 h-1 mb-5 transition-all duration-300" style={{ background: mat.color }} />
             <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
             <div className="text-[10px] tracking-[0.2em] mb-4 font-mono text-white/50">{mat.typeCode}</div>
 
@@ -242,13 +250,16 @@ export const MaterialsSection = () => {
     <motion.section
       id="malzemeler"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
-      style={{ backgroundColor: "hsl(var(--forge-mist))", perspective: 1000 }}
+      style={{ backgroundColor: "hsl(var(--forge-gunmetal))", perspective: 1000 }}
       initial={tiltInitial}
       whileInView={tiltAnimate}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
-      <style>{flipStyles}{`.dark #malzemeler { background-color: hsl(var(--forge-mist)) !important; }`}</style>
+      <style>
+        {flipStyles}
+        {`.dark #malzemeler { background-color: hsl(var(--forge-gunmetal)) !important; }`}
+      </style>
       {/* Subtle grid */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -274,18 +285,24 @@ export const MaterialsSection = () => {
             </h2>
           </Reveal>
           <p className="text-sm md:text-base max-w-lg mx-auto text-foreground/60">
-            {isMobile
-              ? <>{"50'den fazla malzeme seçeneği · "}<span className="text-foreground/80">{"Dokunarak detayları görün"}</span></>
-              : "50'den fazla materyal seçeneği ile projelerinizin teknik gereksinimlerine ve sektör standartlarına yanıt veren geniş hammadde kütüphanesi"
-            }
+            {isMobile ? (
+              <>
+                {"50'den fazla malzeme seçeneği · "}
+                <span className="text-foreground/80">{"Dokunarak detayları görün"}</span>
+              </>
+            ) : (
+              "50'den fazla materyal seçeneği ile projelerinizin teknik gereksinimlerine ve sektör standartlarına yanıt veren geniş hammadde kütüphanesi"
+            )}
           </p>
         </div>
 
         <div className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
           {materials.map((mat, i) =>
-            isMobile
-              ? <MobileMaterialCard key={mat.name} mat={mat} />
-              : <DesktopMaterialCard key={mat.name} mat={mat} index={i} />
+            isMobile ? (
+              <MobileMaterialCard key={mat.name} mat={mat} />
+            ) : (
+              <DesktopMaterialCard key={mat.name} mat={mat} index={i} />
+            ),
           )}
         </div>
 
