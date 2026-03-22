@@ -216,11 +216,11 @@ export const Index = () => {
         </div>
 
         {/* 16 — Testimonials */}
-        <ParallaxSection index={16} variant="stack">
+        <div className="relative" style={{ zIndex: 16 }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
-        </ParallaxSection>
+        </div>
 
         {/* 17 — FAQ/Blog */}
         <ParallaxSection index={17} variant="color-fade">
