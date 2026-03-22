@@ -38,10 +38,7 @@ export const CertificationsSection = () => {
   const marqueeContent = (
     <div className="cert-marquee-track flex whitespace-nowrap">
       {[...certifications, ...certifications].map((cert, i) => (
-        <div
-          key={i}
-          className="inline-flex items-center gap-4 mx-8 md:mx-12 cursor-default group"
-        >
+        <div key={i} className="inline-flex items-center gap-4 mx-8 md:mx-12 cursor-default group">
           <div
             className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-white/10"
             style={{
@@ -59,7 +56,7 @@ export const CertificationsSection = () => {
             <span
               className="text-lg md:text-xl font-bold uppercase tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "'IBM Plex Mono', monospace",
                 color: "hsl(var(--forge-silver))",
               }}
             >
@@ -104,7 +101,8 @@ export const CertificationsSection = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.01) 100%)",
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.01) 100%)",
         }}
       />
 
@@ -124,7 +122,11 @@ export const CertificationsSection = () => {
             initial={prefersReduced ? { clipPath: "inset(0 0 100% 0)" } : { clipPath: "inset(0 0 0% 0)" }}
             whileInView={{ clipPath: "inset(0 0 100% 0)" }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] }}
+            transition={{
+              duration: 0.5,
+              delay: idx * 0.08,
+              ease: [0.76, 0, 0.24, 1] as [number, number, number, number],
+            }}
           />
         ))}
       </div>

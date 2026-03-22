@@ -28,11 +28,6 @@ export function useTheme() {
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
-  // Apply on mount
-  useEffect(() => {
-    applyTheme(getInitialTheme());
-  }, []);
-
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);

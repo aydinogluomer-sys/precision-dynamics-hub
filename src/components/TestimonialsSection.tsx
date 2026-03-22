@@ -69,12 +69,31 @@ const secondColumn = testimonials.slice(3, 6);
 const thirdColumn = testimonials.slice(6, 9);
 
 const clients = [
-  "Emir Alüminyum", "Mert Teknik", "BDM", "Akbaşlar",
-  "EMOR", "Batı Isıl İşlem", "Yaka Döküm", "Değer Galvano",
-  "Çağdaş Teknik", "C.T.M", "Ege Teknik", "Maktest",
-  "Eksen Hassas Döküm", "Era Metalurji", "Xtremex Kimya", "DPM Boya",
-  "Ahmet Tezcan", "Ali Galip", "Mikrosan Makina", "Dösan Isıl İşlem",
-  "Asil Oltulu", "Akon Hidrolik", "ENTEA", "Amade Metal", "De-Taş",
+  "Emir Alüminyum",
+  "Mert Teknik",
+  "BDM",
+  "Akbaşlar",
+  "EMOR",
+  "Batı Isıl İşlem",
+  "Yaka Döküm",
+  "Değer Galvano",
+  "Çağdaş Teknik",
+  "C.T.M",
+  "Ege Teknik",
+  "Maktest",
+  "Eksen Hassas Döküm",
+  "Era Metalurji",
+  "Xtremex Kimya",
+  "DPM Boya",
+  "Ahmet Tezcan",
+  "Ali Galip",
+  "Mikrosan Makina",
+  "Dösan Isıl İşlem",
+  "Asil Oltulu",
+  "Akon Hidrolik",
+  "ENTEA",
+  "Amade Metal",
+  "De-Taş",
 ];
 
 const stats = [
@@ -116,7 +135,7 @@ export const TestimonialsSection = () => {
     node: (
       <span
         className="text-lg md:text-xl font-bold tracking-wider select-none whitespace-nowrap"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        style={{ fontFamily: "'IBM Plex Mono', monospace" }}
       >
         {name}
       </span>
@@ -145,25 +164,43 @@ export const TestimonialsSection = () => {
       `}</style>
 
       {/* Decorative corner accents */}
-      <div className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
-      <div className="testimonial-corner absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none" style={{ borderColor: "rgba(0,113,144,0.1)" }} />
+      <div
+        className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none"
+        style={{ borderColor: "rgba(0,113,144,0.1)" }}
+      />
+      <div
+        className="testimonial-corner absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none"
+        style={{ borderColor: "rgba(0,113,144,0.1)" }}
+      />
 
       <div className="container-industrial relative z-10">
         {/* Header */}
         <TextReveal className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-3 mb-5">
             <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
-            <span className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono" style={{ color: "#007190" }}>
+            <span
+              className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono"
+              style={{ color: "#007190" }}
+            >
               Güvenilir Partnerler
             </span>
             <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
-          <h2 className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5" style={{ color: "hsl(var(--forge-gunmetal))" }}>
+          <h2
+            className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5"
+            style={{ color: "hsl(var(--forge-gunmetal))" }}
+          >
             <WordScatter text="Bizi Tercih Edenler" prefersReduced={prefersReduced} />
           </h2>
-          <p className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed" style={{ color: "rgba(26,26,46,0.6)" }}>
+          <p
+            className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed"
+            style={{ color: "rgba(26,26,46,0.6)" }}
+          >
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
-            <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}> 1000+ projeyi </span>
+            <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}>
+              {" "}
+              1000+ projeyi{" "}
+            </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
@@ -189,14 +226,20 @@ export const TestimonialsSection = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" style={{ backgroundColor: "hsl(var(--forge-molten))" }} />
+              <div
+                className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
+                style={{ backgroundColor: "hsl(var(--forge-molten))" }}
+              />
               <div
                 className="testimonial-stat-value text-2xl md:text-3xl font-bold mb-1.5"
-                style={{ fontFamily: "'JetBrains Mono', monospace", color: "#007190" }}
+                style={{ fontFamily: "'IBM Plex Mono', monospace" }}
               >
                 {stat.value}
               </div>
-              <div className="testimonial-stat-label text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium" style={{ color: "rgba(26,26,46,0.4)" }}>
+              <div
+                className="testimonial-stat-label text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium"
+                style={{ color: "rgba(26,26,46,0.4)" }}
+              >
                 {stat.label}
               </div>
             </motion.div>
@@ -215,7 +258,10 @@ export const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.15)" }}>
+              <div
+                className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110"
+                style={{ color: "rgba(22,32,56,0.15)" }}
+              >
                 {item.node}
               </div>
             )}
@@ -233,7 +279,10 @@ export const TestimonialsSection = () => {
             fadeOut
             style={{ height: 44 }}
             renderItem={(item) => (
-              <div className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110" style={{ color: "rgba(22,32,56,0.1)" }}>
+              <div
+                className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110"
+                style={{ color: "rgba(22,32,56,0.1)" }}
+              >
                 {item.node}
               </div>
             )}
@@ -249,20 +298,9 @@ export const TestimonialsSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <TestimonialsColumn
-              testimonials={firstColumn}
-              duration={15}
-              className="hidden md:block"
-            />
-            <TestimonialsColumn
-              testimonials={secondColumn}
-              duration={19}
-            />
-            <TestimonialsColumn
-              testimonials={thirdColumn}
-              duration={17}
-              className="hidden md:block"
-            />
+            <TestimonialsColumn testimonials={firstColumn} duration={15} className="hidden md:block" />
+            <TestimonialsColumn testimonials={secondColumn} duration={19} />
+            <TestimonialsColumn testimonials={thirdColumn} duration={17} className="hidden md:block" />
           </motion.div>
 
           {/* CTA */}
