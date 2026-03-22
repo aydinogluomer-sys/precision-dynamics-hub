@@ -70,12 +70,11 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
   return (
     <StaggerItem>
       <motion.div
-  ref={ref}
-  className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
-  style={{...}}
-  whileHover={{...}}
-  transition={{ delay: 0.15 * index }}
->
+        ref={ref}
+        className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
+        whileHover={{ scale: 1.05 }}
+        transition={{ delay: 0.15 * index }}
+      >
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
           style={{
