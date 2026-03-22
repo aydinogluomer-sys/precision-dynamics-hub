@@ -740,7 +740,13 @@ export async function exportExcelReport(activeTab: string, onProgress?: ExportPr
     }
   }
 
+  onProgress?.(0.7);
+
   const fileName = `MasTechnic_${tabTR[activeTab] || "Rapor"}_${now}.xlsx`;
   XLSX.writeFile(wb, fileName);
+
+  onProgress?.(1);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   return fileName;
 }
