@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
@@ -180,45 +180,25 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
 
           <motion.div variants={fadeUpVariants} className="flex justify-center">
             <MagneticButton
-              href="/teklif-al"
-              className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+              as="button"
+              onClick={() => {
+                const el = document.getElementById("hizli-teklif");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
             >
-              <span>{"Teklif Al"}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>{"Hızlı Teklif Al"}</span>
+              <motion.span
+                className="inline-block"
+                animate={{ y: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+              >
+                <ArrowDown className="w-4 h-4" />
+              </motion.span>
             </MagneticButton>
           </motion.div>
         </motion.div>
       </motion.div>
-
-      {/* Scroll down arrow → QuickQuoteSection */}
-      <motion.button
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 bg-transparent border-none cursor-pointer"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5 + heroDelay, duration: 0.6 }}
-        onClick={() => {
-          const el = document.getElementById("hizli-teklif");
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }}
-        aria-label="Hızlı Teklif bölümüne git"
-      >
-        <span
-          className="text-xs uppercase tracking-widest"
-          style={{
-            color: "rgba(255,255,255,0.4)",
-            fontFamily: "'IBM Plex Mono', monospace",
-          }}
-        >
-          {"Keşfet"}
-        </span>
-        <motion.div
-          className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-1"
-          animate={{ y: [0, 4, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-        >
-          <div className="w-1 h-2 bg-primary rounded-full" />
-        </motion.div>
-      </motion.button>
     </section>
   );
 };
