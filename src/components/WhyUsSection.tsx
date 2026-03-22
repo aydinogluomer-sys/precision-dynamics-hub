@@ -41,11 +41,7 @@ export const WhyUsSection = () => {
     offset: ["start 95%", "start 40%"],
   });
 
-  const clipPath = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]
-  );
+  const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
   const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
   const splitLeftInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 };
@@ -57,7 +53,7 @@ export const WhyUsSection = () => {
       ref={sectionRef}
       id="neden-biz"
       className="min-h-screen relative overflow-hidden flex flex-col justify-center"
-      style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
+      style={{ backgroundColor: "#3d3d5c", perspective: 1000 }}
     >
       <style>{`.dark #neden-biz { background-color: hsl(var(--forge-gunmetal)) !important; }`}</style>
       {/* Stats Bar */}
@@ -112,11 +108,10 @@ export const WhyUsSection = () => {
                 {"Endüstri Liderlerinin Mas Technic'i Tercih Etme Nedenleri."}
               </h2>
             </Reveal>
-            <p
-              className="text-sm leading-relaxed mb-10 max-w-md"
-              style={{ color: "hsl(var(--forge-silver))" }}
-            >
-              {"Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz."}
+            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "hsl(var(--forge-silver))" }}>
+              {
+                "Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz."
+              }
             </p>
 
             <div className="space-y-6">
@@ -133,13 +128,8 @@ export const WhyUsSection = () => {
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-white mb-0.5">
-                      {adv.title}
-                    </h4>
-                    <p
-                      className="text-xs leading-relaxed"
-                      style={{ color: "hsl(var(--forge-silver) / 0.7)" }}
-                    >
+                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
+                    <p className="text-xs leading-relaxed" style={{ color: "hsl(var(--forge-silver) / 0.7)" }}>
                       {adv.desc}
                     </p>
                   </div>
@@ -169,11 +159,7 @@ export const WhyUsSection = () => {
                 className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-forge-gunmetal shadow-2xl"
                 style={{ scale: imageScale }}
               >
-                <BlurImage
-                  src={qualityControl}
-                  alt="Kalite Kontrol"
-                  className="w-full h-32 md:h-40 object-cover"
-                />
+                <BlurImage src={qualityControl} alt="Kalite Kontrol" className="w-full h-32 md:h-40 object-cover" />
               </motion.div>
             </div>
           </motion.div>
