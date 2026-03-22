@@ -150,16 +150,6 @@ export const TestimonialsSection = () => {
       className="relative overflow-hidden py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      <video
-        src="/machine-loop.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-        aria-hidden="true"
-      />
       <style>{`
         .dark #referanslar { background-color: hsl(var(--background)) !important; }
         .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }

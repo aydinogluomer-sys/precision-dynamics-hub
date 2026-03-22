@@ -210,6 +210,16 @@ export const Index = () => {
 
         {/* 15 — Capabilities */}
         <div className="relative" style={{ zIndex: 15 }}>
+          <video
+            src="/machine-loop.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover opacity-[0.06] pointer-events-none hidden md:block"
+            aria-hidden="true"
+          />
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>

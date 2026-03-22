@@ -80,16 +80,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
       <style>{`.dark #kabiliyetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>
 
       {/* Ghost background video */}
-      <video
-        src="/machine-loop.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-        aria-hidden="true"
-      />
+
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Left: Sticky panel */}
