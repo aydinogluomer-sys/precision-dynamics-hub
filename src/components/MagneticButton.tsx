@@ -32,7 +32,7 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
       setIsHovered(false);
     };
 
-    const Tag = as;
+    const Tag = as as React.ElementType;
 
     return (
       <motion.div
@@ -44,7 +44,10 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         onMouseMove={handleMouse}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={reset}
-        onFocus={() => setIsFocused(true)}
+        onFocus={() => {
+          setIsFocused(true);
+          reset();
+        }}
         onBlur={() => {
           setIsFocused(false);
           reset();
@@ -52,9 +55,7 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         animate={{
           x: position.x,
           y: position.y,
-          boxShadow: isHovered
-            ? "0 0 20px rgba(232, 97, 10, 0.3)"
-            : "0 0 0px rgba(232, 97, 10, 0)",
+          boxShadow: isHovered ? "0 0 20px rgba(232, 97, 10, 0.3)" : "0 0 0px rgba(232, 97, 10, 0)",
         }}
         whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
@@ -79,7 +80,7 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         </Tag>
       </motion.div>
     );
-  }
+  },
 );
 
 MagneticButton.displayName = "MagneticButton";

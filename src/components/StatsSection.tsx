@@ -33,7 +33,7 @@ const stats = [
   { value: 15, suffix: "+", label: "Yıl Tecrübe", isDecimal: false },
 ];
 
-const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }) => {
+const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number }) => {
   const prefersReduced = usePrefersReducedMotion();
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -59,7 +59,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
           requestAnimationFrame(step);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -108,7 +108,7 @@ const StatCard = ({ stat, index }: { stat: typeof stats[number]; index: number }
   );
 };
 
-export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props, _forwardedRef) {
+export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props, forwardedRef) {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedGlobal = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -117,12 +117,14 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
   });
   const bgY = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
-  const circleInitial = prefersReducedGlobal ? { clipPath: "circle(150% at 50% 50%)" } : { clipPath: "circle(0% at 50% 50%)" };
+  const circleInitial = prefersReducedGlobal
+    ? { clipPath: "circle(150% at 50% 50%)" }
+    : { clipPath: "circle(0% at 50% 50%)" };
   const circleAnimate = { clipPath: "circle(150% at 50% 50%)" };
 
   return (
     <motion.section
-      ref={sectionRef}
+      ref={(forwardedRef as React.RefObject<HTMLElement>) ?? sectionRef}
       id="rakamlar"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
@@ -134,7 +136,8 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(10,126,140,0.15) 0%, rgba(232,97,10,0.05) 40%, transparent 60%)",
+          background:
+            "radial-gradient(ellipse at 50% 50%, rgba(10,126,140,0.15) 0%, rgba(232,97,10,0.05) 40%, transparent 60%)",
           y: bgY,
         }}
       />
