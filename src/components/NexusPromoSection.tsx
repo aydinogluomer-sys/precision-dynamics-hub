@@ -46,7 +46,7 @@ export const NexusPromoSection = () => {
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
         {/* Header */}
-        <TextReveal>
+        <Reveal>
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-px bg-white/40" />
@@ -60,7 +60,7 @@ export const NexusPromoSection = () => {
               <span>Yönetim Paneli</span>
             </h2>
           </div>
-        </TextReveal>
+        </Reveal>
 
         {/* Main Content: Left features + Right dashboard mockup */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
