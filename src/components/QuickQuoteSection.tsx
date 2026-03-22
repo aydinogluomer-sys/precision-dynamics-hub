@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Upload, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { ElegantShape } from "@/components/ui/ElegantShape";
 
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
