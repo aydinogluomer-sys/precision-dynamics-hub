@@ -2,6 +2,7 @@ import { Suspense, lazy, useState, forwardRef } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { NexusPromoSection } from "@/components/NexusPromoSection";
+import { QuickQuoteSection } from "@/components/QuickQuoteSection";
 import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { Footer } from "@/components/Footer";
@@ -57,6 +58,7 @@ SectionLoader.displayName = "SectionLoader";
 
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
+  { id: "hizli-teklif", label: "Hızlı Teklif" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
@@ -95,6 +97,11 @@ export const Index = () => {
         <ParallaxSection index={1} variant="zoom-out-blur">
           <HeroSection isFirstVisit={isFirstVisit} />
         </ParallaxSection>
+
+        {/* z-index 2 */}
+        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
+          <QuickQuoteSection />
+        </div>
 
         {/* z-index 3 — CNCScrollStory */}
         <div className="relative" style={{ zIndex: 3 }}>
