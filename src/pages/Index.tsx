@@ -14,20 +14,42 @@ import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
 
-const VideoScrollSection = lazy(() => import("@/components/VideoScrollSection").then(m => ({ default: m.VideoScrollSection })));
-const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
-const MaterialMorphScroll = lazy(() => import("@/components/MaterialMorphScroll").then(m => ({ default: m.MaterialMorphScroll })));
-const ProjectShowcase = lazy(() => import("@/components/ProjectShowcase").then(m => ({ default: m.ProjectShowcase })));
-const ServicesSection = lazy(() => import("@/components/ServicesSection").then(m => ({ default: m.ServicesSection })));
-const IndustriesSection = lazy(() => import("@/components/IndustriesSection").then(m => ({ default: m.IndustriesSection })));
-const MaterialsSection = lazy(() => import("@/components/MaterialsSection").then(m => ({ default: m.MaterialsSection })));
-const WhyUsSection = lazy(() => import("@/components/WhyUsSection").then(m => ({ default: m.WhyUsSection })));
-const CapabilitiesSection = lazy(() => import("@/components/CapabilitiesSection").then(m => ({ default: m.CapabilitiesSection })));
-const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then(m => ({ default: m.FAQBlogSection })));
-const FinalCTASection = lazy(() => import("@/components/FinalCTASection").then(m => ({ default: m.FinalCTASection })));
+const VideoScrollSection = lazy(() =>
+  import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
+);
+const TestimonialsSection = lazy(() =>
+  import("@/components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+);
+const MaterialMorphScroll = lazy(() =>
+  import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll })),
+);
+const ProjectShowcase = lazy(() =>
+  import("@/components/ProjectShowcase").then((m) => ({ default: m.ProjectShowcase })),
+);
+const ServicesSection = lazy(() =>
+  import("@/components/ServicesSection").then((m) => ({ default: m.ServicesSection })),
+);
+const IndustriesSection = lazy(() =>
+  import("@/components/IndustriesSection").then((m) => ({ default: m.IndustriesSection })),
+);
+const MaterialsSection = lazy(() =>
+  import("@/components/MaterialsSection").then((m) => ({ default: m.MaterialsSection })),
+);
+const WhyUsSection = lazy(() => import("@/components/WhyUsSection").then((m) => ({ default: m.WhyUsSection })));
+const CapabilitiesSection = lazy(() =>
+  import("@/components/CapabilitiesSection").then((m) => ({ default: m.CapabilitiesSection })),
+);
+const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then((m) => ({ default: m.FAQBlogSection })));
+const FinalCTASection = lazy(() =>
+  import("@/components/FinalCTASection").then((m) => ({ default: m.FinalCTASection })),
+);
 
 const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
-  <div ref={ref} className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+  <div
+    ref={ref}
+    className="min-h-screen flex items-center justify-center"
+    style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+  >
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
 ));
@@ -47,7 +69,6 @@ const SECTIONS = [
   { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "neden-biz", label: "Neden Biz" },
-  { id: "kabiliyetler", label: "Kabiliyetler" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
   { id: "referanslar", label: "Referanslar" },
   { id: "sss-blog", label: "SSS & Blog" },

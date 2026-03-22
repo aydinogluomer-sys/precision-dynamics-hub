@@ -8,12 +8,41 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Cog, ChevronLeft, ChevronRight, Rocket, CheckCircle2, Zap, Clock,
-  Layers, Droplets, Paintbrush, Package, HardHat, ArrowRight,
-  Upload, Eye, Send, Shield, Gauge, FileCheck, Edit3, FileUp,
-  ClipboardList, AlertCircle, MessageCircle, HelpCircle,
-  RotateCcw, Grid3x3, Scissors, TriangleRight, Palette, Ruler,
-  Maximize, Loader2, Box, X,
+  Cog,
+  ChevronLeft,
+  ChevronRight,
+  Rocket,
+  CheckCircle2,
+  Zap,
+  Clock,
+  Layers,
+  Droplets,
+  Paintbrush,
+  Package,
+  HardHat,
+  ArrowRight,
+  Upload,
+  Eye,
+  Send,
+  Shield,
+  Gauge,
+  FileCheck,
+  Edit3,
+  FileUp,
+  ClipboardList,
+  AlertCircle,
+  MessageCircle,
+  HelpCircle,
+  RotateCcw,
+  Grid3x3,
+  Scissors,
+  TriangleRight,
+  Palette,
+  Ruler,
+  Maximize,
+  Loader2,
+  Box,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,7 +53,11 @@ import { materialsData, materialCategories } from "@/data/materialsData";
 
 // ── 3D Model Components ──
 
-interface Dimensions { x: number; y: number; z: number }
+interface Dimensions {
+  x: number;
+  y: number;
+  z: number;
+}
 
 const COLOR_PRESETS = [
   { label: "Çelik", color: "#94a3b8" },
@@ -63,7 +96,17 @@ const PlaceholderModel = () => (
 );
 
 // STL Model
-const STLModel = ({ url, color, wireframe, onDimensions }: { url: string; color: string; wireframe: boolean; onDimensions: (d: Dimensions) => void }) => {
+const STLModel = ({
+  url,
+  color,
+  wireframe,
+  onDimensions,
+}: {
+  url: string;
+  color: string;
+  wireframe: boolean;
+  onDimensions: (d: Dimensions) => void;
+}) => {
   const geometry = useLoader(STLLoader, url);
   const { camera } = useThree();
 
@@ -85,13 +128,29 @@ const STLModel = ({ url, color, wireframe, onDimensions }: { url: string; color:
 
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial color={color} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} />
+      <meshStandardMaterial
+        color={color}
+        metalness={0.6}
+        roughness={0.35}
+        side={THREE.DoubleSide}
+        wireframe={wireframe}
+      />
     </mesh>
   );
 };
 
 // STEP Model (uses pre-parsed geometry)
-const STEPModel = ({ geometry, color, wireframe, onDimensions }: { geometry: THREE.BufferGeometry; color: string; wireframe: boolean; onDimensions: (d: Dimensions) => void }) => {
+const STEPModel = ({
+  geometry,
+  color,
+  wireframe,
+  onDimensions,
+}: {
+  geometry: THREE.BufferGeometry;
+  color: string;
+  wireframe: boolean;
+  onDimensions: (d: Dimensions) => void;
+}) => {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -112,13 +171,29 @@ const STEPModel = ({ geometry, color, wireframe, onDimensions }: { geometry: THR
 
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial color={color} metalness={0.6} roughness={0.35} side={THREE.DoubleSide} wireframe={wireframe} />
+      <meshStandardMaterial
+        color={color}
+        metalness={0.6}
+        roughness={0.35}
+        side={THREE.DoubleSide}
+        wireframe={wireframe}
+      />
     </mesh>
   );
 };
 
 // OBJ Model
-const OBJModel = ({ url, color, wireframe, onDimensions }: { url: string; color: string; wireframe: boolean; onDimensions: (d: Dimensions) => void }) => {
+const OBJModel = ({
+  url,
+  color,
+  wireframe,
+  onDimensions,
+}: {
+  url: string;
+  color: string;
+  wireframe: boolean;
+  onDimensions: (d: Dimensions) => void;
+}) => {
   const obj = useLoader(OBJLoader, url);
   const { camera } = useThree();
 
@@ -141,7 +216,11 @@ const OBJModel = ({ url, color, wireframe, onDimensions }: { url: string; color:
     obj.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         (child as THREE.Mesh).material = new THREE.MeshStandardMaterial({
-          color, metalness: 0.6, roughness: 0.35, side: THREE.DoubleSide, wireframe,
+          color,
+          metalness: 0.6,
+          roughness: 0.35,
+          side: THREE.DoubleSide,
+          wireframe,
         });
       }
     });
@@ -172,9 +251,7 @@ const surfaceFinishes = [
 // ── Malzeme kütüphanesinden gruplu seçenekler ──
 const materialOptions = materialCategories.map((cat) => ({
   category: cat.name,
-  items: materialsData
-    .filter((m) => m.subcategory === cat.subcategoryKey)
-    .map((m) => ({ id: m.id, label: m.name })),
+  items: materialsData.filter((m) => m.subcategory === cat.subcategoryKey).map((m) => ({ id: m.id, label: m.name })),
 }));
 
 // ── Hizmet Seçenekleri ──
@@ -216,9 +293,16 @@ export const TeklifAl = () => {
   const materialLabel =
     selectedMaterial === "other"
       ? customMaterial || "Belirtilmedi"
-      : materialsData.find((m) => m.id === selectedMaterial)?.name ?? selectedMaterial;
+      : (materialsData.find((m) => m.id === selectedMaterial)?.name ?? selectedMaterial);
 
   const [isDragging, setIsDragging] = useState(false);
+
+  // Cleanup object URL on unmount
+  useEffect(() => {
+    return () => {
+      if (fileUrl) URL.revokeObjectURL(fileUrl);
+    };
+  }, [fileUrl]);
 
   // Pick up file from Hero section drop zone
   useEffect(() => {
@@ -231,7 +315,7 @@ export const TeklifAl = () => {
 
   const processFile = async (file: File) => {
     const ext = file.name.split(".").pop()?.toLowerCase();
-    
+
     const validExts = ["stl", "obj", "step", "stp", "iges", "igs", "3mf"];
     if (!ext || !validExts.includes(ext)) {
       toast.error("Desteklenmeyen dosya formatı.");
@@ -249,7 +333,11 @@ export const TeklifAl = () => {
 
     if (ext === "step" || ext === "stp") {
       setFileType("step");
-      setFileUrl(null);
+      // Revoke existing object URL before clearing
+      setFileUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
       setStepLoading(true);
       try {
         const occtimportjs = (await import("occt-import-js")).default;
@@ -287,15 +375,24 @@ export const TeklifAl = () => {
       }
     } else if (ext === "stl") {
       setFileType("stl");
-      setFileUrl(URL.createObjectURL(file));
+      setFileUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return URL.createObjectURL(file);
+      });
       toast.success(`"${file.name}" dosyası yüklendi.`);
     } else if (ext === "obj") {
       setFileType("obj");
-      setFileUrl(URL.createObjectURL(file));
+      setFileUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return URL.createObjectURL(file);
+      });
       toast.success(`"${file.name}" dosyası yüklendi.`);
     } else {
       setFileType(null);
-      setFileUrl(null);
+      setFileUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
       toast.success(`"${file.name}" dosyası yüklendi.`);
     }
   };
@@ -344,25 +441,24 @@ export const TeklifAl = () => {
     setIsSubmitting(true);
     const rfqId = `RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     try {
-      // Get current user info
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const user = session?.user;
       let profileData: { full_name?: string; company?: string; phone?: string } = {};
       if (user) {
-        const { data: profile } = await supabase.from("profiles").select("full_name, company, phone").eq("id", user.id).single();
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, company, phone")
+          .eq("id", user.id)
+          .single();
         if (profile) profileData = profile;
       }
 
-      // Upload CAD file to storage if present
       let uploadedFilePaths: string[] = [];
       if (uploadedFile) {
-        const fileExt = uploadedFile.name.split(".").pop()?.toLowerCase() || "bin";
         const storagePath = `${user?.id || "anonymous"}/${rfqId}/${Date.now()}-${uploadedFile.name}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from("cad-uploads")
-          .upload(storagePath, uploadedFile);
-        
+        const { error: uploadError } = await supabase.storage.from("cad-uploads").upload(storagePath, uploadedFile);
         if (uploadError) {
           toast.error("Dosya yüklenemedi: " + uploadError.message);
           setIsSubmitting(false);
@@ -392,16 +488,15 @@ export const TeklifAl = () => {
         setIsSubmitting(false);
         return;
       }
-      toast.success(
-        "Teklif talebiniz başarıyla gönderildi! 48 saat içinde dönüş yapacağız.",
-        {
-          duration: 8000,
-          action: user ? {
-            label: "Panelime Git",
-            onClick: () => window.location.href = "/musteri-paneli",
-          } : undefined,
-        }
-      );
+      toast.success("Teklif talebiniz başarıyla gönderildi! 48 saat içinde dönüş yapacağız.", {
+        duration: 8000,
+        action: user
+          ? {
+              label: "Panelime Git",
+              onClick: () => (window.location.href = "/musteri-paneli"),
+            }
+          : undefined,
+      });
     } catch (err: unknown) {
       toast.error("Gönderim hatası: " + (err instanceof Error ? err.message : "Bilinmeyen hata"));
     } finally {
@@ -436,7 +531,6 @@ export const TeklifAl = () => {
   // ── Adım 1: Gelişmiş CAD Yükleme ──
   const renderStep1 = () => (
     <div className="space-y-4">
-      {/* File upload area */}
       <div className="card-industrial p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold flex items-center gap-2">
@@ -486,7 +580,10 @@ export const TeklifAl = () => {
             </div>
             <div className="flex items-center gap-4 mt-2">
               {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
-                <span key={fmt} className="text-[10px] font-bold tracking-widest text-muted-foreground bg-muted px-2.5 py-1">
+                <span
+                  key={fmt}
+                  className="text-[10px] font-bold tracking-widest text-muted-foreground bg-muted px-2.5 py-1"
+                >
                   {fmt}
                 </span>
               ))}
@@ -517,7 +614,9 @@ export const TeklifAl = () => {
               <button
                 onClick={() => setWireframe((w) => !w)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
-                  wireframe ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  wireframe
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 <TriangleRight size={14} /> Wireframe
@@ -529,7 +628,9 @@ export const TeklifAl = () => {
                 <button
                   onClick={() => setShowColors((c) => !c)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
-                    showColors ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    showColors
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   }`}
                 >
                   <Palette size={14} />
@@ -540,7 +641,10 @@ export const TeklifAl = () => {
                     {COLOR_PRESETS.map((c) => (
                       <button
                         key={c.color}
-                        onClick={() => { setModelColor(c.color); setShowColors(false); }}
+                        onClick={() => {
+                          setModelColor(c.color);
+                          setShowColors(false);
+                        }}
                         className={`w-6 h-6 border-2 transition-all ${
                           modelColor === c.color ? "border-primary scale-110" : "border-border hover:border-primary/50"
                         }`}
@@ -565,9 +669,12 @@ export const TeklifAl = () => {
               {/* Dimensions */}
               {dimensions && (
                 <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground ml-2">
-                  <span className="text-primary font-semibold">X</span>{dimensions.x}
-                  <span className="text-primary font-semibold">Y</span>{dimensions.y}
-                  <span className="text-primary font-semibold">Z</span>{dimensions.z} mm
+                  <span className="text-primary font-semibold">X</span>
+                  {dimensions.x}
+                  <span className="text-primary font-semibold">Y</span>
+                  {dimensions.y}
+                  <span className="text-primary font-semibold">Z</span>
+                  {dimensions.z} mm
                 </div>
               )}
             </div>
@@ -593,13 +700,28 @@ export const TeklifAl = () => {
 
                   <Center>
                     {fileUrl && fileType === "stl" && (
-                      <STLModel url={fileUrl} color={modelColor} wireframe={wireframe} onDimensions={handleDimensions} />
+                      <STLModel
+                        url={fileUrl}
+                        color={modelColor}
+                        wireframe={wireframe}
+                        onDimensions={handleDimensions}
+                      />
                     )}
                     {fileUrl && fileType === "obj" && (
-                      <OBJModel url={fileUrl} color={modelColor} wireframe={wireframe} onDimensions={handleDimensions} />
+                      <OBJModel
+                        url={fileUrl}
+                        color={modelColor}
+                        wireframe={wireframe}
+                        onDimensions={handleDimensions}
+                      />
                     )}
                     {stepGeometry && fileType === "step" && (
-                      <STEPModel geometry={stepGeometry} color={modelColor} wireframe={wireframe} onDimensions={handleDimensions} />
+                      <STEPModel
+                        geometry={stepGeometry}
+                        color={modelColor}
+                        wireframe={wireframe}
+                        onDimensions={handleDimensions}
+                      />
                     )}
                     {!hasModel && <PlaceholderModel />}
                   </Center>
@@ -640,7 +762,9 @@ export const TeklifAl = () => {
                   {(["x", "y", "z"] as const).map((axis) => (
                     <div key={axis} className="text-center p-2 bg-muted/50">
                       <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">{axis} Ekseni</p>
-                      <p className="text-sm font-bold font-mono text-foreground">{dimensions[axis]} <span className="text-muted-foreground font-normal text-[10px]">mm</span></p>
+                      <p className="text-sm font-bold font-mono text-foreground">
+                        {dimensions[axis]} <span className="text-muted-foreground font-normal text-[10px]">mm</span>
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -659,7 +783,9 @@ export const TeklifAl = () => {
         <div className="card-industrial p-3 flex items-center gap-3">
           <CheckCircle2 size={16} className="text-primary shrink-0" />
           <p className="text-xs font-bold truncate">{uploadedFile.name}</p>
-          <p className="text-[10px] text-muted-foreground shrink-0">{(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB</p>
+          <p className="text-[10px] text-muted-foreground shrink-0">
+            {(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB
+          </p>
         </div>
       )}
 
@@ -678,7 +804,9 @@ export const TeklifAl = () => {
               className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {services.map((s) => (
-                <option key={s.id} value={s.id}>{s.label}</option>
+                <option key={s.id} value={s.id}>
+                  {s.label}
+                </option>
               ))}
             </select>
           </div>
@@ -692,7 +820,9 @@ export const TeklifAl = () => {
               {materialOptions.map((group) => (
                 <optgroup key={group.category} label={group.category}>
                   {group.items.map((m) => (
-                    <option key={m.id} value={m.id}>{m.label}</option>
+                    <option key={m.id} value={m.id}>
+                      {m.label}
+                    </option>
                   ))}
                 </optgroup>
               ))}
@@ -757,30 +887,40 @@ export const TeklifAl = () => {
             </div>
           </div>
           <div>
-            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">TESLİMAT HIZI</label>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">
+              TESLİMAT HIZI
+            </label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setDelivery("standard")}
                 className={`border-2 p-2.5 text-center transition-all ${
-                  delivery === "standard"
-                    ? "border-primary bg-industrial-accent-light"
-                    : "border-border bg-background"
+                  delivery === "standard" ? "border-primary bg-industrial-accent-light" : "border-border bg-background"
                 }`}
               >
-                <Clock size={14} className={`mx-auto mb-1 ${delivery === "standard" ? "text-primary" : "text-muted-foreground"}`} />
-                <p className={`text-[10px] font-bold ${delivery === "standard" ? "text-primary" : "text-foreground"}`}>Standart</p>
+                <Clock
+                  size={14}
+                  className={`mx-auto mb-1 ${delivery === "standard" ? "text-primary" : "text-muted-foreground"}`}
+                />
+                <p className={`text-[10px] font-bold ${delivery === "standard" ? "text-primary" : "text-foreground"}`}>
+                  Standart
+                </p>
                 <p className="text-[9px] text-muted-foreground">10-12 Gün</p>
               </button>
               <button
                 onClick={() => setDelivery("express")}
                 className={`border-2 p-2.5 text-center transition-all ${
-                  delivery === "express"
-                    ? "border-destructive bg-destructive/10"
-                    : "border-border bg-background"
+                  delivery === "express" ? "border-destructive bg-destructive/10" : "border-border bg-background"
                 }`}
               >
-                <Zap size={14} className={`mx-auto mb-1 ${delivery === "express" ? "text-destructive" : "text-muted-foreground"}`} />
-                <p className={`text-[10px] font-bold ${delivery === "express" ? "text-destructive" : "text-foreground"}`}>Ekspres</p>
+                <Zap
+                  size={14}
+                  className={`mx-auto mb-1 ${delivery === "express" ? "text-destructive" : "text-muted-foreground"}`}
+                />
+                <p
+                  className={`text-[10px] font-bold ${delivery === "express" ? "text-destructive" : "text-foreground"}`}
+                >
+                  Ekspres
+                </p>
                 <p className="text-[9px] text-muted-foreground">3-5 Gün</p>
               </button>
             </div>
@@ -807,7 +947,11 @@ export const TeklifAl = () => {
             <div className="flex items-center gap-2">
               <CheckCircle2 size={14} className="text-primary" />
               <span className="text-sm font-bold">{uploadedFile?.name ?? "Yüklenmedi"}</span>
-              {uploadedFile && <span className="text-xs text-muted-foreground">({(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB)</span>}
+              {uploadedFile && (
+                <span className="text-xs text-muted-foreground">
+                  ({(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB)
+                </span>
+              )}
             </div>
           </div>
 
@@ -846,8 +990,8 @@ export const TeklifAl = () => {
           <div className="flex items-start gap-3 p-4 bg-primary/5 border border-primary/20">
             <AlertCircle size={16} className="text-primary shrink-0 mt-0.5" />
             <p className="text-xs text-muted-foreground">
-              Teklif talebiniz gönderildikten sonra mühendislerimiz dosyanızı inceleyecek ve 
-              24 saat içinde size detaylı fiyat ve süre bilgisi ile dönüş yapacaktır.
+              Teklif talebiniz gönderildikten sonra mühendislerimiz dosyanızı inceleyecek ve 24 saat içinde size detaylı
+              fiyat ve süre bilgisi ile dönüş yapacaktır.
             </p>
           </div>
         </div>
@@ -886,11 +1030,16 @@ export const TeklifAl = () => {
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 1: return renderStep1();
-      case 2: return renderStep2();
-      case 3: return renderStep3();
-      case 4: return renderStep4();
-      default: return renderStep1();
+      case 1:
+        return renderStep1();
+      case 2:
+        return renderStep2();
+      case 3:
+        return renderStep3();
+      case 4:
+        return renderStep4();
+      default:
+        return renderStep1();
     }
   };
 
@@ -899,14 +1048,19 @@ export const TeklifAl = () => {
     if (currentStep === 1) {
       return (
         <>
-          {/* Part info & 3D settings for step 1 */}
           <div className="card-industrial overflow-hidden">
             <Tabs defaultValue="info" className="flex flex-col">
               <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 px-2 h-auto py-0">
-                <TabsTrigger value="info" className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary">
+                <TabsTrigger
+                  value="info"
+                  className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                >
                   Parça Bilgileri
                 </TabsTrigger>
-                <TabsTrigger value="settings" className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary">
+                <TabsTrigger
+                  value="settings"
+                  className="text-xs data-[state=active]:bg-card data-[state=active]:shadow-none py-3 px-4 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                >
                   3D Ayarları
                 </TabsTrigger>
               </TabsList>
@@ -920,7 +1074,10 @@ export const TeklifAl = () => {
                         {[
                           ["Dosya Adı", uploadedFile.name],
                           ["Boyut", `${(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB`],
-                          ["Format", fileType?.toUpperCase() ?? uploadedFile.name.split(".").pop()?.toUpperCase() ?? "-"],
+                          [
+                            "Format",
+                            fileType?.toUpperCase() ?? uploadedFile.name.split(".").pop()?.toUpperCase() ?? "-",
+                          ],
                         ].map(([k, v]) => (
                           <div key={k} className="flex justify-between py-1.5 border-b border-border">
                             <span className="text-xs text-muted-foreground">{k}</span>
@@ -945,14 +1102,22 @@ export const TeklifAl = () => {
                     )}
                     <div className="flex flex-wrap gap-2 pt-2">
                       <Badge className="text-[10px] bg-primary/20 text-primary border-primary/30">CAD</Badge>
-                      <Badge variant="secondary" className="text-[10px]">3D MODEL</Badge>
-                      {fileType && <Badge variant="outline" className="text-[10px]">{fileType.toUpperCase()}</Badge>}
+                      <Badge variant="secondary" className="text-[10px]">
+                        3D MODEL
+                      </Badge>
+                      {fileType && (
+                        <Badge variant="outline" className="text-[10px]">
+                          {fileType.toUpperCase()}
+                        </Badge>
+                      )}
                     </div>
                   </>
                 ) : (
                   <div className="text-center py-8">
                     <Box size={32} className="mx-auto text-muted-foreground/30 mb-3" />
-                    <p className="text-xs text-muted-foreground">Dosya yükledikten sonra parça bilgileri burada görünecek.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Dosya yükledikten sonra parça bilgileri burada görünecek.
+                    </p>
                   </div>
                 )}
               </TabsContent>
@@ -990,10 +1155,17 @@ export const TeklifAl = () => {
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-bold tracking-widest text-muted-foreground mb-3">DESTEKLENEN FORMATLAR</p>
+                  <p className="text-[10px] font-bold tracking-widest text-muted-foreground mb-3">
+                    DESTEKLENEN FORMATLAR
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {["STEP", "STP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
-                      <span key={fmt} className="text-[10px] font-bold tracking-wider text-muted-foreground bg-muted px-2 py-1">{fmt}</span>
+                      <span
+                        key={fmt}
+                        className="text-[10px] font-bold tracking-wider text-muted-foreground bg-muted px-2 py-1"
+                      >
+                        {fmt}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -1009,9 +1181,7 @@ export const TeklifAl = () => {
       <>
         {/* Teklif Özeti Kartı */}
         <div className="card-industrial p-5">
-          <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">
-            CANLI TEKLİF ÖZETİ
-          </h3>
+          <h3 className="text-[10px] font-bold tracking-[0.2em] mb-4 text-muted-foreground">CANLI TEKLİF ÖZETİ</h3>
           <div className="space-y-3 mb-4">
             {[
               ["Dosya", uploadedFile?.name ?? "Yüklenmedi"],
@@ -1043,8 +1213,8 @@ export const TeklifAl = () => {
           </div>
           <h3 className="text-sm font-bold text-white mb-2">Teknik Destek</h3>
           <p className="text-xs leading-relaxed mb-4 text-industrial-steel">
-            Hassas mühendislerimiz, tasarımınızı üretilebilirlik açısından incelemeye
-            ve üretim sürecinizi optimize etmeye hazır.
+            Hassas mühendislerimiz, tasarımınızı üretilebilirlik açısından incelemeye ve üretim sürecinizi optimize
+            etmeye hazır.
           </p>
           <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border border-white/20 text-white hover:bg-white/10 transition-colors">
             <HardHat size={14} /> MÜHENDİSE DANIŞIN
@@ -1093,7 +1263,9 @@ export const TeklifAl = () => {
             <div className="border-t border-border pt-2.5 mt-2.5">
               <div className="flex items-center gap-1.5">
                 <Zap size={12} className="text-destructive" />
-                <span className="text-[10px] font-semibold text-destructive">Ekspres üretim ile süreleri %50'ye kadar kısaltın</span>
+                <span className="text-[10px] font-semibold text-destructive">
+                  Ekspres üretim ile süreleri %50'ye kadar kısaltın
+                </span>
               </div>
             </div>
           </div>
@@ -1110,9 +1282,7 @@ export const TeklifAl = () => {
         {/* Başlık + Adım rozeti */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="heading-industrial text-3xl md:text-4xl">
-              Hassas Fiyat Teklifi Alın
-            </h1>
+            <h1 className="heading-industrial text-3xl md:text-4xl">Hassas Fiyat Teklifi Alın</h1>
             <p className="subheading-industrial text-sm mt-1">
               Endüstriyel hassasiyet, yüksek hızlı üretim döngüleriyle buluşuyor.
             </p>
@@ -1142,8 +1312,8 @@ export const TeklifAl = () => {
                       s.done
                         ? "bg-primary text-primary-foreground"
                         : s.active
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {s.done ? <CheckCircle2 size={14} /> : <Icon size={14} />}
@@ -1156,9 +1326,7 @@ export const TeklifAl = () => {
                     {s.num}. {s.label}
                   </span>
                 </button>
-                {i < 3 && (
-                  <div className={`flex-1 h-0.5 mx-3 ${s.done ? "bg-primary" : "bg-border"}`} />
-                )}
+                {i < 3 && <div className={`flex-1 h-0.5 mx-3 ${s.done ? "bg-primary" : "bg-border"}`} />}
               </div>
             );
           })}
@@ -1180,10 +1348,7 @@ export const TeklifAl = () => {
                 <ChevronLeft size={14} /> GERİ
               </button>
               {currentStep < 4 ? (
-                <button
-                  onClick={handleNext}
-                  className="btn-industrial-primary flex items-center gap-2"
-                >
+                <button onClick={handleNext} className="btn-industrial-primary flex items-center gap-2">
                   İLERİ <ChevronRight size={16} />
                 </button>
               ) : (
@@ -1211,7 +1376,10 @@ export const TeklifAl = () => {
                   <p className="text-xs font-bold group-hover:text-primary transition-colors">İletişime Geçin</p>
                   <p className="text-[10px] text-muted-foreground">Sorularınız için bize ulaşın</p>
                 </div>
-                <ArrowRight size={14} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                <ArrowRight
+                  size={14}
+                  className="ml-auto text-muted-foreground group-hover:text-primary transition-colors"
+                />
               </Link>
               <Link
                 to="/sss"
@@ -1224,18 +1392,18 @@ export const TeklifAl = () => {
                   <p className="text-xs font-bold group-hover:text-primary transition-colors">Sık Sorulan Sorular</p>
                   <p className="text-[10px] text-muted-foreground">Üretim süreciyle ilgili SSS</p>
                 </div>
-                <ArrowRight size={14} className="ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                <ArrowRight
+                  size={14}
+                  className="ml-auto text-muted-foreground group-hover:text-primary transition-colors"
+                />
               </Link>
             </div>
           </div>
 
           {/* ══ SAĞ KOLON ══ */}
-          <div className="space-y-6">
-            {renderRightPanel()}
-          </div>
+          <div className="space-y-6">{renderRightPanel()}</div>
         </div>
       </div>
-
     </div>
   );
 };
