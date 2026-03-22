@@ -163,6 +163,18 @@ export const TestimonialsSection = () => {
         .dark .testimonial-corner { border-color: hsl(var(--border)) !important; }
       `}</style>
 
+      <video
+        src="/machine-loop.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
+        style={{ zIndex: 0 }}
+        aria-hidden="true"
+      />
+
       {/* Decorative corner accents */}
       <div
         className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none"
