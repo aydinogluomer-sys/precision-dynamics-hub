@@ -202,11 +202,11 @@ export const Index = () => {
         </div>
 
         {/* 14 — WhyUs */}
-        <ParallaxSection index={14} variant="stack" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        <div className="relative" style={{ zIndex: 14 }}>
           <Suspense fallback={<SectionLoader />}>
             <WhyUsSection />
           </Suspense>
-        </ParallaxSection>
+        </div>
 
         {/* 15 — Capabilities */}
         <div className="relative" style={{ zIndex: 15 }}>
