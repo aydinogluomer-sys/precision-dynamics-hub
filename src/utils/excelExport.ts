@@ -226,7 +226,9 @@ function kpiRow(category: string, metric: string, value: number | string) {
 }
 
 /* ── MAIN EXPORT ── */
-export async function exportExcelReport(activeTab: string) {
+export type ExportProgressCallback = (progress: number) => void;
+
+export async function exportExcelReport(activeTab: string, onProgress?: ExportProgressCallback) {
   const now = new Date().toISOString().split("T")[0];
   const wb = XLSX.utils.book_new();
 
@@ -738,7 +740,13 @@ export async function exportExcelReport(activeTab: string) {
     }
   }
 
+  onProgress?.(0.7);
+
   const fileName = `MasTechnic_${tabTR[activeTab] || "Rapor"}_${now}.xlsx`;
   XLSX.writeFile(wb, fileName);
+
+  onProgress?.(1);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   return fileName;
 }
