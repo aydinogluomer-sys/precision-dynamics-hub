@@ -122,8 +122,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      className="relative flex items-center justify-center pt-24 pb-28"
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))", minHeight: "100svh" }}
     >
       {!prefersReduced && (
         <motion.div
@@ -214,7 +214,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             />
           </motion.div>
 
-          <motion.div variants={fadeUpVariants} className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
+          <motion.div variants={fadeUpVariants} className="relative h-44 sm:h-56 md:h-64 overflow-hidden mb-6">
             <AnimatePresence mode="wait">
               <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
             </AnimatePresence>
@@ -222,14 +222,14 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
 
           <TextReveal delay={0.4 + heroDelay}>
             <p
-              className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
+              className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-6"
               style={{ color: "rgba(255,255,255,0.7)" }}
             >
               {"CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz."}
             </p>
           </TextReveal>
 
-          <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+          <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <MagneticButton
               href="/teklif-al"
               className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
