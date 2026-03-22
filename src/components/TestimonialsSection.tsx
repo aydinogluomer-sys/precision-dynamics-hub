@@ -147,11 +147,11 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative overflow-hidden py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
-      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      style={{ backgroundColor: "rgba(240, 237, 232, 0.92)" }}
     >
       <style>{`
-        .dark #referanslar { background-color: hsl(var(--background)) !important; }
+        .dark #referanslar { background-color: rgba(15,15,15,0.92) !important; }
         .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
         .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
         .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
@@ -162,18 +162,6 @@ export const TestimonialsSection = () => {
         .dark .testimonial-logo-item { color: hsl(var(--muted-foreground) / 0.3) !important; }
         .dark .testimonial-corner { border-color: hsl(var(--border)) !important; }
       `}</style>
-
-      <video
-        src="/machine-loop.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] dark:opacity-[0.1] pointer-events-none hidden md:block"
-        style={{ zIndex: 0 }}
-        aria-hidden="true"
-      />
 
       {/* Decorative corner accents */}
       <div
