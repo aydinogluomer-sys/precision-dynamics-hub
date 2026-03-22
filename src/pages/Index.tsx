@@ -2,6 +2,7 @@ import { Suspense, lazy, useState, forwardRef } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { NexusPromoSection } from "@/components/NexusPromoSection";
+import { QuickQuoteSection } from "@/components/QuickQuoteSection";
 import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { Footer } from "@/components/Footer";
