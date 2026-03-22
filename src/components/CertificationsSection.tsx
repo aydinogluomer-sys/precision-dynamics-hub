@@ -81,7 +81,7 @@ export const CertificationsSection = () => {
   return (
     <section
       id="sertifikalar"
-      className="py-12 md:py-16 border-y border-border overflow-hidden relative"
+      className="section-industrial min-h-screen flex flex-col justify-center border-y border-border overflow-hidden relative"
       style={{ backgroundColor: "hsl(var(--forge-iron))" }}
     >
       <style>{`
