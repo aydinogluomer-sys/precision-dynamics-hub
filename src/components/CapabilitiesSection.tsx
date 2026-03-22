@@ -6,7 +6,13 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { MagneticButton } from "./MagneticButton";
 
 const equipment = [
-  { category: "CNC Frezeleme", model: "DMG MORI 5-Eksen", size: "1200 × 800 × 600", tolerance: "±0.005 mm", speed: "24,000 RPM" },
+  {
+    category: "CNC Frezeleme",
+    model: "DMG MORI 5-Eksen",
+    size: "1200 × 800 × 600",
+    tolerance: "±0.005 mm",
+    speed: "24,000 RPM",
+  },
   { category: "CNC Torna", model: "Doosan Puma 400", size: "Ø 400 × 1000L", tolerance: "±0.01 mm", speed: "4,500 RPM" },
   { category: "Taşlama", model: "Studer S33", size: "Ø 350 × 1000L", tolerance: "±0.002 mm", speed: "—" },
   { category: "Tel Erozyon", model: "Sodick ALC600G", size: "600 × 400 × 350", tolerance: "±0.005 mm", speed: "—" },
@@ -42,7 +48,7 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
           requestAnimationFrame(step);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -55,7 +61,9 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
 
-  const rackInitial = prefersReduced ? { opacity: 1, filter: "blur(0px)", scale: 1 } : { opacity: 0, filter: "blur(8px)", scale: 0.97 };
+  const rackInitial = prefersReduced
+    ? { opacity: 1, filter: "blur(0px)", scale: 1 }
+    : { opacity: 0, filter: "blur(8px)", scale: 0.97 };
   const rackAnimate = { opacity: 1, filter: "blur(0px)", scale: 1 };
 
   return (
@@ -63,7 +71,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
       ref={forwardedRef}
       id="kabiliyetler"
       className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center border-t border-border overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
+      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       initial={rackInitial}
       whileInView={rackAnimate}
       viewport={{ once: true, amount: 0.2 }}
@@ -86,11 +94,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
         <div className="grid lg:grid-cols-2 gap-10">
           {/* Left: Sticky panel */}
           <div className="lg:sticky lg:top-28 lg:h-[calc(100vh-7rem)] flex flex-col justify-center">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-px bg-primary" />
                 <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-mono">
@@ -98,9 +102,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
                 </span>
               </div>
               <Reveal variant="word-stagger" duration={0.6}>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                  {"Makine Parkuru"}
-                </h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">{"Makine Parkuru"}</h2>
               </Reveal>
             </motion.div>
 
@@ -116,11 +118,10 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
               <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 font-mono">
                 {"Minimum Tolerans"}
               </div>
-              <div
-                className="text-5xl md:text-6xl font-bold font-mono"
-                style={{ color: "hsl(var(--forge-molten))" }}
-              >
-                {"±"}{tolerance.value.toFixed(3)}<span className="text-2xl">{"mm"}</span>
+              <div className="text-5xl md:text-6xl font-bold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
+                {"±"}
+                {tolerance.value.toFixed(3)}
+                <span className="text-2xl">{"mm"}</span>
               </div>
             </motion.div>
 
@@ -147,7 +148,10 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
               transition={{ delay: 0.1 }}
             >
               {/* Table Header */}
-              <div className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]" style={{ backgroundColor: "hsl(var(--forge-steel))" }}>
+              <div
+                className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]"
+                style={{ backgroundColor: "hsl(var(--forge-steel))" }}
+              >
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Kategori"}</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Ekipman"}</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Boyut"}</span>
@@ -168,7 +172,9 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
                   <span className="text-sm font-semibold text-foreground">{eq.category}</span>
                   <span className="text-sm text-foreground/70">{eq.model}</span>
                   <span className="text-sm text-foreground/60 font-mono">{eq.size}</span>
-                  <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>{eq.tolerance}</span>
+                  <span className="text-sm font-semibold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
+                    {eq.tolerance}
+                  </span>
                   <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
                 </motion.div>
               ))}

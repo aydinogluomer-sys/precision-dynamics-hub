@@ -213,16 +213,12 @@ export const Index = () => {
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
-        </div>
-
-        {/* 16 — Testimonials */}
-        <div className="relative" style={{ zIndex: 16 }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
         </div>
 
-        {/* 17 — FAQ/Blog */}
+        {/* 16 — FAQ/Blog */}
         <ParallaxSection index={17} variant="color-fade">
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
@@ -234,7 +230,7 @@ export const Index = () => {
           <SectionDivider fillColor="hsl(var(--forge-obsidian))" />
         </div>
 
-        {/* 18 — Final CTA (last) */}
+        {/* 17 — Final CTA (last) */}
         <ParallaxSection index={18} isLast variant="stack">
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
