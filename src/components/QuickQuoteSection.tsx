@@ -62,7 +62,7 @@ export const QuickQuoteSection = () => {
   return (
     <section
       id="hizli-teklif"
-      className="relative py-16 md:py-20 overflow-hidden"
+      className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
       {/* Subtle gradient */}

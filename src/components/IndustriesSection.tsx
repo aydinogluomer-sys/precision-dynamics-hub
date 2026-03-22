@@ -93,8 +93,8 @@ const chipVariants = {
 
 export const IndustriesSection = () => {
   return (
-    <section id="endustriler" style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
-      <div className="container-industrial py-24 md:py-32 lg:py-40">
+    <section id="endustriler" className="section-industrial min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+      <div className="container-industrial">
         {/* Header */}
         <TextReveal className="text-center mb-12 md:mb-16">
           <div className="flex items-center justify-center gap-4 mb-4">
