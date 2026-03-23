@@ -259,7 +259,9 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMenuOpen]);
 
   const handleNavClick = (item: NavItem) => {
@@ -305,325 +307,362 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
   return (
     <>
-    {/* Skip to content — accessibility */}
-    <a
-      href="#main-content"
-      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded focus:outline-none"
-    >
-      {"İçeriğe geç"}
-    </a>
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <motion.div
-        className="border-b border-border transition-shadow"
-        initial={isFirstVisit ? { y: -70, opacity: 0 } : false}
-        animate={{
-          y: 0,
-          opacity: 1,
-          backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
-          backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
-          boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
-        }}
-        transition={{ duration: 0.4 }}
+      {/* Skip to content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded focus:outline-none"
       >
-        <div className="container-industrial">
-          <motion.div
-            className="flex items-center justify-between"
-            animate={{ height: isScrolled ? 56 : 70 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 shrink-0">
-              <motion.div
-                className="bg-primary flex items-center justify-center"
-                animate={{ width: isScrolled ? 32 : 40, height: isScrolled ? 32 : 40 }}
-                transition={{ duration: 0.3 }}
-              >
-                <span className="text-primary-foreground font-bold text-lg">MT</span>
-              </motion.div>
-              <div className="flex flex-col">
-                <span className="font-bold text-lg tracking-tight leading-tight">MAS TECHNIC</span>
-                <span className="text-[10px] text-muted-foreground tracking-widest uppercase leading-tight">
-                  Precision CNC
-                </span>
-              </div>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-0">
-              {navItems.map((item, index) => (
-                <div
-                  key={item.label}
-                  className="relative"
-                  onMouseEnter={() => item.hasDropdown && handleDropdownEnter(index)}
-                  onMouseLeave={handleDropdownLeave}
-                >
-                  {item.path.startsWith("/") && !item.hasDropdown ? (
-                    <Link
-                      to={item.path}
-                      className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap group/nav ${
-                        item.isBold
-                          ? "font-bold text-primary"
-                          : item.isFire
-                          ? "font-extrabold animate-fire-text"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {item.isFire && <Flame size={14} className="animate-fire-text" />}
-                      {item.label}
-                      {!item.isBold && !item.isFire && (
-                        <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
-                      )}
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={() => !item.hasDropdown && handleNavClick(item)}
-                      className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none group/nav ${
-                        item.isBold
-                          ? "font-bold text-primary"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <span className="relative">
-                        {item.label}
-                        {!item.isBold && !item.hasDropdown && (
-                          <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
-                        )}
-                      </span>
-                      {item.hasDropdown && (
-                        <motion.span
-                          animate={{ rotate: activeDropdown === index ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="flex"
-                        >
-                          <ChevronDown size={14} />
-                        </motion.span>
-                      )}
-                    </button>
-                  )}
-
-                  {/* Desktop Mega Menu */}
-                  <AnimatePresence>
-                    {item.hasDropdown && activeDropdown === index && item.children && (
-                      <motion.div
-                        className="fixed left-0 right-0 bg-background border-b border-border shadow-lg z-50"
-                        style={{ top: isScrolled ? 60 : 70 }}
-                        variants={megaMenuVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        onMouseEnter={() => handleDropdownEnter(index)}
-                        onMouseLeave={handleDropdownLeave}
-                      >
-                        <div className="container-industrial py-6">
-                          <div className="grid grid-cols-5 gap-6">
-                            {item.children.map((col) => (
-                              <div key={col.label} className="flex flex-col gap-2">
-                                {/* Column title */}
-                                <Link
-                                  to={col.path}
-                                  className="flex items-start gap-2 text-primary font-bold text-sm pb-2 border-b-2 border-muted mb-1 min-h-[2.5rem] hover:text-accent transition-colors"
-                                >
-                                  <span className="mt-0.5 shrink-0">{col.icon}</span>
-                                  {col.label}
-                                </Link>
-                                {/* Column links */}
-                                <div className="flex flex-col gap-1">
-                                  {col.links.map((link) => (
-                                    <Link
-                                      key={link.label}
-                                      to={link.path}
-                                      className="text-[0.85rem] text-muted-foreground hover:text-primary hover:translate-x-1 transition-all duration-150 py-1 px-2"
-                                    >
-                                      {link.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-            </nav>
-
-            {/* CTA Buttons */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0">
-  <SoundToggle />
-  <ThemeToggle />
-                to="/giris"
-                className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                Giriş Yap
-              </Link>
-              <Link to="/teklif-al" className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5" style={{ transform: "skewX(-4deg)" }}>
-                <span style={{ display: "inline-block", transform: "skewX(4deg)" }}>Teklif Al</span>
-              </Link>
-            </div>
-
-            {/* Mobile Theme Toggle + Hamburger */}
-            <div className="lg:hidden flex items-center gap-2">
-              <ThemeToggle />
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 hover:bg-muted transition-colors relative w-10 h-10 flex items-center justify-center"
-              aria-label="Menü"
-            >
-              <div className="w-6 h-5 relative flex flex-col justify-between">
-                <motion.span
-                  className="block h-0.5 w-6 bg-foreground origin-center"
-                  animate={isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                />
-                <motion.span
-                  className="block h-0.5 w-6 bg-foreground"
-                  animate={isMenuOpen ? { opacity: 0, x: -12 } : { opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2 }}
-                />
-                <motion.span
-                  className="block h-0.5 w-6 bg-foreground origin-center"
-                  animate={isMenuOpen ? { rotate: -45, y: -10 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                />
-              </div>
-            </button>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
+        {"İçeriğe geç"}
+      </a>
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <motion.div
+          className="border-b border-border transition-shadow"
+          initial={isFirstVisit ? { y: -70, opacity: 0 } : false}
+          animate={{
+            y: 0,
+            opacity: 1,
+            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
+            backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
+            boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
+          }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="container-industrial">
             <motion.div
-              className="lg:hidden border-t border-border overflow-y-auto"
-              style={{ maxHeight: "calc(100vh - 70px)" }}
-              variants={mobileMenuVariants}
-              initial="closed"
-              animate="open"
-              exit="exit"
+              className="flex items-center justify-between"
+              animate={{ height: isScrolled ? 56 : 70 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <nav className="container-industrial py-4 flex flex-col gap-1">
-                {navItems.map((item, i) => (
-                  <motion.div
+              {/* Logo */}
+              <Link to="/" className="flex items-center gap-2 shrink-0">
+                <motion.div
+                  className="bg-primary flex items-center justify-center"
+                  animate={{ width: isScrolled ? 32 : 40, height: isScrolled ? 32 : 40 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span className="text-primary-foreground font-bold text-lg">MT</span>
+                </motion.div>
+                <div className="flex flex-col">
+                  <span className="font-bold text-lg tracking-tight leading-tight">MAS TECHNIC</span>
+                  <span className="text-[10px] text-muted-foreground tracking-widest uppercase leading-tight">
+                    Precision CNC
+                  </span>
+                </div>
+              </Link>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden lg:flex items-center gap-0">
+                {navItems.map((item, index) => (
+                  <div
                     key={item.label}
-                    variants={mobileItemVariants}
-                    custom={i}
-                    initial="closed"
-                    animate="open"
-                    className="border-b border-border last:border-b-0"
+                    className="relative"
+                    onMouseEnter={() => item.hasDropdown && handleDropdownEnter(index)}
+                    onMouseLeave={handleDropdownLeave}
                   >
-                    {/* Nav item header */}
-                    <div className="flex items-center justify-between">
-                      {item.path.startsWith("/") && !item.hasDropdown ? (
-                        <Link
-                          to={item.path}
-                          className={`flex-1 text-sm font-semibold uppercase tracking-wider py-3 px-4 transition-colors ${
-                            item.isFire
-                              ? "animate-fire-text font-extrabold"
-                              : item.isBold
-                              ? "text-primary font-bold"
+                    {item.path.startsWith("/") && !item.hasDropdown ? (
+                      <Link
+                        to={item.path}
+                        className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap group/nav ${
+                          item.isBold
+                            ? "font-bold text-primary"
+                            : item.isFire
+                              ? "font-extrabold animate-fire-text"
                               : "text-muted-foreground hover:text-foreground"
-                          }`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
+                        }`}
+                      >
+                        {item.isFire && <Flame size={14} className="animate-fire-text" />}
+                        {item.label}
+                        {!item.isBold && !item.isFire && (
+                          <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+                        )}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => !item.hasDropdown && handleNavClick(item)}
+                        className={`relative flex items-center gap-1.5 px-4 py-2 text-[0.8125rem] font-medium transition-colors whitespace-nowrap bg-transparent border-none group/nav ${
+                          item.isBold ? "font-bold text-primary" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <span className="relative">
                           {item.label}
-                        </Link>
-                      ) : (
-                        <button
-                          className={`flex-1 text-left text-sm font-semibold uppercase tracking-wider py-3 px-4 transition-colors bg-transparent border-none ${
-                            item.isBold ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
-                          }`}
-                          onClick={() => {
-                            if (!item.hasDropdown) {
-                              handleNavClick(item);
-                              setIsMenuOpen(false);
-                            }
-                          }}
-                        >
-                          {item.label}
-                        </button>
-                      )}
+                          {!item.isBold && !item.hasDropdown && (
+                            <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-primary origin-left scale-x-0 group-hover/nav:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+                          )}
+                        </span>
+                        {item.hasDropdown && (
+                          <motion.span
+                            animate={{ rotate: activeDropdown === index ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex"
+                          >
+                            <ChevronDown size={14} />
+                          </motion.span>
+                        )}
+                      </button>
+                    )}
 
-                      {item.hasDropdown && (
-                        <button
-                          onClick={() => setMobileAccordion(mobileAccordion === i ? null : i)}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 mr-2 ${
-                            mobileAccordion === i
-                              ? "bg-primary text-primary-foreground rotate-180"
-                              : "bg-muted text-primary"
-                          }`}
-                          aria-label="Alt menüyü aç"
-                        >
-                          <ChevronDown size={16} />
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Mobile accordion children */}
+                    {/* Desktop Mega Menu */}
                     <AnimatePresence>
-                      {item.hasDropdown && mobileAccordion === i && item.children && (
+                      {item.hasDropdown && activeDropdown === index && item.children && (
                         <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
-                          className="overflow-hidden"
+                          className="fixed left-0 right-0 bg-background border-b border-border shadow-lg z-50"
+                          style={{ top: isScrolled ? 60 : 70 }}
+                          variants={megaMenuVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          onMouseEnter={() => handleDropdownEnter(index)}
+                          onMouseLeave={handleDropdownLeave}
                         >
-                          <div className="pl-4 pb-4 flex flex-col gap-4">
-                            {item.children.map((col) => (
-                              <div key={col.label}>
-                                <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-2">
-                                  {col.icon}
-                                  {col.label}
+                          <div className="container-industrial py-6">
+                            <div className="grid grid-cols-5 gap-6">
+                              {item.children.map((col) => (
+                                <div key={col.label} className="flex flex-col gap-2">
+                                  {/* Column title */}
+                                  <Link
+                                    to={col.path}
+                                    className="flex items-start gap-2 text-primary font-bold text-sm pb-2 border-b-2 border-muted mb-1 min-h-[2.5rem] hover:text-accent transition-colors"
+                                  >
+                                    <span className="mt-0.5 shrink-0">{col.icon}</span>
+                                    {col.label}
+                                  </Link>
+                                  {/* Column links */}
+                                  <div className="flex flex-col gap-1">
+                                    {col.links.map((link) => (
+                                      <Link
+                                        key={link.label}
+                                        to={link.path}
+                                        className="text-[0.85rem] text-muted-foreground hover:text-primary hover:translate-x-1 transition-all duration-150 py-1 px-2"
+                                      >
+                                        {link.label}
+                                      </Link>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="flex flex-col gap-1 pl-6">
-                                  {col.links.map((link) => (
-                                    <Link
-                                      key={link.label}
-                                      to={link.path}
-                                      className="text-sm text-muted-foreground hover:text-primary py-1 transition-colors"
-                                      onClick={() => setIsMenuOpen(false)}
-                                    >
-                                      {link.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </div>
                 ))}
-
-                {/* Mobile CTA */}
-                <motion.div variants={mobileItemVariants} custom={navItems.length} initial="closed" animate="open" className="flex flex-col gap-2 mt-4">
-                  <Link
-                    to="/giris"
-                    className="inline-flex items-center justify-center gap-2 text-sm font-semibold px-5 py-3 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                    Giriş Yap
-                  </Link>
-                  <Link
-                    to="/teklif-al"
-                    className="btn-industrial-primary text-center block"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Teklif Al
-                  </Link>
-                </motion.div>
               </nav>
+
+              {/* CTA Buttons */}
+              <div className="hidden lg:flex items-center gap-3 shrink-0">
+                <SoundToggle />
+                <ThemeToggle />
+                <Link
+                  to="/giris"
+                  className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                  </svg>
+                  Giriş Yap
+                </Link>
+                <Link
+                  to="/teklif-al"
+                  className="btn-industrial-primary whitespace-nowrap text-xs px-5 py-2.5"
+                  style={{ transform: "skewX(-4deg)" }}
+                >
+                  <span style={{ display: "inline-block", transform: "skewX(4deg)" }}>Teklif Al</span>
+                </Link>
+              </div>
+
+              {/* Mobile Theme Toggle + Hamburger */}
+              <div className="lg:hidden flex items-center gap-2">
+                <ThemeToggle />
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="lg:hidden p-2 hover:bg-muted transition-colors relative w-10 h-10 flex items-center justify-center"
+                  aria-label="Menü"
+                >
+                  <div className="w-6 h-5 relative flex flex-col justify-between">
+                    <motion.span
+                      className="block h-0.5 w-6 bg-foreground origin-center"
+                      animate={isMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                      transition={{ duration: 0.25 }}
+                    />
+                    <motion.span
+                      className="block h-0.5 w-6 bg-foreground"
+                      animate={isMenuOpen ? { opacity: 0, x: -12 } : { opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <motion.span
+                      className="block h-0.5 w-6 bg-foreground origin-center"
+                      animate={isMenuOpen ? { rotate: -45, y: -10 } : { rotate: 0, y: 0 }}
+                      transition={{ duration: 0.25 }}
+                    />
+                  </div>
+                </button>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </header>
+          </div>
+
+          {/* Mobile Navigation */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                className="lg:hidden border-t border-border overflow-y-auto"
+                style={{ maxHeight: "calc(100vh - 70px)" }}
+                variants={mobileMenuVariants}
+                initial="closed"
+                animate="open"
+                exit="exit"
+              >
+                <nav className="container-industrial py-4 flex flex-col gap-1">
+                  {navItems.map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      variants={mobileItemVariants}
+                      custom={i}
+                      initial="closed"
+                      animate="open"
+                      className="border-b border-border last:border-b-0"
+                    >
+                      {/* Nav item header */}
+                      <div className="flex items-center justify-between">
+                        {item.path.startsWith("/") && !item.hasDropdown ? (
+                          <Link
+                            to={item.path}
+                            className={`flex-1 text-sm font-semibold uppercase tracking-wider py-3 px-4 transition-colors ${
+                              item.isFire
+                                ? "animate-fire-text font-extrabold"
+                                : item.isBold
+                                  ? "text-primary font-bold"
+                                  : "text-muted-foreground hover:text-foreground"
+                            }`}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ) : (
+                          <button
+                            className={`flex-1 text-left text-sm font-semibold uppercase tracking-wider py-3 px-4 transition-colors bg-transparent border-none ${
+                              item.isBold ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+                            }`}
+                            onClick={() => {
+                              if (!item.hasDropdown) {
+                                handleNavClick(item);
+                                setIsMenuOpen(false);
+                              }
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        )}
+
+                        {item.hasDropdown && (
+                          <button
+                            onClick={() => setMobileAccordion(mobileAccordion === i ? null : i)}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 mr-2 ${
+                              mobileAccordion === i
+                                ? "bg-primary text-primary-foreground rotate-180"
+                                : "bg-muted text-primary"
+                            }`}
+                            aria-label="Alt menüyü aç"
+                          >
+                            <ChevronDown size={16} />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Mobile accordion children */}
+                      <AnimatePresence>
+                        {item.hasDropdown && mobileAccordion === i && item.children && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pl-4 pb-4 flex flex-col gap-4">
+                              {item.children.map((col) => (
+                                <div key={col.label}>
+                                  <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-2">
+                                    {col.icon}
+                                    {col.label}
+                                  </div>
+                                  <div className="flex flex-col gap-1 pl-6">
+                                    {col.links.map((link) => (
+                                      <Link
+                                        key={link.label}
+                                        to={link.path}
+                                        className="text-sm text-muted-foreground hover:text-primary py-1 transition-colors"
+                                        onClick={() => setIsMenuOpen(false)}
+                                      >
+                                        {link.label}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))}
+
+                  {/* Mobile CTA */}
+                  <motion.div
+                    variants={mobileItemVariants}
+                    custom={navItems.length}
+                    initial="closed"
+                    animate="open"
+                    className="flex flex-col gap-2 mt-4"
+                  >
+                    <Link
+                      to="/giris"
+                      className="inline-flex items-center justify-center gap-2 text-sm font-semibold px-5 py-3 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                      </svg>
+                      Giriş Yap
+                    </Link>
+                    <Link
+                      to="/teklif-al"
+                      className="btn-industrial-primary text-center block"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Teklif Al
+                    </Link>
+                  </motion.div>
+                </nav>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </header>
     </>
   );
 };
