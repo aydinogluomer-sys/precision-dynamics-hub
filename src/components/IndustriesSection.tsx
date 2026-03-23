@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
+import { useRef, useEffect } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { motion } from "framer-motion";
+import { gsap } from "@/hooks/use-gsap";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
 import { Badge } from "./ui/badge";
@@ -92,8 +94,93 @@ const chipVariants = {
 };
 
 export const IndustriesSection = () => {
+  const track1Ref = useRef<HTMLDivElement>(null);
+  const track2Ref = useRef<HTMLDivElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (prefersReduced) return;
+    const t1 = track1Ref.current;
+    const t2 = track2Ref.current;
+    if (!t1 || !t2) return;
+
+    const anim1 = gsap.to(t1, {
+      xPercent: -50,
+      duration: 25,
+      ease: "none",
+      repeat: -1,
+    });
+
+    const anim2 = gsap.to(t2, {
+      xPercent: 50,
+      duration: 28,
+      ease: "none",
+      repeat: -1,
+      // sola gidiş için başlangıç offset
+    });
+
+    // Sola gitmek için: xPercent 0 → -50, ama başlangıcı -50'den başlat
+    gsap.set(t2, { xPercent: -50 });
+    anim2.kill();
+    const anim2b = gsap.to(t2, {
+      xPercent: 0,
+      duration: 28,
+      ease: "none",
+      repeat: -1,
+    });
+
+    return () => {
+      anim1.kill();
+      anim2b.kill();
+    };
+  }, [prefersReduced]);
+
   return (
-    <section id="endustriler" className="section-industrial min-h-screen flex flex-col justify-center" style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+    <section
+      id="endustriler"
+      className="section-industrial min-h-screen flex flex-col justify-center"
+      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
+    >
+      {/* Marquee Bands */}
+      <div
+        className="overflow-hidden py-6 border-b border-border/30"
+        style={{ backgroundColor: "hsl(var(--forge-obsidian) / 0.4)" }}
+      >
+        {/* Band 1 — sağa */}
+        <div className="overflow-hidden mb-3">
+          <div ref={track1Ref} className="flex gap-8 w-[200%]">
+            {[...primaryIndustries, ...secondaryIndustries, ...primaryIndustries, ...secondaryIndustries].map(
+              (ind, i) => (
+                <span
+                  key={i}
+                  className="text-technical text-xs uppercase tracking-[0.2em] whitespace-nowrap text-foreground/30 flex items-center gap-3"
+                >
+                  <span className="text-primary/40">◆</span>
+                  {ind.name}
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* Band 2 — sola */}
+        <div className="overflow-hidden">
+          <div ref={track2Ref} className="flex gap-8 w-[200%]">
+            {[...secondaryIndustries, ...primaryIndustries, ...secondaryIndustries, ...primaryIndustries].map(
+              (ind, i) => (
+                <span
+                  key={i}
+                  className="text-technical text-xs uppercase tracking-[0.2em] whitespace-nowrap text-foreground/20 flex items-center gap-3"
+                >
+                  <span className="text-accent/30">●</span>
+                  {ind.name}
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="container-industrial">
         {/* Header */}
         <TextReveal className="text-center mb-12 md:mb-16">

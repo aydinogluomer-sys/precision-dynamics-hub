@@ -451,8 +451,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
             {/* CTA Buttons */}
             <div className="hidden lg:flex items-center gap-3 shrink-0">
-              <ThemeToggle />
-              <Link
+  <SoundToggle />
+  <ThemeToggle />
                 to="/giris"
                 className="inline-flex items-center gap-2 whitespace-nowrap text-xs font-semibold px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >

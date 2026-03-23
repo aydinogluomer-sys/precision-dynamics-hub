@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import { useSoundEngine } from "@/hooks/use-sound";
 import { gsap } from "@/hooks/use-gsap";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,17 +26,21 @@ export const CustomCursor = () => {
   const labelRef = useRef<HTMLSpanElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const isMobile = useIsMobile();
+  const { play } = useSoundEngine();
   const quickToX = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const quickToY = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const ringQuickToX = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const ringQuickToY = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    quickToX.current?.(e.clientX);
-    quickToY.current?.(e.clientY);
-    ringQuickToX.current?.(e.clientX);
-    ringQuickToY.current?.(e.clientY);
-  }, []);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      quickToX.current?.(e.clientX);
+      quickToY.current?.(e.clientY);
+      ringQuickToX.current?.(e.clientX);
+      ringQuickToY.current?.(e.clientY);
+    },
+    [play],
+  );
 
   const handleMouseOver = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -45,6 +50,7 @@ export const CustomCursor = () => {
 
     for (const { selector, label: lbl } of SELECTORS) {
       if (target.closest(selector)) {
+        play("tick");
         gsap.to(ring, { scale: lbl.scale, duration: 0.3, ease: "power2.out" });
         if (lbl.text) {
           label.textContent = lbl.text;

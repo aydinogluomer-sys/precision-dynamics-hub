@@ -8,30 +8,33 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { useSoundEngine } from "@/hooks/use-sound";
 
 import { Index } from "./pages/Index";
 import { NotFound } from "./pages/NotFound";
 
-const SSS = lazy(() => import("./pages/SSS").then(m => ({ default: m.SSS })));
-const GizlilikPolitikasi = lazy(() => import("./pages/GizlilikPolitikasi").then(m => ({ default: m.GizlilikPolitikasi })));
-const KVKK = lazy(() => import("./pages/KVKK").then(m => ({ default: m.KVKK })));
-const CerezPolitikasi = lazy(() => import("./pages/CerezPolitikasi").then(m => ({ default: m.CerezPolitikasi })));
-const Hakkimizda = lazy(() => import("./pages/Hakkimizda").then(m => ({ default: m.Hakkimizda })));
-const Iletisim = lazy(() => import("./pages/Iletisim").then(m => ({ default: m.Iletisim })));
-const ServiceDetail = lazy(() => import("./pages/ServiceDetail").then(m => ({ default: m.ServiceDetail })));
-const Blog = lazy(() => import("./pages/Blog").then(m => ({ default: m.Blog })));
-const BlogDetail = lazy(() => import("./pages/BlogDetail").then(m => ({ default: m.BlogDetail })));
-const AdminLogin = lazy(() => import("./pages/AdminLogin").then(m => ({ default: m.AdminLogin })));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
-const Login = lazy(() => import("./pages/Login").then(m => ({ default: m.Login })));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword").then(m => ({ default: m.ForgotPassword })));
-const ResetPassword = lazy(() => import("./pages/ResetPassword").then(m => ({ default: m.ResetPassword })));
-const Malzemeler = lazy(() => import("./pages/Malzemeler").then(m => ({ default: m.Malzemeler })));
-const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori").then(m => ({ default: m.MalzemeKategori })));
-const TeklifAl = lazy(() => import("./pages/TeklifAl").then(m => ({ default: m.TeklifAl })));
-const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli").then(m => ({ default: m.MusteriPaneli })));
-const CategoryPage = lazy(() => import("./pages/CategoryPage").then(m => ({ default: m.CategoryPage })));
-const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork").then(m => ({ default: m.TestHowWeWork })));
+const SSS = lazy(() => import("./pages/SSS").then((m) => ({ default: m.SSS })));
+const GizlilikPolitikasi = lazy(() =>
+  import("./pages/GizlilikPolitikasi").then((m) => ({ default: m.GizlilikPolitikasi })),
+);
+const KVKK = lazy(() => import("./pages/KVKK").then((m) => ({ default: m.KVKK })));
+const CerezPolitikasi = lazy(() => import("./pages/CerezPolitikasi").then((m) => ({ default: m.CerezPolitikasi })));
+const Hakkimizda = lazy(() => import("./pages/Hakkimizda").then((m) => ({ default: m.Hakkimizda })));
+const Iletisim = lazy(() => import("./pages/Iletisim").then((m) => ({ default: m.Iletisim })));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail").then((m) => ({ default: m.ServiceDetail })));
+const Blog = lazy(() => import("./pages/Blog").then((m) => ({ default: m.Blog })));
+const BlogDetail = lazy(() => import("./pages/BlogDetail").then((m) => ({ default: m.BlogDetail })));
+const AdminLogin = lazy(() => import("./pages/AdminLogin").then((m) => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard").then((m) => ({ default: m.AdminDashboard })));
+const Login = lazy(() => import("./pages/Login").then((m) => ({ default: m.Login })));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword").then((m) => ({ default: m.ForgotPassword })));
+const ResetPassword = lazy(() => import("./pages/ResetPassword").then((m) => ({ default: m.ResetPassword })));
+const Malzemeler = lazy(() => import("./pages/Malzemeler").then((m) => ({ default: m.Malzemeler })));
+const MalzemeKategori = lazy(() => import("./pages/MalzemeKategori").then((m) => ({ default: m.MalzemeKategori })));
+const TeklifAl = lazy(() => import("./pages/TeklifAl").then((m) => ({ default: m.TeklifAl })));
+const MusteriPaneli = lazy(() => import("./pages/MusteriPaneli").then((m) => ({ default: m.MusteriPaneli })));
+const CategoryPage = lazy(() => import("./pages/CategoryPage").then((m) => ({ default: m.CategoryPage })));
+const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork").then((m) => ({ default: m.TestHowWeWork })));
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CustomerProtectedRoute } from "./components/CustomerProtectedRoute";
@@ -56,16 +59,29 @@ const AnimatedRoutes = () => {
   const location = useLocation();
 
   const isPanel = useMemo(() => {
-    return location.pathname.startsWith("/admin") ||
-           location.pathname.startsWith("/musteri-paneli");
+    return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
   }, [location.pathname]);
 
   const panelRoutes = (
     <Suspense fallback={<PageLoader />}>
       <Routes location={location}>
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-        <Route path="/musteri-paneli" element={<CustomerProtectedRoute><MusteriPaneli /></CustomerProtectedRoute>} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/musteri-paneli"
+          element={
+            <CustomerProtectedRoute>
+              <MusteriPaneli />
+            </CustomerProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
@@ -73,7 +89,7 @@ const AnimatedRoutes = () => {
 
   const publicRoutes = (
     <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} {...pageTransition}>
+      <motion.div key={location.pathname} {...pageTransition} onAnimationStart={() => play("whoosh")}>
         <Suspense fallback={<PageLoader />}>
           <Routes location={location}>
             <Route path="/" element={<Index />} />
@@ -113,8 +129,7 @@ const AppContent = () => {
   const location = useLocation();
 
   const isPanel = useMemo(() => {
-    return location.pathname.startsWith("/admin") ||
-           location.pathname.startsWith("/musteri-paneli");
+    return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
   }, [location.pathname]);
 
   const content = (
@@ -125,11 +140,7 @@ const AppContent = () => {
     </>
   );
 
-  return isPanel ? content : (
-    <SmoothScrollProvider>
-      {content}
-    </SmoothScrollProvider>
-  );
+  return isPanel ? content : <SmoothScrollProvider>{content}</SmoothScrollProvider>;
 };
 
 export const App = () => (
