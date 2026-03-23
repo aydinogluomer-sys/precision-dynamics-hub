@@ -209,6 +209,13 @@ export const Index = () => {
           </svg>
         </div>
 
+        {/* Glow line: transition → WhyUs */}
+        <div className="relative" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-2">
+            <GlowLineDivider glowColor="hsl(var(--forge-molten))" />
+          </div>
+        </div>
+
         {/* 14 — WhyUs */}
         <div className="relative" style={{ zIndex: 14 }}>
           <Suspense fallback={<SectionLoader />}>

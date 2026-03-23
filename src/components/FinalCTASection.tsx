@@ -183,13 +183,13 @@ export const FinalCTASection = () => {
               {"Teklif Al"}
               <ArrowRight className="w-4 h-4" />
             </MagneticButton>
-            <MagneticButton
+            <BracketButton
+              as="a"
               href="/iletisim"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all bg-transparent text-primary-foreground hover:bg-primary-foreground/10 border border-primary-foreground/30"
-              strength={0.25}
+              className="text-primary-foreground/80 border-primary-foreground/30 hover:text-primary-foreground hover:border-primary-foreground/60"
             >
               {"Bize Ulaşın"}
-            </MagneticButton>
+            </BracketButton>
           </motion.div>
         </div>
       </div>

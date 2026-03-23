@@ -109,9 +109,9 @@ export const WhyUsSection = () => {
               </h2>
             </Reveal>
             <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "hsl(var(--forge-silver))" }}>
-              {
-                "Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz."
-              }
+              {"Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve "}
+              <TextHighlight color="hsl(var(--primary) / 0.25)">{"şeffaf süreç yönetimiyle"}</TextHighlight>
+              {" müşterilerimize sunuyoruz."}
             </p>
 
             <div className="space-y-6">
