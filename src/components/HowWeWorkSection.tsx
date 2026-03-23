@@ -129,13 +129,12 @@ export const HowWeWorkSection = () => {
             scale: 1,
             duration: 0.6,
             ease: "power3.out",
+            delay: 0.3 + i * 0.15,
             scrollTrigger: {
-              trigger: card,
-              containerAnimation: gsap.getById?.("hww-scroll") || undefined,
-              start: "left 80%",
+              trigger: section,
+              start: "top 60%",
               toggleActions: "play none none none",
             },
-            delay: i * 0.1,
           },
         );
       });
