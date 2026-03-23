@@ -36,7 +36,7 @@ const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork").then(m => ({ de
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CustomerProtectedRoute } from "./components/CustomerProtectedRoute";
 import { ChatBot } from "@/components/ChatBot";
-import { CursorFollower } from "@/components/CursorFollower";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
