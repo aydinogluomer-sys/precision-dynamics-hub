@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { TextHighlight } from "@/components/ui/TextHighlight";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
