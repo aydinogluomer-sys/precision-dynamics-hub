@@ -9,6 +9,7 @@ import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
 import { BlurImage } from "./BlurImage";
+import { OverlayReveal } from "./ui/OverlayReveal";
 
 const services = [
   {
@@ -221,10 +222,7 @@ export const ServicesSection = () => {
 };
 
 const ServiceCard = ({ service, index }: { service: (typeof services)[number]; index: number }) => {
-  const prefersReduced = usePrefersReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
-  const clipFrom = prefersReduced ? "inset(0)" : (index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)");
-  const clipTo = "inset(0)";
 
   return (
     <motion.div
@@ -235,20 +233,17 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image with clipPath mask reveal */}
-      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
-        <motion.div
-          className="relative h-64 md:h-72 overflow-hidden"
-          initial={{ clipPath: clipFrom }}
-          whileInView={{ clipPath: clipTo }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
+      <OverlayReveal
+        className="h-64 md:h-72"
+        staggerDelay={index * 0.08}
+        direction={index % 2 === 0 ? "top" : "left"}
+      >
+        <motion.div className="relative h-full" whileHover={{ scale: 1.05 }} transition={{ duration: 0.6 }}>
           <BlurImage
             src={service.image}
             alt={service.title}
             className="w-full h-full object-cover"
           />
-          {/* Ghost machine-loop video on hover — lazy loaded */}
           {isHovered && (
             <video
               src="/machine-loop.mp4"
@@ -262,7 +257,7 @@ const ServiceCard = ({ service, index }: { service: (typeof services)[number]; i
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
         </motion.div>
-      </motion.div>
+      </OverlayReveal>
 
       {/* Content with text stagger */}
       <div className="p-6">

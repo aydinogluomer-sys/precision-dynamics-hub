@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { ArrowDown } from "lucide-react";
-import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap } from "@/hooks/use-gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { MagneticButton } from "./MagneticButton";
-import { Reveal as TextReveal } from "./ui/Reveal";
 import { HeadlineStagger } from "./HeadlineStagger";
 
 const headlines = [
@@ -14,34 +15,22 @@ const headlines = [
   "Stabil Kalite &\nGüvenilir Teslimat",
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const fadeUpVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: "easeOut" as const },
-  },
-};
-
 interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
 export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
-  const { scrollY } = useScroll();
   const prefersReduced = usePrefersReducedMotion();
 
-  const videoY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 160]);
-  const gridY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, 400]);
-  const overlayOpacity = useTransform(scrollY, [0, 600], prefersReduced ? [0.85, 0.85] : [0.85, 1]);
-  const headlineRotateX = useTransform(scrollY, [0, 400], prefersReduced ? [0, 0] : [0, -12]);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const maskedRef = useRef<HTMLDivElement>(null);
+  const bgImgRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
+  // Mouse tilt
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [3, -3]);
@@ -49,6 +38,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const rotateX = useSpring(rawRotateX, { stiffness: 150, damping: 20 });
   const rotateY = useSpring(rawRotateY, { stiffness: 150, damping: 20 });
 
+  // Headline rotation
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeadline((prev) => (prev + 1) % headlines.length);
@@ -56,11 +46,86 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
-    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
-  }, [mouseX, mouseY]);
+  // GSAP scroll-linked mask reveal
+  useEffect(() => {
+    if (prefersReduced) return;
+    const scroller = scrollerRef.current;
+    const masked = maskedRef.current;
+    const bgImg = bgImgRef.current;
+    const content = contentRef.current;
+    const grid = gridRef.current;
+    if (!scroller || !masked || !bgImg || !content || !grid) return;
+
+    const ctx = gsap.context(() => {
+      // Mask expansion: 30% → 300% on scroll
+      gsap.fromTo(
+        masked,
+        { "--mask-size": "30%" },
+        {
+          "--mask-size": "300%",
+          ease: "none",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+          },
+        }
+      );
+
+      // Background image fade in
+      gsap.fromTo(
+        bgImg,
+        { opacity: 0 },
+        {
+          opacity: 0.7,
+          ease: "none",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "30% top",
+            end: "80% top",
+            scrub: 1,
+          },
+        }
+      );
+
+      // Content fade out on scroll
+      gsap.to(content, {
+        y: -120,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "15% top",
+          end: "50% top",
+          scrub: 1,
+        },
+      });
+
+      // Grid parallax
+      gsap.to(grid, {
+        y: 400,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+    }, scroller);
+
+    return () => ctx.revert();
+  }, [prefersReduced]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+      mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [mouseX, mouseY]
+  );
 
   const handleMouseLeave = useCallback(() => {
     mouseX.set(0);
@@ -70,135 +135,224 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <section
-      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
-    >
-      {!prefersReduced && (
-        <motion.div
-          className="absolute inset-0 z-[50] pointer-events-none"
-          initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
-          animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
-          transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
-          style={{ backgroundColor: "white" }}
-        />
-      )}
-      <motion.div className="absolute inset-0 z-0" style={{ y: videoY }}>
-        <video
-          src={cncVideo}
-          poster={heroBg}
-          muted
-          autoPlay
-          loop
-          playsInline
-          preload="none"
-          className="w-full h-[120%] object-cover hidden md:block"
-        />
-        <img
-          src={heroBg}
-          alt="CNC Factory"
-          className="w-full h-[120%] object-cover md:hidden"
-        />
-      </motion.div>
-
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          y: gridY,
-          backgroundImage:
-            "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <motion.div
-        className="absolute inset-0 pointer-events-none z-[2]"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(15,15,15,0.88) 0%, rgba(15,15,15,0.65) 50%, rgba(15,15,15,0.9) 100%)",
-          opacity: overlayOpacity,
-        }}
-      />
-
-      <motion.div
-        className="container-industrial relative z-10 w-full"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX,
-          rotateY,
-          transformPerspective: 1200,
-          transformStyle: "preserve-3d" as const,
-        }}
+    <div ref={scrollerRef} className="relative" style={{ height: "300vh" }}>
+      <section
+        ref={stickyRef}
+        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       >
-        <motion.div
-          className="max-w-6xl mx-auto text-center"
-          variants={containerVariants}
-          initial={isFirstVisit ? "hidden" : false}
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ delay: heroDelay }}
+        {/* Flash overlay for first visit */}
+        {!prefersReduced && (
+          <motion.div
+            className="absolute inset-0 z-[50] pointer-events-none"
+            initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
+            animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
+            style={{ backgroundColor: "white" }}
+          />
+        )}
+
+        {/* Layer 1: Background video/image (dimmed, always present) */}
+        <div className="absolute inset-0 z-0">
+          <video
+            src={cncVideo}
+            poster={heroBg}
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="none"
+            className="w-full h-full object-cover hidden md:block"
+            style={{ opacity: 0.15 }}
+          />
+          <img
+            src={heroBg}
+            alt="CNC Factory"
+            className="w-full h-full object-cover md:hidden"
+            style={{ opacity: 0.15 }}
+          />
+        </div>
+
+        {/* Layer 2: Masked image — reveals through MAS logo on scroll */}
+        <div
+          ref={maskedRef}
+          className="absolute inset-0 z-[1]"
+          style={{
+            maskImage: "url('/images/mas-logo.svg')",
+            WebkitMaskImage: "url('/images/mas-logo.svg')",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+            maskSize: prefersReduced ? "300%" : "var(--mask-size, 30%)",
+            WebkitMaskSize: prefersReduced ? "300%" : "var(--mask-size, 30%)",
+          }}
         >
-          <motion.div variants={fadeUpVariants} className="flex items-center justify-center gap-4 mb-8">
+          <video
+            src={cncVideo}
+            poster={heroBg}
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="none"
+            className="w-full h-full object-cover hidden md:block"
+          />
+          <img
+            src={heroBg}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover md:hidden"
+          />
+        </div>
+
+        {/* Layer 3: Background image (fades in during scroll to blend mask → full image) */}
+        <div
+          ref={bgImgRef}
+          className="absolute inset-0 z-[2] pointer-events-none"
+          style={{ opacity: prefersReduced ? 0.6 : 0 }}
+        >
+          <img
+            src={heroBg}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Layer 4: Grid overlay */}
+        <div
+          ref={gridRef}
+          className="absolute inset-0 pointer-events-none z-[3]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        {/* Layer 5: Dark vignette overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none z-[4]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(15,15,15,0.4) 0%, rgba(15,15,15,0.85) 70%, rgba(15,15,15,0.95) 100%)",
+          }}
+        />
+
+        {/* Layer 6: Content */}
+        <motion.div
+          ref={contentRef}
+          className="container-industrial relative z-10 w-full"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            rotateX,
+            rotateY,
+            transformPerspective: 1200,
+            transformStyle: "preserve-3d" as const,
+          }}
+        >
+          <motion.div
+            className="max-w-6xl mx-auto text-center"
+            initial={isFirstVisit ? { opacity: 0 } : false}
+            animate={{ opacity: 1 }}
+            transition={{ delay: heroDelay, duration: 0.6 }}
+          >
+            {/* Eyebrow */}
             <motion.div
-              className="h-1 bg-primary"
-              initial={{ width: 0 }}
-              animate={{ width: 64 }}
-              transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-            />
-            <span
-              className="text-xs uppercase tracking-widest"
-              style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                color: "rgba(255,255,255,0.5)",
-              }}
+              className="flex items-center justify-center gap-4 mb-8"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
             >
-              {"CNC Hassas İşleme"}
-            </span>
-            <motion.div
-              className="h-1 bg-primary"
-              initial={{ width: 0 }}
-              animate={{ width: 64 }}
-              transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-            />
-          </motion.div>
+              <motion.div
+                className="h-1 bg-primary"
+                initial={{ width: 0 }}
+                animate={{ width: 64 }}
+                transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+              />
+              <span
+                className="text-xs uppercase tracking-widest"
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  color: "rgba(255,255,255,0.5)",
+                }}
+              >
+                {"CNC Hassas İşleme"}
+              </span>
+              <motion.div
+                className="h-1 bg-primary"
+                initial={{ width: 0 }}
+                animate={{ width: 64 }}
+                transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+              />
+            </motion.div>
 
-          <motion.div variants={fadeUpVariants} className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
-            <AnimatePresence mode="wait">
-              <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} scrollRotateX={headlineRotateX} />
-            </AnimatePresence>
-          </motion.div>
+            {/* Headlines */}
+            <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
+              <AnimatePresence mode="wait">
+                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+              </AnimatePresence>
+            </div>
 
-          <TextReveal delay={0.4 + heroDelay}>
-            <p
+            {/* Subtitle */}
+            <motion.p
               className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
               style={{ color: "rgba(255,255,255,0.7)" }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 + heroDelay }}
             >
               {"CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz."}
-            </p>
-          </TextReveal>
+            </motion.p>
 
-          <motion.div variants={fadeUpVariants} className="flex justify-center">
-            <MagneticButton
-              as="button"
-              onClick={() => {
-                const el = document.getElementById("hizli-teklif");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
+            {/* CTA */}
+            <motion.div
+              className="flex justify-center"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 + heroDelay }}
             >
-              <span>{"Hızlı Teklif Al"}</span>
-              <motion.span
-                className="inline-block"
-                animate={{ y: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
+              <MagneticButton
+                as="button"
+                onClick={() => {
+                  const el = document.getElementById("hizli-teklif");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
               >
-                <ArrowDown className="w-4 h-4" />
-              </motion.span>
-            </MagneticButton>
+                <span>{"Hızlı Teklif Al"}</span>
+                <motion.span
+                  className="inline-block"
+                  animate={{ y: [0, 4, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <ArrowDown className="w-4 h-4" />
+                </motion.span>
+              </MagneticButton>
+            </motion.div>
+
+            {/* Scroll indicator */}
+            <motion.div
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              transition={{ delay: 1.5 + heroDelay }}
+            >
+              <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">
+                {"Scroll"}
+              </span>
+              <motion.div
+                className="w-px h-8 bg-white/20"
+                animate={{ scaleY: [0, 1, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                style={{ transformOrigin: "top" }}
+              />
+            </motion.div>
           </motion.div>
         </motion.div>
-      </motion.div>
-    </section>
+      </section>
+    </div>
   );
 };

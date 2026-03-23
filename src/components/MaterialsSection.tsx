@@ -9,6 +9,7 @@ import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
+import { OverlayReveal } from "./ui/OverlayReveal";
 
 const materials = [
   {
@@ -154,7 +155,8 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
-    <div className="flip-card h-[400px] md:h-[440px] cursor-pointer group/card">
+    <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
+    <div className="flip-card h-full cursor-pointer group/card">
       <div
         className="flip-card-inner w-full h-full"
         style={{ filter: "drop-shadow(0 0 0px transparent)" }}
@@ -237,6 +239,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
         </div>
       </div>
     </div>
+    </OverlayReveal>
   );
 };
 

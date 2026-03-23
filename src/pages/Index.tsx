@@ -93,10 +93,10 @@ export const Index = () => {
       <JsonLdSchema type="organization" />
       <SectionDotNav sections={SECTIONS} />
       <main id="main-content" className="relative">
-        {/* z-index 1 */}
-        <ParallaxSection index={1} variant="zoom-out-blur">
+        {/* z-index 1 — Hero with built-in scroll mask (300vh scroller) */}
+        <div className="relative" style={{ zIndex: 1 }}>
           <HeroSection isFirstVisit={isFirstVisit} />
-        </ParallaxSection>
+        </div>
 
         {/* z-index 2 */}
         <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
