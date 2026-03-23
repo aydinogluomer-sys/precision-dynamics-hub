@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback, useLayoutEffect } from "react";
+import { useRef, useState, useCallback, useLayoutEffect, forwardRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { MagneticButton } from "./MagneticButton";
 import { BracketButton } from "./ui/BracketButton";
