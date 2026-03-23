@@ -9,6 +9,7 @@ import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
+import { OverlayReveal } from "./ui/OverlayReveal";
 
 const materials = [
   {
