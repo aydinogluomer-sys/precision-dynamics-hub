@@ -11,6 +11,7 @@ import { ParallaxSection } from "@/components/ParallaxSection";
 import { PageLoader } from "@/components/PageLoader";
 
 import { SectionDivider } from "@/components/ui/SectionDivider";
+import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
@@ -147,6 +148,13 @@ export const Index = () => {
           </Suspense>
         </ParallaxSection>
 
+        {/* Glow line: Services → Industries */}
+        <div className="relative" style={{ zIndex: 8, backgroundColor: "hsl(var(--forge-concrete))" }}>
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <GlowLineDivider />
+          </div>
+        </div>
+
         {/* z-index 9 — Industries */}
         <ParallaxSection index={9} variant="stack">
           <Suspense fallback={<SectionLoader />}>
@@ -199,6 +207,13 @@ export const Index = () => {
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
             <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" fill="#1a1a2e" />
           </svg>
+        </div>
+
+        {/* Glow line: transition → WhyUs */}
+        <div className="relative" style={{ zIndex: 14, backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-2">
+            <GlowLineDivider glowColor="hsl(var(--forge-molten))" />
+          </div>
         </div>
 
         {/* 14 — WhyUs */}

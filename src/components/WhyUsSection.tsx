@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { TextHighlight } from "@/components/ui/TextHighlight";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -108,9 +109,9 @@ export const WhyUsSection = () => {
               </h2>
             </Reveal>
             <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: "hsl(var(--forge-silver))" }}>
-              {
-                "Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve şeffaf süreç yönetimiyle müşterilerimize sunuyoruz."
-              }
+              {"Mikron seviyesinde üretim hassasiyetini, uçtan uca dijital izlenebilirlik ve "}
+              <TextHighlight color="hsl(var(--primary) / 0.25)">{"şeffaf süreç yönetimiyle"}</TextHighlight>
+              {" müşterilerimize sunuyoruz."}
             </p>
 
             <div className="space-y-6">
