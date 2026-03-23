@@ -11,6 +11,7 @@ import { ParallaxSection } from "@/components/ParallaxSection";
 import { PageLoader } from "@/components/PageLoader";
 
 import { SectionDivider } from "@/components/ui/SectionDivider";
+import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
