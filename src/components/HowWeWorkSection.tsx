@@ -129,13 +129,12 @@ export const HowWeWorkSection = () => {
             scale: 1,
             duration: 0.6,
             ease: "power3.out",
+            delay: 0.3 + i * 0.15,
             scrollTrigger: {
-              trigger: card,
-              containerAnimation: gsap.getById?.("hww-scroll") || undefined,
-              start: "left 80%",
+              trigger: section,
+              start: "top 60%",
               toggleActions: "play none none none",
             },
-            delay: i * 0.1,
           },
         );
       });
@@ -176,17 +175,7 @@ export const HowWeWorkSection = () => {
       className="relative border-y border-border overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-[2px] z-50 pointer-events-none" style={{ opacity: 0 }}>
-        <div
-          ref={progressRef}
-          className="h-full origin-left"
-          style={{
-            backgroundColor: "hsl(var(--primary))",
-            transform: "scaleX(0)",
-          }}
-        />
-      </div>
+      {/* Progress bar removed — using bottom bar only */}
 
       {/* Header — inside sticky container */}
       <div ref={headerRef} className="pt-16 pb-8 px-8 lg:px-16">

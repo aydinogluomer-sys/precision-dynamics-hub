@@ -1,13 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useRef, useState, useCallback, useLayoutEffect } from "react";
+import { useRef, useState, useCallback, useLayoutEffect, forwardRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { MagneticButton } from "./MagneticButton";
 import { BracketButton } from "./ui/BracketButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 /* ── GSAP CTA headline with char stagger ── */
-const GsapCtaHeadline = () => {
+const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
   const ref = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
@@ -66,7 +66,9 @@ const GsapCtaHeadline = () => {
     />
 
   );
-};
+});
+
+GsapCtaHeadline.displayName = "GsapCtaHeadline";
 
 export const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
