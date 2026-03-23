@@ -9,6 +9,7 @@ import serviceImalat from "@/assets/service-imalat.jpg";
 import serviceLazer from "@/assets/service-lazer.jpg";
 import serviceKalip from "@/assets/service-kalip.jpg";
 import { BlurImage } from "./BlurImage";
+import { OverlayReveal } from "./ui/OverlayReveal";
 
 const services = [
   {
