@@ -2,22 +2,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { type ReactNode } from "react";
 
+const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
+const DURATION = 0.6;
+
 const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  enter: {
+  initial: {
+    clipPath: "inset(100% 0 0 0)",
     opacity: 1,
-    y: 0,
+  },
+  enter: {
+    clipPath: "inset(0 0 0 0)",
+    opacity: 1,
     transition: {
-      duration: 0.35,
-      ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+      duration: DURATION,
+      ease: EASE,
     },
   },
   exit: {
-    opacity: 0,
-    y: -8,
+    clipPath: "inset(0 0 100% 0)",
+    opacity: 1,
     transition: {
-      duration: 0.2,
-      ease: [0.55, 0.06, 0.68, 0.19] as [number, number, number, number],
+      duration: DURATION,
+      ease: EASE,
     },
   },
 } as const;
@@ -32,7 +38,7 @@ export const PageTransition = ({ children }: { children: ReactNode }) => {
         initial="initial"
         animate="enter"
         exit="exit"
-        style={{ willChange: "opacity, transform" }}
+        style={{ willChange: "clip-path" }}
       >
         {children}
       </motion.div>

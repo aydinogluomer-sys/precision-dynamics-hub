@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap } from "@/hooks/use-gsap";
 
 interface PageLoaderProps {
   isFirstVisit: boolean;
@@ -9,11 +10,49 @@ interface PageLoaderProps {
 export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
   const prefersReduced = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(isFirstVisit && !prefersReduced);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isFirstVisit || prefersReduced) return;
-    const timer = setTimeout(() => setIsVisible(false), 1800);
-    return () => clearTimeout(timer);
+
+    const counter = counterRef.current;
+    const bar = barRef.current;
+    if (!counter || !bar) return;
+
+    const obj = { val: 0 };
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Small pause then exit
+        gsap.delayedCall(0.3, () => setIsVisible(false));
+      },
+    });
+
+    // Counter 0 → 100
+    tl.to(obj, {
+      val: 100,
+      duration: 2,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        counter.textContent = String(Math.round(obj.val));
+      },
+    });
+
+    // Bar width synced
+    tl.to(
+      bar,
+      {
+        width: "100%",
+        duration: 2,
+        ease: "power2.inOut",
+      },
+      "<"
+    );
+
+    return () => {
+      tl.kill();
+    };
   }, [isFirstVisit, prefersReduced]);
 
   return (
@@ -22,9 +61,10 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
         <motion.div
           className="fixed inset-0 z-[9999] flex items-center justify-center"
           style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
-          initial={{ clipPath: "inset(0 0 0% 0)" }}
-          exit={{ clipPath: "inset(0 0 100% 0)" }}
-          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          exit={{
+            y: "-100%",
+            transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] },
+          }}
         >
           {/* Subtle grid */}
           <div
@@ -36,43 +76,52 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
             }}
           />
 
-          <div className="relative flex flex-col items-center gap-4">
-            {/* Logo box */}
-            <motion.div
-              className="bg-primary flex items-center justify-center"
-              style={{ width: 64, height: 64 }}
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          <div className="relative flex flex-col items-center">
+            {/* Big monospace counter */}
+            <span
+              ref={counterRef}
+              className="font-mono font-bold text-white/90 select-none"
+              style={{
+                fontSize: "clamp(4rem, 12vw, 9rem)",
+                fontVariantNumeric: "tabular-nums",
+                lineHeight: 1,
+              }}
             >
-              <span className="text-primary-foreground font-bold text-2xl">{"MT"}</span>
-            </motion.div>
+              0
+            </span>
 
-            {/* Brand text */}
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ clipPath: "inset(0 0 100% 0)", opacity: 0 }}
-              animate={{ clipPath: "inset(0 0 0% 0)", opacity: 1 }}
-              transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1], delay: 0.3 }}
+            {/* Percent sign */}
+            <span
+              className="text-sm font-mono text-white/30 tracking-[0.3em] uppercase mt-2"
             >
-              <span className="font-bold text-xl tracking-tight text-white">{"MAS TECHNIC"}</span>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-mono mt-1">
-                {"Precision CNC"}
-              </span>
-            </motion.div>
+              {"loading"}
+            </span>
 
-            {/* Loading bar */}
-            <motion.div className="w-32 h-px mt-4 overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
-              <motion.div
+            {/* Progress bar */}
+            <div
+              className="mt-6 h-px overflow-hidden"
+              style={{ width: 120, backgroundColor: "rgba(255,255,255,0.1)" }}
+            >
+              <div
+                ref={barRef}
                 className="h-full"
                 style={{
-                  background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))",
+                  width: "0%",
+                  background:
+                    "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))",
                 }}
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               />
-            </motion.div>
+            </div>
+
+            {/* Brand */}
+            <motion.span
+              className="text-[10px] uppercase tracking-[0.4em] text-white/25 font-mono mt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {"MAS TECHNIC"}
+            </motion.span>
           </div>
         </motion.div>
       )}

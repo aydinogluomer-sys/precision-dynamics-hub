@@ -384,3 +384,10 @@ a:focus-visible,
     animation: none !important;
   }
 }
+
+/* Custom cursor — hide default on desktop */
+@media (min-width: 901px) and (pointer: fine) {
+  html, body, a, button, [role="button"] {
+    cursor: none !important;
+  }
+}
