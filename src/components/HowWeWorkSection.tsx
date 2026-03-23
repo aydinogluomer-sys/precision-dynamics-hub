@@ -98,6 +98,7 @@ export const HowWeWorkSection = () => {
           <SectionHeader
             tag="Metodoloji"
             title="Hassas Üretim İş Akışımız"
+            sectionNumber={2}
             description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
           />
         </div>
@@ -128,9 +129,10 @@ export const HowWeWorkSection = () => {
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
         {/* Header */}
         <motion.div className="container-industrial pt-8 pb-6" style={{ opacity: headerOpacity, y: headerY }}>
-          <SectionHeader
+           <SectionHeader
             tag="Metodoloji"
             title="Hassas Üretim İş Akışımız"
+            sectionNumber={2}
             description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
           />
         </motion.div>
