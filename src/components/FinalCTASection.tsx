@@ -66,7 +66,9 @@ const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
     />
 
   );
-};
+});
+
+GsapCtaHeadline.displayName = "GsapCtaHeadline";
 
 export const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);

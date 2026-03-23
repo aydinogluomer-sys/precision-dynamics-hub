@@ -175,17 +175,7 @@ export const HowWeWorkSection = () => {
       className="relative border-y border-border overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-[2px] z-50 pointer-events-none" style={{ opacity: 0 }}>
-        <div
-          ref={progressRef}
-          className="h-full origin-left"
-          style={{
-            backgroundColor: "hsl(var(--primary))",
-            transform: "scaleX(0)",
-          }}
-        />
-      </div>
+      {/* Progress bar removed — using bottom bar only */}
 
       {/* Header — inside sticky container */}
       <div ref={headerRef} className="pt-16 pb-8 px-8 lg:px-16">
