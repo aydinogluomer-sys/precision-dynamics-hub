@@ -98,7 +98,7 @@ export const FAQBlogSection = () => {
           {/* FAQ Column */}
           <div>
             <div className="mb-8">
-              <SectionHeader tag="SSS" title="Sıkça Sorulan Sorular" />
+              <SectionHeader tag="SSS" title="Sıkça Sorulan Sorular" sectionNumber={6} />
             </div>
 
             <motion.div
