@@ -1,9 +1,3 @@
-/**
- * SmoothScrollProvider.tsx — CLEAN
- *
- * FIX: Removed concatenated OverlayReveal code that Lovable merged into this file.
- * OverlayReveal is now in its own file: src/components/ui/OverlayReveal.tsx
- */
 import { useEffect, useRef, type ReactNode } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
@@ -28,8 +22,6 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // BUNU YAPIŞTIR:
-  useEffect(() => {
     if (shouldDisable) return;
 
     const lenis = new Lenis({
@@ -43,14 +35,11 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
-     // CRITICAL: Framer Motion sync — dispatch native scroll event
-    // so useScroll / scrollYProgress stay in sync with Lenis
     lenis.on("scroll", () => {
       ScrollTrigger.update();
       window.dispatchEvent(new Event("scroll"));
     });
 
-    // 1. Fonksiyonu isimlendirdik (Temizleyebilmek için)
     const updateLenis = (time: number) => {
       lenis.raf(time * 1000);
     };
@@ -59,9 +48,8 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      // 2. KRİTİK TEMİZLİKLER:
-      gsap.ticker.remove(updateLenis); // Ticker'ı durdur (Hata buradaydı)
-      ScrollTrigger.getAll().forEach(t => t.kill()); // Eski tetikleyicileri öldür
+      gsap.ticker.remove(updateLenis);
+      ScrollTrigger.getAll().forEach((t) => t.kill());
       lenis.destroy();
       lenisRef.current = null;
       delete window.__lenis;
