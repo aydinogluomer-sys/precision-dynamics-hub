@@ -239,11 +239,12 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
     const el = titleRef.current;
     if (!el) return;
 
+    const text = project.title;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    const text = el.textContent || "";
-    el.setAttribute("aria-label", text);
+    if (mq.matches) {
+      el.textContent = text;
+      return;
+    }
 
     // Split title into characters for GSAP stagger
     el.innerHTML = text
@@ -278,7 +279,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
       observer.disconnect();
       el.textContent = text;
     };
-  }, []);
+  }, [project.title]);
 
   return (
     <div
