@@ -98,6 +98,7 @@ export const HowWeWorkSection = () => {
           <SectionHeader
             tag="Metodoloji"
             title="Hassas Üretim İş Akışımız"
+            sectionNumber={2}
             description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
           />
         </div>
