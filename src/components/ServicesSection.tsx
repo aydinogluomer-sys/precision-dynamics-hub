@@ -222,10 +222,7 @@ export const ServicesSection = () => {
 };
 
 const ServiceCard = ({ service, index }: { service: (typeof services)[number]; index: number }) => {
-  const prefersReduced = usePrefersReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
-  const clipFrom = prefersReduced ? "inset(0)" : (index % 2 === 0 ? "inset(100% 0 0 0)" : "inset(0 100% 0 0)");
-  const clipTo = "inset(0)";
 
   return (
     <motion.div
