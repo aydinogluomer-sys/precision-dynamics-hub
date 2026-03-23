@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { SectionHeader } from "./SectionHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 const steps = [
   {
@@ -17,8 +17,8 @@ const steps = [
       { title: "Malzeme Analizi", desc: "Dayanıklılık ve mukavemet testleri" },
       { title: "ISO Hazırlığı", desc: "Standart uyumluluk denetimi" },
     ],
-
     stat: { value: "99.8%", label: "Faz Güvenilirliği" },
+    accent: "hsl(var(--forge-teal))",
   },
   {
     number: "02",
@@ -31,8 +31,8 @@ const steps = [
       { title: "Tolerans Kontrolü", desc: "Geometrik boyut doğrulama" },
       { title: "Malzeme Seçimi", desc: "Uygulamaya özel malzeme" },
     ],
-
     stat: { value: "48 sa", label: "Ortalama Teklif Süresi" },
+    accent: "hsl(var(--forge-molten))",
   },
   {
     number: "03",
@@ -45,8 +45,8 @@ const steps = [
       { title: "Yüzey İşleme", desc: "Ra 0.4μm yüzey kalitesi" },
       { title: "Proses Kontrolü", desc: "SPC ile süreç yönetimi" },
     ],
-
     stat: { value: "±0.005", label: "mm Tolerans" },
+    accent: "hsl(var(--forge-amber))",
   },
   {
     number: "04",
@@ -59,40 +59,98 @@ const steps = [
       { title: "Sertifikasyon", desc: "Malzeme ve test sertifikaları" },
       { title: "Paketleme", desc: "Özel koruyucu ambalaj" },
     ],
-
     stat: { value: "%100", label: "Kalite Kontrol" },
+    accent: "hsl(var(--primary))",
   },
 ];
 
 export const HowWeWorkSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
-  const slideInitial = prefersReduced ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 };
-  const slideAnimate = { opacity: 1, x: 0 };
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    if (isMobile || prefersReduced) return;
+    const section = sectionRef.current;
+    const strip = stripRef.current;
+    const header = headerRef.current;
+    const progress = progressRef.current;
+    if (!section || !strip || !header || !progress) return;
 
-  // Desktop: translate strip so all 4 cards scroll horizontally into view
-  // Start offset = (totalCardWidth - viewport) expressed as % of strip width
-  const x = useTransform(scrollYProgress, [0.05, 0.95], ["60%", "-10%"]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.02], [0.8, 1]);
-  const headerY = useTransform(scrollYProgress, [0, 0.02], [10, 0]);
+    const ctx = gsap.context(() => {
+      // Header fade in
+      gsap.fromTo(
+        header,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        },
+      );
 
-  // Mobile: simple vertical layout, no sticky scroll
+      // Horizontal scroll pinning
+      const totalScroll = strip.scrollWidth - window.innerWidth;
+
+      gsap.to(strip, {
+        x: -totalScroll,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${totalScroll}`,
+          pin: true,
+          scrub: 1.2,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            gsap.set(progress, { scaleX: self.progress });
+          },
+        },
+      });
+
+      // Stagger card reveals
+      const cards = strip.querySelectorAll(".hww-card");
+      cards.forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 40, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: gsap.getById?.("hww-scroll") || undefined,
+              start: "left 80%",
+              toggleActions: "play none none none",
+            },
+            delay: i * 0.1,
+          },
+        );
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, [isMobile, prefersReduced]);
+
+  // Mobile: simple vertical layout
   if (isMobile) {
     return (
-      <motion.section
+      <section
         id="nasil-calisiyoruz"
         className="relative border-y border-border py-12"
         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
-        initial={slideInitial}
-        whileInView={slideAnimate}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
       >
         <div className="container-industrial mb-8">
           <SectionHeader
@@ -107,67 +165,117 @@ export const HowWeWorkSection = () => {
             <StepCard key={step.number} step={step} index={i} />
           ))}
         </div>
-      </motion.section>
+      </section>
     );
   }
 
   return (
-    <motion.section
+    <section
       ref={sectionRef}
       id="nasil-calisiyoruz"
-      className="relative border-y border-border"
-      style={{
-        height: "300vh",
-        backgroundColor: "hsl(var(--forge-workshop))",
-      }}
-      initial={slideInitial}
-      whileInView={slideAnimate}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+      className="relative border-y border-border overflow-hidden"
+      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
     >
-      {/* Sticky container */}
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
-        {/* Header */}
-        <motion.div className="container-industrial pt-8 pb-6" style={{ opacity: headerOpacity, y: headerY }}>
-           <SectionHeader
-            tag="Metodoloji"
-            title="Hassas Üretim İş Akışımız"
-            sectionNumber={2}
-            description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
-          />
-        </motion.div>
-
-        {/* Horizontal card strip */}
-        <motion.div className="flex gap-5 px-8 lg:px-12 pb-8" style={{ x }}>
-          {steps.map((step, i) => (
-            <StepCard key={step.number} step={step} index={i} />
-          ))}
-        </motion.div>
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 right-0 h-[2px] z-50 pointer-events-none" style={{ opacity: 0 }}>
+        <div
+          ref={progressRef}
+          className="h-full origin-left"
+          style={{
+            backgroundColor: "hsl(var(--primary))",
+            transform: "scaleX(0)",
+          }}
+        />
       </div>
-    </motion.section>
+
+      {/* Header — inside sticky container */}
+      <div ref={headerRef} className="pt-16 pb-8 px-8 lg:px-16">
+        <SectionHeader
+          tag="Metodoloji"
+          title="Hassas Üretim İş Akışımız"
+          sectionNumber={2}
+          description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
+        />
+      </div>
+
+      {/* Horizontal scroll strip */}
+      <div ref={stripRef} className="flex gap-8 px-8 lg:px-16 pb-16 will-change-transform">
+        {/* Spacer for initial viewport centering */}
+        <div className="flex-shrink-0 w-[10vw]" />
+        {steps.map((step, i) => (
+          <StepCard key={step.number} step={step} index={i} />
+        ))}
+        {/* End spacer */}
+        <div className="flex-shrink-0 w-[20vw]" />
+      </div>
+
+      {/* Bottom progress line */}
+      <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "hsl(var(--border))" }}>
+        <div
+          ref={progressRef}
+          className="h-full origin-left transition-none"
+          style={{
+            backgroundColor: "hsl(var(--primary))",
+            transform: "scaleX(0)",
+          }}
+        />
+      </div>
+    </section>
   );
 };
 
 const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number }) => {
   return (
-    <div className="flex-shrink-0 w-full md:w-[calc(25%-15px)] min-w-0 md:min-w-[280px] p-6 lg:p-8 border bg-background border-border hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-12 h-12 bg-primary flex items-center justify-center">
-          <step.icon className="w-5 h-5 text-primary-foreground" />
-        </div>
-        <div>
-          <span className="text-technical text-xs text-primary block">{step.number}.</span>
-          <span className="font-bold text-lg">{step.label}</span>
+    <div
+      className="hww-card flex-shrink-0 w-full md:w-[380px] lg:w-[420px] p-8 lg:p-10 border bg-background border-border hover:border-primary/40 transition-all duration-500 group relative overflow-hidden"
+      data-cursor="detail"
+    >
+      {/* Top accent line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[3px] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+        style={{ backgroundColor: step.accent }}
+      />
+
+      {/* Step number + icon */}
+      <div className="flex items-center justify-between mb-8">
+        <span
+          className="text-6xl font-bold font-mono leading-none"
+          style={{ color: "hsl(var(--border))" }}
+        >
+          {step.number}
+        </span>
+        <div
+          className="w-14 h-14 flex items-center justify-center border border-border group-hover:border-primary/40 transition-colors duration-300"
+          style={{ backgroundColor: "hsl(var(--muted))" }}
+        >
+          <step.icon className="w-6 h-6 text-primary" />
         </div>
       </div>
 
-      <h3 className="heading-industrial text-lg mb-2">{step.title}</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed mb-5">{step.description}</p>
+      {/* Label */}
+      <span
+        className="text-[10px] font-mono uppercase tracking-[0.3em] mb-3 block"
+        style={{ color: step.accent }}
+      >
+        {step.label}
+      </span>
 
-      <div className="grid grid-cols-1 gap-2 mb-5">
+      {/* Title */}
+      <h3 className="heading-industrial text-xl lg:text-2xl mb-3 group-hover:text-primary transition-colors duration-300">
+        {step.title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-muted-foreground text-sm leading-relaxed mb-6">{step.description}</p>
+
+      {/* Checklist */}
+      <div className="grid grid-cols-1 gap-3 mb-6">
         {step.checklist.map((item) => (
-          <div key={item.title} className="flex items-start gap-[8px]">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+          <div key={item.title} className="flex items-start gap-3">
+            <div
+              className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+              style={{ backgroundColor: step.accent }}
+            />
             <div>
               <span className="text-xs font-semibold block">{item.title}</span>
               <span className="text-[11px] text-muted-foreground">{item.desc}</span>
@@ -176,8 +284,11 @@ const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number
         ))}
       </div>
 
-      <div className="flex items-center gap-3 pt-4 border-t border-border">
-        <span className="text-technical font-bold text-primary text-xl">{step.stat.value}</span>
+      {/* Stat footer */}
+      <div className="flex items-center gap-3 pt-5 border-t border-border">
+        <span className="text-technical font-bold text-xl" style={{ color: step.accent }}>
+          {step.stat.value}
+        </span>
         <span className="text-technical text-[10px] text-muted-foreground uppercase tracking-wider">
           {step.stat.label}
         </span>

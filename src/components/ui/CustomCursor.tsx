@@ -9,10 +9,14 @@ interface CursorLabel {
 }
 
 const SELECTORS: Array<{ selector: string; label: CursorLabel }> = [
-  { selector: ".service-item, [data-cursor='detail']", label: { text: "Detay", scale: 1.8 } },
-  { selector: "a[href], .nav-link, button", label: { text: "", scale: 1.3 } },
+  { selector: ".gsap-project-card, [data-cursor='kesfet']", label: { text: "Keşfet", scale: 2 } },
+  { selector: ".material-card, [data-cursor='cevir']", label: { text: "Çevir", scale: 1.8 } },
+  { selector: ".hww-card, [data-cursor='detail']", label: { text: "Detay", scale: 1.8 } },
+  { selector: ".testimonial-stack-card", label: { text: "Oku", scale: 1.6 } },
+  { selector: ".service-item, [data-cursor='hizmet']", label: { text: "Detay", scale: 1.8 } },
   { selector: "[data-cursor='zoom']", label: { text: "Zoom", scale: 2 } },
   { selector: "[data-cursor='teklif']", label: { text: "Teklif", scale: 2 } },
+  { selector: "a[href], .nav-link, button", label: { text: "", scale: 1.3 } },
 ];
 
 export const CustomCursor = () => {

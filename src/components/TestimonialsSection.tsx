@@ -1,99 +1,50 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useMemo } from "react";
+import { useRef, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { LogoLoop } from "./LogoLoop";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { TestimonialsColumn } from "./ui/testimonials-columns-1";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 const testimonials = [
   {
     text: "5 yıldır çalışıyoruz. Havacılık parçalarımızda hiç kalite sorunu yaşamadık. Tolerans disiplinleri ve zamanında teslimatları ile güvenilir bir iş ortağı.",
-    image: "",
     name: "Satınalma Müdürü",
     role: "Havacılık & Uzay Sektörü",
   },
   {
     text: "Prototip süreçlerimizde hız ve kalite dengesini mükemmel sağlıyorlar. DFM analizleri sayesinde tasarımlarımızı optimize ettik ve maliyetlerimizi düşürdük.",
-    image: "",
     name: "Ar-Ge Mühendisi",
     role: "Otomotiv Sektörü",
   },
   {
     text: "Medikal implant üretiminde güvenilirlik kritik. ISO 13485 uyumlu süreçleri ve izlenebilirlik sistemi tam aradığımız standartları karşılıyor.",
-    image: "",
     name: "Üretim Direktörü",
     role: "Medikal Cihaz Üreticisi",
   },
   {
     text: "Savunma sanayii projelerimizde hassasiyet ve gizlilik ön planda. Bu iki konuda da beklentilerimizi fazlasıyla karşılıyorlar.",
-    image: "",
     name: "Proje Yöneticisi",
     role: "Savunma Sanayi",
   },
   {
     text: "Küçük partilerden seri üretime geçişte hiç aksama yaşamadık. Esnek üretim kapasiteleri ve hızlı iletişimleri çok değerli.",
-    image: "",
     name: "Tedarik Zinciri Uzmanı",
     role: "Endüstriyel Üretim",
   },
   {
     text: "Alüminyum ve paslanmaz çelik işlemede üstün kalite sunuyorlar. Yüzey işlem seçenekleri de oldukça geniş ve profesyonel.",
-    image: "",
     name: "Kalite Müdürü",
     role: "Beyaz Eşya Sektörü",
   },
-  {
-    text: "CNC torna ve frezeleme kapasiteleri Türkiye'nin en iyileri arasında. 24/7 üretim imkânı projelerin zamanında teslimini garantiliyor.",
-    image: "",
-    name: "Operasyon Müdürü",
-    role: "Elektronik Sektörü",
-  },
-  {
-    text: "Teknik ekipleri her zaman çözüm odaklı yaklaşıyor. Karmaşık geometrilerde bile mükemmel sonuçlar alıyoruz.",
-    image: "",
-    name: "Mühendislik Müdürü",
-    role: "Havacılık & Uzay Sektörü",
-  },
-  {
-    text: "Fiyat-performans dengesi mükemmel. Kaliteden ödün vermeden rekabetçi fiyatlar sunuyorlar. Uzun vadeli çözüm ortağımız.",
-    image: "",
-    name: "Genel Müdür",
-    role: "İş Makineleri Sektörü",
-  },
 ];
 
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
-
 const clients = [
-  "Emir Alüminyum",
-  "Mert Teknik",
-  "BDM",
-  "Akbaşlar",
-  "EMOR",
-  "Batı Isıl İşlem",
-  "Yaka Döküm",
-  "Değer Galvano",
-  "Çağdaş Teknik",
-  "C.T.M",
-  "Ege Teknik",
-  "Maktest",
-  "Eksen Hassas Döküm",
-  "Era Metalurji",
-  "Xtremex Kimya",
-  "DPM Boya",
-  "Ahmet Tezcan",
-  "Ali Galip",
-  "Mikrosan Makina",
-  "Dösan Isıl İşlem",
-  "Asil Oltulu",
-  "Akon Hidrolik",
-  "ENTEA",
-  "Amade Metal",
-  "De-Taş",
+  "Emir Alüminyum", "Mert Teknik", "BDM", "Akbaşlar", "EMOR",
+  "Batı Isıl İşlem", "Yaka Döküm", "Değer Galvano", "Çağdaş Teknik", "C.T.M",
+  "Ege Teknik", "Maktest", "Eksen Hassas Döküm", "Era Metalurji", "Xtremex Kimya",
+  "DPM Boya", "Ahmet Tezcan", "Ali Galip", "Mikrosan Makina", "Dösan Isıl İşlem",
+  "Asil Oltulu", "Akon Hidrolik", "ENTEA", "Amade Metal", "De-Taş",
 ];
 
 const stats = [
@@ -103,33 +54,45 @@ const stats = [
   { value: "%100", label: "Zamanında Teslimat" },
 ];
 
-/* Word scatter component for heading */
-const WordScatter = ({ text, prefersReduced }: { text: string; prefersReduced: boolean }) => {
-  const words = text.split(" ");
-  const rotations = useMemo(() => words.map(() => Math.random() * 16 - 8), [words.length]);
-
-  return (
-    <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
-      {words.map((word, i) => (
-        <motion.span
-          key={i}
-          className="inline-block"
-          initial={prefersReduced ? { opacity: 1, y: 0, rotate: 0 } : { opacity: 0, y: 20, rotate: rotations[i] }}
-          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </span>
-  );
-};
-
 export const TestimonialsSection = () => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
+
+  // GSAP stacked card effect
+  useEffect(() => {
+    if (prefersReduced || isMobile) return;
+    const container = cardsContainerRef.current;
+    if (!container) return;
+
+    const cards = container.querySelectorAll<HTMLElement>(".testimonial-stack-card");
+    if (cards.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      cards.forEach((card, i) => {
+        if (i === cards.length - 1) return; // last card stays
+
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top 20%",
+          end: "bottom top",
+          scrub: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            gsap.set(card, {
+              scale: 1 - p * 0.08,
+              y: -p * 30,
+              opacity: 1 - p * 0.4,
+              filter: `blur(${p * 3}px)`,
+            });
+          },
+        });
+      });
+    }, container);
+
+    return () => ctx.revert();
+  }, [prefersReduced, isMobile]);
 
   const logoItems = clients.map((name) => ({
     node: (
@@ -147,7 +110,7 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      className="relative py-24 md:py-32 lg:py-40"
       style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
     >
       <style>{`
@@ -161,6 +124,7 @@ export const TestimonialsSection = () => {
         .dark .testimonial-accent-text { color: hsl(var(--forge-teal)) !important; }
         .dark .testimonial-logo-item { color: hsl(var(--muted-foreground) / 0.3) !important; }
         .dark .testimonial-corner { border-color: hsl(var(--border)) !important; }
+        .dark .testimonial-card-bg { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
       `}</style>
 
       {/* Decorative corner accents */}
@@ -190,7 +154,7 @@ export const TestimonialsSection = () => {
             className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5"
             style={{ color: "hsl(var(--forge-gunmetal))" }}
           >
-            <WordScatter text="Bizi Tercih Edenler" prefersReduced={prefersReduced} />
+            Bizi Tercih Edenler
           </h2>
           <p
             className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed"
@@ -198,33 +162,22 @@ export const TestimonialsSection = () => {
           >
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
             <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}>
-              {" "}
-              1000+ projeyi{" "}
+              {" "}1000+ projeyi{" "}
             </span>
             başarıyla teslim ettik.
           </p>
         </TextReveal>
 
         {/* Stats Bar */}
-        <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-12 md:mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          {stats.map((stat, i) => (
-            <motion.div
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-12 md:mb-16">
+          {stats.map((stat) => (
+            <div
               key={stat.label}
               className="testimonial-stat-card relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
               style={{
                 backgroundColor: "rgba(255,255,255,0.6)",
                 borderColor: "rgba(0,113,144,0.15)",
               }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
             >
               <div
                 className="absolute top-0 left-0 right-0 h-0.5 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
@@ -242,9 +195,9 @@ export const TestimonialsSection = () => {
               >
                 {stat.label}
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Logo Marquee */}
         <div className="mb-3">
@@ -289,37 +242,60 @@ export const TestimonialsSection = () => {
           />
         </div>
 
-        {/* Testimonial Columns — vertical infinite scroll */}
-        <div className="relative max-w-5xl mx-auto">
-          <motion.div
-            className="flex justify-center gap-4 md:gap-6 max-h-[600px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <TestimonialsColumn testimonials={firstColumn} duration={15} className="hidden md:block" />
-            <TestimonialsColumn testimonials={secondColumn} duration={19} />
-            <TestimonialsColumn testimonials={thirdColumn} duration={17} className="hidden md:block" />
-          </motion.div>
+        {/* Stacked Testimonial Cards */}
+        <div ref={cardsContainerRef} className="relative max-w-3xl mx-auto">
+          <div className="flex flex-col gap-6">
+            {testimonials.map((t, i) => (
+              <div
+                key={i}
+                className="testimonial-stack-card testimonial-card-bg sticky border p-8 md:p-10"
+                style={{
+                  top: `${120 + i * 20}px`,
+                  backgroundColor: "rgba(255,255,255,0.95)",
+                  borderColor: "rgba(0,113,144,0.12)",
+                  zIndex: i + 1,
+                }}
+              >
+                {/* Quote mark */}
+                <div
+                  className="text-5xl font-serif leading-none mb-4 select-none"
+                  style={{ color: "hsl(var(--primary) / 0.15)" }}
+                >
+                  "
+                </div>
+                <p className="text-base md:text-lg leading-relaxed mb-6" style={{ color: "hsl(var(--foreground))" }}>
+                  {t.text}
+                </p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 flex items-center justify-center text-xs font-bold font-mono"
+                    style={{
+                      backgroundColor: "hsl(var(--primary) / 0.1)",
+                      color: "hsl(var(--primary))",
+                    }}
+                  >
+                    {t.name.split(" ").map((w) => w[0]).join("")}
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold block">{t.name}</span>
+                    <span className="text-xs text-muted-foreground">{t.role}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-          {/* CTA */}
-          <motion.div
-            className="text-center mt-10"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.6 }}
+        {/* CTA */}
+        <div className="text-center mt-16">
+          <a
+            href="/iletisim"
+            className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all duration-300 group"
+            style={{ color: "#007190" }}
           >
-            <a
-              href="/iletisim"
-              className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all duration-300 group"
-              style={{ color: "#007190" }}
-            >
-              Siz de partnerimiz olun
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-          </motion.div>
+            Siz de partnerimiz olun
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
         </div>
       </div>
     </section>
