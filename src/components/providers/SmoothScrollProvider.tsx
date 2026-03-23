@@ -28,14 +28,14 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    // BUNU YAPIŞTIR:
+  useEffect(() => {
     if (shouldDisable) return;
 
-    const isAutomation = (navigator as unknown as { webdriver?: boolean }).webdriver === true;
-
     const lenis = new Lenis({
-      lerp: isAutomation ? 1 : 0.08,
-      duration: isAutomation ? 0 : 1.4,
-      smoothWheel: !isAutomation,
+      lerp: 0.08,
+      duration: 1.4,
+      smoothWheel: true,
       wheelMultiplier: 0.8,
       touchMultiplier: 1.5,
     });
@@ -43,20 +43,25 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
-    // CRITICAL: Framer Motion sync — dispatch native scroll event
+     // CRITICAL: Framer Motion sync — dispatch native scroll event
     // so useScroll / scrollYProgress stay in sync with Lenis
     lenis.on("scroll", () => {
       ScrollTrigger.update();
       window.dispatchEvent(new Event("scroll"));
     });
 
-    // Bind Lenis to GSAP ticker
-    gsap.ticker.add((time) => {
+    // 1. Fonksiyonu isimlendirdik (Temizleyebilmek için)
+    const updateLenis = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+
+    gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      // 2. KRİTİK TEMİZLİKLER:
+      gsap.ticker.remove(updateLenis); // Ticker'ı durdur (Hata buradaydı)
+      ScrollTrigger.getAll().forEach(t => t.kill()); // Eski tetikleyicileri öldür
       lenis.destroy();
       lenisRef.current = null;
       delete window.__lenis;
