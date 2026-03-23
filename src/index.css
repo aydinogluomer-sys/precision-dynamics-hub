@@ -42,18 +42,18 @@
     --radius: 0rem;
 
     /* Forge & Steel — Section Palette */
-    --forge-obsidian: 0 0% 6%;           /* #0f0f0f */
-    --forge-gunmetal: 240 28% 14%;       /* #1a1a2e */
-    --forge-iron: 220 46% 16%;           /* #16213e */
-    --forge-molten: 23 92% 47%;          /* #e8610a */
-    --forge-amber: 37 88% 44%;           /* #d4850e */
-    --forge-ember: 0 58% 45%;            /* #b33030 */
-    --forge-teal: 186 87% 29%;           /* #0a7e8c */
-    --forge-silver: 210 14% 70%;         /* #a8b2bc */
-    --forge-steel: 212 22% 29%;          /* #3a4a5c */
-    --forge-concrete: 36 22% 89%;        /* #e8e4de */
-    --forge-workshop: 38 25% 92%;        /* #f0ede8 */
-    --forge-mist: 207 20% 89%;           /* #dde3e8 */
+    --forge-obsidian: 0 0% 6%; /* #0f0f0f */
+    --forge-gunmetal: 240 28% 14%; /* #1a1a2e */
+    --forge-iron: 220 46% 16%; /* #16213e */
+    --forge-molten: 23 92% 47%; /* #e8610a */
+    --forge-amber: 37 88% 44%; /* #d4850e */
+    --forge-ember: 0 58% 45%; /* #b33030 */
+    --forge-teal: 186 87% 29%; /* #0a7e8c */
+    --forge-silver: 210 14% 70%; /* #a8b2bc */
+    --forge-steel: 212 22% 29%; /* #3a4a5c */
+    --forge-concrete: 36 22% 89%; /* #e8e4de */
+    --forge-workshop: 38 25% 92%; /* #f0ede8 */
+    --forge-mist: 207 20% 89%; /* #dde3e8 */
 
     /* Sidebar */
     --sidebar-background: 38 20% 98%;
@@ -127,7 +127,9 @@
     /* scroll-behavior removed — Lenis handles smooth scroll */
   }
 
-  a, button, [role="button"] {
+  a,
+  button,
+  [role="button"] {
     cursor: pointer;
   }
 
@@ -173,7 +175,9 @@
   }
 
   .dark .card-industrial:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 15px hsl(var(--forge-molten) / 0.1);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 0 15px hsl(var(--forge-molten) / 0.1);
   }
 
   .card-industrial:hover .card-icon {
@@ -227,7 +231,7 @@
   }
 
   .grid-lines {
-    background-image: 
+    background-image:
       linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
     background-size: 40px 40px;
@@ -238,7 +242,7 @@
   }
 
   .text-technical {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: "IBM Plex Mono", monospace;
     @apply text-sm tracking-wide;
   }
 }
@@ -253,15 +257,37 @@
   }
 
   @keyframes rotate-text {
-    0%, 20% { opacity: 1; transform: translateY(0); }
-    25%, 45% { opacity: 0; transform: translateY(-100%); }
-    50%, 70% { opacity: 0; transform: translateY(100%); }
-    75%, 100% { opacity: 1; transform: translateY(0); }
+    0%,
+    20% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    25%,
+    45% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    50%,
+    70% {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    75%,
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes count-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .animate-count {
@@ -269,25 +295,64 @@
   }
 
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
   }
 
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-400 {
+    animation-delay: 400ms;
+  }
 
   @keyframes fireText {
-    0%   { color: #e8610a; text-shadow: 0 0 4px #e8610a, 0 -5px 10px rgba(232,97,10,0.5); }
-    25%  { color: #d4850e; text-shadow: 0 0 4px #d4850e, 0 -5px 12px rgba(212,133,14,0.6); }
-    50%  { color: #e8610a; text-shadow: 0 0 6px #e8610a, 0 -8px 15px rgba(232,97,10,0.5); }
-    75%  { color: #d4850e; text-shadow: 0 0 4px #d4850e, 0 -5px 12px rgba(212,133,14,0.6); }
-    100% { color: #e8610a; text-shadow: 0 0 4px #e8610a, 0 -5px 10px rgba(232,97,10,0.5); }
+    0% {
+      color: #e8610a;
+      text-shadow:
+        0 0 4px #e8610a,
+        0 -5px 10px rgba(232, 97, 10, 0.5);
+    }
+    25% {
+      color: #d4850e;
+      text-shadow:
+        0 0 4px #d4850e,
+        0 -5px 12px rgba(212, 133, 14, 0.6);
+    }
+    50% {
+      color: #e8610a;
+      text-shadow:
+        0 0 6px #e8610a,
+        0 -8px 15px rgba(232, 97, 10, 0.5);
+    }
+    75% {
+      color: #d4850e;
+      text-shadow:
+        0 0 4px #d4850e,
+        0 -5px 12px rgba(212, 133, 14, 0.6);
+    }
+    100% {
+      color: #e8610a;
+      text-shadow:
+        0 0 4px #e8610a,
+        0 -5px 10px rgba(232, 97, 10, 0.5);
+    }
   }
 
   .animate-fire-text {
@@ -297,8 +362,12 @@
 
 /* ── Industrial Skeleton Shimmer ── */
 @keyframes industrial-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .industrial-shimmer {
@@ -387,7 +456,80 @@ a:focus-visible,
 
 /* Custom cursor — hide default on desktop */
 @media (min-width: 901px) and (pointer: fine) {
-  html, body, a, button, [role="button"] {
+  html,
+  body,
+  a,
+  button,
+  [role="button"] {
     cursor: none !important;
   }
+}
+/* ═══════════════════════════════════════════════════════
+   ADDITIONS TO index.css — paste at the END of your file
+   
+   FIX: Missing atmospheric layers that Awwwards sites use
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Grain Noise Overlay (global atmosphere — 9/9 Awwwards sites use this) ── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99990;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ── Stat numbers: tabular-nums + IBM Plex Mono (forced) ── */
+.stat-number,
+.why-st-v,
+[data-stat-value] {
+  font-variant-numeric: tabular-nums;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+/* ── Section background alternation helpers ── */
+.bg-forge-blue {
+  background-color: #e9f2f7;
+}
+.bg-forge-ice {
+  background-color: #edf5f8;
+}
+.bg-forge-slate {
+  background-color: #f0f2f5;
+}
+
+/* ── Improved card-industrial hover (deeper shadow, molten glow) ── */
+.card-industrial {
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.card-industrial:hover {
+  border-color: hsl(var(--forge-molten));
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    0 0 0 1px hsl(var(--forge-molten) / 0.08);
+}
+
+.dark .card-industrial:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px hsl(var(--forge-molten) / 0.08);
+}
+
+/* ── Selection color — forge-molten instead of primary ── */
+::selection {
+  background: hsl(var(--forge-molten));
+  color: #fff;
+}
+
+/* ── Scrollbar hidden globally (Lenis handles scroll) ── */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
 }

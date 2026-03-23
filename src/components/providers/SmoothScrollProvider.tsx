@@ -1,3 +1,9 @@
+/**
+ * SmoothScrollProvider.tsx — CLEAN
+ *
+ * FIX: Removed concatenated OverlayReveal code that Lovable merged into this file.
+ * OverlayReveal is now in its own file: src/components/ui/OverlayReveal.tsx
+ */
 import { useEffect, useRef, type ReactNode } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
@@ -37,11 +43,14 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
+    // CRITICAL: Framer Motion sync — dispatch native scroll event
+    // so useScroll / scrollYProgress stay in sync with Lenis
     lenis.on("scroll", () => {
       ScrollTrigger.update();
       window.dispatchEvent(new Event("scroll"));
     });
 
+    // Bind Lenis to GSAP ticker
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
     });

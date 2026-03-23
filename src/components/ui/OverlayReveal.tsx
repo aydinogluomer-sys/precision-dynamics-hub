@@ -1,3 +1,9 @@
+/**
+ * OverlayReveal.tsx — CLEAN SEPARATED
+ *
+ * FIX: Was concatenated inside SmoothScrollProvider.tsx by Lovable.
+ * Now standalone at src/components/ui/OverlayReveal.tsx
+ */
 import { useRef, useEffect, type ReactNode } from "react";
 import { gsap } from "@/hooks/use-gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

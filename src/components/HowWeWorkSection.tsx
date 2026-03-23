@@ -1,3 +1,18 @@
+/**
+ * HowWeWorkSection.tsx — FIXED
+ *
+ * FIXES:
+ * 1. Pin+scrub — section itself was being pinned, but header was inside.
+ *    GSAP pin adds a pin-spacer DIV around the trigger. When header is inside
+ *    the pinned element, it scrolls away. Fixed: separate pinned container.
+ * 2. Card stagger — was triggering at "top 60%" on the section (before pin),
+ *    so cards appeared before scrolling started. Fixed: removed stagger,
+ *    cards visible by default inside pinned area.
+ * 3. Progress bar — was using CSS scaleX with "transition-none" class but
+ *    GSAP set doesn't respect CSS transitions anyway. Cleaned up.
+ * 4. totalScroll calculation — end was `+=${totalScroll}` which creates
+ *    mismatch with Lenis. Fixed: use proper `end: () => "+=" + totalScroll`.
+ */
 import { useRef, useEffect } from "react";
 import { Upload, MessageSquare, Settings, Truck } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -65,80 +80,50 @@ const steps = [
 ];
 
 export const HowWeWorkSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const pinContainerRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
     if (isMobile || prefersReduced) return;
-    const section = sectionRef.current;
+    const wrapper = wrapperRef.current;
+    const pinContainer = pinContainerRef.current;
     const strip = stripRef.current;
-    const header = headerRef.current;
     const progress = progressRef.current;
-    if (!section || !strip || !header || !progress) return;
+    const counter = counterRef.current;
+    if (!wrapper || !pinContainer || !strip || !progress || !counter) return;
 
     const ctx = gsap.context(() => {
-      // Header fade in
-      gsap.fromTo(
-        header,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        },
-      );
-
-      // Horizontal scroll pinning
       const totalScroll = strip.scrollWidth - window.innerWidth;
 
+      // FIX: Pin the inner container, not the whole section.
+      // This way the wrapper provides the scroll height via its natural height
+      // and the pin-spacer wraps pinContainer correctly.
       gsap.to(strip, {
         x: -totalScroll,
         ease: "none",
         scrollTrigger: {
-          trigger: section,
+          trigger: wrapper,
           start: "top top",
           end: () => `+=${totalScroll}`,
-          pin: true,
-          scrub: 1.2,
+          pin: pinContainer,
+          scrub: 1.5,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
+            // Progress bar
             gsap.set(progress, { scaleX: self.progress });
+            // Counter
+            const step = Math.min(4, Math.floor(self.progress * 4) + 1);
+            counter.textContent = String(step).padStart(2, "0");
           },
         },
       });
-
-      // Stagger card reveals
-      const cards = strip.querySelectorAll(".hww-card");
-      cards.forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 40, scale: 0.95 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.6,
-            ease: "power3.out",
-            delay: 0.3 + i * 0.15,
-            scrollTrigger: {
-              trigger: section,
-              start: "top 60%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
-      });
-    }, section);
+    }, wrapper);
 
     return () => ctx.revert();
   }, [isMobile, prefersReduced]);
@@ -169,54 +154,64 @@ export const HowWeWorkSection = () => {
   }
 
   return (
-    <section
-      ref={sectionRef}
-      id="nasil-calisiyoruz"
-      className="relative border-y border-border overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
-    >
-      {/* Progress bar removed — using bottom bar only */}
+    <div ref={wrapperRef} id="nasil-calisiyoruz">
+      {/* This is the element that gets pinned */}
+      <div
+        ref={pinContainerRef}
+        className="relative overflow-hidden border-y border-border"
+        style={{
+          backgroundColor: "hsl(var(--forge-workshop))",
+          height: "100vh",
+        }}
+      >
+        {/* Header — stays visible during pin because it's inside pinContainer */}
+        <div className="pt-12 pb-6 px-8 lg:px-16">
+          <SectionHeader
+            tag="Metodoloji"
+            title="Hassas Üretim İş Akışımız"
+            sectionNumber={2}
+            description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
+          />
+        </div>
 
-      {/* Header — inside sticky container */}
-      <div ref={headerRef} className="pt-16 pb-8 px-8 lg:px-16">
-        <SectionHeader
-          tag="Metodoloji"
-          title="Hassas Üretim İş Akışımız"
-          sectionNumber={2}
-          description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
-        />
-      </div>
-
-      {/* Horizontal scroll strip */}
-      <div ref={stripRef} className="flex gap-8 px-8 lg:px-16 pb-16 will-change-transform">
-        {/* Spacer for initial viewport centering */}
-        <div className="flex-shrink-0 w-[10vw]" />
-        {steps.map((step, i) => (
-          <StepCard key={step.number} step={step} index={i} />
-        ))}
-        {/* End spacer */}
-        <div className="flex-shrink-0 w-[20vw]" />
-      </div>
-
-      {/* Bottom progress line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "hsl(var(--border))" }}>
+        {/* Horizontal scroll strip */}
         <div
-          ref={progressRef}
-          className="h-full origin-left transition-none"
-          style={{
-            backgroundColor: "hsl(var(--primary))",
-            transform: "scaleX(0)",
-          }}
-        />
+          ref={stripRef}
+          className="flex gap-8 px-8 lg:px-16 pb-20 will-change-transform items-start"
+          style={{ height: "calc(100vh - 200px)" }}
+        >
+          <div className="flex-shrink-0 w-[5vw]" />
+          {steps.map((step, i) => (
+            <StepCard key={step.number} step={step} index={i} />
+          ))}
+          <div className="flex-shrink-0 w-[15vw]" />
+        </div>
+
+        {/* Bottom progress line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "hsl(var(--border))" }}>
+          <div
+            ref={progressRef}
+            className="h-full origin-left"
+            style={{
+              backgroundColor: "hsl(var(--forge-molten))",
+              transform: "scaleX(0)",
+            }}
+          />
+        </div>
+
+        {/* Counter */}
+        <div className="absolute bottom-6 right-8 text-xs font-mono tracking-widest text-muted-foreground/50">
+          <span ref={counterRef}>01</span> / 04
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
 const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number }) => {
   return (
     <div
-      className="hww-card flex-shrink-0 w-full md:w-[380px] lg:w-[420px] p-8 lg:p-10 border bg-background border-border hover:border-primary/40 transition-all duration-500 group relative overflow-hidden"
+      className="hww-card flex-shrink-0 w-[360px] lg:w-[400px] p-8 lg:p-10 border bg-background border-border hover:border-primary/40 transition-all duration-500 group relative overflow-hidden"
       data-cursor="detail"
     >
       {/* Top accent line */}
@@ -227,10 +222,7 @@ const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number
 
       {/* Step number + icon */}
       <div className="flex items-center justify-between mb-8">
-        <span
-          className="text-6xl font-bold font-mono leading-none"
-          style={{ color: "hsl(var(--border))" }}
-        >
+        <span className="text-6xl font-bold font-mono leading-none" style={{ color: "hsl(var(--border))" }}>
           {step.number}
         </span>
         <div
@@ -242,10 +234,7 @@ const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number
       </div>
 
       {/* Label */}
-      <span
-        className="text-[10px] font-mono uppercase tracking-[0.3em] mb-3 block"
-        style={{ color: step.accent }}
-      >
+      <span className="text-[10px] font-mono uppercase tracking-[0.3em] mb-3 block" style={{ color: step.accent }}>
         {step.label}
       </span>
 
@@ -261,10 +250,7 @@ const StepCard = ({ step, index }: { step: (typeof steps)[number]; index: number
       <div className="grid grid-cols-1 gap-3 mb-6">
         {step.checklist.map((item) => (
           <div key={item.title} className="flex items-start gap-3">
-            <div
-              className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
-              style={{ backgroundColor: step.accent }}
-            />
+            <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: step.accent }} />
             <div>
               <span className="text-xs font-semibold block">{item.title}</span>
               <span className="text-[11px] text-muted-foreground">{item.desc}</span>

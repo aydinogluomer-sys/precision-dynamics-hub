@@ -71,7 +71,7 @@ Kök dizine `.env.local` dosyası oluştur:
 
 ```env
 VITE_SUPABASE_URL=https://zdqiujpeewtyhtcqhdcj.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_M-lrTkYbdpncxT8SJY35fQ_hitBE7-e
 VITE_SUPABASE_PROJECT_ID=zdqiujpeewtyhtcqhdcj
 ```
 

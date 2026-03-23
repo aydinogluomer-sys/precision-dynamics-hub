@@ -76,6 +76,31 @@ export const WhyUsSection = () => {
                   {stat.value}
                 </div>
                 <div
+                   {/* Highlight Section — scroll-linked */}
+      <div className="border-t border-border/20 py-20 md:py-28 overflow-hidden">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          <p
+            className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-white"
+            style={{ fontStyle: "italic" }}
+          >
+            {"Sadece bir tedarikçi değil — "}
+            <TextHighlight color="hsl(var(--forge-molten) / 0.3)">
+              {"üretim sürecinizin"}
+            </TextHighlight>
+            {" mühendislik ortağıyız. "}
+            <TextHighlight color="hsl(var(--primary) / 0.25)">
+              {"Mikron seviyesinde hassasiyet,"}
+            </TextHighlight>
+            {" uçtan uca izlenebilirlik ve "}
+            <TextHighlight color="hsl(var(--forge-steel) / 0.2)">
+              {"48 saat içinde prototip"}
+            </TextHighlight>
+            {" garantisiyle."}
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
                   className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium"
                   style={{ color: "hsl(var(--forge-silver))" }}
                 >

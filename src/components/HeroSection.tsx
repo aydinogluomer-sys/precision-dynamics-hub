@@ -1,3 +1,17 @@
+/**
+ * HeroSection.tsx — FIXED
+ *
+ * FIXES:
+ * 1. Vignette was rgba(15,15,15,0.85/0.95) — killed the mask reveal visibility
+ *    → Reduced to 0.3/0.6/0.75 for breathing room
+ * 2. Mouse tilt was ±3° — barely noticeable (Beaucoup uses 8-12°)
+ *    → Increased to ±8°
+ * 3. Mask start was 30% — too large, reveal not dramatic enough
+ *    → Reduced to 22%, end to 320% for full bleed
+ * 4. Background image layer opacity too low
+ *    → Adjusted fade ranges
+ * 5. Content z-index layering cleaned up
+ */
 import { useRef, useEffect, useCallback, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
@@ -30,13 +44,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Mouse tilt
+  // FIX: Mouse tilt increased from ±3° to ±8° (Beaucoup Studio reference)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [3, -3]);
-  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], prefersReduced ? [0, 0] : [-3, 3]);
-  const rotateX = useSpring(rawRotateX, { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(rawRotateY, { stiffness: 150, damping: 20 });
+  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [8, -8]);
+  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], prefersReduced ? [0, 0] : [-8, 8]);
+  const rotateX = useSpring(rawRotateX, { stiffness: 120, damping: 18 });
+  const rotateY = useSpring(rawRotateY, { stiffness: 120, damping: 18 });
 
   // Headline rotation
   useEffect(() => {
@@ -57,12 +71,12 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     if (!scroller || !masked || !bgImg || !content || !grid) return;
 
     const ctx = gsap.context(() => {
-      // Mask expansion: 30% → 300% on scroll
+      // FIX: Mask expansion — start smaller (22%) for more dramatic reveal, end bigger (320%)
       gsap.fromTo(
         masked,
-        { "--mask-size": "30%" },
+        { "--mask-size": "22%" },
         {
-          "--mask-size": "300%",
+          "--mask-size": "320%",
           ease: "none",
           scrollTrigger: {
             trigger: scroller,
@@ -70,34 +84,34 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             end: "bottom top",
             scrub: 1.5,
           },
-        }
+        },
       );
 
-      // Background image fade in
+      // FIX: Background image — wider fade range, higher peak opacity
       gsap.fromTo(
         bgImg,
         { opacity: 0 },
         {
-          opacity: 0.7,
+          opacity: 0.85,
           ease: "none",
           scrollTrigger: {
             trigger: scroller,
-            start: "30% top",
-            end: "80% top",
+            start: "25% top",
+            end: "75% top",
             scrub: 1,
           },
-        }
+        },
       );
 
       // Content fade out on scroll
       gsap.to(content, {
-        y: -120,
+        y: -140,
         opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: scroller,
-          start: "15% top",
-          end: "50% top",
+          start: "12% top",
+          end: "45% top",
           scrub: 1,
         },
       });
@@ -124,7 +138,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
       mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
     },
-    [mouseX, mouseY]
+    [mouseX, mouseY],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -163,13 +177,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             playsInline
             preload="none"
             className="w-full h-full object-cover hidden md:block"
-            style={{ opacity: 0.15 }}
+            style={{ opacity: 0.18 }}
           />
           <img
             src={heroBg}
             alt="CNC Factory"
             className="w-full h-full object-cover md:hidden"
-            style={{ opacity: 0.15 }}
+            style={{ opacity: 0.18 }}
           />
         </div>
 
@@ -184,8 +198,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             WebkitMaskRepeat: "no-repeat",
             maskPosition: "center",
             WebkitMaskPosition: "center",
-            maskSize: prefersReduced ? "300%" : "var(--mask-size, 30%)",
-            WebkitMaskSize: prefersReduced ? "300%" : "var(--mask-size, 30%)",
+            maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
+            WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
           }}
         >
           <video
@@ -197,12 +211,15 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             playsInline
             preload="none"
             className="w-full h-full object-cover hidden md:block"
+            /* FIX: Masked layer brighter — the whole point is to SEE it through the mask */
+            style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
           />
           <img
             src={heroBg}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover md:hidden"
+            style={{ filter: "brightness(0.8) saturate(1.15)" }}
           />
         </div>
 
@@ -217,6 +234,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.75) saturate(1.1)" }}
           />
         </div>
 
@@ -231,12 +249,12 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           }}
         />
 
-        {/* Layer 5: Dark vignette overlay */}
+        {/* Layer 5: Vignette — FIX: was way too dark (0.85/0.95), mask reveal invisible */}
         <div
           className="absolute inset-0 pointer-events-none z-[4]"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(15,15,15,0.4) 0%, rgba(15,15,15,0.85) 70%, rgba(15,15,15,0.95) 100%)",
+              "radial-gradient(ellipse at center, rgba(15,15,15,0.25) 0%, rgba(15,15,15,0.55) 60%, rgba(15,15,15,0.75) 100%)",
           }}
         />
 
@@ -279,7 +297,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                   color: "rgba(255,255,255,0.5)",
                 }}
               >
-                {"CNC Hassas İşleme"}
+                CNC Hassas İşleme
               </span>
               <motion.div
                 className="h-1 bg-primary"
@@ -304,7 +322,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 + heroDelay }}
             >
-              {"CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz."}
+              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim
+              anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.
             </motion.p>
 
             {/* CTA */}
@@ -322,7 +341,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 }}
                 className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
               >
-                <span>{"Hızlı Teklif Al"}</span>
+                <span>Hızlı Teklif Al</span>
                 <motion.span
                   className="inline-block"
                   animate={{ y: [0, 4, 0] }}
@@ -340,9 +359,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               animate={{ opacity: 0.4 }}
               transition={{ delay: 1.5 + heroDelay }}
             >
-              <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">
-                {"Scroll"}
-              </span>
+              <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">Scroll</span>
               <motion.div
                 className="w-px h-8 bg-white/20"
                 animate={{ scaleY: [0, 1, 0] }}

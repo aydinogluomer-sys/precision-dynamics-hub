@@ -1,3 +1,9 @@
+/**
+ * SectionHeader.tsx — CLEAN SEPARATED
+ *
+ * FIX: Was concatenated inside GlowLineDivider.tsx file by Lovable.
+ * Now standalone at src/components/SectionHeader.tsx
+ */
 import { Reveal } from "@/components/ui/Reveal";
 
 interface SectionHeaderProps {
@@ -34,15 +40,9 @@ export const SectionHeader = ({
     <div className={isCenter ? "text-center" : ""}>
       {/* Tag row — with optional section number on the right */}
       <Reveal direction="up" duration={0.5}>
-        <div
-          className={`flex items-center gap-3 mb-4 ${
-            isCenter ? "justify-center" : ""
-          }`}
-        >
+        <div className={`flex items-center gap-3 mb-4 ${isCenter ? "justify-center" : ""}`}>
           <div className="w-8 h-px bg-primary" />
-          <span className="text-[10px] uppercase tracking-[0.5em] font-mono text-primary font-semibold">
-            {tag}
-          </span>
+          <span className="text-[10px] uppercase tracking-[0.5em] font-mono text-primary font-semibold">{tag}</span>
           {/* Section number — editorial style, pushed right */}
           {hasNumber && !isCenter && (
             <>
@@ -60,8 +60,7 @@ export const SectionHeader = ({
         <h2
           id={headingId}
           className={
-            titleClassName ||
-            "text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-[0.95] text-foreground"
+            titleClassName || "text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-[0.95] text-foreground"
           }
         >
           {title}
@@ -71,9 +70,7 @@ export const SectionHeader = ({
       {/* Description */}
       {description && (
         <Reveal direction="up" delay={0.3} duration={0.5}>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
-            {description}
-          </p>
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">{description}</p>
         </Reveal>
       )}
     </div>
