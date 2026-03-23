@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useRef, useState, useCallback, useLayoutEffect } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { MagneticButton } from "./MagneticButton";
+import { BracketButton } from "./ui/BracketButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 /* ── GSAP CTA headline with char stagger ── */
