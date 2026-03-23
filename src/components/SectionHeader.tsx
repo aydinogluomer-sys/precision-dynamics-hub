@@ -6,6 +6,8 @@ interface SectionHeaderProps {
   description?: string;
   align?: "left" | "center";
   titleClassName?: string;
+  /** Editorial section number — renders as "— 01" format */
+  sectionNumber?: number;
 }
 
 const toKebab = (str: string) =>
@@ -14,19 +16,23 @@ const toKebab = (str: string) =>
     .replace(/[^a-z0-9\u00C0-\u024F]+/gi, "-")
     .replace(/(^-|-$)/g, "");
 
+const formatNumber = (n: number) => `— ${n.toString().padStart(2, "0")}`;
+
 export const SectionHeader = ({
   tag,
   title,
   description,
   align = "left",
   titleClassName,
+  sectionNumber,
 }: SectionHeaderProps) => {
   const isCenter = align === "center";
   const headingId = `section-${toKebab(tag)}`;
+  const hasNumber = typeof sectionNumber === "number";
 
   return (
     <div className={isCenter ? "text-center" : ""}>
-      {/* Level 1: Tag — small, mono, primary accent */}
+      {/* Tag row — with optional section number on the right */}
       <Reveal direction="up" duration={0.5}>
         <div
           className={`flex items-center gap-3 mb-4 ${
@@ -37,10 +43,19 @@ export const SectionHeader = ({
           <span className="text-[10px] uppercase tracking-[0.5em] font-mono text-primary font-semibold">
             {tag}
           </span>
+          {/* Section number — editorial style, pushed right */}
+          {hasNumber && !isCenter && (
+            <>
+              <div className="flex-1" />
+              <span className="text-xs font-mono tracking-widest text-muted-foreground/60 select-none">
+                {formatNumber(sectionNumber)}
+              </span>
+            </>
+          )}
         </div>
       </Reveal>
 
-      {/* Level 2: Title — large, bold, foreground */}
+      {/* Title */}
       <Reveal variant="word-stagger" delay={0.1} duration={0.6}>
         <h2
           id={headingId}
@@ -53,7 +68,7 @@ export const SectionHeader = ({
         </h2>
       </Reveal>
 
-      {/* Level 3: Description — medium, muted color */}
+      {/* Description */}
       {description && (
         <Reveal direction="up" delay={0.3} duration={0.5}>
           <p className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
