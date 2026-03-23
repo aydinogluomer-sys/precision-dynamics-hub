@@ -7,7 +7,7 @@ import { BracketButton } from "./ui/BracketButton";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 /* ── GSAP CTA headline with char stagger ── */
-const GsapCtaHeadline = () => {
+const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
   const ref = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
