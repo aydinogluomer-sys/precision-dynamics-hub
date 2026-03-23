@@ -303,9 +303,8 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
         <h3
           ref={titleRef}
           className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-2"
-        >
-          {project.title}
-        </h3>
+          aria-label={project.title}
+        />
         <p className="text-sm font-mono text-white/50 mb-4">
           <span>{project.subtitle}</span>
         </p>
