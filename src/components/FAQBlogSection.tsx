@@ -159,7 +159,7 @@ export const FAQBlogSection = () => {
           {/* Blog Column */}
           <div>
             <div className="mb-8">
-              <SectionHeader tag="Blog" title="Teknik İçerikler" />
+              <SectionHeader tag="Blog" title="Teknik İçerikler" sectionNumber={7} />
             </div>
 
             <div className="space-y-4">

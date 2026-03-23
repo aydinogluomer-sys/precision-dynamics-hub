@@ -52,9 +52,10 @@ export const NexusPromoSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
         {/* Standardized SectionHeader */}
         <div className="mb-12">
-          <SectionHeader
+         <SectionHeader
             tag="Dijital Platform"
             title="Nexus Endüstriyel Yönetim Paneli"
+            sectionNumber={3}
             description="Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu."
           />
         </div>
