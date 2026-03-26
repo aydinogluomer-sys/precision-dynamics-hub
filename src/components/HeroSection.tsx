@@ -175,7 +175,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             autoPlay
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             className="w-full h-full object-cover hidden md:block"
             style={{ opacity: 0.18 }}
           />
