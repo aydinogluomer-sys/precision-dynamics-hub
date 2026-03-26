@@ -57,6 +57,7 @@ const pageTransition = {
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const { play } = useSoundEngine();
 
   const isPanel = useMemo(() => {
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");

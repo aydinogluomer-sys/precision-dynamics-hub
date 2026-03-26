@@ -76,7 +76,18 @@ export const WhyUsSection = () => {
                   {stat.value}
                 </div>
                 <div
-                   {/* Highlight Section — scroll-linked */}
+                  className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium"
+                  style={{ color: "hsl(var(--forge-silver))" }}
+                >
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Highlight Section — scroll-linked */}
       <div className="border-t border-border/20 py-20 md:py-28 overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <p
@@ -97,18 +108,6 @@ export const WhyUsSection = () => {
             </TextHighlight>
             {" garantisiyle."}
           </p>
-        </div>
-      </div>
-
-      {/* Main Content */}
-                  className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium"
-                  style={{ color: "hsl(var(--forge-silver))" }}
-                >
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -179,7 +178,6 @@ export const WhyUsSection = () => {
                   className="w-full h-[350px] md:h-[450px] object-cover"
                 />
               </motion.div>
-              {/* Overlapping smaller image with scale animation */}
               <motion.div
                 className="absolute -bottom-8 -left-4 md:-left-8 w-40 md:w-52 border-4 border-forge-gunmetal shadow-2xl"
                 style={{ scale: imageScale }}
