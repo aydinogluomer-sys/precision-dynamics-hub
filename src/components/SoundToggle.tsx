@@ -1,13 +1,17 @@
 import { Volume2, VolumeX } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const STORAGE_KEY = "mas_sound";
+const EVENT_NAME = "mas_sound_change";
+
 export const SoundToggle = () => {
   const [enabled, setEnabled] = useState(() => {
-    return localStorage.getItem("mas_sound") === "1";
+    return localStorage.getItem(STORAGE_KEY) === "1";
   });
 
   useEffect(() => {
-    localStorage.setItem("mas_sound", enabled ? "1" : "0");
+    localStorage.setItem(STORAGE_KEY, enabled ? "1" : "0");
+    window.dispatchEvent(new CustomEvent(EVENT_NAME));
   }, [enabled]);
 
   return (

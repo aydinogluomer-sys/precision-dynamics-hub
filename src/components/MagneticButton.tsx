@@ -1,5 +1,6 @@
 import { useRef, useState, forwardRef, type ReactNode, type MouseEvent } from "react";
 import { motion } from "framer-motion";
+import { useSoundEngine } from "@/hooks/use-sound";
 
 interface MagneticButtonProps {
   children: ReactNode;
@@ -16,9 +17,9 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
+    const { play } = useSoundEngine();
 
     const handleMouse = (e: MouseEvent) => {
-      // Disable magnetic effect during keyboard focus
       if (isFocused) return;
       if (!innerRef.current) return;
       const { left, top, width, height } = innerRef.current.getBoundingClientRect();
@@ -42,7 +43,10 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
           else if (forwardedRef) forwardedRef.current = node;
         }}
         onMouseMove={handleMouse}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          play("tick");
+        }}
         onMouseLeave={reset}
         onFocus={() => {
           setIsFocused(true);
@@ -64,9 +68,11 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         <Tag
           className={`${className} focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-none`}
           href={href}
-          onClick={onClick}
+          onClick={() => {
+            play("click");
+            onClick?.();
+          }}
         >
-          {/* Inner text moves opposite direction for parallax */}
           <motion.span
             className="inline-block"
             animate={{
