@@ -231,7 +231,7 @@ export const Index = () => {
             loop
             muted
             playsInline
-            preload="none"
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover pointer-events-none hidden md:block"
             style={{ opacity: 0.5, zIndex: 0 }}
             aria-hidden="true"

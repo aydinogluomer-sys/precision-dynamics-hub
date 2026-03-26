@@ -1,11 +1,22 @@
-import { useCallback, useRef, useMemo } from "react";
+import { useCallback, useRef, useMemo, useState, useEffect } from "react";
+
+const STORAGE_KEY = "mas_sound";
+const EVENT_NAME = "mas_sound_change";
 
 /**
  * Lightweight Web Audio sound engine — generates UI sounds via oscillators.
- * No audio files needed.
+ * Respects global toggle stored in localStorage + dispatched via CustomEvent.
  */
 export function useSoundEngine() {
   const ctxRef = useRef<AudioContext | null>(null);
+  const [enabled, setEnabled] = useState(() => localStorage.getItem(STORAGE_KEY) === "1");
+
+  // Listen for toggle changes from SoundToggle component
+  useEffect(() => {
+    const handler = () => setEnabled(localStorage.getItem(STORAGE_KEY) === "1");
+    window.addEventListener(EVENT_NAME, handler);
+    return () => window.removeEventListener(EVENT_NAME, handler);
+  }, []);
 
   const getCtx = useCallback(() => {
     if (!ctxRef.current) {
@@ -16,6 +27,7 @@ export function useSoundEngine() {
 
   const play = useCallback(
     (type: "tick" | "click" | "whoosh") => {
+      if (!enabled) return;
       try {
         const ctx = getCtx();
         if (ctx.state === "suspended") {
@@ -62,8 +74,8 @@ export function useSoundEngine() {
         // Silently fail — sound is non-critical
       }
     },
-    [getCtx],
+    [enabled, getCtx],
   );
 
-  return useMemo(() => ({ play }), [play]);
+  return useMemo(() => ({ play, enabled }), [play, enabled]);
 }

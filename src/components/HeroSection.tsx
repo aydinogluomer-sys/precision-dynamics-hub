@@ -175,7 +175,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             autoPlay
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             className="w-full h-full object-cover hidden md:block"
             style={{ opacity: 0.18 }}
           />
@@ -209,7 +209,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             autoPlay
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             className="w-full h-full object-cover hidden md:block"
             /* FIX: Masked layer brighter — the whole point is to SEE it through the mask */
             style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
