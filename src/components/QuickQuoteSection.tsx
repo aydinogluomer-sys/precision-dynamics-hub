@@ -276,7 +276,7 @@ export const QuickQuoteSection = () => {
                   ) : (
                     <motion.div
                       key="upload"
-                      className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-white/5"}`}
+                     className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-primary/5"}`}
                       style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
                       animate={{
                         y: [0, -6, 0],
