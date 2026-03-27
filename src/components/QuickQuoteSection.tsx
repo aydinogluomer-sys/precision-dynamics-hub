@@ -335,7 +335,7 @@ export const QuickQuoteSection = () => {
               </span>
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.45)" }}
               >
                 {"100% IP KORUMASI"}
               </span>
