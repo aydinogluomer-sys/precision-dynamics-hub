@@ -318,8 +318,8 @@ export const QuickQuoteSection = () => {
             <div
               className="flex items-center justify-between px-5 py-3 border-t"
               style={{
-                borderColor: "rgba(0,113,144,0.15)",
-                background: "rgba(0,113,144,0.03)",
+                borderColor: "rgba(0,113,144,0.12)",
+                background: "rgba(0,113,144,0.04)",
               }}
             >
               <span

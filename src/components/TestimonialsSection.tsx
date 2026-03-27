@@ -70,7 +70,7 @@ export const TestimonialsSection = () => {
     if (cards.length === 0) return;
 
     const ctx = gsap.context(() => {
-      cards.forEach((card, i) => {
+    cards.forEach((card, i) => {
         if (i === cards.length - 1) return; // last card stays
 
         ScrollTrigger.create({
@@ -83,8 +83,8 @@ export const TestimonialsSection = () => {
             gsap.set(card, {
               scale: 1 - p * 0.08,
               y: -p * 30,
-              opacity: 1 - p * 0.4,
-              filter: `blur(${p * 3}px)`,
+              opacity: 1 - p * 0.6,
+              filter: `blur(${p * 6}px)`,
             });
           },
         });
