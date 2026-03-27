@@ -353,9 +353,9 @@ export const QuickQuoteSection = () => {
                 key={stat.label}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(15,15,15,0.4)",
+                  background: "rgba(255,255,255,0.6)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(0,113,144,0.1)",
+                  border: "1px solid rgba(0,113,144,0.12)",
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
