@@ -210,8 +210,8 @@ export const QuickQuoteSection = () => {
             </div>
 
             {/* Drop Zone */}
-            <div
-              className={`relative p-8 md:p-12 cursor-pointer group ${isDragging ? "bg-primary/10" : ""}`}
+              <div
+               className={`relative p-8 md:p-12 cursor-pointer group ${isDragging ? "bg-primary/5" : ""}`}
               role="button"
               tabIndex={0}
               aria-label="CAD dosyası yükle — sürükle bırak veya tıkla"
