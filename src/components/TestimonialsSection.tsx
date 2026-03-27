@@ -110,7 +110,7 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative py-24 md:py-32 lg:py-40"
+      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
     >
       <style>{`
