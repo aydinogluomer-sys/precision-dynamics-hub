@@ -67,13 +67,13 @@ export const QuickQuoteSection = () => {
     <section
       id="hizli-teklif"
       className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ backgroundColor: "hsl(var(--forge-mist))" }}
     >
       {/* Subtle gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.08) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.06) 0%, transparent 60%)",
         }}
       />
 
@@ -164,21 +164,21 @@ export const QuickQuoteSection = () => {
           >
             <h2
               className="text-2xl md:text-3xl font-bold mb-2 font-mono uppercase tracking-[0.3em]"
-              style={{ color: "rgba(255,255,255,0.9)" }}
+              style={{ color: "hsl(var(--forge-gunmetal))" }}
             >
               {"CAD DOSYANIZI YÜKLEYİN"}
             </h2>
-            <p className="text-sm text-white/50">{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
+            <p className="text-sm" style={{ color: "hsl(var(--forge-steel) / 0.6)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
           {/* Upload Card */}
           <motion.div
             className="relative overflow-hidden"
             style={{
-              background: "rgba(15,15,15,0.6)",
+              background: "rgba(255,255,255,0.7)",
               backdropFilter: "blur(20px)",
-              border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.15)"}`,
-              boxShadow: "0 0 60px rgba(0,113,144,0.1)",
+              border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.18)"}`,
+              boxShadow: "0 0 60px rgba(0,113,144,0.08)",
               transition: "border-color 0.3s",
             }}
             initial={{ opacity: 0, y: 20 }}
@@ -192,13 +192,13 @@ export const QuickQuoteSection = () => {
             <div
               className="flex items-center justify-between px-5 py-3 border-b"
               style={{
-                borderColor: "rgba(0,113,144,0.15)",
-                background: "rgba(0,113,144,0.03)",
+                borderColor: "rgba(0,113,144,0.12)",
+                background: "rgba(0,113,144,0.04)",
               }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.2em] font-mono"
-                style={{ color: "rgba(255,255,255,0.5)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.5)" }}
               >
                 {"YÜKLEME ARAYÜZÜ V2.4.0"}
               </span>
@@ -210,8 +210,8 @@ export const QuickQuoteSection = () => {
             </div>
 
             {/* Drop Zone */}
-            <div
-              className={`relative p-8 md:p-12 cursor-pointer group ${isDragging ? "bg-primary/10" : ""}`}
+              <div
+               className={`relative p-8 md:p-12 cursor-pointer group ${isDragging ? "bg-primary/5" : ""}`}
               role="button"
               tabIndex={0}
               aria-label="CAD dosyası yükle — sürükle bırak veya tıkla"
@@ -241,7 +241,7 @@ export const QuickQuoteSection = () => {
               <motion.div
                 className="absolute inset-6 md:inset-8 pointer-events-none"
                 style={{
-                  border: `2px dashed ${isDragging ? "#007190" : "rgba(255,255,255,0.12)"}`,
+                  border: `2px dashed ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}`,
                   transition: "border-color 0.3s",
                 }}
                 animate={isDragging ? { scale: [1, 1.02, 1], borderColor: ["#007190", "#0a9bb8", "#007190"] } : {}}
@@ -276,7 +276,7 @@ export const QuickQuoteSection = () => {
                   ) : (
                     <motion.div
                       key="upload"
-                      className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-white/5"}`}
+                     className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-primary/5"}`}
                       style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}` }}
                       animate={{
                         y: [0, -6, 0],
@@ -290,18 +290,19 @@ export const QuickQuoteSection = () => {
                 </AnimatePresence>
 
                 <div>
-                  <p className="text-base font-bold uppercase tracking-wider text-white/90 font-mono mb-1">
+                  <p className="text-base font-bold uppercase tracking-wider font-mono mb-1" style={{ color: "hsl(var(--forge-gunmetal))" }}>
                     {"DOSYAYI BURAYA SÜRÜKLE"}
                   </p>
-                  <p className="text-xs text-white/40">{"veya tıklayarak dosya seçin"}</p>
+                  <p className="text-xs" style={{ color: "hsl(var(--forge-steel) / 0.5)" }}>{"veya tıklayarak dosya seçin"}</p>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2">
                   {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
                     <span
                       key={fmt}
-                      className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono"
+                      className="text-[10px] uppercase tracking-wider px-2 py-1 font-mono"
                       style={{
+                        color: "hsl(var(--forge-steel) / 0.6)",
                         border: "1px solid rgba(0,113,144,0.15)",
                         background: "rgba(0,113,144,0.05)",
                       }}
@@ -317,13 +318,13 @@ export const QuickQuoteSection = () => {
             <div
               className="flex items-center justify-between px-5 py-3 border-t"
               style={{
-                borderColor: "rgba(0,113,144,0.15)",
-                background: "rgba(0,113,144,0.03)",
+                borderColor: "rgba(0,113,144,0.12)",
+                background: "rgba(0,113,144,0.04)",
               }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.45)" }}
               >
                 {"UÇTAN UCA ŞİFRELEME AKTİF"}
                 <motion.span
@@ -334,7 +335,7 @@ export const QuickQuoteSection = () => {
               </span>
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.45)" }}
               >
                 {"100% IP KORUMASI"}
               </span>
@@ -352,9 +353,9 @@ export const QuickQuoteSection = () => {
                 key={stat.label}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(15,15,15,0.4)",
+                  background: "rgba(255,255,255,0.6)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(0,113,144,0.1)",
+                  border: "1px solid rgba(0,113,144,0.12)",
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -363,7 +364,7 @@ export const QuickQuoteSection = () => {
                 <div className="text-lg font-bold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
                   {stat.value}
                 </div>
-                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "hsl(var(--forge-steel) / 0.5)" }}>
                   {stat.label}
                 </div>
               </motion.div>

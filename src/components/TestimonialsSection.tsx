@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { LogoLoop } from "./LogoLoop";
@@ -70,7 +71,7 @@ export const TestimonialsSection = () => {
     if (cards.length === 0) return;
 
     const ctx = gsap.context(() => {
-      cards.forEach((card, i) => {
+    cards.forEach((card, i) => {
         if (i === cards.length - 1) return; // last card stays
 
         ScrollTrigger.create({
@@ -83,8 +84,8 @@ export const TestimonialsSection = () => {
             gsap.set(card, {
               scale: 1 - p * 0.08,
               y: -p * 30,
-              opacity: 1 - p * 0.4,
-              filter: `blur(${p * 3}px)`,
+              opacity: 1 - p * 0.6,
+              filter: `blur(${p * 6}px)`,
             });
           },
         });
@@ -110,7 +111,7 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative py-24 md:py-32 lg:py-40"
+      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
     >
       <style>{`
@@ -240,6 +241,31 @@ export const TestimonialsSection = () => {
               </div>
             )}
           />
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="flex justify-center mb-8">
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-[10px] uppercase tracking-[0.2em] font-mono" style={{ color: "hsl(var(--forge-steel) / 0.4)" }}>
+              Aşağı kaydırın
+            </span>
+            <motion.div
+              className="w-5 h-8 border border-primary/30 rounded-full flex justify-center pt-1.5"
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              <motion.div
+                className="w-1 h-1.5 rounded-full bg-primary"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Stacked Testimonial Cards */}

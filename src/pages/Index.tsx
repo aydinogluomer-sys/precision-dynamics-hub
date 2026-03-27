@@ -100,7 +100,7 @@ export const Index = () => {
         </div>
 
         {/* z-index 2 */}
-        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-obsidian))" }}>
+        <div className="relative" style={{ zIndex: 2, backgroundColor: "hsl(var(--forge-mist))" }}>
           <QuickQuoteSection />
         </div>
 

@@ -69,15 +69,15 @@ export const VideoScrollSection = () => {
   }, [scrollYProgress]);
 
   // Opacity for video
-  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.85, 1], [0.3, 1, 1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.02, 0.85, 1], [1, 1, 1, 0]);
 
-  // Content reveals based on scroll progress
-  const labelOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
-  const titleOpacity = useTransform(scrollYProgress, [0.02, 0.1], [0, 1]);
-  const titleY = useTransform(scrollYProgress, [0.02, 0.1], [20, 0]);
-  const descOpacity = useTransform(scrollYProgress, [0.04, 0.12], [0, 1]);
-  const cardsOpacity = useTransform(scrollYProgress, [0.06, 0.18], [0, 1]);
-  const cardsY = useTransform(scrollYProgress, [0.06, 0.18], [30, 0]);
+  // Content reveals — visible immediately on first render
+  const labelOpacity = useTransform(scrollYProgress, [0, 0.01], [1, 1]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.01], [1, 1]);
+  const titleY = useTransform(scrollYProgress, [0, 0.01], [0, 0]);
+  const descOpacity = useTransform(scrollYProgress, [0, 0.02], [1, 1]);
+  const cardsOpacity = useTransform(scrollYProgress, [0, 0.03], [0, 1]);
+  const cardsY = useTransform(scrollYProgress, [0, 0.03], [30, 0]);
 
   // Exit transition overlay
   const exitOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
