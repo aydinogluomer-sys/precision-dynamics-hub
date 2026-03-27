@@ -364,7 +364,7 @@ export const QuickQuoteSection = () => {
                 <div className="text-lg font-bold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
                   {stat.value}
                 </div>
-                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "hsl(var(--forge-steel) / 0.5)" }}>
                   {stat.label}
                 </div>
               </motion.div>
