@@ -290,10 +290,10 @@ export const QuickQuoteSection = () => {
                 </AnimatePresence>
 
                 <div>
-                  <p className="text-base font-bold uppercase tracking-wider text-white/90 font-mono mb-1">
+                  <p className="text-base font-bold uppercase tracking-wider font-mono mb-1" style={{ color: "hsl(var(--forge-gunmetal))" }}>
                     {"DOSYAYI BURAYA SÜRÜKLE"}
                   </p>
-                  <p className="text-xs text-white/40">{"veya tıklayarak dosya seçin"}</p>
+                  <p className="text-xs" style={{ color: "hsl(var(--forge-steel) / 0.5)" }}>{"veya tıklayarak dosya seçin"}</p>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2">
