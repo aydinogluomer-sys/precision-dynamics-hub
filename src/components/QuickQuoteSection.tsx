@@ -241,7 +241,7 @@ export const QuickQuoteSection = () => {
               <motion.div
                 className="absolute inset-6 md:inset-8 pointer-events-none"
                 style={{
-                  border: `2px dashed ${isDragging ? "#007190" : "rgba(255,255,255,0.12)"}`,
+                  border: `2px dashed ${isDragging ? "#007190" : "rgba(0,113,144,0.2)"}`,
                   transition: "border-color 0.3s",
                 }}
                 animate={isDragging ? { scale: [1, 1.02, 1], borderColor: ["#007190", "#0a9bb8", "#007190"] } : {}}
