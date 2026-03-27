@@ -324,7 +324,7 @@ export const QuickQuoteSection = () => {
             >
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2"
-                style={{ color: "rgba(255,255,255,0.4)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.45)" }}
               >
                 {"UÇTAN UCA ŞİFRELEME AKTİF"}
                 <motion.span
