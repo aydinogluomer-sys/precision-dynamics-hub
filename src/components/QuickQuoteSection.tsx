@@ -175,10 +175,10 @@ export const QuickQuoteSection = () => {
           <motion.div
             className="relative overflow-hidden"
             style={{
-              background: "rgba(15,15,15,0.6)",
+              background: "rgba(255,255,255,0.7)",
               backdropFilter: "blur(20px)",
-              border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.15)"}`,
-              boxShadow: "0 0 60px rgba(0,113,144,0.1)",
+              border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.18)"}`,
+              boxShadow: "0 0 60px rgba(0,113,144,0.08)",
               transition: "border-color 0.3s",
             }}
             initial={{ opacity: 0, y: 20 }}
