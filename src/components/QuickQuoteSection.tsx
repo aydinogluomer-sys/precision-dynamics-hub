@@ -300,8 +300,9 @@ export const QuickQuoteSection = () => {
                   {["STEP", "STL", "OBJ", "IGES", "3MF"].map((fmt) => (
                     <span
                       key={fmt}
-                      className="text-[10px] uppercase tracking-wider text-white/40 px-2 py-1 font-mono"
+                      className="text-[10px] uppercase tracking-wider px-2 py-1 font-mono"
                       style={{
+                        color: "hsl(var(--forge-steel) / 0.6)",
                         border: "1px solid rgba(0,113,144,0.15)",
                         background: "rgba(0,113,144,0.05)",
                       }}
