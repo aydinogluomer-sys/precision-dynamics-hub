@@ -67,13 +67,13 @@ export const QuickQuoteSection = () => {
     <section
       id="hizli-teklif"
       className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ backgroundColor: "hsl(var(--forge-mist))" }}
     >
       {/* Subtle gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.08) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.06) 0%, transparent 60%)",
         }}
       />
 
