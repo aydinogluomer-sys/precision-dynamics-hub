@@ -164,11 +164,11 @@ export const QuickQuoteSection = () => {
           >
             <h2
               className="text-2xl md:text-3xl font-bold mb-2 font-mono uppercase tracking-[0.3em]"
-              style={{ color: "rgba(255,255,255,0.9)" }}
+              style={{ color: "hsl(var(--forge-gunmetal))" }}
             >
               {"CAD DOSYANIZI YÜKLEYİN"}
             </h2>
-            <p className="text-sm text-white/50">{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
+            <p className="text-sm" style={{ color: "hsl(var(--forge-steel) / 0.6)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
           {/* Upload Card */}
