@@ -242,6 +242,31 @@ export const TestimonialsSection = () => {
           />
         </div>
 
+        {/* Scroll indicator */}
+        <div className="flex justify-center mb-8">
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-[10px] uppercase tracking-[0.2em] font-mono" style={{ color: "hsl(var(--forge-steel) / 0.4)" }}>
+              Aşağı kaydırın
+            </span>
+            <motion.div
+              className="w-5 h-8 border border-primary/30 rounded-full flex justify-center pt-1.5"
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              <motion.div
+                className="w-1 h-1.5 rounded-full bg-primary"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
+            </motion.div>
+          </motion.div>
+        </div>
+
         {/* Stacked Testimonial Cards */}
         <div ref={cardsContainerRef} className="relative max-w-3xl mx-auto">
           <div className="flex flex-col gap-6">
