@@ -192,13 +192,13 @@ export const QuickQuoteSection = () => {
             <div
               className="flex items-center justify-between px-5 py-3 border-b"
               style={{
-                borderColor: "rgba(0,113,144,0.15)",
-                background: "rgba(0,113,144,0.03)",
+                borderColor: "rgba(0,113,144,0.12)",
+                background: "rgba(0,113,144,0.04)",
               }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.2em] font-mono"
-                style={{ color: "rgba(255,255,255,0.5)" }}
+                style={{ color: "hsl(var(--forge-steel) / 0.5)" }}
               >
                 {"YÜKLEME ARAYÜZÜ V2.4.0"}
               </span>
