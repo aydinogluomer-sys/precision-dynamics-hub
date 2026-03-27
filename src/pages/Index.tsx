@@ -130,11 +130,11 @@ export const Index = () => {
         </ParallaxSection>
 
         {/* z-index 7 — VideoScroll */}
-        <ParallaxSection index={7} variant="zoom-in">
+        <div className="relative" style={{ zIndex: 7 }}>
           <Suspense fallback={<SectionLoader />}>
             <VideoScrollSection />
           </Suspense>
-        </ParallaxSection>
+        </div>
 
         {/* Divider: flip → dalga yukarı bakıyor → üstteki (Video/obsidian) rengi */}
         <div className="relative" style={{ zIndex: 8 }}>
