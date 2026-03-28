@@ -247,7 +247,7 @@ export const Index = () => {
         </div>
 
         {/* 16 — FAQ/Blog */}
-        <ParallaxSection index={17} variant="color-fade">
+        <ParallaxSection index={17} variant="color-fade" isLast>
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
