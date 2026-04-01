@@ -2,7 +2,6 @@ import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { NexusPromoSection } from "@/components/NexusPromoSection";
-import { NexusPromoSection } from "@/components/NexusPromoSection";
 import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { Footer } from "@/components/Footer";
