@@ -1,16 +1,9 @@
 /**
- * HeroSection.tsx — FIXED
+ * HeroSection.tsx — Stacking scroll with horizontal slide reveal
  *
- * FIXES:
- * 1. Vignette was rgba(15,15,15,0.85/0.95) — killed the mask reveal visibility
- *    → Reduced to 0.3/0.6/0.75 for breathing room
- * 2. Mouse tilt was ±3° — barely noticeable (Beaucoup uses 8-12°)
- *    → Increased to ±8°
- * 3. Mask start was 30% — too large, reveal not dramatic enough
- *    → Reduced to 22%, end to 320% for full bleed
- * 4. Background image layer opacity too low
- *    → Adjusted fade ranges
- * 5. Content z-index layering cleaned up
+ * Phase 1 (0–60% of 500vh): MAS mask grows, content fades, header hides
+ * Phase 2 (60–100%): Horizontal slide — Hero slides left, QuickQuote panel slides in from right
+ * QuickQuote panel has FloatingPaths background + bottom white gradient
  */
 import { useRef, useEffect, useCallback, useState } from "react";
 import { ArrowDown } from "lucide-react";
@@ -22,6 +15,8 @@ import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { MagneticButton } from "./MagneticButton";
 import { HeadlineStagger } from "./HeadlineStagger";
+import { FloatingPaths } from "./FloatingPaths";
+import { QuickQuoteSection } from "./QuickQuoteSection";
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
@@ -43,8 +38,10 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const bgImgRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const horizontalWrapRef = useRef<HTMLDivElement>(null);
+  const heroPanelRef = useRef<HTMLDivElement>(null);
+  const quotePanelRef = useRef<HTMLDivElement>(null);
 
-  // FIX: Mouse tilt increased from ±3° to ±8° (Beaucoup Studio reference)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [8, -8]);
@@ -60,7 +57,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  // GSAP scroll-linked mask reveal
+  // GSAP: Phase 1 (mask) + Phase 2 (horizontal slide)
   useEffect(() => {
     if (prefersReduced) return;
     const scroller = scrollerRef.current;
@@ -68,10 +65,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     const bgImg = bgImgRef.current;
     const content = contentRef.current;
     const grid = gridRef.current;
-    if (!scroller || !masked || !bgImg || !content || !grid) return;
+    const horizontalWrap = horizontalWrapRef.current;
+    const heroPanel = heroPanelRef.current;
+    const quotePanel = quotePanelRef.current;
+    if (!scroller || !masked || !bgImg || !content || !grid || !horizontalWrap || !heroPanel || !quotePanel) return;
 
     const ctx = gsap.context(() => {
-      // FIX: Mask expansion — start smaller (22%) for more dramatic reveal, end bigger (320%)
+      // Phase 1: Mask expansion (0% – 60% of scroll)
       gsap.fromTo(
         masked,
         { "--mask-size": "22%" },
@@ -81,13 +81,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           scrollTrigger: {
             trigger: scroller,
             start: "top top",
-            end: "bottom top",
+            end: "60% top",
             scrub: 1.5,
           },
         },
       );
 
-      // FIX: Background image — wider fade range, higher peak opacity
+      // Background image fade in
       gsap.fromTo(
         bgImg,
         { opacity: 0 },
@@ -96,22 +96,22 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "none",
           scrollTrigger: {
             trigger: scroller,
-            start: "25% top",
-            end: "75% top",
+            start: "15% top",
+            end: "50% top",
             scrub: 1,
           },
         },
       );
 
-      // Content fade out on scroll
+      // Content fade out
       gsap.to(content, {
         y: -140,
         opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: scroller,
-          start: "12% top",
-          end: "45% top",
+          start: "8% top",
+          end: "30% top",
           scrub: 1,
         },
       });
@@ -123,10 +123,26 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         scrollTrigger: {
           trigger: scroller,
           start: "top top",
-          end: "bottom top",
+          end: "60% top",
           scrub: 1,
         },
       });
+
+      // Phase 2: Horizontal slide (60% – 100% of scroll)
+      gsap.fromTo(
+        horizontalWrap,
+        { xPercent: 0 },
+        {
+          xPercent: -50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "55% top",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        },
+      );
     }, scroller);
 
     return () => ctx.revert();
@@ -149,235 +165,272 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "300vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "500vh" }}>
       <section
         ref={stickyRef}
-        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
+        className="sticky top-0 h-screen overflow-hidden"
         style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       >
-        {/* Flash overlay for first visit */}
-        {!prefersReduced && (
-          <motion.div
-            className="absolute inset-0 z-[50] pointer-events-none"
-            initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
-            animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
-            style={{ backgroundColor: "white" }}
-          />
-        )}
-
-        {/* Layer 1: Background video/image (dimmed, always present) */}
-        <div className="absolute inset-0 z-0">
-          <video
-            src={cncVideo}
-            poster={heroBg}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-cover hidden md:block"
-            style={{ opacity: 0.18 }}
-          />
-          <img
-            src={heroBg}
-            alt="CNC Factory"
-            className="w-full h-full object-cover md:hidden"
-            style={{ opacity: 0.18 }}
-          />
-        </div>
-
-        {/* Layer 2: Masked image — reveals through MAS logo on scroll */}
+        {/* Horizontal sliding container: 200vw wide, two panels side by side */}
         <div
-          ref={maskedRef}
-          className="absolute inset-0 z-[1]"
-          style={{
-            maskImage: "url('/images/mas-logo.svg')",
-            WebkitMaskImage: "url('/images/mas-logo.svg')",
-            maskRepeat: "no-repeat",
-            WebkitMaskRepeat: "no-repeat",
-            maskPosition: "center",
-            WebkitMaskPosition: "center",
-            maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
-            WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
-          }}
+          ref={horizontalWrapRef}
+          className="flex h-full"
+          style={{ width: "200vw" }}
         >
-          <video
-            src={cncVideo}
-            poster={heroBg}
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-cover hidden md:block"
-            /* FIX: Masked layer brighter — the whole point is to SEE it through the mask */
-            style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
-          />
-          <img
-            src={heroBg}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover md:hidden"
-            style={{ filter: "brightness(0.8) saturate(1.15)" }}
-          />
-        </div>
-
-        {/* Layer 3: Background image (fades in during scroll to blend mask → full image) */}
-        <div
-          ref={bgImgRef}
-          className="absolute inset-0 z-[2] pointer-events-none"
-          style={{ opacity: prefersReduced ? 0.6 : 0 }}
-        >
-          <img
-            src={heroBg}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.75) saturate(1.1)" }}
-          />
-        </div>
-
-        {/* Layer 4: Grid overlay */}
-        <div
-          ref={gridRef}
-          className="absolute inset-0 pointer-events-none z-[3]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
-        {/* Layer 5: Vignette — FIX: was way too dark (0.85/0.95), mask reveal invisible */}
-        <div
-          className="absolute inset-0 pointer-events-none z-[4]"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(15,15,15,0.25) 0%, rgba(15,15,15,0.55) 60%, rgba(15,15,15,0.75) 100%)",
-          }}
-        />
-
-        {/* Layer 6: Content */}
-        <motion.div
-          ref={contentRef}
-          className="container-industrial relative z-10 w-full"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            rotateX,
-            rotateY,
-            transformPerspective: 1200,
-            transformStyle: "preserve-3d" as const,
-          }}
-        >
-          <motion.div
-            className="max-w-6xl mx-auto text-center"
-            initial={isFirstVisit ? { opacity: 0 } : false}
-            animate={{ opacity: 1 }}
-            transition={{ delay: heroDelay, duration: 0.6 }}
+          {/* ── LEFT PANEL: Hero ── */}
+          <div
+            ref={heroPanelRef}
+            className="relative h-full flex items-center justify-center overflow-hidden"
+            style={{ width: "100vw", flexShrink: 0 }}
           >
-            {/* Eyebrow */}
-            <motion.div
-              className="flex items-center justify-center gap-4 mb-8"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
-            >
+            {/* Flash overlay for first visit */}
+            {!prefersReduced && (
               <motion.div
-                className="h-1 bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: 64 }}
-                transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+                className="absolute inset-0 z-[50] pointer-events-none"
+                initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
+                animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
+                style={{ backgroundColor: "white" }}
               />
-              <span
-                className="text-xs uppercase tracking-widest"
-                style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                CNC Hassas İşleme
-              </span>
-              <motion.div
-                className="h-1 bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: 64 }}
-                transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-              />
-            </motion.div>
+            )}
 
-            {/* Headlines */}
-            <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
-              <AnimatePresence mode="wait">
-                <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
-              </AnimatePresence>
+            {/* Layer 1: Background video/image */}
+            <div className="absolute inset-0 z-0">
+              <video
+                src={cncVideo}
+                poster={heroBg}
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover hidden md:block"
+                style={{ opacity: 0.18 }}
+              />
+              <img
+                src={heroBg}
+                alt="CNC Factory"
+                className="w-full h-full object-cover md:hidden"
+                style={{ opacity: 0.18 }}
+              />
             </div>
 
-            {/* Subtitle */}
-            <motion.p
-              className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-              style={{ color: "rgba(255,255,255,0.7)" }}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 + heroDelay }}
+            {/* Layer 2: Masked image */}
+            <div
+              ref={maskedRef}
+              className="absolute inset-0 z-[1]"
+              style={{
+                maskImage: "url('/images/mas-logo.svg')",
+                WebkitMaskImage: "url('/images/mas-logo.svg')",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+                maskPosition: "center",
+                WebkitMaskPosition: "center",
+                maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
+                WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
+              }}
             >
-              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim
-              anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.
-            </motion.p>
-
-            {/* CTA */}
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 + heroDelay }}
-            >
-              <MagneticButton
-                as="button"
-                onClick={() => {
-                  const el = document.getElementById("hizli-teklif");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
-              >
-                <span>Hızlı Teklif Al</span>
-                <motion.span
-                  className="inline-block"
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  <ArrowDown className="w-4 h-4" />
-                </motion.span>
-              </MagneticButton>
-            </motion.div>
-
-            {/* Scroll indicator */}
-            <motion.div
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              transition={{ delay: 1.5 + heroDelay }}
-            >
-              <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">Scroll</span>
-              <motion.div
-                className="w-px h-8 bg-white/20"
-                animate={{ scaleY: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                style={{ transformOrigin: "top" }}
+              <video
+                src={cncVideo}
+                poster={heroBg}
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover hidden md:block"
+                style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
               />
-            </motion.div>
-          </motion.div>
-        </motion.div>
+              <img
+                src={heroBg}
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover md:hidden"
+                style={{ filter: "brightness(0.8) saturate(1.15)" }}
+              />
+            </div>
 
-        {/* Bottom radial glow — smooth transition to next section */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-[11]"
-          style={{
-            background:
-              "radial-gradient(ellipse 100% 120% at 50% 100%, hsl(var(--forge-mist) / 0.6) 0%, transparent 70%)",
-          }}
-        />
+            {/* Layer 3: Background image fade-in */}
+            <div
+              ref={bgImgRef}
+              className="absolute inset-0 z-[2] pointer-events-none"
+              style={{ opacity: prefersReduced ? 0.6 : 0 }}
+            >
+              <img
+                src={heroBg}
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover"
+                style={{ filter: "brightness(0.75) saturate(1.1)" }}
+              />
+            </div>
+
+            {/* Layer 4: Grid overlay */}
+            <div
+              ref={gridRef}
+              className="absolute inset-0 pointer-events-none z-[3]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
+                backgroundSize: "40px 40px",
+              }}
+            />
+
+            {/* Layer 5: Vignette */}
+            <div
+              className="absolute inset-0 pointer-events-none z-[4]"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, rgba(15,15,15,0.25) 0%, rgba(15,15,15,0.55) 60%, rgba(15,15,15,0.75) 100%)",
+              }}
+            />
+
+            {/* Layer 6: Content */}
+            <motion.div
+              ref={contentRef}
+              className="container-industrial relative z-10 w-full"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                rotateX,
+                rotateY,
+                transformPerspective: 1200,
+                transformStyle: "preserve-3d" as const,
+              }}
+            >
+              <motion.div
+                className="max-w-6xl mx-auto text-center"
+                initial={isFirstVisit ? { opacity: 0 } : false}
+                animate={{ opacity: 1 }}
+                transition={{ delay: heroDelay, duration: 0.6 }}
+              >
+                {/* Eyebrow */}
+                <motion.div
+                  className="flex items-center justify-center gap-4 mb-8"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
+                >
+                  <motion.div
+                    className="h-1 bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: 64 }}
+                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+                  />
+                  <span
+                    className="text-xs uppercase tracking-widest"
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      color: "rgba(255,255,255,0.5)",
+                    }}
+                  >
+                    CNC Hassas İşleme
+                  </span>
+                  <motion.div
+                    className="h-1 bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: 64 }}
+                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+                  />
+                </motion.div>
+
+                {/* Headlines */}
+                <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
+                  <AnimatePresence mode="wait">
+                    <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                  </AnimatePresence>
+                </div>
+
+                {/* Subtitle */}
+                <motion.p
+                  className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
+                  style={{ color: "rgba(255,255,255,0.7)" }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 + heroDelay }}
+                >
+                  CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim
+                  anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.
+                </motion.p>
+
+                {/* CTA */}
+                <motion.div
+                  className="flex justify-center"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 + heroDelay }}
+                >
+                  <MagneticButton
+                    as="button"
+                    onClick={() => {
+                      const el = document.getElementById("hizli-teklif");
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
+                  >
+                    <span>Hızlı Teklif Al</span>
+                    <motion.span
+                      className="inline-block"
+                      animate={{ y: [0, 4, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                    </motion.span>
+                  </MagneticButton>
+                </motion.div>
+
+                {/* Scroll indicator */}
+                <motion.div
+                  className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.4 }}
+                  transition={{ delay: 1.5 + heroDelay }}
+                >
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">Scroll</span>
+                  <motion.div
+                    className="w-px h-8 bg-white/20"
+                    animate={{ scaleY: [0, 1, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    style={{ transformOrigin: "top" }}
+                  />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT PANEL: QuickQuote with FloatingPaths ── */}
+          <div
+            ref={quotePanelRef}
+            className="relative h-full flex items-center justify-center overflow-hidden"
+            style={{
+              width: "100vw",
+              flexShrink: 0,
+              backgroundColor: "hsl(var(--forge-mist))",
+            }}
+          >
+            {/* FloatingPaths background animation */}
+            <div className="absolute inset-0 z-0 opacity-40">
+              <FloatingPaths position={1} />
+            </div>
+            <div className="absolute inset-0 z-0 opacity-30">
+              <FloatingPaths position={-1} />
+            </div>
+
+            {/* QuickQuote content */}
+            <div className="relative z-10 w-full h-full flex items-center justify-center">
+              <QuickQuoteSection />
+            </div>
+
+            {/* Bottom white gradient */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
+              style={{
+                background:
+                  "linear-gradient(to top, hsl(var(--forge-mist)) 0%, hsl(var(--forge-mist) / 0.8) 40%, transparent 100%)",
+              }}
+            />
+          </div>
+        </div>
       </section>
     </div>
   );
