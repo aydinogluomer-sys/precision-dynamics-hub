@@ -112,10 +112,18 @@ export const TestimonialsSection = () => {
       ref={sectionRef}
       id="referanslar"
       className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
-      style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
+      style={{ backgroundColor: "rgba(235, 231, 225, 0.92)" }}
     >
+      {/* Subtle grain texture for depth separation from Capabilities */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+        }}
+      />
       <style>{`
-        .dark #referanslar { background-color: rgba(15,15,15,0.88) !important; }
+        .dark #referanslar { background-color: rgba(18,18,22,0.92) !important; }
         .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
         .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
         .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
