@@ -134,15 +134,10 @@ export const Index = () => {
       <SectionDotNav sections={SECTIONS} />
 
       <main id="main-content" className="relative">
-        {/* 1 — Hero (flow, 300vh internal scroller + bottom radial glow) */}
+        {/* 1 — Hero + QuickQuote (horizontal slide, 500vh internal scroller) */}
         <FlowScene z={1}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
-
-        {/* 2 — QuickQuote (sticky) */}
-        <Scene z={2} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
-          <QuickQuoteSection />
-        </Scene>
 
         {/* 3 — CNCScrollStory (flow, internal scroll) */}
         <FlowScene z={3}>
