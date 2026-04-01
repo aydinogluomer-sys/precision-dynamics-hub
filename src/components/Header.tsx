@@ -290,7 +290,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50">
+      <header id="main-header" className="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{
