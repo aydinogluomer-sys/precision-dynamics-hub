@@ -232,7 +232,25 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 40);
+    const handleScroll = () => {
+      const y = window.scrollY;
+      setIsScrolled(y > 40);
+      // Hide header when Hero MAS mask starts growing (scrollY > 200)
+      const header = document.getElementById("main-header");
+      if (header) {
+        const heroHeight = window.innerHeight * 3; // 300vh Hero
+        const progress = Math.min(y / heroHeight, 1);
+        if (progress > 0.07) {
+          header.style.transform = `translateY(-100%)`;
+          header.style.opacity = "0";
+          header.style.pointerEvents = "none";
+        } else {
+          header.style.transform = `translateY(0)`;
+          header.style.opacity = "1";
+          header.style.pointerEvents = "auto";
+        }
+      }
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -272,7 +290,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50">
+      <header id="main-header" className="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{

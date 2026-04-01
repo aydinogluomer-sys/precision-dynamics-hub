@@ -2,7 +2,6 @@ import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { NexusPromoSection } from "@/components/NexusPromoSection";
-import { QuickQuoteSection } from "@/components/QuickQuoteSection";
 import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { Footer } from "@/components/Footer";
@@ -134,15 +133,10 @@ export const Index = () => {
       <SectionDotNav sections={SECTIONS} />
 
       <main id="main-content" className="relative">
-        {/* 1 — Hero (flow, 300vh internal scroller + bottom radial glow) */}
+        {/* 1 — Hero + QuickQuote (horizontal slide, 500vh internal scroller) */}
         <FlowScene z={1}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
-
-        {/* 2 — QuickQuote (sticky) */}
-        <Scene z={2} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
-          <QuickQuoteSection />
-        </Scene>
 
         {/* 3 — CNCScrollStory (flow, internal scroll) */}
         <FlowScene z={3}>
