@@ -369,6 +369,15 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             </motion.div>
           </motion.div>
         </motion.div>
+
+        {/* Bottom radial glow — smooth transition to next section */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-[11]"
+          style={{
+            background:
+              "radial-gradient(ellipse 100% 120% at 50% 100%, hsl(var(--forge-mist) / 0.6) 0%, transparent 70%)",
+          }}
+        />
       </section>
     </div>
   );
