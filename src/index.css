@@ -55,6 +55,11 @@
     --forge-workshop: 38 25% 92%; /* #f0ede8 */
     --forge-mist: 207 20% 89%; /* #dde3e8 */
 
+    /* Lava/Forge colors */
+    --forge-lava: 24 100% 50%; /* #ff6a00 */
+    --forge-magma: 14 73% 52%; /* #e25822 */
+    --forge-coal: 14 53% 41%; /* #b8451a */
+
     /* Sidebar */
     --sidebar-background: 38 20% 98%;
     --sidebar-foreground: 240 28% 14%;
