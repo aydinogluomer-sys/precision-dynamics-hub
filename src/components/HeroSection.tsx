@@ -5,7 +5,7 @@
  * Phase 2 (60–100%): Horizontal slide — Hero slides left, QuickQuote panel slides in from right
  * QuickQuote panel has FloatingPaths background + bottom white gradient
  */
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
 import { ArrowDown } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -17,6 +17,10 @@ import { MagneticButton } from "./MagneticButton";
 import { HeadlineStagger } from "./HeadlineStagger";
 import { FloatingPaths } from "./FloatingPaths";
 import { QuickQuoteSection } from "./QuickQuoteSection";
+
+const HeroCanvas = lazy(() =>
+  import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
+);
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
@@ -183,6 +187,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             className="relative h-full flex items-center justify-center overflow-hidden"
             style={{ width: "100vw", flexShrink: 0 }}
           >
+            {/* R3F Liquid Distortion Canvas */}
+            <Suspense fallback={null}>
+              <div className="absolute inset-0 z-0">
+                <HeroCanvas />
+              </div>
+            </Suspense>
+
             {/* Flash overlay for first visit */}
             {!prefersReduced && (
               <motion.div
@@ -194,8 +205,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               />
             )}
 
-            {/* Layer 1: Background video/image */}
-            <div className="absolute inset-0 z-0">
+            {/* Layer 1: Background video/image (lower opacity since R3F handles hero visual) */}
+            <div className="absolute inset-0 z-[1]">
               <video
                 src={cncVideo}
                 poster={heroBg}
@@ -205,13 +216,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 playsInline
                 preload="metadata"
                 className="w-full h-full object-cover hidden md:block"
-                style={{ opacity: 0.18 }}
+                style={{ opacity: 0.1 }}
               />
               <img
                 src={heroBg}
                 alt="CNC Factory"
                 className="w-full h-full object-cover md:hidden"
-                style={{ opacity: 0.18 }}
+                style={{ opacity: 0.15 }}
               />
             </div>
 
