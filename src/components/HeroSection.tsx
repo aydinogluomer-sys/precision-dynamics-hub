@@ -42,7 +42,7 @@ const subtitleVariants = {
     transition: {
       delay: i * 0.3,
       duration: 1,
-      ease: [0.175, 0.885, 0.32, 1.275],
+      ease: [0.175, 0.885, 0.32, 1.275] as [number, number, number, number],
       opacity: { duration: 0.6, delay: i * 0.3 },
       filter: { duration: 0.8, delay: i * 0.3 },
     },
