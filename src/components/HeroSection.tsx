@@ -1,19 +1,18 @@
 /**
- * HeroSection.tsx — Stacking scroll with horizontal slide reveal
+ * HeroSection.tsx — Stacking scroll with horizontal slide reveal + lava effect
  *
- * Phase 1 (0–60% of 500vh): MAS mask grows, content fades, header hides
- * Phase 2 (60–100%): Horizontal slide — Hero slides left, QuickQuote panel slides in from right
- * QuickQuote panel has FloatingPaths background + bottom white gradient
+ * Phase 1 (0–45%): MAS mask grows, content fades, header hides
+ * Phase 2 (45–60%): PAUSE — section locked fullscreen
+ * Phase 3 (60–88%): Horizontal slide — Hero slides left, QuickQuote slides in
+ * Phase 4 (88–100%): Lava pour + heat distortion
  */
 import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
-import { ArrowDown } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap } from "@/hooks/use-gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
-import { MagneticButton } from "./MagneticButton";
 import { HeadlineStagger } from "./HeadlineStagger";
 import { FloatingPaths } from "./FloatingPaths";
 import { QuickQuoteSection } from "./QuickQuoteSection";
@@ -27,6 +26,28 @@ const headlines = [
   "Yüksek Hassasiyetli\nÜretim",
   "Stabil Kalite &\nGüvenilir Teslimat",
 ];
+
+const subtitleLines = [
+  "CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti,",
+  "yüksek doğruluk ve proses kontrollü üretim anlayışıyla,",
+  "stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.",
+];
+
+const subtitleVariants = {
+  hidden: { y: -80, opacity: 0, filter: "blur(10px)" },
+  visible: (i: number) => ({
+    y: 0,
+    opacity: 1,
+    filter: "blur(0px)",
+    transition: {
+      delay: i * 0.3,
+      duration: 1,
+      ease: [0.175, 0.885, 0.32, 1.275] as [number, number, number, number],
+      opacity: { duration: 0.6, delay: i * 0.3 },
+      filter: { duration: 0.8, delay: i * 0.3 },
+    },
+  }),
+};
 
 interface HeroSectionProps {
   isFirstVisit?: boolean;
@@ -45,6 +66,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const horizontalWrapRef = useRef<HTMLDivElement>(null);
   const heroPanelRef = useRef<HTMLDivElement>(null);
   const quotePanelRef = useRef<HTMLDivElement>(null);
+  const lavaFlowRef = useRef<HTMLDivElement>(null);
+  const lavaOverlayRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -61,7 +84,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  // GSAP: Phase 1 (mask) + Phase 2 (horizontal slide)
+  // GSAP: 4-phase scroll
   useEffect(() => {
     if (prefersReduced) return;
     const scroller = scrollerRef.current;
@@ -70,12 +93,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     const content = contentRef.current;
     const grid = gridRef.current;
     const horizontalWrap = horizontalWrapRef.current;
-    const heroPanel = heroPanelRef.current;
+    const lavaFlow = lavaFlowRef.current;
+    const lavaOverlay = lavaOverlayRef.current;
     const quotePanel = quotePanelRef.current;
-    if (!scroller || !masked || !bgImg || !content || !grid || !horizontalWrap || !heroPanel || !quotePanel) return;
+    if (!scroller || !masked || !bgImg || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
 
     const ctx = gsap.context(() => {
-      // Phase 1: Mask expansion (0% – 60% of scroll)
+      // Phase 1: Mask expansion (0% – 45%)
       gsap.fromTo(
         masked,
         { "--mask-size": "22%" },
@@ -85,7 +109,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           scrollTrigger: {
             trigger: scroller,
             start: "top top",
-            end: "60% top",
+            end: "45% top",
             scrub: 1.5,
           },
         },
@@ -101,7 +125,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           scrollTrigger: {
             trigger: scroller,
             start: "15% top",
-            end: "50% top",
+            end: "40% top",
             scrub: 1,
           },
         },
@@ -115,7 +139,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         scrollTrigger: {
           trigger: scroller,
           start: "8% top",
-          end: "30% top",
+          end: "25% top",
           scrub: 1,
         },
       });
@@ -127,23 +151,89 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         scrollTrigger: {
           trigger: scroller,
           start: "top top",
-          end: "60% top",
+          end: "45% top",
           scrub: 1,
         },
       });
 
-      // Phase 2: Horizontal slide (60% – 100% of scroll)
+      // Phase 2: 45%–60% — NO animation (pause/hold)
+
+      // Phase 3: Horizontal slide (60% – 88%)
       gsap.fromTo(
         horizontalWrap,
         { xPercent: 0 },
         {
           xPercent: -50,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "60% top",
+            end: "88% top",
+            scrub: 0.6,
+          },
+        },
+      );
+
+      // Phase 4: Lava pour (88% – 100%)
+      // Lava flow scaleY
+      gsap.fromTo(
+        lavaFlow,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "88% top",
+            end: "100% top",
+            scrub: 0.8,
+          },
+        },
+      );
+
+      // Heat distortion — animate displacement scale
+      const displacementEl = document.getElementById("heat-displacement");
+      if (displacementEl) {
+        gsap.fromTo(
+          displacementEl,
+          { attr: { scale: 0 } },
+          {
+            attr: { scale: 3 },
+            ease: "none",
+            scrollTrigger: {
+              trigger: scroller,
+              start: "88% top",
+              end: "100% top",
+              scrub: true,
+            },
+          },
+        );
+      }
+
+      // Background color shift on quote panel
+      gsap.to(quotePanel, {
+        background: "linear-gradient(135deg, #ff4500 0%, #e25822 50%, #b8451a 100%)",
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "90% top",
+          end: "100% top",
+          scrub: true,
+        },
+      });
+
+      // Lava overlay opacity
+      gsap.fromTo(
+        lavaOverlay,
+        { opacity: 0 },
+        {
+          opacity: 1,
           ease: "none",
           scrollTrigger: {
             trigger: scroller,
-            start: "55% top",
-            end: "bottom top",
-            scrub: 1.2,
+            start: "88% top",
+            end: "95% top",
+            scrub: true,
           },
         },
       );
@@ -169,12 +259,34 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "500vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "650vh" }}>
       <section
         ref={stickyRef}
         className="sticky top-0 h-screen overflow-hidden"
         style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       >
+        {/* Hidden SVG filter for heat distortion */}
+        <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
+          <defs>
+            <filter id="heat-distortion">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.015"
+                numOctaves={2}
+                result="noise"
+              />
+              <feDisplacementMap
+                id="heat-displacement"
+                in="SourceGraphic"
+                in2="noise"
+                scale={0}
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
+
         {/* Horizontal sliding container: 200vw wide, two panels side by side */}
         <div
           ref={horizontalWrapRef}
@@ -205,7 +317,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               />
             )}
 
-            {/* Layer 1: Background video/image (lower opacity since R3F handles hero visual) */}
+            {/* Layer 1: Background video/image */}
             <div className="absolute inset-0 z-[1]">
               <video
                 src={cncVideo}
@@ -299,7 +411,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             {/* Layer 6: Content */}
             <motion.div
               ref={contentRef}
-              className="container-industrial relative z-10 w-full"
+              className="container-industrial relative z-10 w-full hero-content-behind-lava"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               style={{
@@ -352,43 +464,22 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                   </AnimatePresence>
                 </div>
 
-                {/* Subtitle */}
-                <motion.p
-                  className="text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-                  style={{ color: "rgba(255,255,255,0.7)" }}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 + heroDelay }}
-                >
-                  CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim
-                  anlayışıyla, stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.
-                </motion.p>
-
-                {/* CTA */}
-                <motion.div
-                  className="flex justify-center"
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 + heroDelay }}
-                >
-                  <MagneticButton
-                    as="button"
-                    onClick={() => {
-                      const el = document.getElementById("hizli-teklif");
-                      if (el) el.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="bg-primary text-primary-foreground font-bold px-10 py-4 uppercase tracking-wider text-sm flex items-center justify-center gap-3 hover:brightness-110 transition-all"
-                  >
-                    <span>Hızlı Teklif Al</span>
-                    <motion.span
-                      className="inline-block"
-                      animate={{ y: [0, 4, 0] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
+                {/* Subtitle — Staggered Drop */}
+                <div className="max-w-2xl mx-auto mb-10 space-y-1">
+                  {subtitleLines.map((line, i) => (
+                    <motion.p
+                      key={line}
+                      className="text-base sm:text-lg leading-relaxed"
+                      style={{ color: "rgba(255,255,255,0.7)" }}
+                      custom={i}
+                      variants={subtitleVariants}
+                      initial="hidden"
+                      animate="visible"
                     >
-                      <ArrowDown className="w-4 h-4" />
-                    </motion.span>
-                  </MagneticButton>
-                </motion.div>
+                      {line}
+                    </motion.p>
+                  ))}
+                </div>
 
                 {/* Scroll indicator */}
                 <motion.div
@@ -412,7 +503,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           {/* ── RIGHT PANEL: QuickQuote with FloatingPaths ── */}
           <div
             ref={quotePanelRef}
-            className="relative h-full flex items-center justify-center overflow-hidden"
+            className="relative h-full flex items-center justify-center overflow-hidden quick-quote-panel"
             style={{
               width: "100vw",
               flexShrink: 0,
@@ -430,6 +521,28 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             {/* QuickQuote content */}
             <div className="relative z-10 w-full h-full flex items-center justify-center">
               <QuickQuoteSection />
+            </div>
+
+            {/* Lava Overlay */}
+            <div
+              ref={lavaOverlayRef}
+              className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
+              style={{ opacity: 0 }}
+            >
+              <div
+                ref={lavaFlowRef}
+                className="absolute top-0 left-0 right-0 h-full"
+                style={{
+                  background: `
+                    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
+                    linear-gradient(to bottom, #ff6a00 0%, #ee0979 40%, #e25822 70%, #b8451a 100%)
+                  `,
+                  backgroundBlendMode: "overlay",
+                  clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
+                  transform: "scaleY(0)",
+                  transformOrigin: "top",
+                }}
+              />
             </div>
 
             {/* Bottom white gradient */}

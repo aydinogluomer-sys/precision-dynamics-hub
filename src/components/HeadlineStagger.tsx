@@ -39,12 +39,18 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
         transformStyle: "preserve-3d" as const,
         rotateX: scrollRotateX,
       }}
+      // Magnetic kerning: letters start spread, compress together
+      initial={prefersReduced ? undefined : { letterSpacing: "0.2em", opacity: 0 }}
+      animate={{ letterSpacing: "-0.05em", opacity: 1 }}
+      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
     >
       <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
         {staggerWords.map((word, wi) => (
           <span key={wi} className="inline-flex whitespace-nowrap">
             {word.split("").map((char, ci) => {
               const i = staggerWords.slice(0, wi).join("").length + ci;
+              // First word: outline only. Remaining: solid fill
+              const isFirstWord = wi === 0;
               return (
                 <motion.span
                   key={`${char}-${i}`}
@@ -55,10 +61,18 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
                   exit={prefersReduced ? "enter" : "exit"}
                   className="inline-block font-extrabold uppercase"
                   style={{
-                    fontSize: "clamp(2.75rem, 7vw, 7.5rem)",
-                    color: "white",
-                    letterSpacing: "-0.03em",
+                    fontSize: "clamp(3.5rem, 9vw, 9rem)",
+                    letterSpacing: "inherit",
                     lineHeight: 1,
+                    ...(isFirstWord
+                      ? {
+                          WebkitTextStroke: "2px #0688AD",
+                          color: "transparent",
+                        }
+                      : {
+                          color: "#0688AD",
+                        }),
+                    textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
                   }}
                 >
                   {char}
@@ -76,10 +90,11 @@ export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) =
           transition={{ delay: staggerWordChars * 0.02 + 0.1, duration: 0.4 }}
           className="font-extrabold uppercase whitespace-pre-line text-center"
           style={{
-            fontSize: "clamp(2.75rem, 7vw, 7.5rem)",
-            color: "white",
-            letterSpacing: "-0.03em",
+            fontSize: "clamp(3.5rem, 9vw, 9rem)",
+            color: "#0688AD",
+            letterSpacing: "inherit",
             lineHeight: 1,
+            textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
           }}
         >
           {restWords.join(" ")}
