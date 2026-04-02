@@ -187,6 +187,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             className="relative h-full flex items-center justify-center overflow-hidden"
             style={{ width: "100vw", flexShrink: 0 }}
           >
+            {/* R3F Liquid Distortion Canvas */}
+            <Suspense fallback={null}>
+              <div className="absolute inset-0 z-0">
+                <HeroCanvas />
+              </div>
+            </Suspense>
+
             {/* Flash overlay for first visit */}
             {!prefersReduced && (
               <motion.div
@@ -198,8 +205,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               />
             )}
 
-            {/* Layer 1: Background video/image */}
-            <div className="absolute inset-0 z-0">
+            {/* Layer 1: Background video/image (lower opacity since R3F handles hero visual) */}
+            <div className="absolute inset-0 z-[1]">
               <video
                 src={cncVideo}
                 poster={heroBg}
@@ -209,13 +216,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 playsInline
                 preload="metadata"
                 className="w-full h-full object-cover hidden md:block"
-                style={{ opacity: 0.18 }}
+                style={{ opacity: 0.1 }}
               />
               <img
                 src={heroBg}
                 alt="CNC Factory"
                 className="w-full h-full object-cover md:hidden"
-                style={{ opacity: 0.18 }}
+                style={{ opacity: 0.15 }}
               />
             </div>
 
