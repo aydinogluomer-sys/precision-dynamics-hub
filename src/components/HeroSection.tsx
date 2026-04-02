@@ -5,7 +5,7 @@
  * Phase 2 (60–100%): Horizontal slide — Hero slides left, QuickQuote panel slides in from right
  * QuickQuote panel has FloatingPaths background + bottom white gradient
  */
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
 import { ArrowDown } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -17,6 +17,10 @@ import { MagneticButton } from "./MagneticButton";
 import { HeadlineStagger } from "./HeadlineStagger";
 import { FloatingPaths } from "./FloatingPaths";
 import { QuickQuoteSection } from "./QuickQuoteSection";
+
+const HeroCanvas = lazy(() =>
+  import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
+);
 
 const headlines = [
   "Profesyonel CNC\nOperasyonları",
