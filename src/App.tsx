@@ -154,6 +154,8 @@ const AppContent = () => {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  const isPanel = useMemo(() => {
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
   }, [location.pathname]);
 
