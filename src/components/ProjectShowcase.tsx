@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticButton } from "./MagneticButton";
+import { useTilt } from "@/hooks/useTilt";
 
 const projects = [
   {
