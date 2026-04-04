@@ -129,8 +129,31 @@ const AnimatedRoutes = () => {
 
 const AppContent = () => {
   const location = useLocation();
+  useAmbientGlow();
 
-  const isPanel = useMemo(() => {
+  // Konami Code easter egg
+  useEffect(() => {
+    const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+    let idx = 0;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === KONAMI[idx]) {
+        idx++;
+        if (idx === KONAMI.length) {
+          document.body.style.transition = "filter 0.3s";
+          document.body.style.filter = "hue-rotate(45deg)";
+          setTimeout(() => {
+            document.body.style.filter = "hue-rotate(0deg)";
+            setTimeout(() => { document.body.style.filter = ""; }, 500);
+          }, 2000);
+          idx = 0;
+        }
+      } else {
+        idx = 0;
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
   }, [location.pathname]);
 
