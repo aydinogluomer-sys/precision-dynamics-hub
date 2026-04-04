@@ -1,7 +1,9 @@
 import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { LiveClock } from "./LiveClock";
+import { MarqueeBand } from "./MarqueeBand";
 
 const footerLinks = [
   {
