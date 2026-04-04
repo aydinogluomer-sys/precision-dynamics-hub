@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo } from "react";
+import { Suspense, lazy, useMemo, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +9,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { useSoundEngine } from "@/hooks/use-sound";
+import { useAmbientGlow } from "@/hooks/useAmbientGlow";
 
 import { Index } from "./pages/Index";
 import { NotFound } from "./pages/NotFound";
@@ -128,6 +129,31 @@ const AnimatedRoutes = () => {
 
 const AppContent = () => {
   const location = useLocation();
+  useAmbientGlow();
+
+  // Konami Code easter egg
+  useEffect(() => {
+    const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+    let idx = 0;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === KONAMI[idx]) {
+        idx++;
+        if (idx === KONAMI.length) {
+          document.body.style.transition = "filter 0.3s";
+          document.body.style.filter = "hue-rotate(45deg)";
+          setTimeout(() => {
+            document.body.style.filter = "hue-rotate(0deg)";
+            setTimeout(() => { document.body.style.filter = ""; }, 500);
+          }, 2000);
+          idx = 0;
+        }
+      } else {
+        idx = 0;
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const isPanel = useMemo(() => {
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");

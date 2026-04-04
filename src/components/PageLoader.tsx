@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { gsap } from "@/hooks/use-gsap";
 
 interface PageLoaderProps {
   isFirstVisit: boolean;
@@ -10,50 +9,45 @@ interface PageLoaderProps {
 export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
   const prefersReduced = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(isFirstVisit && !prefersReduced);
-  const counterRef = useRef<HTMLSpanElement>(null);
+  const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isFirstVisit || prefersReduced) return;
 
-    const counter = counterRef.current;
-    const bar = barRef.current;
-    if (!counter || !bar) return;
+    const start = Date.now();
+    const minDuration = 2200;
+    let animId: number;
 
-    const obj = { val: 0 };
+    const tick = () => {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / minDuration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * 100));
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // Small pause then exit
-        gsap.delayedCall(0.3, () => setIsVisible(false));
-      },
-    });
+      if (barRef.current) {
+        barRef.current.style.width = `${eased * 100}%`;
+      }
 
-    // Counter 0 → 100
-    tl.to(obj, {
-      val: 100,
-      duration: 2,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        counter.textContent = String(Math.round(obj.val));
-      },
-    });
-
-    // Bar width synced
-    tl.to(
-      bar,
-      {
-        width: "100%",
-        duration: 2,
-        ease: "power2.inOut",
-      },
-      "<"
-    );
-
-    return () => {
-      tl.kill();
+      if (progress < 1) {
+        animId = requestAnimationFrame(tick);
+      } else {
+        setCount(100);
+        setTimeout(() => setDone(true), 400);
+      }
     };
+
+    animId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animId);
   }, [isFirstVisit, prefersReduced]);
+
+  useEffect(() => {
+    if (done) {
+      const timer = setTimeout(() => setIsVisible(false), 900);
+      return () => clearTimeout(timer);
+    }
+  }, [done]);
 
   return (
     <AnimatePresence>
@@ -61,8 +55,13 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
         <motion.div
           className="fixed inset-0 z-[9999] flex items-center justify-center"
           style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          animate={
+            done
+              ? { clipPath: "circle(150% at 50% 50%)" }
+              : { clipPath: "circle(100% at 50% 50%)" }
+          }
           exit={{
-            y: "-100%",
+            clipPath: "circle(0% at 50% 50%)",
             transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] },
           }}
         >
@@ -77,30 +76,32 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
           />
 
           <div className="relative flex flex-col items-center">
-            {/* Big monospace counter */}
+            {/* Brand */}
+            <motion.span
+              className="text-[10px] uppercase tracking-[0.4em] text-white/25 font-mono mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              MAS TECHNIC
+            </motion.span>
+
+            {/* Big monospace counter — 3 digits */}
             <span
-              ref={counterRef}
               className="font-mono font-bold text-white/90 select-none"
               style={{
-                fontSize: "clamp(4rem, 12vw, 9rem)",
+                fontSize: "clamp(4rem, 15vw, 10rem)",
                 fontVariantNumeric: "tabular-nums",
                 lineHeight: 1,
               }}
             >
-              0
-            </span>
-
-            {/* Percent sign */}
-            <span
-              className="text-sm font-mono text-white/30 tracking-[0.3em] uppercase mt-2"
-            >
-              {"loading"}
+              {count.toString().padStart(3, "0")}
             </span>
 
             {/* Progress bar */}
             <div
               className="mt-6 h-px overflow-hidden"
-              style={{ width: 120, backgroundColor: "rgba(255,255,255,0.1)" }}
+              style={{ width: 200, backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <div
                 ref={barRef}
@@ -109,19 +110,10 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
                   width: "0%",
                   background:
                     "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))",
+                  transition: "width 0.05s linear",
                 }}
               />
             </div>
-
-            {/* Brand */}
-            <motion.span
-              className="text-[10px] uppercase tracking-[0.4em] text-white/25 font-mono mt-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              {"MAS TECHNIC"}
-            </motion.span>
           </div>
         </motion.div>
       )}

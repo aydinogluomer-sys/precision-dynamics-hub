@@ -1,7 +1,9 @@
 import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { LiveClock } from "./LiveClock";
+import { MarqueeBand } from "./MarqueeBand";
 
 const footerLinks = [
   {
@@ -81,6 +83,14 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (footerRef.current) {
+      const h = footerRef.current.offsetHeight;
+      document.documentElement.style.setProperty("--footer-height", h + "px");
+    }
+  }, []);
 
   const stagger = {
     hidden: {},
@@ -93,7 +103,31 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <footer ref={footerRef} className="relative overflow-hidden font-mono" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+      {/* Marquee band at top of footer */}
+      <MarqueeBand reverse />
+
+      {/* Big signature watermark */}
+      <div
+        className="pointer-events-none select-none overflow-hidden relative"
+        style={{ zIndex: 0 }}
+        aria-hidden="true"
+      >
+        <div
+          style={{
+            fontSize: "clamp(60px, 12vw, 160px)",
+            fontFamily: "IBM Plex Mono, monospace",
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            color: "rgba(255,255,255,0.04)",
+            lineHeight: 1,
+            whiteSpace: "nowrap",
+            padding: "20px 0",
+          }}
+        >
+          MAS TECHNIC
+        </div>
+      </div>
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -369,10 +403,21 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-6" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
           <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="text-xs" style={{ color: "hsl(210 8% 35%)" }}>
-              © {currentYear} MAS TECHNIC. Tüm hakları saklıdır.
+            <div className="text-xs flex items-center gap-4" style={{ color: "hsl(210 8% 35%)" }}>
+              <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
+              <LiveClock />
             </div>
-            <div className="flex gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
+            <div className="flex items-center gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
+              <span
+                style={{
+                  fontFamily: "IBM Plex Mono, monospace",
+                  fontSize: "11px",
+                  letterSpacing: "0.1em",
+                  color: "rgba(255,255,255,0.25)",
+                }}
+              >
+                38°25'N 27°08'E — İZMİR, TR
+              </span>
               <Link to="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</Link>
               <Link to="/kvkk" className="hover:text-primary transition-colors">KVKK Aydınlatma Metni</Link>
               <Link to="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</Link>

@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { Reveal } from "@/components/ui/Reveal";
 import { MagneticButton } from "./MagneticButton";
+import { useTilt } from "@/hooks/useTilt";
 
 const projects = [
   {
@@ -234,6 +235,7 @@ export const ProjectShowcase = () => {
 
 const ProjectCard = ({ project, index }: { project: typeof projects[number]; index: number }) => {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(5);
 
   useEffect(() => {
     const el = titleRef.current;
@@ -246,7 +248,6 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
       return;
     }
 
-    // Split title into characters for GSAP stagger
     el.innerHTML = text
       .split("")
       .map((c) =>
@@ -283,9 +284,18 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
 
   return (
     <div
+      ref={tiltRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className={`gsap-project-card relative flex-shrink-0 w-[80vw] h-[60vh] bg-gradient-to-br ${project.gradient} overflow-hidden group cursor-pointer`}
-      style={{ willChange: "transform, opacity" }}
+      style={{ willChange: "transform, opacity", transition: "transform 0.15s ease-out" }}
     >
+      {/* 3D spotlight overlay */}
+      <div
+        ref={spotRef}
+        className="absolute inset-0 pointer-events-none z-[2]"
+        aria-hidden="true"
+      />
       {/* Grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none opacity-10"
