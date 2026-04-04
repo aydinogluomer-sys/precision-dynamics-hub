@@ -510,12 +510,9 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               backgroundColor: "hsl(var(--forge-mist))",
             }}
           >
-            {/* FloatingPaths background animation */}
-            <div className="absolute inset-0 z-0 opacity-40">
-              <FloatingPaths position={1} />
-            </div>
-            <div className="absolute inset-0 z-0 opacity-30">
-              <FloatingPaths position={-1} />
+            {/* WebGL Motion Gradient background */}
+            <div className="absolute inset-0 z-0">
+              <MotionGradientBg mode={0} temperature={0.5} />
             </div>
 
             {/* QuickQuote content */}
