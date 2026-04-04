@@ -388,22 +388,53 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
           </div>
         </motion.div>
 
-        {/* Mobile Menu Content */}
+        {/* Mobile Menu — Fullscreen Takeover */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
-              className="lg:hidden bg-background border-b overflow-hidden"
+              initial={{ clipPath: "inset(0 0 100% 0)" }}
+              animate={{ clipPath: "inset(0 0 0% 0)" }}
+              exit={{ clipPath: "inset(0 0 100% 0)" }}
+              transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+              className="lg:hidden fixed inset-0 z-[9990] flex flex-col justify-center px-8"
+              style={{ backgroundColor: "hsl(var(--background) / 0.97)" }}
             >
-              <nav className="flex flex-col p-4">
+              <nav className="flex flex-col gap-2">
                 {navItems.map((item, idx) => (
-                  <Link key={idx} to={item.path} className="py-3 font-bold border-b">
-                    {item.label}
-                  </Link>
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 + idx * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block py-3 font-bold tracking-tight text-foreground"
+                      style={{
+                        fontSize: "clamp(32px, 8vw, 64px)",
+                        fontFamily: "IBM Plex Mono, monospace",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
+              {/* Bottom details */}
+              <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
+                <LiveClock />
+                <span
+                  style={{
+                    fontFamily: "IBM Plex Mono, monospace",
+                    fontSize: "10px",
+                    color: "rgba(255,255,255,0.25)",
+                  }}
+                >
+                  MAS TECHNIC © {new Date().getFullYear()}
+                </span>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
