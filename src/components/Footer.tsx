@@ -403,10 +403,21 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-6" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
           <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="text-xs" style={{ color: "hsl(210 8% 35%)" }}>
-              © {currentYear} MAS TECHNIC. Tüm hakları saklıdır.
+            <div className="text-xs flex items-center gap-4" style={{ color: "hsl(210 8% 35%)" }}>
+              <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
+              <LiveClock />
             </div>
-            <div className="flex gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
+            <div className="flex items-center gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
+              <span
+                style={{
+                  fontFamily: "IBM Plex Mono, monospace",
+                  fontSize: "11px",
+                  letterSpacing: "0.1em",
+                  color: "rgba(255,255,255,0.25)",
+                }}
+              >
+                38°25'N 27°08'E — İZMİR, TR
+              </span>
               <Link to="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</Link>
               <Link to="/kvkk" className="hover:text-primary transition-colors">KVKK Aydınlatma Metni</Link>
               <Link to="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</Link>
