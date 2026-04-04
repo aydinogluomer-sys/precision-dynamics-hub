@@ -9,6 +9,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { useSoundEngine } from "@/hooks/use-sound";
+import { useAmbientGlow } from "@/hooks/useAmbientGlow";
 
 import { Index } from "./pages/Index";
 import { NotFound } from "./pages/NotFound";
