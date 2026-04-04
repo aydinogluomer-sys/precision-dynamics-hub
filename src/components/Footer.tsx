@@ -83,6 +83,14 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (footerRef.current) {
+      const h = footerRef.current.offsetHeight;
+      document.documentElement.style.setProperty("--footer-height", h + "px");
+    }
+  }, []);
 
   const stagger = {
     hidden: {},
@@ -95,7 +103,31 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden font-mono" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <footer ref={footerRef} className="relative overflow-hidden font-mono" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+      {/* Marquee band at top of footer */}
+      <MarqueeBand reverse />
+
+      {/* Big signature watermark */}
+      <div
+        className="pointer-events-none select-none overflow-hidden relative"
+        style={{ zIndex: 0 }}
+        aria-hidden="true"
+      >
+        <div
+          style={{
+            fontSize: "clamp(60px, 12vw, 160px)",
+            fontFamily: "IBM Plex Mono, monospace",
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            color: "rgba(255,255,255,0.04)",
+            lineHeight: 1,
+            whiteSpace: "nowrap",
+            padding: "20px 0",
+          }}
+        >
+          MAS TECHNIC
+        </div>
+      </div>
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
