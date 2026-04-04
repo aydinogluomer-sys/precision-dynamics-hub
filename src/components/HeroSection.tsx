@@ -14,8 +14,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { HeadlineStagger } from "./HeadlineStagger";
-import { FloatingPaths } from "./FloatingPaths";
 import { QuickQuoteSection } from "./QuickQuoteSection";
+import { MotionGradientBg } from "./MotionGradientBg";
 
 const HeroCanvas = lazy(() =>
   import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
