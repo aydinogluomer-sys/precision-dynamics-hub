@@ -325,7 +325,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   >
                     <Link
                       to={item.path}
-                      className={`px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
+                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
                     >
                       {item.label}
                     </Link>
