@@ -1,1278 +1,1355 @@
-## Awwwards Seviyesine Ulaşmak İçin Kapsamlı UI/UX Önerileri
+# MAS TECHNIC — Kapsamlı Revizyon Planı v2.0
 
-Mevcut kodu inceledikten sonra, projenin zaten güçlü bir temel üzerine kurulu olduğunu görüyorum — GSAP scrollytelling, custom cursor, R3F WebGL sahnesi, stacking scroll sistemi, magnetic buttons ve page transitions mevcut. Ancak Awwwards Site of the Day seviyesine ulaşmak için aşağıdaki eksik parçaların tamamlanması gerekiyor.
-
----
-
-### A. SAYFA YÜKLEME DENEYİMİ (First Impression)
-
-**1. Preloader → Hero Geçişi**
-Mevcut `PageLoader` bileşenini sinematik bir sahneye dönüştür:
-
-- Yükleme yüzdesi büyük monospace tipografi ile gösterilsin (`00` → `100`)
-- Yüzde tamamlandığında ekran ortasından `clipPath: circle()` ile açılsın
-- Yükleme sırasında arka planda asset'ler (görseller, fontlar, video poster) preload edilsin
-- Süre: gerçek yükleme + minimum 2s dramatik bekleme
-
-**2. Sayfa Arası Geçiş Katmanı**
-Mevcut `PageTransition` iyi ama tek boyutlu. Ekle:
-
-- Geçiş sırasında sayfa üzerine kayan koyu bir "perde" (`motion.div` overlay)
-- Perde üzerinde hedef sayfanın başlığının bir an görünmesi (route-aware text flash)
-- `clipPath: inset()` yerine `clipPath: polygon()` ile açısal/endüstriyel kesim
+**Proje:** [mas-technic-precision.lovable.app](http://mas-technic-precision.lovable.app)  
+**Stack:** React 18 + Vite 5 + GSAP + Lenis + Three.js + Framer Motion + Tailwind CSS + shadcn/ui  
+**Kısıtlar:** `/admin/*` ve `/musteri-paneli/*` dokunulmaz · Sadece `lenis` yeni npm paketi · Font: IBM Plex Mono · border-radius: 0rem  
+**Tarih:** 5 Nisan 2026
 
 ---
 
-### B. TİPOGRAFİ & METİN ANİMASYONLARI
+## İÇİNDEKİLER 
 
-**3. Char-by-Char Reveal (Tüm Bölüm Başlıkları)**
-`SectionHeader` bileşeninde `useSplitTextReveal` hook'u zaten var ama sadece kelime bazlı. Harf bazlı stagger ekle:
-
-- Her harf `translateY(100%)` → `0` ile gelsin
-- Stagger: `0.02s` per char
-- Easing: `power4.out`
-- Özellikle "Birlikte Üretelim" ve ana başlıklarda dramatik etki
-
-**4. Marquee / Ticker Band**
-Bölümler arasına (örneğin Hero altı veya Footer üstü) yatay akan bir metin bandı:
-
-- "HASSAS ÜRETİM • CNC FREZELEME • TORNA • 5 EKSEN" gibi tekrarlayan endüstriyel terimler
-- `translateX` CSS animasyonu, sonsuz döngü
-- Ters yönde ikinci bir bant (paralaks hissi)
-- Büyük, light-weight tipografi (`text-8xl font-light`)
+- [BÖLÜM A: Ön Hazırlık — Mimari Altyapı](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-a-%C3%B6n-haz%C4%B1rl%C4%B1k--mimari-altyap%C4%B1)
+- [BÖLÜM B: Bug Fix — forwardRef ve Console Hataları](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-b-bug-fix--forwardref-ve-console-hatalar%C4%B1)
+- [BÖLÜM C: Performans Optimizasyonu](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-c-performans-optimizasyonu)
+- [BÖLÜM D: Eksik 6 Maddenin Uygulanması](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-d-eksik-6-maddenin-uygulanmas%C4%B1)
+- [BÖLÜM E: Yeni Lav Sahneleri](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-e-yeni-lav-sahneleri)
+- [BÖLÜM F: Ambient Mouse Glow](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-f-ambient-mouse-glow)
+- [BÖLÜM G: 14 Madde Audit Tablosu](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-g-14-madde-audit-tablosu)
+- [BÖLÜM H: Test Stratejisi ve Checklist](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-h-test-stratejisi-ve-checklist)
+- [BÖLÜM I: z-index Haritası](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-i-z-index-haritas%C4%B1)
+- [BÖLÜM J: Dosya Değişiklikleri Özet Tablosu](https://claude.ai/chat/bd7bca97-e410-4b32-b049-d9ecd5b12e1f#b%C3%B6l%C3%BCm-j-dosya-de%C4%9Fi%C5%9Fiklikleri-%C3%B6zet-tablosu)
 
 ---
 
-### C. SCROLL DENEYİMİ
+## UYGULAMA ÖNCELİK SIRASI
 
-**5. Scroll Velocity İndikatörü**
-Mevcut `ScrollProgress` barını genişlet:
+Orijinal planda sıra "bug fix → performans → lav sahneleri → eksik maddeler → glow" idi.  
+Revize sıra aşağıdaki gibidir. Gerekçe: Yeni feature eklemeden önce mevcut altyapının tam çalışır durumda olması gerekir. Eksik maddeler (footer reveal, scroll snap, page transition) lav sahnelerinin entegrasyonunu doğrudan etkiler.
 
-- Scroll hızına göre bar kalınlığı değişsin (hızlı → kalın, yavaş → ince)
-- Scroll yönüne göre renk tonu kayması (aşağı: teal, yukarı: amber)
 
-**6. Parallax Depth Katmanları**
-Her bölümün arka planına çoklu derinlik katmanı:
+| Sıra | Bölüm                  | Gerekçe                                                                                                    |
+| ---- | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1    | A — Mimari Altyapı     | Lenis+GSAP senkronizasyonu, z-index haritası, error boundary. Tüm sonraki işlerin temeli.                  |
+| 2    | B — Bug Fix            | Hızlı, düşük risk, console temizliği.                                                                      |
+| 3    | C — Performans (P1–P4) | Yüksek etki, yeni component'lar eklemeden önce mevcut yükü azalt.                                          |
+| 4    | D — Eksik 6 Madde      | Footer reveal, scroll snap, page transition gibi yapısal maddeler lav sahnelerinin entegrasyonunu etkiler. |
+| 5    | E — Lav Sahneleri      | Temeli sağlam altyapı üzerine yeni feature.                                                                |
+| 6    | F — Ambient Glow       | Kozmetik, en son.                                                                                          |
+| 7    | C — Performans (P5–P9) | Son rötuşlar.                                                                                              |
 
-- z-0: arka plan rengi/gradient
-- z-1: çok hafif noise/grain texture (CSS `feTurbulence`)
-- z-2: geometrik dekoratif öğeler (çizgiler, noktalar) scroll'a bağlı yavaş hareket
-- z-3: içerik
-
-**7. Section Reveal — Staggered Grid Entrance**
-`ServicesSection`, `IndustriesSection` gibi grid/kart tabanlı bölümlerde:
-
-- Kartlar ekrana girdiğinde 2D grid koordinatlarına göre stagger (sol üstten sağ alta doğru dalga)
-- Her kart: `scale(0.9)` + `opacity: 0` → `scale(1)` + `opacity: 1`
-- Toplam süre: ~800ms, stagger: `50ms` per card
 
 ---
 
-### D. HOVER & MİKRO-ETKİLEŞİMLER
+## BÖLÜM A: Ön Hazırlık — Mimari Altyapı
 
-**8. Kart Hover — 3D Tilt + Spotlight**
-`ProjectShowcase` ve diğer kartlara:
+Bu bölüm orijinal planda yoktu. Diğer tüm bölümlerin sağlıklı çalışması için zorunlu altyapı işlerini kapsar.
 
-- Mouse pozisyonuna göre `rotateX/rotateY` (max ±5°) — `perspective(1000px)`
-- Mouse pozisyonunda radial gradient spot ışığı (`pointer-events: none` overlay)
-- Hover'da kenarlık `border-color` geçişi (muted → primary)
+### A1. Lenis + GSAP ScrollTrigger Senkronizasyonu
 
-**9. Link / Buton Hover — Underline Morph**
-Nav linkleri ve metin linkleri için:
+**Sorun:** Projede Lenis smooth scroll aktif. GSAP ScrollTrigger, native scroll event'ine bağlı çalışır. Lenis kendi scroll mekanizmasını kullandığı için, ScrollTrigger ile senkronize edilmezse yeni lav sahneleri tetiklenmez veya jank yapar.
 
-- Alttan gelen `scaleX(0→1)` çizgi animasyonu (mevcut `.story-link` var ama tüm yerlerde kullanılmıyor)
-- CTA butonlarında hover'da ok ikonunun `→` yönüne doğru kayması (`translateX(4px)`)
+**Çözüm:** `SmoothScrollProvider.tsx` içinde Lenis instance'ı oluşturulduktan hemen sonra şu senkronizasyon kodunu ekle:
 
-**10. Magnetic Effect Genişletme**
-Mevcut `MagneticButton` sadece belirli butonlarda. Tüm interaktif öğelere (kartlar, nav linkleri, sosyal ikonlar) hafif bir manyetik çekim ekle — ama mesafe ve güç daha düşük (`distance: 0.2`, `strength: 0.15`).
+```tsx
+// SmoothScrollProvider.tsx — Lenis init'ten sonra
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import gsap from 'gsap';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Lenis → GSAP senkronizasyonu
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000);
+});
+gsap.ticker.lagSmoothing(0);
+
+```
+
+**Kritik not:** Bu senkronizasyon olmadan Bölüm E'deki lav sahneleri çalışmaz. Bu yüzden en önce uygulanmalı.
+
+### A2. z-index Haritası
+
+Projede mevcut ve yeni eklenen tüm katmanların çakışmaması için tek bir z-index referans haritası oluşturulmalı. Ondalık z-index (2.5 gibi) kullanılmamalı — tamsayı scale kullan.
+
+
+| Katman                    | z-index | Bileşen                        |
+| ------------------------- | ------- | ------------------------------ |
+| Arka plan base            | 0       | Body, section arka planları    |
+| Section content           | 1       | Tüm section içerikleri         |
+| Ambient glow overlay      | 2       | Mouse glow div'leri            |
+| Grain overlay             | 5       | `body::after` noise SVG        |
+| Scroll velocity indicator | 8       | Scroll speed renk şeridi       |
+| LavaTypographyScene       | 10      | Yeni sahne 1                   |
+| MoldCastScene             | 11      | Yeni sahne 2                   |
+| CNCScrollStory            | 12      | Mevcut scroll story            |
+| Marquee band              | 15      | Ticker band                    |
+| SectionDotNav             | 20      | Sağ taraftaki dot navigation   |
+| Header / Nav              | 50      | Üst menü                       |
+| Mobile menu overlay       | 60      | Fullscreen takeover menü       |
+| Custom cursor             | 90      | Industrial cursor              |
+| Preloader                 | 100     | Sinematik preloader (en üstte) |
+
+
+Bu harita `src/styles/z-index.ts` olarak export edilip tüm component'larda import edilmeli:
+
+```tsx
+// src/styles/z-index.ts
+export const Z = {
+  base: 0,
+  content: 1,
+  ambientGlow: 2,
+  grain: 5,
+  scrollVelocity: 8,
+  lavaTypography: 10,
+  moldCast: 11,
+  cncStory: 12,
+  marquee: 15,
+  dotNav: 20,
+  header: 50,
+  mobileMenu: 60,
+  cursor: 90,
+  preloader: 100,
+} as const;
+
+```
+
+### A3. Error Boundary Ekleme
+
+**Sorun:** R3F canvas veya ağır animasyon component'ı crash'lerse tüm sayfa beyaz ekran olur. Bu bir B2B sitesi — müşteri bunu görürse güven kaybı olur.
+
+**Çözüm:** Ağır component'ları Error Boundary ile sar:
+
+```tsx
+// src/components/ErrorBoundary.tsx
+import { Component, ReactNode } from 'react';
+
+interface Props { children: ReactNode; fallback?: ReactNode; }
+interface State { hasError: boolean; }
+
+export class ErrorBoundary extends Component<Props, State> {
+  state: State = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: Error) {
+    // Production'da error tracking'e gönder (Sentry vb.)
+    console.error('ErrorBoundary caught:', error);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? <div className="w-full h-full bg-forge-obsidian" />;
+    }
+    return this.props.children;
+  }
+}
+
+```
+
+Sarılacak component'lar:
+
+- `HeroCanvas` (R3F)
+- `LavaTypographyScene` (yeni)
+- `MoldCastScene` (yeni)
+- `CNCScrollStory`
+- `MaterialMorphScroll`
+
+### A4. WebGL / GPU Yeterlilik Kontrolü ve Fallback
+
+**Sorun:** Düşük donanımlı mobil cihazlar veya WebGL desteklemeyen tarayıcılar sayfayı render edemeyebilir.
+
+**Çözüm:** Utility hook oluştur:
+
+```tsx
+// src/hooks/useGPUCapability.ts
+export function useGPUCapability() {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+  if (!gl) return 'none';
+  
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  if (debugInfo) {
+    const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    // Bilinen düşük performanslı GPU'lar
+    if (/swiftshader|llvmpipe|mesa/i.test(renderer)) return 'low';
+  }
+  return 'high';
+}
+
+```
+
+- `'none'` → R3F canvas'ı hiç yükleme, statik görsel göster.
+- `'low'` → Lav sahnelerini devre dışı bırak, basitleştirilmiş CSS animasyonları kullan.
+- `'high'` → Tüm efektler aktif.
+
+### A5. `prefers-reduced-motion` Desteği
+
+**Sorun:** Accessibility açısından kritik. Animasyon hassasiyeti olan kullanıcılar ve bazı pazarlarda yasal gereklilik.
+
+**Çözüm:** Global hook:
+
+```tsx
+// src/hooks/useReducedMotion.ts
+export function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return reduced;
+}
+
+```
+
+Bu hook tüm animasyonlu component'larda kontrol edilmeli:
+
+- `reduced === true` → GSAP animasyonları skip, Framer Motion duration=0, lav sahneleri statik gradient, video autoplay kapalı.
+
+### A6. Memory Leak Önleme Checklist'i
+
+**Sorun:** JS Heap 41.6MB — yüksek. GSAP ScrollTrigger instance'ları, Lenis listener'ları, IntersectionObserver'lar düzgün temizlenmezse leak oluşur.
+
+**Kural:** Her component'ta `useEffect` return fonksiyonunda şunlar yapılmalı:
+
+```tsx
+useEffect(() => {
+  const ctx = gsap.context(() => {
+    // ScrollTrigger animasyonları burada
+  }, containerRef);
+  
+  return () => {
+    ctx.revert(); // Tüm GSAP animasyonlarını ve ScrollTrigger'ları temizler
+  };
+}, []);
+
+```
+
+Kontrol edilecek component'lar:
+
+- `CNCScrollStory` — ScrollTrigger cleanup
+- `MaterialMorphScroll` — frame preload cleanup
+- `HeroCanvas` — R3F dispose
+- `MotionGradientBg` — rAF cancelAnimationFrame
+- `SectionDotNav` — scroll listener / IO cleanup
+- `LavaTypographyScene` (yeni) — ScrollTrigger cleanup
+- `MoldCastScene` (yeni) — ScrollTrigger cleanup
 
 ---
 
-### E. VİZÜEL DERİNLİK & DOKU
+## BÖLÜM B: Bug Fix — forwardRef ve Console Hataları
 
-**11. Grain/Noise Overlay (Global)**
-Tüm sayfaya çok hafif bir film grain efekti:
+### B1. forwardRef Eksik Hataları
+
+**Not:** React 19'da `forwardRef` deprecated olacak. Ancak projede React 18 kullanıldığından şu an için `forwardRef` ile sarmak doğru çözüm. İleride React 19'a geçildiğinde `ref` prop olarak direkt alınacak.
+
+Her component için önce ref'in gerçekten gerekli olup olmadığını kontrol et. Eğer parent'tan ref gelmiyorsa, uyarının kaynağı `motion()` wrapper olabilir — bu durumda wrapper div'e ref ver.
+
+
+| Bileşen                 | Sorun                                          | Çözüm                                                                                |
+| ----------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `MotionGradientBg.tsx`  | Function component'a ref verilmeye çalışılıyor | `forwardRef` ile sar. Eğer ref hiç kullanılmıyorsa, parent'taki ref prop'unu kaldır. |
+| `QuickQuoteSection.tsx` | Aynı sorun                                     | `forwardRef` ile sar.                                                                |
+| `ElegantShape.tsx`      | 5x tekrar eden uyarı                           | `forwardRef` ile sar. `motion.div` kullanılıyorsa wrapper'a ref ver.                 |
+| `FlowScene` (Index.tsx) | Inline component'a ref                         | Eğer sadece `motion()` wrapper'dan geliyorsa, `forwardRef` ile sar.                  |
+
+
+### B2. Console Temizliği (Genişletilmiş)
+
+Orijinal plan sadece `console.log`'u kontrol etmiş. Genişletilmiş kontrol:
+
+```bash
+# Tüm console çıktılarını tara
+grep -rn "console\.\(log\|warn\|error\|info\|debug\)" src/ --include="*.tsx" --include="*.ts"
+
+```
+
+Ayrıca kontrol edilecekler:
+
+- React strict mode uyarıları (çift render kaynaklı yan etkiler)
+- GSAP deprecated API uyarıları
+- Framer Motion version uyarıları
+- Three.js / R3F uyarıları (texture disposal, WebGL context lost)
+
+### B3. Runtime Warning Taraması
+
+Tarayıcı konsolunda şu kategorilerde uyarı aranacak:
+
+- `Warning: React does not recognize the X prop` — DOM'a geçen custom prop'lar
+- `Warning: Each child in a list should have a unique "key" prop`
+- `Warning: Can't perform a React state update on an unmounted component` — memory leak belirtisi
+- GSAP: `Invalid property` veya `target not found`
+- Three.js: `THREE.WebGLRenderer: Context Lost`
+
+---
+
+## BÖLÜM C: Performans Optimizasyonu
+
+### Mevcut Durum
+
+
+| Metrik          | Mevcut              | Hedef   |
+| --------------- | ------------------- | ------- |
+| FCP             | 3088ms              | <1500ms |
+| LCP             | Ölçülmemiş          | <2500ms |
+| CLS             | Ölçülmemiş          | <0.1    |
+| INP             | Ölçülmemiş          | <200ms  |
+| Full Load       | 5398ms              | <3000ms |
+| JS Bundle       | 2943KB (151 script) | <1500KB |
+| Video           | 6481KB (10 video)   | <3000KB |
+| JS Heap         | 41.6MB              | <25MB   |
+| DOM Elements    | 1089                | <800    |
+| Event Listeners | 595                 | <300    |
+
+
+**Kritik:** Orijinal plan sadece FCP ölçmüş. LCP, CLS, INP (Core Web Vitals) da ölçülmeli. Lighthouse CI veya [web.dev](http://web.dev)'den tam rapor alınmalı.
+
+### Performans Aksiyonları
+
+#### P1 — HeroCanvas Lazy Load [YÜKSEK ETKİ]
+
+`HeroCanvas` (R3F) IntersectionObserver ile sadece viewport'tayken render edilecek.
+
+```tsx
+const [isVisible, setIsVisible] = useState(false);
+const ref = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  const io = new IntersectionObserver(
+    ([entry]) => setIsVisible(entry.isIntersecting),
+    { rootMargin: '200px' } // 200px önden yüklemeye başla
+  );
+  if (ref.current) io.observe(ref.current);
+  return () => io.disconnect();
+}, []);
+
+return (
+  <div ref={ref}>
+    {isVisible ? <HeroCanvas /> : <div className="w-full h-full bg-forge-obsidian" />}
+  </div>
+);
+
+```
+
+#### P2 — @react-three/drei Kaldırma [YÜKSEK ETKİ]
+
+**Sorun:** `@react-three/drei` tek başına 777KB. Projede sadece `useTexture` kullanılıyor.
+
+**Çözüm (orijinaldan farklı):** drei'yi tree-shake etmek yerine tamamen kaldır ve `useTexture`'ı kendi utility fonksiyonun olarak yaz:
+
+```tsx
+// src/utils/useTexture.ts
+import { useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three';
+
+export function useTexture(url: string) {
+  return useLoader(TextureLoader, url);
+}
+
+```
+
+Ardından:
+
+```bash
+npm uninstall @react-three/drei
+
+```
+
+Bu 777KB → ~0KB tasarruf sağlar. Tree-shake'e güvenmekten çok daha kesin bir çözüm.
+
+#### P3 — Vite Bundle Splitting [YÜKSEK ETKİ]
+
+**Sorun:** Orijinal planda hiç yok. 151 script, 2943KB — tek monolitik bundle demek.
+
+**Çözüm:** `vite.config.ts`'e manual chunks ekle:
+
+```ts
+// vite.config.ts
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'three-vendor': ['three', '@react-three/fiber'],
+          'gsap-vendor': ['gsap'],
+          'framer': ['framer-motion'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-tooltip'], // shadcn bağımlılıkları
+        }
+      }
+    }
+  }
+});
+
+```
+
+Bu, vendor code'unu ayrı chunk'lara böler → ilk yüklemede sadece gerekli chunk'lar yüklenir.
+
+#### P4 — Video Optimizasyonu [YÜKSEK ETKİ]
+
+**Sorun:** 10 video, 6481KB. Orijinal plan sadece "2 videoyu 1'e düşür" demiş — yetersiz.
+
+**Kapsamlı çözüm:**
+
+1. Tüm videoları WebM (VP9) formatına dönüştür — MP4'e göre %30-50 daha küçük:
+
+```bash
+ffmpeg -i input.mp4 -c:v libvpx-vp9 -crf 35 -b:v 0 -an output.webm
+
+```
+
+2. Her `<video>` tag'ine şu attribute'ları ekle:
+
+```html
+<video 
+  preload="none"           <!-- Sayfa yüklenirken video indirme -->
+  loading="lazy"
+  muted 
+  playsInline
+  poster="/img/video-poster.webp"  <!-- Video yüklenene kadar statik görsel -->
+>
+  <source src="video.webm" type="video/webm" />
+  <source src="video.mp4" type="video/mp4" />  <!-- Fallback -->
+</video>
+
+```
+
+3. IntersectionObserver ile sadece viewport'taki videoları oynat:
+
+```tsx
+useEffect(() => {
+  const io = new IntersectionObserver(([entry]) => {
+    const video = entry.target as HTMLVideoElement;
+    entry.isIntersecting ? video.play() : video.pause();
+  }, { threshold: 0.25 });
+  
+  videoRefs.forEach(ref => ref.current && io.observe(ref.current));
+  return () => io.disconnect();
+}, []);
+
+```
+
+4. Hero'daki 2 videoyu tek videoya birleştir (masked + background aynı kaynak).
+
+#### P5 — Critical Rendering Path [YÜKSEK ETKİ]
+
+**Sorun:** FCP 3088ms. Preloader'ın kendisi FCP'yi geciktiriyor çünkü tüm JS parse edilene kadar hiçbir şey görünmüyor.
+
+**Çözümler:**
+
+1. **Font preload:** Google Fonts link'i render-blocking. Şu şekilde değiştir:
+
+```html
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="..."></noscript>
+
+```
+
+2. **font-display: swap** — font yüklenene kadar fallback font göster, layout shift'i önle.
+3. **Above-the-fold CSS inline:** Preloader'ın CSS'ini `<head>` içinde inline `<style>` olarak ekle — harici CSS dosyası beklemesin.
+4. **Preloader DOM'unu minimal tut:** Preloader'da sadece sayaç ve overlay olsun, ağır component'lar preloader bittikten sonra yüklensin.
+
+#### P6 — MotionGradientBg Optimizasyonu [ORTA ETKİ]
+
+WebGL canvas'ı `requestAnimationFrame` ile sadece görünürken çalıştır:
+
+```tsx
+useEffect(() => {
+  const io = new IntersectionObserver(([entry]) => {
+    isVisibleRef.current = entry.isIntersecting;
+  });
+  io.observe(canvasRef.current);
+  
+  const animate = () => {
+    if (isVisibleRef.current) {
+      // WebGL render
+    }
+    rafId = requestAnimationFrame(animate);
+  };
+  rafId = requestAnimationFrame(animate);
+  
+  return () => {
+    cancelAnimationFrame(rafId);
+    io.disconnect();
+  };
+}, []);
+
+```
+
+#### P7 — CNCScrollStory + MaterialMorphScroll Frame Yükleme [ORTA ETKİ]
+
+120+80 = 200 frame preload çok ağır. Strateji:
+
+1. İlk 5 frame'i eager yükle (above-the-fold).
+2. Geri kalanını viewport'a yaklaştıkça `IntersectionObserver` + `rootMargin: '500px'` ile yükle.
+3. Geçilen frame'leri `URL.revokeObjectURL()` ile bellekten serbest bırak.
+
+#### P8 — SectionDotNav Throttle [DÜŞÜK ETKİ]
+
+Her scroll event'te 17 section'ın `getBoundingClientRect()`'ini hesaplıyor. IntersectionObserver'a geçir:
+
+```tsx
+useEffect(() => {
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+  
+  sections.forEach(section => io.observe(section));
+  return () => io.disconnect();
+}, []);
+
+```
+
+#### P9 — Grain Overlay GPU Layer [DÜŞÜK ETKİ]
 
 ```css
 body::after {
-  content: '';
-  position: fixed; inset: 0; z-index: 9999;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,...noise...");
-  opacity: 0.03;
-  mix-blend-mode: overlay;
-}
-```
-
-Bu tek başına "pahalı" hissiyat yaratır — Awwwards sitelerinin %80'i kullanır.
-
-**12. Glow / Ambient Light**
-Koyu bölümlerde mouse pozisyonunda çok hafif bir radial glow:
-
-- `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), hsl(var(--primary) / 0.04), transparent)`
-- Performans: CSS custom property + `mousemove` throttle
-
----
-
-### F. FOOTER DENEYİMİ
-
-**13. Footer — Reveal from Behind**
-Footer'ı son section'ın "altından" çıkacak şekilde ayarla:
-
-- Footer: `position: fixed; bottom: 0; width: 100%`
-- Son section'ın altında footer yüksekliği kadar `margin-bottom`
-- Sayfa sonunda footer doğal olarak "açığa çıkar" — paralaks hissi
-
-**14. Footer — Büyük İmza Başlık**
-Footer'ın en üstüne tam genişlik, çok büyük (`text-[12vw]`) bir "MAS TECHNIC" yazısı:
-
-- `opacity: 0.05` — hafif, arka plan doku gibi
-- Veya `clipPath` ile dolgu animasyonu (scroll'a bağlı)
-
----
-
-### G. SES & HAPTİK GERİBİLDİRİM
-
-**15. Ses Tasarımı Genişletme**
-Mevcut `useSoundEngine` var. Eksik olan:
-
-- Bölüm geçişlerinde hafif "whoosh" sesi
-- Kart hover'da metalik "tick" sesi (mevcut cursor'da var ama kartlarda yok)
-- Scroll milestone'larında (%25, %50, %75) çok hafif "ping"
-- Tüm sesler varsayılan KAPALI, toggle ile açılsın
-
----
-
-### H. PERFORMANS & PÜRÜZSÜZLÜK
-
-**16. Image Reveal — OverlayReveal Yaygınlaştır**
-Mevcut `OverlayReveal` bileşeni sadece bazı yerlerde kullanılıyor. Tüm görsellere:
-
-- Görsel yüklenene kadar koyu/primary renk bir "perde"
-- Görsel yüklendiğinde perde kayarak açılsın (`translateX(-100%)`)
-- Skeleton shimmer yerine bu daha premium hissiyat verir
-
-**17. Lazy Component Loading — Skeleton Geçişleri**
-Mevcut `SectionLoader` sadece spinner. Her bölüm için:
-
-- Bölüme özel skeleton layout (kart grid skeleton, metin satır skeleton)
-- Skeleton → gerçek içerik geçişi `opacity + blur` ile
-
----
-
-### I. MOBİL ÖZELLEŞTİRME
-
-**18. Mobil Scroll Snapping**
-Mobilde her bölüm `scroll-snap-align: start` ile ekrana otursun:
-
-- Parmak kaydırmada bölüm bölüm ilerlesin
-- Desktop'ta devre dışı (Lenis smooth scroll devam etsin)
-
-**19. Mobil Menü — Fullscreen Takeover**
-Mevcut hamburger menüyü tam ekran bir deneyime dönüştür:
-
-- Menü açıldığında tüm ekranı kaplayan koyu overlay
-- Menü öğeleri büyük tipografi (`text-4xl`) ile dikey sıralı
-- Her öğe stagger reveal (`translateY + opacity`)
-- Kapanışta ters animasyon
-
----
-
-### J. DETAY FARKLILIKLARI (Polish)
-
-**20. Zaman / Tarih Göstergesi**
-Footer veya Header'da sürekli güncellenen bir saat:
-
-- `HH:MM:SS` formatında, monospace font
-- Timezone: İstanbul (UTC+3)
-- Awwwards sitelerinde sıkça görülen "canlılık" detayı
-
-**21. Koordinat / Konum Bilgisi**
-Footer'da:
-
-```
-41°01'N 28°58'E — İstanbul, TR
-```
-
-Endüstriyel-teknik estetik. Monospace font.
-
-**22. Easter Egg — Konami Code**
-Belirli bir tuş kombinasyonunda (↑↑↓↓←→←→BA) gizli bir animasyon veya renk paleti değişimi. Awwwards jürisinin dikkatini çeker.
-
----
-
-### ÖNCELİK SIRASI (Etki/Efor Oranına Göre)
-
-
-| Öncelik | Öneri                         | Etki   | Efor  |
-| ------- | ----------------------------- | ------ | ----- |
-| 1       | Global Grain Overlay (#11)    | Yüksek | Düşük |
-| 2       | Marquee Ticker Band (#4)      | Yüksek | Düşük |
-| 3       | Footer Reveal (#13)           | Yüksek | Orta  |
-| 4       | Kart 3D Tilt + Spotlight (#8) | Yüksek | Orta  |
-| 5       | Ambient Mouse Glow (#12)      | Orta   | Düşük |
-| 6       | Preloader Sinematik (#1)      | Yüksek | Orta  |
-| 7       | Char-by-Char Reveal (#3)      | Orta   | Orta  |
-| 8       | Footer Büyük İmza (#14)       | Orta   | Düşük |
-| 9       | Koordinat/Saat Detay (#20-21) | Düşük  | Düşük |
-| 10      | Mobil Fullscreen Menü (#19)   | Orta   | Orta  |
-
-
----
-
-Önce mevcut siteyi bir göz atayım, sonra prompt'u yazayım.React app, DOM içeriği görünmüyor. Direkt prompt yazayım — belgeyi ve önceki reviewimi baz alarak.Şimdi kapsamlı prompt'u yazıyorum. Bu uzun olacak — her madde için net talimatlar, araç yönlendirmeleri ve Lovable kısıtları dahil.
-
----
-
-# MAS TECHNİC — AWWWARDS PROMPT PAKETİ
-
-Aşağıda **14 ayrı prompt** var. Sırayla çalıştır — her biri bir öncekinin üzerine inşa ediyor. Lovable dışına çıkman gereken yerler `[DIŞ ARAÇ]` ile işaretli.
-
----
-
-## ─── PROMPT 01 — GRAIN OVERLAY + AMBIENT GLOW ───
-
-*(Etki/efor en iyi oran. Buradan başla.)*
-
-```
-Aşağıdaki global görsel iyileştirmeleri yap. HİÇBİR bileşen mantığına dokunma, sadece global CSS ve tek bir React hook ekle.
-
-━━━ 1. GRAIN OVERLAY ━━━
-index.css veya globals.css içine ekle:
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/feTurbulence%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  /* mevcut grain kodu */
+  will-change: auto; /* GPU layer forcing önle */
+  contain: strict;   /* Paint containment */
 }
 
-━━━ 2. AMBIENT MOUSE GLOW ━━━
-useAmbientGlow.ts adında bir hook oluştur:
+```
 
-import { useEffect } from 'react';
+#### P10 — AnimatePresence Optimizasyonu [DÜŞÜK ETKİ]
 
-export function useAmbientGlow() {
+```tsx
+<AnimatePresence mode="wait" initial={false}>
+  {/* route children */}
+</AnimatePresence>
+
+```
+
+`initial={false}` ile ilk yüklemede gereksiz animation skip edilir.
+
+#### P11 — Image Optimizasyonu [ORTA ETKİ] (Orijinal Planda Yok)
+
+**Sorun:** Orijinal plan videoları ele almış ama static image'ları tamamen göz ardı etmiş.
+
+**Çözümler:**
+
+1. Tüm PNG/JPG'leri WebP/AVIF formatına dönüştür.
+2. `<img>` tag'lerine `loading="lazy"` ve `decoding="async"` ekle.
+3. Responsive images: `srcset` ve `sizes` attribute'ları kullan.
+4. Placeholder: LQIP (Low Quality Image Placeholder) veya dominant-color placeholder.
+
+---
+
+## BÖLÜM D: Eksik 6 Maddenin Uygulanması
+
+Orijinal plan hangi maddelerin eksik olduğunu tespit etmiş ama uygulama detaylarını vermemiş. Her madde için tam uygulama planı aşağıda.
+
+### D1. Staggered Grid Entrance (Madde 4)
+
+**Durum:** `useStaggeredReveal` hook'u ve `data-stagger` attribute'ları ServicesSection / IndustriesSection'a eklenmemiş.
+
+**Uygulama:**
+
+```tsx
+// src/hooks/useStaggeredReveal.ts
+export function useStaggeredReveal(containerRef: RefObject<HTMLElement>, stagger = 0.1) {
   useEffect(() => {
-    let ticking = false;
-    const handler = (e: MouseEvent) => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
-          document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('mousemove', handler, { passive: true });
-    return () => window.removeEventListener('mousemove', handler);
-  }, []);
-}
-
-Bu hook'u App.tsx veya Layout bileşeninde çağır.
-
-Sonra koyu arka planlı section'lara (dark background olan her section) şu overlay div'ini ekle — section'ın içine, diğer içeriklerin ARKASINDA (z-index: 0), pointer-events: none:
-
-<div
-  style={{
-    position: 'absolute',
-    inset: 0,
-    zIndex: 0,
-    pointerEvents: 'none',
-    background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(var(--primary) / 0.045), transparent 70%)',
-  }}
-  aria-hidden="true"
-/>
-
-Section'ın pozisyonu relative olduğundan emin ol. Bu div HER koyu section'da olacak.
-
-━━━ KISITLAR ━━━
-- border-radius: 0 kalacak
-- IBM Plex Mono korunacak
-- /admin/* ve /musteri-paneli/* dosyalarına dokunma
-- Yeni npm paketi EKLEME
-
-```
-
----
-
-## ─── PROMPT 02 — MARQUEE TICKER BAND ───
-
-```
-İki adet yatay kayan metin bandı (marquee) oluştur. Biri Hero section'ının hemen altına, biri Footer'ın hemen üstüne yerleştirilecek.
-
-━━━ MarqueeBand.tsx bileşeni ━━━
-
-import React from 'react';
-
-interface MarqueeBandProps {
-  reverse?: boolean;
-  className?: string;
-}
-
-const TERMS = [
-  'HASSAS ÜRETİM',
-  'CNC FREZELEME',
-  '5 EKSEN TORNA',
-  'Ti-6Al-4V',
-  'EDM KESİM',
-  'Inconel 718',
-  '±0.002mm TOLERANS',
-  'H13 TAKIM ÇELİĞİ',
-  'PPAP SERTİFİKASYON',
-  'AEROSPACE GRADE',
-];
-
-export function MarqueeBand({ reverse = false, className = '' }: MarqueeBandProps) {
-  const content = [...TERMS, ...TERMS]; // duplicate for seamless loop
-
-  return (
-    <div
-      className={`marquee-outer ${className}`}
-      style={{
-        overflow: 'hidden',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        padding: '14px 0',
-        background: 'rgba(0,0,0,0.2)',
-      }}
-    >
-      <div
-        className={reverse ? 'marquee-inner marquee-reverse' : 'marquee-inner'}
-      >
-        {content.map((term, i) => (
-          <span key={i} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 'clamp(10px, 1.5vw, 13px)', letterSpacing: '0.25em', color: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>
-            {term}
-            <span style={{ margin: '0 24px', color: 'rgba(255,255,255,0.12)' }}>•</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-globals.css veya index.css'e ekle:
-
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@keyframes marquee-scroll-reverse {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
-}
-.marquee-inner {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll 28s linear infinite;
-  will-change: transform;
-}
-.marquee-reverse {
-  animation: marquee-scroll-reverse 22s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee-inner, .marquee-reverse { animation: none; }
-}
-
-Hero section'ının kapanış tag'inden HEMEN ÖNCE yerleştir:
-<MarqueeBand />
-
-Footer bileşeninin açılış tag'inden HEMEN SONRA yerleştir:
-<MarqueeBand reverse />
-
-━━━ KISITLAR ━━━
-- border-radius: 0 — marquee container'da da sıfır kalacak
-- IBM Plex Mono korunacak
-- Yeni npm paketi EKLEME
-
-```
-
----
-
-## ─── PROMPT 03 — SCROLL VELOCITY İNDİKATÖRÜ ───
-
-```
-Mevcut ScrollProgress bar bileşenini bul. Şu iki davranışı ekle — başka hiçbir şeye dokunma:
-
-1. Scroll hızına göre bar yüksekliği değişsin:
-   - Yavaş/duruk scroll: 2px
-   - Orta hız: 3px
-   - Hızlı scroll: 5px
-   Geçiş: CSS transition height 0.15s ease-out
-
-2. Scroll yönüne göre renk:
-   - Aşağı: var(--primary) veya teal tonu (#0688AD)
-   - Yukarı: amber tonu (#D4A853)
-   Geçiş: CSS transition background-color 0.3s ease
-
-useScrollVelocity hook'u oluştur:
-
-import { useEffect, useRef, useState } from 'react';
-
-export function useScrollVelocity() {
-  const [velocity, setVelocity] = useState(0);
-  const [direction, setDirection] = useState<'down' | 'up'>('down');
-  const lastY = useRef(0);
-  const lastTime = useRef(Date.now());
-
-  useEffect(() => {
-    let ticking = false;
-    const handler = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const now = Date.now();
-          const dt = now - lastTime.current;
-          const dy = window.scrollY - lastY.current;
-          const v = Math.abs(dy) / Math.max(dt, 1) * 100;
-          setVelocity(Math.min(v, 10));
-          setDirection(dy >= 0 ? 'down' : 'up');
-          lastY.current = window.scrollY;
-          lastTime.current = now;
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
-
-  return { velocity, direction };
-}
-
-ScrollProgress bileşeninde bu hook'u kullan. velocity 0-3 arası → height 2px, 3-6 → 3px, 6+ → 5px. direction 'up' → amber renk.
-
-━━━ KISITLAR ━━━
-- Yeni npm paketi EKLEME
-- /admin/* ve /musteri-paneli/* dokunma
-
-```
-
----
-
-## ─── PROMPT 04 — STAGGERED GRID ENTRANCE ───
-
-```
-ServicesSection, IndustriesSection ve kart grid içeren TÜM bölümlerde şu animasyonu uygula.
-
-useStaggeredReveal.ts hook'u oluştur:
-
-import { useEffect, useRef } from 'react';
-
-export function useStaggeredReveal(selector = '[data-stagger]') {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const items = Array.from(container.querySelectorAll(selector)) as HTMLElement[];
+    if (!containerRef.current) return;
+    const items = containerRef.current.querySelectorAll('[data-stagger]');
     
-    items.forEach((el) => {
-      el.style.opacity = '0';
-      el.style.transform = 'scale(0.92) translateY(20px)';
-      el.style.transition = 'none';
-    });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const gridItems = Array.from(entry.target.querySelectorAll(selector)) as HTMLElement[];
-            gridItems.forEach((el, i) => {
-              const col = parseInt(el.dataset.col || '0');
-              const row = parseInt(el.dataset.row || '0');
-              const delay = (col + row) * 55;
-              setTimeout(() => {
-                el.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-                el.style.opacity = '1';
-                el.style.transform = 'scale(1) translateY(0)';
-              }, delay);
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(container);
-    return () => observer.disconnect();
+    const ctx = gsap.context(() => {
+      gsap.from(items, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        stagger,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 80%',
+          once: true,
+        }
+      });
+    }, containerRef);
+    
+    return () => ctx.revert();
   }, []);
-
-  return containerRef;
 }
 
-Her kart grid container'ına containerRef ekle. Her kart/grid-item'a:
-- data-stagger=""
-- data-col="{sütun index}"
-- data-row="{satır index}"
+```
 
-attribute'larını ekle. Grid 3 sütunluysa ilk satır col=0,1,2 row=0,0,0; ikinci satır col=0,1,2 row=1,1,1.
+Uygulanacak section'lar: `ServicesSection`, `IndustriesSection`, `MaterialsSection`.
 
-━━━ KISITLAR ━━━
-- GSAP veya harici animasyon kütüphanesi EKLEME, saf CSS transition kullan
-- Yeni npm paketi EKLEME
+Her section'daki kart/grid item'a `data-stagger` attribute'ı ekle:
+
+```tsx
+<div data-stagger className="...">
 
 ```
 
----
+### D2. Kart 3D Tilt + Spotlight — Yaygınlaştırma (Madde 5)
 
-## ─── PROMPT 05 — KART 3D TİLT + SPOTLİGHT ───
+**Durum:** Sadece ProjectShowcase'e uygulanmış.
 
-```
-ProjectShowcase kartlarına ve diğer büyük kartlara 3D tilt + spotlight efekti ekle.
+**Uygulanacak component'lar:** ServicesSection kartları, IndustriesSection kartları, MaterialsSection kartları.
 
-useTilt.ts hook'u oluştur:
+Mevcut `use3DTilt` hook'unu veya Tilt component'ını bu kartlara da uygula. Her karta:
 
-import { useRef, useCallback } from 'react';
-
-export function useTilt(maxAngle = 5) {
-  const ref = useRef<HTMLDivElement>(null);
-  const spotRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(1000px) rotateX(${-y * maxAngle}deg) rotateY(${x * maxAngle}deg)`;
-    if (spotRef.current) {
-      const px = ((e.clientX - rect.left) / rect.width) * 100;
-      const py = ((e.clientY - rect.top) / rect.height) * 100;
-      spotRef.current.style.background = `radial-gradient(280px circle at ${px}% ${py}%, rgba(255,255,255,0.07), transparent 70%)`;
-    }
-  }, [maxAngle]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!ref.current) return;
-    ref.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-    if (spotRef.current) spotRef.current.style.background = 'none';
-  }, []);
-
-  return { ref, spotRef, handleMouseMove, handleMouseLeave };
-}
-
-Her büyük karta uygulama:
-
-const { ref, spotRef, handleMouseMove, handleMouseLeave } = useTilt(5);
-
-<div
-  ref={ref}
-  onMouseMove={handleMouseMove}
-  onMouseLeave={handleMouseLeave}
-  style={{ transition: 'transform 0.15s ease-out', willChange: 'transform', position: 'relative' }}
->
-  {/* spotlight overlay */}
-  <div
-    ref={spotRef}
-    style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}
-    aria-hidden="true"
-  />
-  {/* mevcut kart içeriği */}
-</div>
-
-━━━ KISITLAR ━━━
-- border-radius: 0 — kart wrapper'da da sıfır
-- Yeni npm paketi EKLEME
-- maxAngle değeri 5'i GEÇME (fazlası kusma hissi verir)
+```tsx
+<TiltCard className="...">
+  {/* kart içeriği */}
+</TiltCard>
 
 ```
 
----
+**Performans notu:** Mobilde tilt efekti DeviceOrientation API'ye bağlı — pil tüketir. Mobilde devre dışı bırak:
 
-## ─── PROMPT 06 — UNDERLINE MORPH + OK KAYMA ───
+```tsx
+const isMobile = window.innerWidth < 768;
+// veya matchMedia('(hover: none)').matches
 
 ```
-Tüm nav linklerine ve metin linklerine scaleX underline animasyonu ekle. CTA butonlarına hover'da ok kayma efekti ekle.
 
-globals.css'e ekle:
+### D3. Underline Morph + Ok Kayma (Madde 6)
 
-/* Underline morph */
+**Durum:** CSS'ler ve class atamaları yapılmamış.
+
+**CSS (src/index.css'e eklenecek):**
+
+```css
+/* Nav link animated underline */
 .nav-link-animated {
   position: relative;
-  display: inline-block;
+  overflow: hidden;
 }
+
 .nav-link-animated::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
   width: 100%;
   height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.nav-link-animated:hover::after {
-  transform: scaleX(1);
+  background: hsl(var(--primary));
+  transform: translateX(-101%);
+  transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
 }
 
-/* Ok kayma */
+.nav-link-animated:hover::after {
+  transform: translateX(0);
+}
+
+/* CTA arrow slide */
 .cta-arrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-}
-.cta-arrow .arrow-icon {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  display: inline-block;
-}
-.cta-arrow:hover .arrow-icon {
-  transform: translateX(5px);
+  gap: 0.5rem;
 }
 
-Mevcut nav link bileşenlerine nav-link-animated class'ını ekle.
-CTA butonlarındaki ok ikonunu (→) arrow-icon class'ı taşıyan bir span'a al ve üst elementi cta-arrow class'ı ile işaretle.
+.cta-arrow svg {
+  transition: transform 0.3s cubic-bezier(0.77, 0, 0.18, 1);
+}
 
-━━━ KISITLAR ━━━
-- Yeni npm paketi EKLEME
-- Mevcut link stillerini BOZMADAN ekle — sadece class ekle
+.cta-arrow:hover svg {
+  transform: translateX(6px);
+}
 
 ```
 
----
+**Class atamaları:**
 
-## ─── PROMPT 07 — IMAGE OVERLAY REVEAL ───
+- `Header.tsx` — tüm nav link'lerine `nav-link-animated` class'ı ekle.
+- Tüm CTA butonlarına `cta-arrow` class'ı ve yanına bir `→` SVG/icon ekle.
 
-```
-Mevcut OverlayReveal bileşenini bul. Şu anda sadece bazı görsellerde kullanılıyor. Tüm <img> ve görsel içeren kartlara yaygınlaştır.
+### D4. Footer Reveal from Behind (Madde 8)
 
-OverlayReveal bileşeni şu şekilde çalışmalı (mevcut bileşeni bu yapıya getir veya yoksa oluştur):
+**Durum:** Footer hala normal flow'da.
 
-import { useEffect, useRef, useState } from 'react';
+**Sorun + Lenis uyumu:** Footer `position: fixed; bottom: 0` yapılacak ve üstündeki content footer yüksekliği kadar `margin-bottom` alacak. Lenis ile fixed element etkileşimi sorunlu olabilir.
 
-interface OverlayRevealProps {
-  children: React.ReactNode;
-  delay?: number;
-}
+**Uygulama:**
 
-export function OverlayReveal({ children, delay = 0 }: OverlayRevealProps) {
-  const [revealed, setRevealed] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setRevealed(true), delay);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [delay]);
-
-  return (
-    <div ref={ref} style={{ position: 'relative', overflow: 'hidden' }}>
-      {children}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'var(--background, #0a0a0a)',
-          transform: revealed ? 'translateX(-101%)' : 'translateX(0)',
-          transition: revealed ? 'transform 0.7s cubic-bezier(0.76, 0, 0.24, 1)' : 'none',
-          zIndex: 2,
-        }}
-      />
-    </div>
-  );
-}
-
-Tüm proje görselleri, servis kartı görselleri ve hero görselleri bu bileşen ile sar. delay prop'unu stagger için kullan (ilk görsel 0ms, ikinci 100ms, üçüncü 200ms vb.)
-
-━━━ KISITLAR ━━━
-- overflow: hidden olan wrapper'da border-radius kullanma
-- Yeni npm paketi EKLEME
-
-```
-
----
-
-## ─── PROMPT 08 — FOOTER REVEAL + BÜYÜK İMZA ───
-
-```
-Footer bileşenini "altından çıkan" paralaks footer'a dönüştür.
-
-1. Footer'ı şu şekilde yapılandır:
-
-Footer bileşeninin dış wrapper'ına:
-- position: fixed
-- bottom: 0
-- left: 0
-- width: 100%
-- z-index: 0 (sayfa içeriğinin ARKASINDA)
-
-Sayfa içeriğinin son section'ına (Footer'dan önceki son bileşen):
-- margin-bottom: [footer yüksekliği]px — bu değeri useLayoutEffect ile ölç:
-
+```tsx
+// Footer.tsx
 const footerRef = useRef<HTMLElement>(null);
+const [footerHeight, setFooterHeight] = useState(0);
+
 useEffect(() => {
   if (footerRef.current) {
-    const h = footerRef.current.offsetHeight;
-    document.documentElement.style.setProperty('--footer-height', h + 'px');
+    setFooterHeight(footerRef.current.offsetHeight);
+    // Resize'da güncelle
+    const ro = new ResizeObserver(([entry]) => {
+      setFooterHeight(entry.contentRect.height);
+    });
+    ro.observe(footerRef.current);
+    return () => ro.disconnect();
   }
 }, []);
 
-Son main içerik wrapper'ına padding-bottom: var(--footer-height) ekle.
+return (
+  <>
+    {/* Spacer — footer'ın kapladığı alanı scroll'da tut */}
+    <div style={{ height: footerHeight }} />
+    <footer 
+      ref={footerRef}
+      className="fixed bottom-0 left-0 w-full"
+      style={{ zIndex: Z.base }}
+    >
+      {/* footer içeriği */}
+    </footer>
+  </>
+);
 
-⚠️ MOBİL UYARI: Bu teknik iOS Safari'de sorun çıkarır. Şu güvenlik kodunu ekle:
-@supports (-webkit-touch-callout: none) {
-  footer { position: relative !important; }
+```
+
+**Index.tsx'te:** Son section'ın arkasından footer "ortaya çıkar" (reveal from behind) — son section'a `position: relative; z-index: 1` ver.
+
+**Test:** Lenis scroll'u ile footer'ın düzgün reveal olduğunu, üst kısımla örtüşmediğini kontrol et.
+
+### D5. Mobil Scroll Snapping (Madde 11)
+
+**Kritik mimari karar:** Lenis ve CSS `scroll-snap-type` birlikte çalışmaz. Lenis kendi scroll mekanizmasını kullanır ve native scroll-snap'i override eder.
+
+**İki seçenek:**
+
+**Seçenek A (Önerilen):** Mobilde Lenis'i devre dışı bırak, native scroll kullan:
+
+```tsx
+// SmoothScrollProvider.tsx
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+if (!isMobile) {
+  // Lenis sadece desktop'ta
+  const lenis = new Lenis({ ... });
+  // GSAP senkronizasyonu...
+} else {
+  // Mobilde native scroll + CSS scroll-snap
+  document.documentElement.style.scrollSnapType = 'y mandatory';
 }
 
-2. Footer'ın EN ÜSTÜNE büyük imza başlık ekle:
+```
 
-<div style={{
-  fontSize: 'clamp(60px, 12vw, 160px)',
-  fontFamily: 'IBM Plex Mono, monospace',
-  fontWeight: 700,
-  letterSpacing: '-0.02em',
-  color: 'rgba(255,255,255,0.04)',
-  lineHeight: 1,
-  userSelect: 'none',
-  pointerEvents: 'none',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-}}>
-  MAS TECHNIC
-</div>
+**Seçenek B:** Lenis'in kendi snap mekanizmasını kullan (daha karmaşık, daha fazla kontrol):
 
-Bu div footer'ın diğer içeriklerinin ARKASINDA kalmalı (position: relative, z-index: -1 veya container flex column ile en üste koy).
-
-━━━ KISITLAR ━━━
-- border-radius: 0
-- /admin/* /musteri-paneli/* dokunma
-- Yeni npm paketi EKLEME
+```tsx
+// Lenis v1.1+ snap desteği
+const lenis = new Lenis({
+  // ...
+});
+// Lenis şu an native snap desteği yok — custom snap logic yazılmalı
+// Bu yüzden Seçenek A önerilir.
 
 ```
 
----
+**CSS (mobil için):**
 
-## ─── PROMPT 09 — SAAT + KOORDİNAT DETAYI ───
+```css
+@media (max-width: 768px) {
+  .snap-section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    min-height: 100dvh; /* iOS safe area */
+  }
+}
 
 ```
-Footer bileşenine iki küçük detay ekle:
 
-1. Canlı saat:
+### D6. Page Transition Upgrade (Madde 13)
 
-function LiveClock() {
-  const [time, setTime] = useState('');
-  
-  useEffect(() => {
-    const update = () => {
-      const now = new Date();
-      const istanbul = new Intl.DateTimeFormat('tr-TR', {
-        timeZone: 'Europe/Istanbul',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-      }).format(now);
-      setTime(istanbul);
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
+**Durum:** Polygon clipPath ve route-aware text flash eklenmemiş.
 
+**Mimari karar:** Framer Motion `AnimatePresence` mi, yoksa custom GSAP transition manager mı?
+
+**Önerilen:** Framer Motion `AnimatePresence` + GSAP timeline hybrid:
+
+```tsx
+// src/components/PageTransition.tsx
+import { motion } from 'framer-motion';
+
+const variants = {
+  initial: {
+    clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)', // üstten kapanık
+    opacity: 1,
+  },
+  animate: {
+    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', // tam açık
+    transition: { duration: 0.6, ease: [0.77, 0, 0.18, 1] },
+  },
+  exit: {
+    clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', // alttan kapanır
+    transition: { duration: 0.5, ease: [0.77, 0, 0.18, 1] },
+  },
+};
+
+export function PageTransition({ children }: { children: ReactNode }) {
   return (
-    <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '11px', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)' }}>
-      IST {time}
-    </span>
+    <motion.div variants={variants} initial="initial" animate="animate" exit="exit">
+      {children}
+    </motion.div>
   );
 }
 
-2. Koordinat satırı:
+```
 
-<span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '11px', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.25)' }}>
-  41°01'N 28°58'E — İZMİR, TR
-</span>
+**Route-aware text flash:** Geçiş sırasında hedef sayfa adını gösteren overlay:
 
-⚠️ Not: Mas Technic İzmir'de. Koordinatı düzelt: 38°25'N 27°08'E
+```tsx
+// Geçiş overlay'inde
+<motion.div className="fixed inset-0 z-[95] bg-forge-obsidian flex items-center justify-center">
+  <span className="text-[10vw] font-mono font-bold text-forge-steel/20">
+    {targetPageName}
+  </span>
+</motion.div>
 
-Her ikisini footer'ın alt satırına, copyright bilgisinin yanına yerleştir.
+```
 
-━━━ KISITLAR ━━━
-- Yeni npm paketi EKLEME (Intl API native)
+### D7. Char-by-Char Reveal — SectionHeader'a Uygulama (Madde 14)
+
+**Durum:** Sadece HeadlineStagger'da var, SectionHeader'a uygulanmamış.
+
+```tsx
+// SectionHeader.tsx içinde
+// Her karakter bir <span> içinde, stagger ile animasyon
+const chars = title.split('');
+
+return (
+  <h2>
+    {chars.map((char, i) => (
+      <motion.span
+        key={i}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.03, duration: 0.4 }}
+        viewport={{ once: true }}
+      >
+        {char === ' ' ? '\u00A0' : char}
+      </motion.span>
+    ))}
+  </h2>
+);
+
+```
+
+**Performans notu:** 50+ karakterlik başlıklarda her karakter ayrı DOM elementi → çok fazla DOM node. 20 karakterin üzerindeki başlıklarda kelime bazlı stagger'a geç:
+
+```tsx
+const words = title.split(' ');
+// Her kelime bir span, karakter değil
 
 ```
 
 ---
 
-## ─── PROMPT 10 — MOBİL FULLSCREEN MENÜ ───
+## BÖLÜM E: Yeni Lav Sahneleri
+
+**Ön koşul:** Bölüm A (Lenis+GSAP senkronizasyonu) tamamlanmış olmalı. Aksi halde ScrollTrigger tetiklenmez.
+
+### Index.tsx Sahne Sırası
 
 ```
-Mevcut hamburger menü bileşenini bul. Tam ekran takeover menüye dönüştür.
-
-Menü açıkken:
-- Tüm ekranı kaplayan koyu overlay (background: rgba(0,0,0,0.97) veya var(--background))
-- z-index: 9990
-- position: fixed, inset: 0
-- Framer Motion kullanılıyorsa: initial={{ clipPath: 'inset(0 0 100% 0)' }} animate={{ clipPath: 'inset(0 0 0% 0)' }} — yoksa CSS transition ile
-
-Menü öğeleri:
-- fontSize: clamp(32px, 8vw, 64px)
-- fontFamily: IBM Plex Mono
-- fontWeight: 700
-- letterSpacing: -0.02em
-- Her öğe ayrı bir satırda, dikey sıralı
-- Stagger: her öğe 60ms sonra gelsin (CSS transition-delay veya Framer Motion stagger)
-
-Animasyon sırası:
-1. Overlay açılır (200ms)
-2. Menü öğeleri translateY(40px) opacity:0 → translateY(0) opacity:1 gelir (stagger)
-3. Kapanışta ters sıra
-
-Mobil menünün YANINA küçük detaylar ekle:
-- Sol alt: LiveClock bileşeni (Prompt 09'dan)
-- Sağ alt: "MAS TECHNİC © 2024" — IBM Plex Mono, 10px
-
-━━━ KISITLAR ━━━
-- Sadece mobil (max-width: 768px) bu menü görünür
-- Desktop nav değişmeyecek
-- Yeni npm paketi EKLEME
+HeroSection (z=content)
+  ↓
+LavaTypographyScene (z=lavaTypography)    ← YENİ
+  ↓
+MoldCastScene (z=moldCast)                ← YENİ
+  ↓
+CNCScrollStory (z=cncStory)
+  ↓
+...diğer section'lar
 
 ```
 
----
+### E1. Sahne 1 — Lav Akışı Tipografi (`LavaTypographyScene.tsx`)
 
-## ─── PROMPT 11 — MOBİL SCROLL SNAPPING ───
+**Konsept:** Full-screen sticky sahne. Ortada dev tipografi ("ERGİTME" veya "DÖKÜM"). Tipografinin içinden scroll-driven lav akışı.
+
+**Teknik detaylar:**
 
 ```
-Mobil cihazlarda (max-width: 768px) scroll snap ekle. Desktop'ta Lenis smooth scroll aynen devam edecek.
+Scroller yüksekliği: 300vh
+Sticky container: 100vh, position: sticky, top: 0
 
-globals.css'e ekle:
+Scroll ilerleme haritası:
+  %0–%40:   Tipografi opacity 0→1, scale 0.8→1
+  %40–%80:  Lav dolgu yukarıdan aşağı (mask-image gradient animasyonu)
+  %80–%100: Tüm sahne lav rengine bulanır (background-color transition)
 
-@media (max-width: 768px) {
-  html {
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-  }
+```
+
+**Tipografi boyutu (responsive):**
+
+```css
+font-size: clamp(3rem, 15vw, 20rem);
+/* 375px → 56px, 768px → 115px, 1920px → 288px */
+
+```
+
+`15vw` yerine `clamp()` kullanılmalı — mobilde minimum 3rem garanti.
+
+**Lav efekti teknik seçim:**
+
+⚠️ **clip-path animasyonu KULLANMA** — her frame'de layout/paint tetikler, mobilde jank.
+
+✅ **mask-image + gradient kullan** — GPU-accelerated, performanslı:
+
+```tsx
+const LavaTypographyScene = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   
-  main > section,
-  main > [data-section] {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-}
-
-Lenis instance'ının mobilde devre dışı kalması için:
-
-// Lenis'i başlatan dosyayı bul
-const isMobile = /Mobi|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
-if (!isMobile) {
-  // mevcut Lenis init kodu buraya
-}
-
-━━━ KISITLAR ━━━
-- Lenis paketine dokunma, sadece conditional init
-- Desktop deneyimi HİÇ değişmeyecek
-
-```
-
----
-
-## ─── PROMPT 12 — PRELOADER SİNEMATİK ───
-
-```
-Mevcut PageLoader bileşenini sinematik bir preloader'a dönüştür.
-
-Yeni tasarım:
-- Tam ekran siyah arka plan
-- Ortada büyük sayaç: "000" → "100" (IBM Plex Mono, clamp(80px, 15vw, 160px), font-weight: 700)
-- Sayacın altında ince bir progress bar (genişlik: 200px, yükseklik: 1px, renk: rgba(255,255,255,0.4))
-- Sayacın üstünde çok küçük: "MAS TECHNIC" (IBM Plex Mono, 10px, letter-spacing: 0.4em)
-
-Animasyon mantığı:
-const [count, setCount] = useState(0);
-const [done, setDone] = useState(false);
-
-useEffect(() => {
-  const start = Date.now();
-  const minDuration = 2200; // minimum 2.2 saniye dramatik bekleme
-  
-  const tick = () => {
-    const elapsed = Date.now() - start;
-    const progress = Math.min(elapsed / minDuration, 1);
-    // Ease out: hızlı başla yavaş bitir
-    const eased = 1 - Math.pow(1 - progress, 3);
-    setCount(Math.floor(eased * 100));
-    
-    if (progress < 1) {
-      requestAnimationFrame(tick);
-    } else {
-      setCount(100);
-      setTimeout(() => setDone(true), 400);
-    }
-  };
-  
-  requestAnimationFrame(tick);
-}, []);
-
-Kapanış animasyonu (done === true olduğunda):
-- clipPath: 'circle(0% at 50% 50%)' → 'circle(150% at 50% 50%)'
-- Transition: 0.9s cubic-bezier(0.76, 0, 0.24, 1)
-- Sonra bileşen unmount
-
-Sayaç her zaman 3 hane gösterin: count.toString().padStart(3, '0')
-
-━━━ KISITLAR ━━━
-- border-radius: 0 — preloader wrapper'da da
-- IBM Plex Mono korunacak
-- Yeni npm paketi EKLEME
-- Framer Motion kullanılıyorsa: animate={{ clipPath }} kullanabilirsin
-
-```
-
----
-
-## ─── PROMPT 13 — PAGE TRANSİTİON UPGRADE ───
-
-```
-Mevcut PageTransition bileşenini bul. Şu upgrade'i uygula:
-
-Mevcut clipPath: inset() yerine endüstriyel açısal kesim:
-
-Kapanış (exit): 
-clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' → 'polygon(0 0, 100% 0, 100% 0, 0 0)'
-(Üstten aşağı kapanır — "perde çekme" hissi)
-
-Açılış (enter):
-clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)' → 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-(Alttan yukarı açılır)
-
-Transition overlay üzerine hedef sayfanın başlığını flash et:
-- Geçiş overlay'i aktifken ortada: hedef route'un başlığı
-- IBM Plex Mono, clamp(32px, 6vw, 80px), opacity: 0.15
-- Route başlıkları: '/' → 'ANASAYFA', '/hakkimizda' → 'HAKKIMIZDA', '/hizmetler' → 'HİZMETLER', '/iletisim' → 'İLETİŞİM', '/portfoy' → 'PORTFÖY'
-
-Overlay rengi: rgba(6, 136, 173, 0.95) — primary renk
-Transition süresi: 0.5s giriş + 0.4s çıkış
-
-━━━ KISITLAR ━━━
-- Yeni npm paketi EKLEME
-- Router yapısına dokunma, sadece transition bileşeni
-
-```
-
----
-
-## ─── PROMPT 14 — CHAR-BY-CHAR REVEAL + KONAMI ───
-
-```
-İki bağımsız iyileştirme:
-
-━━━ A. CHAR-BY-CHAR REVEAL ━━━
-useSplitTextReveal hook'unu kelime bazlıdan harf bazlıya yükselt.
-
-SectionHeader bileşenini bul. Başlık metnini harflere böl:
-
-function CharReveal({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLSpanElement>(null);
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setVisible(true), delay);
-          observer.disconnect();
+    if (reduced || !containerRef.current) return;
+    
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1,
+          pin: false, // sticky CSS ile pin'liyoruz, GSAP pin değil
         }
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [delay]);
-
+      });
+      
+      // %0-40: Tipografi belir
+      tl.fromTo(textRef.current, 
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 40 }
+      );
+      
+      // %40-80: Lav dolgu — CSS custom property ile kontrol
+      tl.fromTo(textRef.current, 
+        { '--lava-fill': '0%' },
+        { '--lava-fill': '100%', duration: 40 }
+      );
+      
+      // %80-100: Sahne lav rengine bürünür
+      tl.to(containerRef.current,
+        { backgroundColor: '#e25822', duration: 20 }
+      );
+    }, containerRef);
+    
+    return () => ctx.revert();
+  }, [reduced]);
+  
   return (
-    <span ref={ref} style={{ display: 'inline-block', overflow: 'hidden' }}>
-      {text.split('').map((char, i) => (
-        <span
-          key={i}
+    <div ref={containerRef} className="relative h-[300vh]" style={{ zIndex: Z.lavaTypography }}>
+      <div className="sticky top-0 h-screen flex items-center justify-center bg-forge-obsidian overflow-hidden">
+        <div 
+          ref={textRef}
+          className="font-mono font-bold select-none"
           style={{
-            display: 'inline-block',
-            transform: visible ? 'translateY(0)' : 'translateY(110%)',
-            transition: `transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${visible ? i * 20 : 0}ms`,
-            whiteSpace: char === ' ' ? 'pre' : 'normal',
+            fontSize: 'clamp(3rem, 15vw, 20rem)',
+            background: `linear-gradient(to bottom, #ff6a00, #e25822, #b8451a)`,
+            backgroundSize: '100% 200%',
+            backgroundPosition: `0 calc(100% - var(--lava-fill, 0%))`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
           }}
         >
-          {char}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-SectionHeader bileşenindeki h1, h2 başlıklarını bu bileşen ile sar.
-
-━━━ B. KONAMI CODE ━━━
-App.tsx veya Layout bileşenine ekle:
-
-useEffect(() => {
-  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-  let idx = 0;
-  const handler = (e: KeyboardEvent) => {
-    if (e.key === KONAMI[idx]) {
-      idx++;
-      if (idx === KONAMI.length) {
-        // Easter egg: primary renk değişimi + flash
-        document.documentElement.style.setProperty('--primary', '#D4A853');
-        document.body.style.transition = 'filter 0.3s';
-        document.body.style.filter = 'hue-rotate(45deg)';
-        setTimeout(() => {
-          document.body.style.filter = 'hue-rotate(0deg)';
-          setTimeout(() => document.body.style.filter = '', 500);
-        }, 2000);
-        console.log('🏆 Mas Technic Easter Egg aktif');
-        idx = 0;
-      }
-    } else {
-      idx = 0;
-    }
-  };
-  window.addEventListener('keydown', handler);
-  return () => window.removeEventListener('keydown', handler);
-}, []);
-
-━━━ KISITLAR ━━━
-- Yeni npm paketi EKLEME
-- /admin/* /musteri-paneli/* dokunma
-
-```
-
----
-
-## ─── DIŞ ARAÇ YÖNLENDİRMELERİ ───
-
-Aşağıdaki iki öğe Lovable'ın sınırlarını zorlar. Bu araçlarda yap, aldığın kodu Lovable'a yapıştır:
-
----
-
-### 🔴 THREE.JS SAHNE — Spline veya elle yaz
-
-**Seçenek A — Spline (önerilen, kolay):**
-
-1. [spline.design](http://spline.design) → Yeni sahne
-2. Sahne: dönen metalik CNC torna parçası veya titanyum bloğu (basit geometri — silindir + torus)
-3. Material: "Physical" → Metalness: 1.0, Roughness: 0.15, renk #1a1a2e
-4. Sahneyi export et → "Export for Web" → `@splinetool/react-spline` paketi
-5. Lovable'a yapıştır:
-
-```
-Bağımsız bir ThreeScene.tsx bileşeni oluştur ve şu kodu içine yapıştır:
-
-import Spline from '@splinetool/react-spline';
-
-export function ThreeScene() {
-  return (
-    <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, opacity: 0.6 }}>
-      <Spline scene="[SPLINE_EXPORT_URL_BURAYA]" />
+          ERGİTME
+        </div>
+      </div>
     </div>
   );
-}
-
-Bu bileşeni HeroSection'a ekle — hero içeriğinin ARKASINA (z-index: 0), içerik önde kalacak (z-index: 1).
-Yeni paket: @splinetool/react-spline — bu paketi ekleyebilirsin.
+};
 
 ```
 
-**Seçenek B — Elle Three.js (Spline istemiyorsan):**
+**Lav renk paleti:**
+
+- Başlangıç: `#ff6a00` (parlak turuncu)
+- Orta: `#e25822` (koyu turuncu)
+- Son: `#b8451a` (koyu kızıl)
+
+### E2. Sahne 2 — Kalıp Döküm + Soğutma + Zoom (`MoldCastScene.tsx`)
+
+**Konsept:** Lav önceki sahneden devam eden renkle ekranın üstünden aşağı akar, dikdörtgen kalıp içine girer, soğur, soğumuş metale zoom yapılır.
+
+**Teknik detaylar:**
 
 ```
-HeroSection'a basit bir Three.js sahne ekle. Yeni bir ThreeBackground.tsx bileşeni oluştur:
+Scroller yüksekliği: 400vh
+Sticky container: 100vh
 
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three'; // three zaten projede varsa kullan, yoksa ekle
+Scroll ilerleme haritası:
+  %0–%30:   Lav yukarıdan aşağı akar, kalıp silüetinin içine girer
+  %30–%60:  Soğutma — renk geçişi (#ff6a00 → #888 → #c0c0c0)
+            Buhar efekti (3-5 adet, CSS-only opacity animation)
+  %60–%100: Zoom (scale 1→3), kalıp kenarları clip-path ile daralır
+            Son renk: forge-steel
 
-export function ThreeBackground() {
-  const mountRef = useRef<HTMLDivElement>(null);
+```
 
-  useEffect(() => {
-    const el = mountRef.current;
-    if (!el) return;
+**Sahne geçiş renk sürekliliği mekanizması:** Sahneler arası renk sürekliliği için shared CSS custom property kullan:
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, el.clientWidth / el.clientHeight, 0.1, 100);
-    camera.position.z = 4;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(el.clientWidth, el.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-    el.appendChild(renderer.domElement);
-
-    // Metalik torus geometri
-    const geometry = new THREE.TorusKnotGeometry(1, 0.3, 200, 32);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x1a1a2e,
-      metalness: 0.95,
-      roughness: 0.08,
-      envMapIntensity: 1.5,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    // Işıklar
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-    scene.add(ambientLight);
-
-    const pointLight1 = new THREE.PointLight(0x0688AD, 4, 8);
-    pointLight1.position.set(3, 3, 3);
-    scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0xD4A853, 2, 8);
-    pointLight2.position.set(-3, -2, 2);
-    scene.add(pointLight2);
-
-    let mouseX = 0, mouseY = 0;
-    const onMouseMove = (e: MouseEvent) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-
-    let animId: number;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      mesh.rotation.x += 0.003;
-      mesh.rotation.y += 0.005;
-      mesh.rotation.x += (mouseY * 0.3 - mesh.rotation.x) * 0.02;
-      mesh.rotation.y += (mouseX * 0.3 - mesh.rotation.y) * 0.02;
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    const onResize = () => {
-      camera.aspect = el.clientWidth / el.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(el.clientWidth, el.clientHeight);
-    };
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('resize', onResize);
-      renderer.dispose();
-      el.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={mountRef}
-      style={{ position: 'absolute', inset: 0, zIndex: 0, opacity: 0.5, pointerEvents: 'none' }}
-      aria-hidden="true"
-    />
-  );
+```css
+:root {
+  --lava-current-color: #ff6a00;
 }
 
-Bu bileşeni HeroSection'ın en dışına ekle. Hero section position: relative olmalı. three paketi projede yoksa ekle.
+```
+
+LavaTypographyScene çıkışta bu property'yi günceller, MoldCastScene girişte bu property'den okur.
+
+**Buhar efekti tanımı (belirsizlik giderildi):**
+
+- **Parçacık sayısı:** 3-5 adet (fazla değil — performans)
+- **Yöntem:** Pure CSS animation (Canvas veya WebGL değil)
+- **Davranış:** `opacity: 0→0.6→0`, `translateY: 0→-40px`, `scale: 1→1.5`
+- **Süre:** Her parçacık 2-3 saniye döngü, stagger ile
+
+```css
+.steam-particle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+  animation: steam 2.5s ease-out infinite;
+}
+
+@keyframes steam {
+  0% { opacity: 0; transform: translateY(0) scale(1); }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.5); }
+}
+
+```
+
+**Zoom animasyonu:**
+
+```tsx
+// GSAP timeline devamı
+// %60-100: Zoom
+tl.to(moldRef.current, {
+  scale: 3,
+  duration: 40,
+  ease: 'power2.inOut',
+});
+tl.to(moldRef.current, {
+  clipPath: 'inset(30% 30% 30% 30%)', // Kenarları daralt, sadece metal yüzey
+  duration: 40,
+}, '<'); // Zoom ile eşzamanlı
+
+```
+
+⚠️ **clip-path burada kullanılabilir** çünkü sadece zoom aşamasında (sahnenin son %40'ı) aktif ve `inset()` fonksiyonu `polygon()`'dan çok daha performanslı.
+
+---
+
+## BÖLÜM F: Ambient Mouse Glow
+
+### F1. Uygulama
+
+Her koyu section'ın içine şu div eklenecek:
+
+```tsx
+<div 
+  className="absolute inset-0 pointer-events-none" 
+  style={{ 
+    zIndex: Z.ambientGlow,
+    background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(var(--primary) / 0.045), transparent 70%)' 
+  }} 
+/>
+
+```
+
+### F2. Eklenecek Section'lar
+
+- HeroSection
+- NexusPromoSection
+- CNCScrollStory
+- MaterialsSection
+- WhyUsSection
+- FinalCTASection
+- LavaTypographyScene (yeni)
+- MoldCastScene (yeni)
+
+### F3. Performans Koruması
+
+**Sorun:** 8 section'a glow div eklemek = her mouse move'da 8 element güncellenir.
+
+**Çözüm:** Sadece viewport'taki section'ların glow'unu aktif et:
+
+```tsx
+// useAmbientGlow.ts — güncelleme
+// CSS custom property --mouse-x, --mouse-y zaten set ediliyor.
+// Ek olarak: viewport dışındaki section'ların glow div'ini visibility: hidden yap.
+
+// Her glow div'de:
+const [isInView, setIsInView] = useState(false);
+const ref = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  const io = new IntersectionObserver(([e]) => setIsInView(e.isIntersecting));
+  if (ref.current) io.observe(ref.current);
+  return () => io.disconnect();
+}, []);
+
+// Render:
+<div 
+  ref={ref}
+  className="absolute inset-0 pointer-events-none"
+  style={{ 
+    visibility: isInView ? 'visible' : 'hidden',
+    // ... gradient
+  }} 
+/>
+
+```
+
+### F4. Mobil Davranış
+
+**Sorun:** Mouse glow touch cihazlarda anlamsız.
+
+**Çözüm:** Mobilde glow'u devre dışı bırak:
+
+```tsx
+const isTouchDevice = window.matchMedia('(hover: none)').matches;
+// isTouchDevice === true → glow div'i render etme
 
 ```
 
 ---
 
-### 🟡 PARALLAX DEPTH KATMANLARI — Elle yaz (Lovable yapabilir ama yönlendirme lazım)
+## BÖLÜM G: 14 Madde Audit Tablosu
+
+
+| #   | Madde                      | Durum          | Aksiyon                                           | Bölüm |
+| --- | -------------------------- | -------------- | ------------------------------------------------- | ----- |
+| 1   | Grain Overlay              | ✅ Tam          | Sadece `will-change: auto` ekle                   | C-P9  |
+| 2   | Marquee Ticker Band        | ✅ Tam          | —                                                 | —     |
+| 3   | Scroll Velocity İndikatörü | ✅ Tam          | —                                                 | —     |
+| 4   | Staggered Grid Entrance    | ❌ Uygulanmamış | `useStaggeredReveal` + `data-stagger`             | D1    |
+| 5   | Kart 3D Tilt + Spotlight   | ⚠️ Kısmi       | Services, Industries, Materials kartlarına uygula | D2    |
+| 6   | Underline Morph + Ok Kayma | ❌ Uygulanmamış | CSS + class atamaları                             | D3    |
+| 7   | Image Overlay Reveal       | ⚠️ Kısmi       | Tüm görsellere `OverlayReveal` uygula             | D Ek  |
+| 8   | Footer Reveal from Behind  | ❌ Uygulanmamış | fixed + spacer pattern                            | D4    |
+| 9   | Saat + Koordinat           | ✅ Tam          | —                                                 | —     |
+| 10  | Mobil Fullscreen Menu      | ✅ Tam          | —                                                 | —     |
+| 11  | Mobil Scroll Snapping      | ❌ Uygulanmamış | Lenis conditional + CSS snap                      | D5    |
+| 12  | Preloader Sinematik        | ✅ Tam          | —                                                 | —     |
+| 13  | Page Transition Upgrade    | ❌ Uygulanmamış | clipPath + route-aware flash                      | D6    |
+| 14  | Char-by-Char + Konami      | ⚠️ Kısmi       | SectionHeader'a char reveal                       | D7    |
+
+
+**Özet:** 6 tam, 3 kısmi (7 dahil), 5 uygulanmamış.
+
+---
+
+## BÖLÜM H: Test Stratejisi ve Checklist
+
+### H1. Tarayıcı Matrisi
+
+
+| Tarayıcı         | Versiyon | Öncelik |
+| ---------------- | -------- | ------- |
+| Chrome Desktop   | Son 2    | Kritik  |
+| Safari Desktop   | Son 2    | Kritik  |
+| Firefox Desktop  | Son 2    | Yüksek  |
+| Chrome Android   | Son 2    | Kritik  |
+| Safari iOS       | Son 2    | Kritik  |
+| Samsung Internet | Son 2    | Orta    |
+
+
+### H2. Viewport Breakpoint'leri
+
+
+| Breakpoint | Genişlik | Temsil Ettiği     |
+| ---------- | -------- | ----------------- |
+| Mobile S   | 375px    | iPhone SE         |
+| Mobile L   | 428px    | iPhone 14 Pro Max |
+| Tablet     | 768px    | iPad Mini         |
+| Laptop     | 1024px   | 13" laptop        |
+| Desktop    | 1440px   | Standart monitör  |
+| Wide       | 1920px   | Full HD           |
+
+
+### H3. Fonksiyonel Test Checklist'i
+
+**Sayfa Yükleme:**
+
+- [ ] Preloader 000→100 sayaç çalışıyor
+- [ ] clipPath circle reveal çalışıyor
+- [ ] sessionStorage temizleyip yeniledikten sonra preloader tekrar çalışıyor
+- [ ] FCP < 1500ms
+- [ ] LCP < 2500ms
+
+**Scroll Efektleri:**
+
+- [ ] Grain overlay tüm sayfa boyunca görünüyor
+- [ ] Marquee ticker band düzgün kayıyor
+- [ ] Scroll velocity renk değişimi çalışıyor
+- [ ] LavaTypographyScene scroll ile doğru tetikleniyor
+- [ ] MoldCastScene scroll ile doğru tetikleniyor
+- [ ] CNCScrollStory frame'leri düzgün yükleniyor
+- [ ] MaterialMorphScroll düzgün çalışıyor
+- [ ] Footer reveal from behind çalışıyor
+- [ ] Sahneler arası renk sürekliliği var
+
+**Kartlar ve İnteraksiyon:**
+
+- [ ] 3D tilt efekti tüm kartlarda çalışıyor (Services, Industries, Materials, Projects)
+- [ ] Spotlight efekti takip ediyor
+- [ ] Underline morph nav link'lerde çalışıyor
+- [ ] Ok kayma CTA'larda çalışıyor
+- [ ] Ambient mouse glow koyu section'larda görünüyor
+
+**Mobil:**
+
+- [ ] Fullscreen menü açılıyor
+- [ ] Stagger reveal animasyonu çalışıyor
+- [ ] LiveClock menüde görünüyor
+- [ ] Scroll snapping çalışıyor (Lenis devre dışı, native scroll)
+- [ ] 3D tilt mobilde devre dışı
+- [ ] Ambient glow mobilde devre dışı
+- [ ] Videolar mobilde autoplay kapalı, poster görünüyor
+
+**Performans:**
+
+- [ ] JS Heap < 25MB (5 dakika scroll sonrası)
+- [ ] 60fps scroll (Chrome DevTools Performance monitor)
+- [ ] Memory leak yok (10 dakika kullanım sonrası heap artmıyor)
+- [ ] CLS < 0.1
+
+**Accessibility:**
+
+- [ ] `prefers-reduced-motion: reduce` ile tüm animasyonlar kapalı/minimal
+- [ ] WebGL fallback düşük GPU'lu cihazlarda çalışıyor
+- [ ] Klavye navigasyonu çalışıyor
+
+**Edge Cases:**
+
+- [ ] Hızlı scroll (scroll velocity çok yüksekken animasyonlar bozulmuyor)
+- [ ] Yavaş scroll (sahneler düzgün ilerliyor)
+- [ ] Scroll yönü değiştirme (ileri-geri)
+- [ ] Tab değiştirip geri gelme (rAF, video, WebGL devam ediyor)
+- [ ] Browser resize sırasında layout bozulmuyor
+
+### H4. Lovable'ın Yapamayacağı Testler
+
+Bu testler manuel olarak Ömer tarafından yapılmalı:
+
+- Lighthouse / PageSpeed Insights tam rapor
+- Chrome DevTools Performance profiling
+- Memory leak tespiti (Chrome DevTools Memory tab → Heap snapshot karşılaştırma)
+- Cross-browser testing (BrowserStack veya gerçek cihaz)
+- Gerçek mobil cihazda pil tüketimi gözlemi
+- Network throttle (3G) altında yükleme davranışı
+
+---
+
+## BÖLÜM I: z-index Haritası
+
+(Bölüm A2'de detaylı anlatıldı. Referans için tekrar.)
 
 ```
-Her major section'ın arka planına çok hafif geometrik dekoratif katman ekle. Yeni bir SectionDecor.tsx bileşeni oluştur:
-
-interface SectionDecorProps {
-  scrollY?: number;
-}
-
-export function SectionDecor() {
-  const ref = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    let ticking = false;
-    const handler = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          if (ref.current) {
-            const rect = ref.current.closest('section')?.getBoundingClientRect();
-            if (rect) {
-              const progress = -rect.top / (rect.height + window.innerHeight);
-              ref.current.style.transform = `translateY(${progress * 40}px)`;
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
-
-  return (
-    <svg
-      ref={ref}
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, opacity: 0.04, willChange: 'transform' }}
-      aria-hidden="true"
-    >
-      <line x1="0" y1="30%" x2="100%" y2="30%" stroke="white" strokeWidth="0.5" />
-      <line x1="0" y1="70%" x2="100%" y2="70%" stroke="white" strokeWidth="0.5" />
-      <line x1="20%" y1="0" x2="20%" y2="100%" stroke="white" strokeWidth="0.5" />
-      <line x1="80%" y1="0" x2="80%" y2="100%" stroke="white" strokeWidth="0.5" />
-      <circle cx="20%" cy="30%" r="3" fill="white" />
-      <circle cx="80%" cy="30%" r="3" fill="white" />
-      <circle cx="20%" cy="70%" r="3" fill="white" />
-      <circle cx="80%" cy="70%" r="3" fill="white" />
-    </svg>
-  );
-}
-
-Bu bileşeni her section içine ekle. Section position: relative olmalı.
+0    — Base (body, section backgrounds)
+1    — Section content
+2    — Ambient glow overlays
+5    — Grain overlay
+8    — Scroll velocity indicator
+10   — LavaTypographyScene
+11   — MoldCastScene
+12   — CNCScrollStory
+15   — Marquee band
+20   — SectionDotNav
+50   — Header / Nav
+60   — Mobile menu overlay
+90   — Custom cursor
+95   — Page transition overlay
+100  — Preloader
 
 ```
 
 ---
 
-## UYGULAMA SIRASI
+## BÖLÜM J: Dosya Değişiklikleri Özet Tablosu
 
 
-| #   | Prompt               | Süre | Risk                       |
-| --- | -------------------- | ---- | -------------------------- |
-| 01  | Grain + Ambient Glow | 5dk  | Sıfır                      |
-| 02  | Marquee Ticker       | 10dk | Sıfır                      |
-| 03  | Scroll Velocity      | 15dk | Düşük                      |
-| 04  | Staggered Grid       | 20dk | Düşük                      |
-| 05  | 3D Tilt Spotlight    | 20dk | Düşük                      |
-| 06  | Underline + Ok       | 10dk | Sıfır                      |
-| 07  | Image Reveal         | 15dk | Düşük                      |
-| 08  | Footer Reveal        | 25dk | Orta                       |
-| 09  | Saat + Koordinat     | 5dk  | Sıfır                      |
-| 10  | Mobil Menü           | 20dk | Orta                       |
-| 11  | Scroll Snap Mobil    | 10dk | Düşük                      |
-| 12  | Preloader            | 30dk | Orta                       |
-| 13  | Page Transition      | 25dk | Orta                       |
-| 14  | Char Reveal + Konami | 20dk | Düşük                      |
-| DIŞ | Three.js Sahne       | 45dk | Spline=düşük / Elle=yüksek |
+| Dosya                                               | İşlem                                            | Bölüm       |
+| --------------------------------------------------- | ------------------------------------------------ | ----------- |
+| `src/styles/z-index.ts`                             | YENİ — z-index constant'ları                     | A2          |
+| `src/components/ErrorBoundary.tsx`                  | YENİ — Error boundary                            | A3          |
+| `src/hooks/useGPUCapability.ts`                     | YENİ — WebGL/GPU kontrol                         | A4          |
+| `src/hooks/useReducedMotion.ts`                     | YENİ — a11y motion kontrolü                      | A5          |
+| `src/hooks/useStaggeredReveal.ts`                   | YENİ — Stagger grid hook                         | D1          |
+| `src/components/LavaTypographyScene.tsx`            | YENİ — Lav tipografi sahnesi                     | E1          |
+| `src/components/MoldCastScene.tsx`                  | YENİ — Kalıp döküm sahnesi                       | E2          |
+| `src/components/PageTransition.tsx`                 | YENİ — Page transition                           | D6          |
+| `src/components/MotionGradientBg.tsx`               | DÜZENLE — forwardRef ekle                        | B1          |
+| `src/components/QuickQuoteSection.tsx`              | DÜZENLE — forwardRef ekle                        | B1          |
+| `src/components/ui/ElegantShape.tsx`                | DÜZENLE — forwardRef ekle                        | B1          |
+| `src/pages/Index.tsx`                               | DÜZENLE — Yeni sahne sırası, ErrorBoundary sarma | E           |
+| `src/components/providers/SmoothScrollProvider.tsx` | DÜZENLE — Lenis+GSAP sync, mobil conditional     | A1, D5      |
+| `src/components/r3f/HeroCanvas.tsx`                 | DÜZENLE — IO lazy render, dispose cleanup        | C-P1        |
+| `src/components/NexusPromoSection.tsx`              | DÜZENLE — Ambient glow div                       | F           |
+| `src/components/CNCScrollStory.tsx`                 | DÜZENLE — Glow div, cleanup, IO lazy frame       | F, A6, C-P7 |
+| `src/components/MaterialsSection.tsx`               | DÜZENLE — Glow div, stagger                      | F, D1       |
+| `src/components/WhyUsSection.tsx`                   | DÜZENLE — Glow div                               | F           |
+| `src/components/FinalCTASection.tsx`                | DÜZENLE — Glow div                               | F           |
+| `src/components/Header.tsx`                         | DÜZENLE — nav-link-animated class                | D3          |
+| `src/components/Footer.tsx`                         | DÜZENLE — fixed + reveal pattern                 | D4          |
+| `src/components/SectionHeader.tsx`                  | DÜZENLE — char-by-char reveal                    | D7          |
+| `src/components/ServicesSection.tsx`                | DÜZENLE — stagger + tilt                         | D1, D2      |
+| `src/components/IndustriesSection.tsx`              | DÜZENLE — stagger + tilt                         | D1, D2      |
+| `src/index.css`                                     | DÜZENLE — underline, ok kayma, scroll snap CSS   | D3, D5      |
+| `vite.config.ts`                                    | DÜZENLE — manualChunks bundle splitting          | C-P3        |
+| `index.html`                                        | DÜZENLE — font preload, inline critical CSS      | C-P5        |
 
 
-**Her prompt'tan sonra preview'da kontrol et — özellikle 08 ve 13 sonrası.**
+**Toplam:** 8 yeni dosya, 18 düzenleme.
 
-&nbsp;
+---
 
-### DOKUNULMAYACAK DOSYALAR
+## BÖLÜM K: Editor Sync Hatası (Platform Taraflı)
 
-- `/admin/*` ve `/musteri-paneli/*` altındaki hiçbir dosya
-- `border-radius: 0rem` sabit kalacak
-- IBM Plex Mono fontu korunacak
-- Yeni npm paketi yalnızca `lenis` (zaten mevcut)
+**Sorun:** "We're experiencing issues where edits made through the editor are not immediately reflecting in the user interface"
+
+**Durum:** Bu Lovable platform taraflı bir sorun. Kod tarafında yapılabilecek bir şey yok.
+
+**Workaround'lar (orijinal planda yoktu):**
+
+1. Hard refresh (Ctrl+Shift+R / Cmd+Shift+R)
+2. Tarayıcı cache temizle
+3. Lovable editor'de farklı bir dosyaya git, geri gel
+4. Preview URL'den doğrudan test et (editor preview yerine)
+5. Lovable'ın status page'ini kontrol et: [status.lovable.dev](http://status.lovable.dev)
+
+---
+
+## ORİJİNAL PLANDAN FARKLAR ÖZETİ
+
+
+| Konu                    | Orijinal Plan                    | Bu Plan                                          |
+| ----------------------- | -------------------------------- | ------------------------------------------------ |
+| Öncelik sırası          | Bug→Perf→Lav→Eksikler            | Bug→Eksikler→Perf→Lav                            |
+| Lenis+GSAP sync         | Bahsedilmemiş                    | A1'de detaylı çözüm                              |
+| z-index                 | Ondalıklı (2.5), haritasız       | Tamsayı, global harita + TS constant             |
+| Error boundary          | Yok                              | A3'te eklendi                                    |
+| GPU fallback            | Yok                              | A4'te eklendi                                    |
+| prefers-reduced-motion  | Yok                              | A5'te eklendi                                    |
+| Memory leak kontrolü    | Yok                              | A6'da checklist                                  |
+| Bundle splitting        | Yok                              | C-P3'te Vite config                              |
+| drei kaldırma           | "Tree-shake et"                  | Tamamen kaldır + custom utility                  |
+| Video optimizasyonu     | "2'yi 1'e düşür"                 | WebM dönüşüm + IO play/pause + poster            |
+| FCP stratejisi          | Hedef var, strateji yok          | C-P5'te critical path çözümleri                  |
+| CWV metrikleri          | Sadece FCP                       | FCP + LCP + CLS + INP                            |
+| Image optimizasyonu     | Yok                              | C-P11'de eklendi                                 |
+| Lav clip-path           | "CSS clip-path animasyonu"       | mask-image + background-clip (daha performanslı) |
+| Tipografi boyut         | 15vw sabit                       | clamp(3rem, 15vw, 20rem) responsive              |
+| Buhar efekti            | "Beyaz parçacıklar" (belirsiz)   | 3-5 CSS particle, kesin spec                     |
+| Sahne renk sürekliliği  | "Devam eden renk" (mekanizmasız) | CSS custom property paylaşımı                    |
+| Eksik 6 madde detayı    | Sadece tespit                    | Tam uygulama planı                               |
+| Lenis + scroll-snap     | "Conditional init" (belirsiz)    | İki seçenek + mimari karar analizi               |
+| Footer + Lenis          | Bahsedilmemiş                    | ResizeObserver + spacer pattern                  |
+| Page transition         | "Polygon clipPath" (belirsiz)    | FM + GSAP hybrid, tam kod                        |
+| Ambient glow mobil      | Bahsedilmemiş                    | Touch cihazlarda devre dışı                      |
+| Ambient glow performans | Bahsedilmemiş                    | IO ile viewport kontrolü                         |
+| Test stratejisi         | "Test et"                        | Tarayıcı matrisi, checklist, edge case'ler       |
+| SEO                     | Yok                              | Reminder olarak eklendi (ayrı plan gerekir)      |
+| Lovable uygulama notu   | Yok                              | Bölüm bölüm, tek dosya grubu olarak verilmeli    |
