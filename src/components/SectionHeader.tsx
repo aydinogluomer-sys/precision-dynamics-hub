@@ -5,6 +5,7 @@
  * Now standalone at src/components/SectionHeader.tsx
  */
 import { Reveal } from "@/components/ui/Reveal";
+import { motion } from "framer-motion";
 
 interface SectionHeaderProps {
   tag: string;
