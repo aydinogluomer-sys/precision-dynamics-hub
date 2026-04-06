@@ -131,6 +131,8 @@ export const Index = () => {
     return false;
   });
 
+  const gpu = useGPUCapability();
+
   return (
     <div className="min-h-screen bg-background">
       <PageLoader isFirstVisit={isFirstVisit} />
@@ -139,14 +141,34 @@ export const Index = () => {
       <SectionDotNav sections={SECTIONS} />
 
       <main id="main-content" className="relative">
-        {/* 1 — Hero + QuickQuote (horizontal slide, 500vh internal scroller) */}
-        <FlowScene z={1}>
+        {/* 1 — Hero + QuickQuote */}
+        <FlowScene z={Z.content}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
-        {/* 3 — CNCScrollStory (flow, internal scroll) */}
-        <FlowScene z={3}>
-          <CNCScrollStory />
+        {/* Lava Typography Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={Z.lavaTypography}>
+            <ErrorBoundary>
+              <LavaTypographyScene />
+            </ErrorBoundary>
+          </FlowScene>
+        )}
+
+        {/* Mold Cast Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={Z.moldCast}>
+            <ErrorBoundary>
+              <MoldCastScene />
+            </ErrorBoundary>
+          </FlowScene>
+        )}
+
+        {/* CNCScrollStory */}
+        <FlowScene z={Z.cncStory}>
+          <ErrorBoundary>
+            <CNCScrollStory />
+          </ErrorBoundary>
         </FlowScene>
 
         {/* 4 — NexusPromo (sticky) */}
