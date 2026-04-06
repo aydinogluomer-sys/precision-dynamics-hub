@@ -8,7 +8,7 @@
  */
 import { useRef, useMemo, useCallback } from "react";
 import { useFrame, useThree, extend } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import { useLocalTexture } from "@/utils/useLocalTexture";
 import * as THREE from "three";
 
 /* ── Vertex Shader ── */
