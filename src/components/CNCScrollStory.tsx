@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from "react";
+import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { useIsMobile } from "@/hooks/use-mobile";
