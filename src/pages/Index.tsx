@@ -12,6 +12,11 @@ import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LavaTypographyScene } from "@/components/LavaTypographyScene";
+import { MoldCastScene } from "@/components/MoldCastScene";
+import { useGPUCapability } from "@/hooks/useGPUCapability";
+import { Z } from "@/styles/z-index";
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
