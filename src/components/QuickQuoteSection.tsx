@@ -373,5 +373,5 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement>((_, _ref) => {
         </div>
       </div>
     </section>
-  );
-};
+});
+QuickQuoteSection.displayName = 'QuickQuoteSection';
