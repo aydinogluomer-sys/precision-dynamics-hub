@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";

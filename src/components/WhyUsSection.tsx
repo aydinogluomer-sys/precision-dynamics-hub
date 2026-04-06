@@ -57,6 +57,7 @@ export const WhyUsSection = () => {
       className="min-h-screen relative overflow-hidden flex flex-col justify-center bg-forge-gunmetal"
       style={{ perspective: 1000 }}
     >
+      <AmbientGlowOverlay />
       {/* Stats Bar */}
       <div className="border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8">

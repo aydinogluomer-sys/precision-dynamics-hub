@@ -50,6 +50,7 @@ export const NexusPromoSection = () => {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
+      <AmbientGlowOverlay />
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
         {/* Standardized SectionHeader */}
         <div className="mb-12">
