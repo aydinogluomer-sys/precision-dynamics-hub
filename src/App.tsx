@@ -50,11 +50,7 @@ const PageLoader = () => (
 
 const queryClient = new QueryClient();
 
-const pageTransition = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] as const } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
-};
+// Page transition handled by PageTransition component
 
 const AnimatedRoutes = () => {
   const location = useLocation();
