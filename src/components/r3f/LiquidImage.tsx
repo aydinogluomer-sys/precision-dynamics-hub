@@ -133,7 +133,7 @@ interface LiquidImageProps {
 export const LiquidImage = ({ src, scale, opacity = 1.0 }: LiquidImageProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { viewport, size } = useThree();
-  const texture = useTexture(src);
+  const texture = useLocalTexture(src);
 
   // Make texture cover viewport
   const imgAspect = texture.image ? texture.image.width / texture.image.height : 16 / 9;

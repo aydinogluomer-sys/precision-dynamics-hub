@@ -16,4 +16,15 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'three-vendor': ['three', '@react-three/fiber'],
+          'gsap-vendor': ['gsap'],
+          'framer': ['framer-motion'],
+        },
+      },
+    },
+  },
 }));

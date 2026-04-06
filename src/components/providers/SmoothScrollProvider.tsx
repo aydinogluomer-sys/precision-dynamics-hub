@@ -24,6 +24,13 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
   useEffect(() => {
     if (shouldDisable) return;
 
+    // Mobilde Lenis başlatma — native scroll + scroll-snap aktif
+    const isMobile =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 768px)').matches;
+
+    if (isMobile) return;
+
     const lenis = new Lenis({
       lerp: 0.08,
       duration: 1.4,
@@ -37,7 +44,6 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
 
     lenis.on("scroll", () => {
       ScrollTrigger.update();
-      window.dispatchEvent(new Event("scroll"));
     });
 
     const updateLenis = (time: number) => {

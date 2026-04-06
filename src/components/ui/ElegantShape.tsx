@@ -73,4 +73,5 @@ export const ElegantShape = forwardRef<HTMLDivElement, ElegantShapeProps>(functi
       </motion.div>
     </motion.div>
   );
-}
+});
+ElegantShape.displayName = 'ElegantShape';

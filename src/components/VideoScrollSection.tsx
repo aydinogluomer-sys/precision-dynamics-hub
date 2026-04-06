@@ -97,7 +97,7 @@ export const VideoScrollSection = () => {
             poster={cncWorkshop}
             muted
             playsInline
-            preload="auto"
+            preload="none"
             className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }}
           />
