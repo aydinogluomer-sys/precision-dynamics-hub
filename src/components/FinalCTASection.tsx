@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion } from "framer-motion";
 import { useRef, useState, useCallback, useLayoutEffect, forwardRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -110,6 +111,7 @@ export const FinalCTASection = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      <AmbientGlowOverlay />
       {/* Flash cut white overlay */}
       {!prefersReduced && (
         <motion.div

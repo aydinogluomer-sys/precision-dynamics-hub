@@ -5,6 +5,7 @@
  * Now standalone at src/components/SectionHeader.tsx
  */
 import { Reveal } from "@/components/ui/Reveal";
+import { motion } from "framer-motion";
 
 interface SectionHeaderProps {
   tag: string;
@@ -55,17 +56,30 @@ export const SectionHeader = ({
         </div>
       </Reveal>
 
-      {/* Title */}
-      <Reveal variant="word-stagger" delay={0.1} duration={0.6}>
-        <h2
-          id={headingId}
-          className={
-            titleClassName || "text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-[0.95] text-foreground"
-          }
-        >
-          {title}
-        </h2>
-      </Reveal>
+      {/* Title — word-by-word stagger */}
+      <h2
+        id={headingId}
+        className={
+          titleClassName || "text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-[0.95] text-foreground"
+        }
+      >
+        {title.split(' ').map((word, i) => (
+          <motion.span
+            key={i}
+            className="inline-block mr-[0.3em]"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              delay: 0.1 + i * 0.04,
+              duration: 0.5,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            {word}
+          </motion.span>
+        ))}
+      </h2>
 
       {/* Description */}
       {description && (

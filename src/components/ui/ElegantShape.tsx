@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,7 @@ interface ElegantShapeProps {
   borderRadius?: number;
 }
 
-export function ElegantShape({
+export const ElegantShape = forwardRef<HTMLDivElement, ElegantShapeProps>(function ElegantShapeInner({
   className,
   delay = 0,
   width = 400,
@@ -72,4 +73,5 @@ export function ElegantShape({
       </motion.div>
     </motion.div>
   );
-}
+});
+ElegantShape.displayName = 'ElegantShape';

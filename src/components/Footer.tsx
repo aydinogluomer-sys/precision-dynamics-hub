@@ -84,12 +84,23 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
+  const [footerHeight, setFooterHeight] = useState(0);
 
   useEffect(() => {
-    if (footerRef.current) {
-      const h = footerRef.current.offsetHeight;
+    const el = footerRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      const h = el.offsetHeight;
+      setFooterHeight(h);
       document.documentElement.style.setProperty("--footer-height", h + "px");
-    }
+    };
+
+    updateHeight();
+
+    const ro = new ResizeObserver(() => updateHeight());
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   const stagger = {
@@ -103,7 +114,15 @@ export const Footer = () => {
   };
 
   return (
-    <footer ref={footerRef} className="relative overflow-hidden font-mono" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <>
+      {/* Spacer for fixed footer */}
+      <div style={{ height: footerHeight }} />
+
+      <footer
+        ref={footerRef}
+        className="footer-reveal fixed bottom-0 left-0 w-full overflow-hidden font-mono"
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
+      >
       {/* Marquee band at top of footer */}
       <MarqueeBand reverse />
 
@@ -447,5 +466,6 @@ export const Footer = () => {
         </a>
       </div>
     </footer>
+    </>
   );
 };

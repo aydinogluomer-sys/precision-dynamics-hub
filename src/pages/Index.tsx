@@ -12,6 +12,11 @@ import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LavaTypographyScene } from "@/components/LavaTypographyScene";
+import { MoldCastScene } from "@/components/MoldCastScene";
+import { useGPUCapability } from "@/hooks/useGPUCapability";
+import { Z } from "@/styles/z-index";
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
@@ -58,7 +63,8 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "hizli-teklif", label: "Hızlı Teklif" },
+  { id: "lav-sahne", label: "Ergitme" },
+  { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
@@ -125,6 +131,8 @@ export const Index = () => {
     return false;
   });
 
+  const gpu = useGPUCapability();
+
   return (
     <div className="min-h-screen bg-background">
       <PageLoader isFirstVisit={isFirstVisit} />
@@ -133,14 +141,34 @@ export const Index = () => {
       <SectionDotNav sections={SECTIONS} />
 
       <main id="main-content" className="relative">
-        {/* 1 — Hero + QuickQuote (horizontal slide, 500vh internal scroller) */}
-        <FlowScene z={1}>
+        {/* 1 — Hero + QuickQuote */}
+        <FlowScene z={Z.content}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
-        {/* 3 — CNCScrollStory (flow, internal scroll) */}
-        <FlowScene z={3}>
-          <CNCScrollStory />
+        {/* Lava Typography Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={Z.lavaTypography}>
+            <ErrorBoundary>
+              <LavaTypographyScene />
+            </ErrorBoundary>
+          </FlowScene>
+        )}
+
+        {/* Mold Cast Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={Z.moldCast}>
+            <ErrorBoundary>
+              <MoldCastScene />
+            </ErrorBoundary>
+          </FlowScene>
+        )}
+
+        {/* CNCScrollStory */}
+        <FlowScene z={Z.cncStory}>
+          <ErrorBoundary>
+            <CNCScrollStory />
+          </ErrorBoundary>
         </FlowScene>
 
         {/* 4 — NexusPromo (sticky) */}

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, forwardRef } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { useNavigate } from "react-router-dom";
 import { Upload, CheckCircle } from "lucide-react";
@@ -9,7 +9,7 @@ import { ElegantShape } from "@/components/ui/ElegantShape";
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-export const QuickQuoteSection = () => {
+export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) => {
   const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<"idle" | "success" | "error">("idle");
@@ -374,4 +374,5 @@ export const QuickQuoteSection = () => {
       </div>
     </section>
   );
-};
+});
+QuickQuoteSection.displayName = 'QuickQuoteSection';

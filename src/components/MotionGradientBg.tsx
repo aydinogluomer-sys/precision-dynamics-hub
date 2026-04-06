@@ -323,20 +323,30 @@ export const MotionGradientBg = ({
     };
   }, [initGL]);
 
-  // Update mode/temp from props
+  // Update mode/temp from props — fixed rAF leak
   useEffect(() => {
     const st = stateRef.current;
+    let rafId: number;
+    let settled = false;
     const tick = () => {
       if (Math.abs(st.currentMode - mode) > 0.005) {
         st.currentMode += (mode - st.currentMode) * 0.05;
+        settled = false;
       } else {
         st.currentMode = mode;
       }
+      const tempDiff = Math.abs(st.currentTemp - temperature);
       st.currentTemp += (temperature - st.currentTemp) * 0.06;
-      requestAnimationFrame(tick);
+      if (tempDiff < 0.005) {
+        if (settled) return; // stop looping once settled
+        settled = true;
+      } else {
+        settled = false;
+      }
+      rafId = requestAnimationFrame(tick);
     };
-    const id = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(id);
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, [mode, temperature]);
 
   return (

@@ -8,7 +8,7 @@
  */
 import { useRef, useMemo, useCallback } from "react";
 import { useFrame, useThree, extend } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import { useLocalTexture } from "@/utils/useLocalTexture";
 import * as THREE from "three";
 
 /* ── Vertex Shader ── */
@@ -133,7 +133,7 @@ interface LiquidImageProps {
 export const LiquidImage = ({ src, scale, opacity = 1.0 }: LiquidImageProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { viewport, size } = useThree();
-  const texture = useTexture(src);
+  const texture = useLocalTexture(src);
 
   // Make texture cover viewport
   const imgAspect = texture.image ? texture.image.width / texture.image.height : 16 / 9;

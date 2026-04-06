@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from "react";
+import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -165,6 +166,7 @@ export const CNCScrollStory = () => {
   return (
     <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "hsl(var(--forge-obsidian))" }}>
       <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
+        <AmbientGlowOverlay />
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"

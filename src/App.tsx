@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { PageTransition } from "@/components/PageTransition";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -50,15 +50,10 @@ const PageLoader = () => (
 
 const queryClient = new QueryClient();
 
-const pageTransition = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.76, 0, 0.24, 1] as const } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
-};
+// Page transition handled by PageTransition component
 
 const AnimatedRoutes = () => {
   const location = useLocation();
-  const { play } = useSoundEngine();
 
   const isPanel = useMemo(() => {
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
@@ -90,38 +85,36 @@ const AnimatedRoutes = () => {
   );
 
   const publicRoutes = (
-    <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} {...pageTransition} onAnimationStart={() => play("whoosh")}>
-        <Suspense fallback={<PageLoader />}>
-          <Routes location={location}>
-            <Route path="/" element={<Index />} />
-            <Route path="/test" element={<TestHowWeWork />} />
-            <Route path="/sss" element={<SSS />} />
-            <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
-            <Route path="/kvkk" element={<KVKK />} />
-            <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
-            <Route path="/hakkimizda" element={<Hakkimizda />} />
-            <Route path="/iletisim" element={<Iletisim />} />
-            <Route path="/malzemeler" element={<Malzemeler />} />
-            <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
-            <Route path="/hizmetler/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/kabiliyetler/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/endustriyel/kategori/:slug" element={<CategoryPage />} />
-            <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
-            <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
-            <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
-            <Route path="/giris" element={<Login />} />
-            <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/teklif-al" element={<TeklifAl />} />
-            <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </motion.div>
-    </AnimatePresence>
+    <PageTransition>
+      <Suspense fallback={<PageLoader />}>
+        <Routes location={location}>
+          <Route path="/" element={<Index />} />
+          <Route path="/test" element={<TestHowWeWork />} />
+          <Route path="/sss" element={<SSS />} />
+          <Route path="/gizlilik-politikasi" element={<GizlilikPolitikasi />} />
+          <Route path="/kvkk" element={<KVKK />} />
+          <Route path="/cerez-politikasi" element={<CerezPolitikasi />} />
+          <Route path="/hakkimizda" element={<Hakkimizda />} />
+          <Route path="/iletisim" element={<Iletisim />} />
+          <Route path="/malzemeler" element={<Malzemeler />} />
+          <Route path="/malzemeler/:slug" element={<MalzemeKategori />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogDetail />} />
+          <Route path="/hizmetler/kategori/:slug" element={<CategoryPage />} />
+          <Route path="/kabiliyetler/kategori/:slug" element={<CategoryPage />} />
+          <Route path="/endustriyel/kategori/:slug" element={<CategoryPage />} />
+          <Route path="/hizmetler/:slug" element={<ServiceDetail />} />
+          <Route path="/kabiliyetler/:slug" element={<ServiceDetail />} />
+          <Route path="/endustriyel/:slug" element={<ServiceDetail />} />
+          <Route path="/giris" element={<Login />} />
+          <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/teklif-al" element={<TeklifAl />} />
+          <Route path="/cad-dashboard" element={<Navigate to="/teklif-al" replace />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </PageTransition>
   );
 
   return isPanel ? panelRoutes : publicRoutes;
