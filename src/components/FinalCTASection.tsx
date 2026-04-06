@@ -111,6 +111,7 @@ export const FinalCTASection = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      <AmbientGlowOverlay />
       {/* Flash cut white overlay */}
       {!prefersReduced && (
         <motion.div
