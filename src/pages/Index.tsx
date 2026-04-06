@@ -63,7 +63,8 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "hizli-teklif", label: "Hızlı Teklif" },
+  { id: "lav-sahne", label: "Ergitme" },
+  { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
