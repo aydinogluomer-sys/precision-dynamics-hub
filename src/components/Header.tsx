@@ -350,7 +350,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                                     <Link
                                       key={lIdx}
                                       to={link.path}
-                                      className="text-sm text-muted-foreground hover:text-primary transition-all"
+                                      className="nav-link-animated text-sm text-muted-foreground hover:text-primary transition-all"
                                     >
                                       {link.label}
                                     </Link>
