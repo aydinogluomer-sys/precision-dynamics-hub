@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { Reveal } from "@/components/ui/Reveal";
 import { TextHighlight } from "@/components/ui/TextHighlight";
 import { motion, useScroll, useTransform } from "framer-motion";
