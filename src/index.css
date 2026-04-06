@@ -607,6 +607,25 @@ body::after {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-block;
 }
-.cta-arrow:hover .arrow-icon {
-  transform: translateX(5px);
+
+/* ═══ Mobile Scroll Snap ═══ */
+@media (max-width: 768px) {
+  .snap-section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* ═══ iOS Safari Footer Fix ═══ */
+@supports (-webkit-touch-callout: none) {
+  footer.footer-reveal {
+    position: relative !important;
+  }
+}
+
+/* ═══ Lav sahne CSS custom property başlangıç değerleri ═══ */
+:root {
+  --lava-current-color: #ff6a00;
+  --lava-fill: 0%;
 }
