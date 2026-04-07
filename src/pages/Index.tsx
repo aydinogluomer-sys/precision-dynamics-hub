@@ -224,6 +224,9 @@ export const Index = () => {
           </Suspense>
         </Scene>
 
+        {/* Glow: Industries (light) → ProjectShowcase (dark) */}
+        <SectionTransitionGlow variant="light-to-dark" z={10} toColor="hsl(var(--forge-obsidian))" />
+
         {/* 10 — ProjectShowcase (flow, internal pin) */}
         <FlowScene z={10}>
           <Suspense fallback={<SectionLoader />}>
