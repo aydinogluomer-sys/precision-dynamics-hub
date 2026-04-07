@@ -157,6 +157,7 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
     <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
+    <TiltWrapper>
     <div className="flip-card material-card h-full cursor-pointer group/card">
       <div
         className="flip-card-inner w-full h-full"
