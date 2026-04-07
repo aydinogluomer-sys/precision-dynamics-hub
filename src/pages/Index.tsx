@@ -10,6 +10,7 @@ import { PageLoader } from "@/components/PageLoader";
 
 import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
+import { SectionTransitionGlow } from "@/components/ui/SectionTransitionGlow";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
