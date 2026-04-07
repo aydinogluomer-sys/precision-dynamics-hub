@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
+import { useTilt } from "@/hooks/useTilt";
 import materialAluminium from "@/assets/material-aluminium.jpg";
 import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
 import { OverlayReveal } from "./ui/OverlayReveal";
+
+const isTouchDevice =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: none)').matches;
 
 const materials = [
   {
