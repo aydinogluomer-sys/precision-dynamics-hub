@@ -10,6 +10,7 @@ import { PageLoader } from "@/components/PageLoader";
 
 import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
 import { SectionDotNav } from "@/components/SectionDotNav";
+import { SectionTransitionGlow } from "@/components/ui/SectionTransitionGlow";
 
 import { CNCScrollStory } from "@/components/CNCScrollStory";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -176,10 +177,16 @@ export const Index = () => {
           <NexusPromoSection />
         </Scene>
 
+        {/* Glow: Nexus (dark) → HowWeWork (light) */}
+        <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
         <FlowScene z={5} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <HowWeWorkSection />
         </FlowScene>
+
+        {/* Glow: HowWeWork (light) → Certifications (dark) */}
+        <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
 
         {/* 6 — Certifications (sticky) */}
         <Scene z={6} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
@@ -192,6 +199,9 @@ export const Index = () => {
             <VideoScrollSection />
           </Suspense>
         </FlowScene>
+
+        {/* Glow: VideoScroll (dark) → Services (light) */}
+        <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
 
         {/* 8 — Services (sticky) */}
         <Scene z={8} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
@@ -213,6 +223,9 @@ export const Index = () => {
             <IndustriesSection />
           </Suspense>
         </Scene>
+
+        {/* Glow: Industries (light) → ProjectShowcase (dark) */}
+        <SectionTransitionGlow variant="light-to-dark" z={10} toColor="hsl(var(--forge-obsidian))" />
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
         <FlowScene z={10}>
@@ -257,6 +270,9 @@ export const Index = () => {
           </Suspense>
         </Scene>
 
+        {/* Glow: WhyUs (dark) → Capabilities (light) */}
+        <SectionTransitionGlow variant="dark-to-light" z={14} fromColor="hsl(var(--forge-gunmetal))" />
+
         {/* 14 — Capabilities (sticky) */}
         <Scene z={14} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
@@ -265,7 +281,7 @@ export const Index = () => {
         </Scene>
 
         {/* 15 — Testimonials (sticky, subtle grain/tone shift from Capabilities) */}
-        <Scene z={15} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+        <Scene z={15} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
@@ -277,6 +293,9 @@ export const Index = () => {
             <FAQBlogSection />
           </Suspense>
         </Scene>
+
+        {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
+        <SectionTransitionGlow variant="light-to-dark" z={17} toColor="hsl(var(--forge-obsidian))" />
 
         {/* 17 — FinalCTA (sticky, last) */}
         <Scene z={17} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
