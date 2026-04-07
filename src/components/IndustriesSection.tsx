@@ -6,6 +6,8 @@ import { gsap } from "@/hooks/use-gsap";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
 import { Badge } from "./ui/badge";
+import { useTilt } from "@/hooks/useTilt";
+import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 
 import imgAerospace from "@/assets/industry-aerospace.jpg";
 import imgDefense from "@/assets/industry-defense.jpg";
