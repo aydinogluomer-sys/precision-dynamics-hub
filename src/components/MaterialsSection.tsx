@@ -275,6 +275,8 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
 export const MaterialsSection = () => {
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
+  const gridRef = useRef<HTMLDivElement>(null);
+  useStaggeredReveal(gridRef, 0.08);
   const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
   const tiltAnimate = { opacity: 1, rotateX: 0 };
 
