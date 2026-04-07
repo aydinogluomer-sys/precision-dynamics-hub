@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
+import { useTilt } from "@/hooks/useTilt";
 import materialAluminium from "@/assets/material-aluminium.jpg";
 import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
 import { OverlayReveal } from "./ui/OverlayReveal";
+
+const isTouchDevice =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: none)').matches;
 
 const materials = [
   {
@@ -153,10 +159,31 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
   );
 };
 
+/* ── Tilt Wrapper for desktop cards ── */
+const TiltWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(3);
+
+  if (isTouchDevice) return <div className="h-full">{children}</div>;
+
+  return (
+    <div
+      ref={tiltRef}
+      className="relative h-full"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ willChange: 'transform' }}
+    >
+      <div ref={spotRef} className="absolute inset-0 z-10 pointer-events-none" />
+      {children}
+    </div>
+  );
+};
+
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
     <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
+    <TiltWrapper>
     <div className="flip-card material-card h-full cursor-pointer group/card">
       <div
         className="flip-card-inner w-full h-full"
@@ -240,6 +267,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
         </div>
       </div>
     </div>
+    </TiltWrapper>
     </OverlayReveal>
   );
 };
@@ -247,6 +275,8 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
 export const MaterialsSection = () => {
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
+  const gridRef = useRef<HTMLDivElement>(null);
+  useStaggeredReveal(gridRef, 0.08);
   const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
   const tiltAnimate = { opacity: 1, rotateX: 0 };
 
@@ -300,12 +330,12 @@ export const MaterialsSection = () => {
           </p>
         </div>
 
-        <div className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
+        <div ref={gridRef} className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
           {materials.map((mat, i) =>
             isMobile ? (
-              <MobileMaterialCard key={mat.name} mat={mat} />
+              <div key={mat.name} data-stagger><MobileMaterialCard mat={mat} /></div>
             ) : (
-              <DesktopMaterialCard key={mat.name} mat={mat} index={i} />
+              <div key={mat.name} data-stagger><DesktopMaterialCard mat={mat} index={i} /></div>
             ),
           )}
         </div>

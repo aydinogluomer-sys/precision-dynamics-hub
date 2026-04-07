@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionHeader } from "./SectionHeader";
 import { OverlayReveal } from "./ui/OverlayReveal";
 import { BlurImage } from "./BlurImage";
-
+import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
@@ -145,10 +145,10 @@ const ServicesDualColumn = () => {
                 </p>
                 <Link
                   to={s.link}
-                  className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
+                  className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors cta-arrow"
                 >
                   {s.cta}
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
                 </Link>
               </div>
             </div>
@@ -190,29 +190,34 @@ const ServicesDualColumn = () => {
 };
 
 /* ── Mobile: Compact card list ── */
-const ServicesMobileList = () => (
-  <div className="flex flex-col gap-4">
-    {services.map((s, i) => (
-      <Link key={s.title} to={s.link} className="group block">
-        <div className="flex gap-4 border border-border/30 bg-card overflow-hidden hover:border-primary/40 transition-colors">
-          <div className="w-24 h-24 flex-shrink-0 overflow-hidden">
-            <BlurImage src={s.image} alt={s.title} className="w-full h-full object-cover" />
+const ServicesMobileList = () => {
+  const listRef = useRef<HTMLDivElement>(null);
+  useStaggeredReveal(listRef, 0.07);
+
+  return (
+    <div ref={listRef} className="flex flex-col gap-4">
+      {services.map((s, i) => (
+        <Link key={s.title} to={s.link} className="group block" data-stagger>
+          <div className="flex gap-4 border border-border/30 bg-card overflow-hidden hover:border-primary/40 transition-colors">
+            <div className="w-24 h-24 flex-shrink-0 overflow-hidden">
+              <BlurImage src={s.image} alt={s.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="py-3 pr-4 flex flex-col justify-center">
+              <span className="text-[9px] font-mono text-muted-foreground/50 mb-1">
+                {String(i + 1).padStart(2, "0")}/{String(services.length).padStart(2, "0")}
+              </span>
+              <h3 className="text-sm font-bold tracking-tight mb-1">{s.title}</h3>
+              <span className="text-xs text-primary flex items-center gap-1 cta-arrow">
+                {"Detaylar"}
+                <ArrowRight className="w-3 h-3 arrow-icon" />
+              </span>
+            </div>
           </div>
-          <div className="py-3 pr-4 flex flex-col justify-center">
-            <span className="text-[9px] font-mono text-muted-foreground/50 mb-1">
-              {String(i + 1).padStart(2, "0")}/{String(services.length).padStart(2, "0")}
-            </span>
-            <h3 className="text-sm font-bold tracking-tight mb-1">{s.title}</h3>
-            <span className="text-xs text-primary flex items-center gap-1">
-              {"Detaylar"}
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-            </span>
-          </div>
-        </div>
-      </Link>
-    ))}
-  </div>
-);
+        </Link>
+      ))}
+    </div>
+  );
+};
 
 export const ServicesSection = () => {
   const isMobile = useIsMobile();
