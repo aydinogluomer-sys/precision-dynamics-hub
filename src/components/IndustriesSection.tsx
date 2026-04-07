@@ -95,10 +95,17 @@ const chipVariants = {
   }),
 };
 
+const isTouchDevice =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: none)').matches;
+
 export const IndustriesSection = () => {
   const track1Ref = useRef<HTMLDivElement>(null);
   const track2Ref = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
+
+  useStaggeredReveal(gridRef, 0.06);
 
   useEffect(() => {
     if (prefersReduced) return;
