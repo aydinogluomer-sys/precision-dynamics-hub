@@ -330,12 +330,12 @@ export const MaterialsSection = () => {
           </p>
         </div>
 
-        <div className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
+        <div ref={gridRef} className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
           {materials.map((mat, i) =>
             isMobile ? (
-              <MobileMaterialCard key={mat.name} mat={mat} />
+              <div key={mat.name} data-stagger><MobileMaterialCard mat={mat} /></div>
             ) : (
-              <DesktopMaterialCard key={mat.name} mat={mat} index={i} />
+              <div key={mat.name} data-stagger><DesktopMaterialCard mat={mat} index={i} /></div>
             ),
           )}
         </div>
