@@ -153,6 +153,26 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
   );
 };
 
+/* ── Tilt Wrapper for desktop cards ── */
+const TiltWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(3);
+
+  if (isTouchDevice) return <div className="h-full">{children}</div>;
+
+  return (
+    <div
+      ref={tiltRef}
+      className="relative h-full"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ willChange: 'transform' }}
+    >
+      <div ref={spotRef} className="absolute inset-0 z-10 pointer-events-none" />
+      {children}
+    </div>
+  );
+};
+
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (

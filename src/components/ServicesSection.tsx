@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionHeader } from "./SectionHeader";
 import { OverlayReveal } from "./ui/OverlayReveal";
 import { BlurImage } from "./BlurImage";
-
+import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
