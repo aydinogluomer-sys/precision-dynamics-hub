@@ -200,6 +200,9 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
+        {/* Glow: VideoScroll (dark) → Services (light) */}
+        <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
+
         {/* 8 — Services (sticky) */}
         <Scene z={8} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
