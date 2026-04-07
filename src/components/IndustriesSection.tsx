@@ -205,17 +205,14 @@ export const IndustriesSection = () => {
         </TextReveal>
 
         {/* Primary Industries — Large Cards */}
-        <motion.div
+        <div
+          ref={gridRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-12 md:mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
         >
           {primaryIndustries.map((industry, i) => (
             <PrimaryIndustryCard key={industry.name} industry={industry} index={i} isWide={i >= 3} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Secondary Industries — Chip/Badge Grid */}
         <motion.div
