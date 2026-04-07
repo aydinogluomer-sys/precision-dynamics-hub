@@ -177,10 +177,16 @@ export const Index = () => {
           <NexusPromoSection />
         </Scene>
 
+        {/* Glow: Nexus (dark) → HowWeWork (light) */}
+        <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
         <FlowScene z={5} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <HowWeWorkSection />
         </FlowScene>
+
+        {/* Glow: HowWeWork (light) → Certifications (dark) */}
+        <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
 
         {/* 6 — Certifications (sticky) */}
         <Scene z={6} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
