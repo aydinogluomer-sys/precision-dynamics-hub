@@ -145,10 +145,10 @@ const ServicesDualColumn = () => {
                 </p>
                 <Link
                   to={s.link}
-                  className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors"
+                  className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors cta-arrow"
                 >
                   {s.cta}
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
                 </Link>
               </div>
             </div>

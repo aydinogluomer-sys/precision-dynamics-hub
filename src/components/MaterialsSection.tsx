@@ -241,6 +241,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
         </div>
       </div>
     </div>
+    </TiltWrapper>
     </OverlayReveal>
   );
 };

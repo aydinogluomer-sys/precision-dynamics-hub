@@ -256,39 +256,66 @@ export const IndustriesSection = () => {
 };
 
 /* Primary card — large image + content */
-const PrimaryIndustryCard = ({ industry, index, isWide }: { industry: Industry; index: number; isWide: boolean }) => (
-  <motion.div
-    custom={index}
-    variants={cardVariants}
-    className={`group bg-card border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
-  >
-    <div className="relative h-52 md:h-60 overflow-hidden bg-card">
-      <BlurImage
-        src={industry.image}
-        alt={industry.name}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
-      <div className="absolute bottom-3 left-4 z-10">
-        <div
-          className="px-2.5 py-1 border border-border/60 backdrop-blur-sm inline-block"
-          style={{ backgroundColor: "hsl(var(--forge-molten) / 0.12)" }}
-        >
-          <span className="text-technical text-[11px] font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>
-            {industry.highlight}
-          </span>
+const PrimaryIndustryCard = ({ industry, index, isWide }: { industry: Industry; index: number; isWide: boolean }) => {
+  const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(3);
+
+  const cardContent = (
+    <>
+      <div className="relative h-52 md:h-60 overflow-hidden bg-card">
+        <BlurImage
+          src={industry.image}
+          alt={industry.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent pointer-events-none" />
+        <div className="absolute bottom-3 left-4 z-10">
+          <div
+            className="px-2.5 py-1 border border-border/60 backdrop-blur-sm inline-block"
+            style={{ backgroundColor: "hsl(var(--forge-molten) / 0.12)" }}
+          >
+            <span className="text-technical text-[11px] font-semibold" style={{ color: "hsl(var(--forge-steel))" }}>
+              {industry.highlight}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="p-5 md:p-6 flex-1 flex flex-col">
-      <h3 className="font-semibold text-base md:text-lg mb-2">{industry.name}</h3>
-      <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
-      <a
-        href="#teklif"
-        className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors mt-auto"
+      <div className="p-5 md:p-6 flex-1 flex flex-col">
+        <h3 className="font-semibold text-base md:text-lg mb-2">{industry.name}</h3>
+        <p className="text-sm text-foreground/70 mb-4 flex-1 leading-relaxed">{industry.description}</p>
+        <a
+          href="#teklif"
+          className="text-sm font-semibold text-primary hover:text-accent flex items-center gap-1.5 transition-colors mt-auto cta-arrow"
+        >
+          <span>Detaylı Bilgi</span> <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
+        </a>
+      </div>
+    </>
+  );
+
+  if (isTouchDevice) {
+    return (
+      <div
+        data-stagger
+        className={`group bg-card border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
       >
-        <span>Detaylı Bilgi</span> <ArrowRight className="w-3.5 h-3.5" />
-      </a>
+        {cardContent}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={tiltRef}
+      data-stagger
+      className={`group bg-card border border-border overflow-hidden hover:border-primary/40 transition-all duration-300 hover:shadow-lg rounded-sm flex flex-col ${isWide ? "sm:col-span-1 lg:col-span-1" : ""}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ willChange: 'transform' }}
+    >
+      {!isTouchDevice && (
+        <div ref={spotRef} className="absolute inset-0 z-10 pointer-events-none rounded-sm" />
+      )}
+      {cardContent}
     </div>
-  </motion.div>
-);
+  );
+};
