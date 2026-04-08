@@ -68,7 +68,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     if (prefersReduced) return;
     const scroller = scrollerRef.current;
     const masked = maskedRef.current;
-    const bgImg = bgImgRef.current;
+    
     const content = contentRef.current;
     const grid = gridRef.current;
     const horizontalWrap = horizontalWrapRef.current;
