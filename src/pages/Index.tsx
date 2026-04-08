@@ -250,7 +250,9 @@ export const Index = () => {
         {/* GlowLine: Services → Industries (Açık → Açık) */}
         <div className="relative" style={{ zIndex: 8, backgroundColor: "hsl(var(--forge-concrete))" }}>
           <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <GlowLineDivider />
+            <Suspense fallback={null}>
+              <GlowLineDivider />
+            </Suspense>
           </div>
         </div>
 
