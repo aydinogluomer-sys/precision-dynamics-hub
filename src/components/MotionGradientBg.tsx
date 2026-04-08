@@ -2,6 +2,7 @@
  * MotionGradientBg.tsx — WebGL shader-based animated gradient background
  * Modes: Flow (0), Pulse (1), Vortex (2), Aurora (3)
  * Blue-black color ramp with temperature slider support.
+ * IO-based pause: stops rAF when not in viewport.
  */
 import { useRef, useEffect, useCallback } from "react";
 
@@ -213,9 +214,11 @@ export const MotionGradientBg = ({
   className = "",
 }: MotionGradientBgProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programRef = useRef<WebGLProgram | null>(null);
   const uniformsRef = useRef<Record<string, WebGLUniformLocation | null>>({});
+  const isVisibleRef = useRef(false);
   const stateRef = useRef({
     mouseX: 0.5,
     mouseY: 0.5,
@@ -270,6 +273,18 @@ export const MotionGradientBg = ({
     };
   }, []);
 
+  // IO-based visibility tracking
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     initGL();
 
@@ -297,6 +312,10 @@ export const MotionGradientBg = ({
     window.addEventListener("mousemove", onMouseMove);
 
     const frame = (ts: number) => {
+      stateRef.current.animId = requestAnimationFrame(frame);
+
+      if (!isVisibleRef.current) return;
+
       const st = stateRef.current;
       const t = ts * 0.001;
 
@@ -310,8 +329,6 @@ export const MotionGradientBg = ({
       gl.uniform1f(u.uMode, st.currentMode);
       gl.uniform1f(u.uTemp, st.currentTemp);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-      st.animId = requestAnimationFrame(frame);
     };
 
     stateRef.current.animId = requestAnimationFrame(frame);
@@ -323,7 +340,7 @@ export const MotionGradientBg = ({
     };
   }, [initGL]);
 
-  // Update mode/temp from props — fixed rAF leak
+  // Update mode/temp from props
   useEffect(() => {
     const st = stateRef.current;
     let rafId: number;
@@ -338,7 +355,7 @@ export const MotionGradientBg = ({
       const tempDiff = Math.abs(st.currentTemp - temperature);
       st.currentTemp += (temperature - st.currentTemp) * 0.06;
       if (tempDiff < 0.005) {
-        if (settled) return; // stop looping once settled
+        if (settled) return;
         settled = true;
       } else {
         settled = false;
@@ -350,10 +367,12 @@ export const MotionGradientBg = ({
   }, [mode, temperature]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={className}
-      style={{ display: "block", width: "100%", height: "100%" }}
-    />
+    <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+      <canvas
+        ref={canvasRef}
+        className={className}
+        style={{ display: "block", width: "100%", height: "100%" }}
+      />
+    </div>
   );
 };
