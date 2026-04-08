@@ -94,7 +94,6 @@ export const MoldCastScene = () => {
     <div
       ref={containerRef}
       className="relative h-[400vh]"
-      style={{ zIndex: Z.moldCast }}
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"

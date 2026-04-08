@@ -79,7 +79,6 @@ export const LavaTypographyScene = () => {
     <div
       ref={containerRef}
       className="relative h-[300vh]"
-      style={{ zIndex: Z.lavaTypography }}
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
