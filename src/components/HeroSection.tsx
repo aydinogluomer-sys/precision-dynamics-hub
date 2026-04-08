@@ -350,20 +350,6 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               />
             </div>
 
-            {/* Layer 3: Background image fade-in */}
-            <div
-              ref={bgImgRef}
-              className="absolute inset-0 z-[2] pointer-events-none"
-              style={{ opacity: prefersReduced ? 0.6 : 0 }}
-            >
-              <img
-                src={heroBg}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover"
-                style={{ filter: "brightness(0.75) saturate(1.1)" }}
-              />
-            </div>
 
             {/* Layer 4: Grid overlay */}
             <div
