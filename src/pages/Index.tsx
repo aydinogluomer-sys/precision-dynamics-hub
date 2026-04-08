@@ -156,7 +156,9 @@ export const Index = () => {
       <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <SectionDotNav sections={SECTIONS} />
+      <Suspense fallback={null}>
+        <SectionDotNav sections={SECTIONS} />
+      </Suspense>
 
       <main id="main-content" className="relative">
         {/* 1 — Hero + QuickQuote */}
