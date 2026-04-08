@@ -27,27 +27,6 @@ const headlines = [
   "Stabil Kalite &\nGüvenilir Teslimat",
 ];
 
-const subtitleLines = [
-  "CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti,",
-  "yüksek doğruluk ve proses kontrollü üretim anlayışıyla,",
-  "stabil kalite ve zamanında teslimat odaklı mühendislik çözümleri sunuyoruz.",
-];
-
-const subtitleVariants = {
-  hidden: { y: -80, opacity: 0, filter: "blur(10px)" },
-  visible: (i: number) => ({
-    y: 0,
-    opacity: 1,
-    filter: "blur(0px)",
-    transition: {
-      delay: i * 0.3,
-      duration: 1,
-      ease: [0.175, 0.885, 0.32, 1.275] as [number, number, number, number],
-      opacity: { duration: 0.6, delay: i * 0.3 },
-      filter: { duration: 0.8, delay: i * 0.3 },
-    },
-  }),
-};
 
 interface HeroSectionProps {
   isFirstVisit?: boolean;
