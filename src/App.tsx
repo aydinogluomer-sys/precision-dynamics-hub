@@ -39,8 +39,11 @@ const TestHowWeWork = lazy(() => import("./pages/TestHowWeWork").then((m) => ({ 
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CustomerProtectedRoute } from "./components/CustomerProtectedRoute";
-import { ChatBot } from "@/components/ChatBot";
-import { CustomCursor } from "@/components/ui/CustomCursor";
+
+const ChatBot = lazy(() => import("@/components/ChatBot").then((m) => ({ default: m.ChatBot })));
+const CustomCursor = lazy(() =>
+  import("@/components/ui/CustomCursor").then((m) => ({ default: m.CustomCursor })),
+);
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">

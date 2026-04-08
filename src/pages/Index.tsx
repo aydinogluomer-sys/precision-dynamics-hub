@@ -1,23 +1,40 @@
 import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
-import { NexusPromoSection } from "@/components/NexusPromoSection";
-import { HowWeWorkSection } from "@/components/HowWeWorkSection";
-import { CertificationsSection } from "@/components/CertificationsSection";
-import { Footer } from "@/components/Footer";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { PageLoader } from "@/components/PageLoader";
-
-import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
-import { SectionDotNav } from "@/components/SectionDotNav";
-import { SectionTransitionGlow } from "@/components/ui/SectionTransitionGlow";
-
-import { CNCScrollStory } from "@/components/CNCScrollStory";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LavaTypographyScene } from "@/components/LavaTypographyScene";
-import { MoldCastScene } from "@/components/MoldCastScene";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
 import { Z } from "@/styles/z-index";
+
+const NexusPromoSection = lazy(() =>
+  import("@/components/NexusPromoSection").then((m) => ({ default: m.NexusPromoSection })),
+);
+const HowWeWorkSection = lazy(() =>
+  import("@/components/HowWeWorkSection").then((m) => ({ default: m.HowWeWorkSection })),
+);
+const CertificationsSection = lazy(() =>
+  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+);
+const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
+const GlowLineDivider = lazy(() =>
+  import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
+);
+const SectionDotNav = lazy(() =>
+  import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
+);
+const SectionTransitionGlow = lazy(() =>
+  import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
+);
+const CNCScrollStory = lazy(() =>
+  import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
+);
+const LavaTypographyScene = lazy(() =>
+  import("@/components/LavaTypographyScene").then((m) => ({ default: m.LavaTypographyScene })),
+);
+const MoldCastScene = lazy(() =>
+  import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
+);
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
