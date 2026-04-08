@@ -3,7 +3,6 @@ import { gsap } from '@/hooks/use-gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { AmbientGlowOverlay } from '@/components/ui/AmbientGlowOverlay';
-import { Z } from '@/styles/z-index';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,7 +60,6 @@ export const LavaTypographyScene = () => {
         className="h-screen flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, #ff6a00, #b8451a)',
-          zIndex: Z.lavaTypography,
         }}
       >
         <span
@@ -81,7 +79,6 @@ export const LavaTypographyScene = () => {
     <div
       ref={containerRef}
       className="relative h-[300vh]"
-      style={{ zIndex: Z.lavaTypography }}
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"

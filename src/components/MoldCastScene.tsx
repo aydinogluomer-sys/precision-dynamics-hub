@@ -3,7 +3,6 @@ import { gsap } from '@/hooks/use-gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { AmbientGlowOverlay } from '@/components/ui/AmbientGlowOverlay';
-import { Z } from '@/styles/z-index';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -76,7 +75,7 @@ export const MoldCastScene = () => {
     return (
       <div
         className="h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#c0c0c0', zIndex: Z.moldCast }}
+        style={{ backgroundColor: '#c0c0c0' }}
       >
         <span
           className="font-mono font-bold select-none"
@@ -95,7 +94,6 @@ export const MoldCastScene = () => {
     <div
       ref={containerRef}
       className="relative h-[400vh]"
-      style={{ zIndex: Z.moldCast }}
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
