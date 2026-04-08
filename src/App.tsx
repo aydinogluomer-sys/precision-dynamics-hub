@@ -159,7 +159,9 @@ const AppContent = () => {
     <>
       <ScrollToTop />
       <AnimatedRoutes />
-      <ChatBot />
+      <Suspense fallback={null}>
+        <ChatBot />
+      </Suspense>
     </>
   );
 
