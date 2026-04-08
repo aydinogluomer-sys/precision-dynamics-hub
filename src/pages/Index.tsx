@@ -6,7 +6,7 @@ import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { PageLoader } from "@/components/PageLoader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
-import { Z } from "@/styles/z-index";
+import { Z, SECTION_Z } from "@/styles/z-index";
 
 const NexusPromoSection = lazy(() =>
   import("@/components/NexusPromoSection").then((m) => ({ default: m.NexusPromoSection })),

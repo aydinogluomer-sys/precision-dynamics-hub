@@ -17,3 +17,33 @@ export const Z = {
 } as const;
 
 export type ZLayer = keyof typeof Z;
+
+/** Section stacking order — ascending so each section covers the previous */
+export const SECTION_Z = {
+  hero:                    1,
+  lavaTypography:          2,
+  moldCast:                3,
+  cncStory:                4,
+  nexus:                   5,
+  nexusToHwwGlow:          6,
+  howWeWork:               7,
+  hwwToCertGlow:           8,
+  certifications:          9,
+  videoScroll:             10,
+  videoToServicesGlow:     11,
+  services:                12,
+  glowLine:                12,
+  industries:              13,
+  industriesToProjectGlow: 14,
+  projectShowcase:         15,
+  materialMorph:           16,
+  materials:               17,
+  wave:                    18,
+  whyUs:                   19,
+  whyToCapGlow:            20,
+  capabilities:            21,
+  testimonials:            22,
+  faqBlog:                 23,
+  faqToCtaGlow:            24,
+  finalCta:                25,
+} as const;

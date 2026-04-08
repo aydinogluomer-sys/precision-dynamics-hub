@@ -3,7 +3,6 @@ import { gsap } from '@/hooks/use-gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { AmbientGlowOverlay } from '@/components/ui/AmbientGlowOverlay';
-import { Z } from '@/styles/z-index';
 
 gsap.registerPlugin(ScrollTrigger);
 
