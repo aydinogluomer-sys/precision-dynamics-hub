@@ -238,7 +238,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "650vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
       <section
         ref={stickyRef}
         className="sticky top-0 h-screen overflow-hidden"
