@@ -350,7 +350,9 @@ export const Index = () => {
         </Scene>
       </main>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };
