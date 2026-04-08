@@ -443,22 +443,6 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                   </AnimatePresence>
                 </div>
 
-                {/* Subtitle — Staggered Drop */}
-                <div className="max-w-2xl mx-auto mb-10 space-y-1">
-                  {subtitleLines.map((line, i) => (
-                    <motion.p
-                      key={line}
-                      className="text-base sm:text-lg leading-relaxed"
-                      style={{ color: "rgba(255,255,255,0.7)" }}
-                      custom={i}
-                      variants={subtitleVariants}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      {line}
-                    </motion.p>
-                  ))}
-                </div>
 
                 {/* Scroll indicator */}
                 <motion.div
