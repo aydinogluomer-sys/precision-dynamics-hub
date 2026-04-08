@@ -75,7 +75,7 @@ export const MoldCastScene = () => {
     return (
       <div
         className="h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#c0c0c0', zIndex: Z.moldCast }}
+        style={{ backgroundColor: '#c0c0c0' }}
       >
         <span
           className="font-mono font-bold select-none"
