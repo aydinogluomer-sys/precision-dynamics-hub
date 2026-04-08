@@ -199,23 +199,33 @@ export const Index = () => {
 
         {/* 4 — NexusPromo (sticky) */}
         <Scene z={4} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <NexusPromoSection />
+          <Suspense fallback={<SectionLoader />}>
+            <NexusPromoSection />
+          </Suspense>
         </Scene>
 
         {/* Glow: Nexus (dark) → HowWeWork (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
         <FlowScene z={5} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
-          <HowWeWorkSection />
+          <Suspense fallback={<SectionLoader />}>
+            <HowWeWorkSection />
+          </Suspense>
         </FlowScene>
 
         {/* Glow: HowWeWork (light) → Certifications (dark) */}
-        <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 6 — Certifications (sticky) */}
         <Scene z={6} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <CertificationsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <CertificationsSection />
+          </Suspense>
         </Scene>
 
         {/* 7 — VideoScroll (flow, scroll-linked video) */}
