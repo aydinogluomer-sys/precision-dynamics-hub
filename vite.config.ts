@@ -24,6 +24,8 @@ export default defineConfig(({ mode }) => ({
           'vendor-fiber': ['@react-three/fiber', '@react-three/drei'],
           'vendor-gsap': ['gsap'],
           'vendor-framer': ['framer-motion'],
+          'vendor-recharts': ['recharts'],
+          'vendor-xlsx': ['xlsx-js-style'],
         },
       },
     },
