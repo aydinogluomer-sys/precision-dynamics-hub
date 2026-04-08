@@ -1,41 +1,118 @@
-Raporu okudum. Lovable için direkt execute edilebilir prompt yazıyorum — analiz değil, komut formatında.
+Bu plan doğru teşhis edilmiş. Lovable prompt:
 
 ---
 
 ```
-You are working on a React + Vite + GSAP + Three.js + Framer Motion project. 
-Apply ALL of the following fixes in order. Do NOT change any section's visual 
-design, color scheme, or content. Only fix the technical and UX issues listed.
+Fix critical z-index stacking issue. All middle sections 
+(NexusPromo through FinalCTA) are invisible during scroll — 
+early FlowScenes (z=10-12) are covering later sections (z=4-9).
+
+DO NOT change any visual design, animations, colors, or content.
+ONLY change z-index values and remove duplicate z-index declarations.
 
 ═══════════════════════════════════════════════════════
-PHASE 1 — CRITICAL FIXES (apply first, these break functionality)
+CHANGE 1 — src/styles/z-index.ts
 ═══════════════════════════════════════════════════════
 
-──────────────────────────────────────────────────────
-FIX 1 — HeadlineStagger.tsx: Add forwardRef
-──────────────────────────────────────────────────────
-Find HeadlineStagger.tsx. Wrap the component with React.forwardRef:
+Keep ALL existing utility z-index values (header, cursor, modal etc.) 
+exactly as they are. ADD this new export at the bottom of the file:
+
+```ts
+export const SECTION_Z = {
+  hero:                    1,
+  lavaTypography:          2,
+  moldCast:                3,
+  cncStory:                4,
+  nexus:                   5,
+  nexusToHwwGlow:          6,
+  howWeWork:               7,
+  hwwToCertGlow:           8,
+  certifications:          9,
+  videoScroll:             10,
+  videoToServicesGlow:     11,
+  services:                12,
+  glowLine:                12,
+  industries:              13,
+  industriesToProjectGlow: 14,
+  projectShowcase:         15,
+  materialMorph:           16,
+  materials:               17,
+  wave:                    18,
+  whyUs:                   19,
+  whyToCapGlow:            20,
+  capabilities:            21,
+  testimonials:            22,
+  faqBlog:                 23,
+  faqToCtaGlow:            24,
+  finalCta:                25,
+} as const
+
+```
+
+═══════════════════════════════════════════════════════ CHANGE 2 — src/pages/Index.tsx ═══════════════════════════════════════════════════════
+
+Add import at top:
+
+```ts
+import { SECTION_Z } from '@/styles/z-index'
+
+```
+
+Find every Scene and FlowScene wrapper that has a z prop or zIndex value. Replace each with the corresponding SECTION_Z value:
+
+
+| Component / wrapper      | Old z value | New z value                                 |
+| ------------------------ | ----------- | ------------------------------------------- |
+| Hero Scene/wrapper       | any         | SECTION_Z.hero                              |
+| LavaTypography FlowScene | 10          | SECTION_Z.lavaTypography                    |
+| MoldCast FlowScene       | 11          | SECTION_Z.moldCast                          |
+| CNCScrollStory FlowScene | 12          | SECTION_Z.cncStory                          |
+| NexusPromo Scene         | 4           | SECTION_[Z.nexus](http://Z.nexus)           |
+| nexusToHwwGlow           | any         | SECTION_Z.nexusToHwwGlow                    |
+| HowWeWork Scene          | 5           | SECTION_Z.howWeWork                         |
+| hwwToCertGlow            | any         | SECTION_Z.hwwToCertGlow                     |
+| Certifications Scene     | 6           | SECTION_Z.certifications                    |
+| VideoScroll Scene        | 7           | SECTION_Z.videoScroll                       |
+| videoToServicesGlow      | any         | SECTION_Z.videoToServicesGlow               |
+| Services Scene           | 8           | SECTION_[Z.services](http://Z.services)     |
+| glowLine                 | any         | SECTION_Z.glowLine                          |
+| Industries Scene         | 9           | SECTION_[Z.industries](http://Z.industries) |
+| industriesToProjectGlow  | any         | SECTION_Z.industriesToProjectGlow           |
+| ProjectShowcase Scene    | any         | SECTION_Z.projectShowcase                   |
+| MaterialMorph FlowScene  | any         | SECTION_Z.materialMorph                     |
+| Materials Scene          | any         | SECTION_Z.materials                         |
+| wave/transition          | any         | SECTION_Z.wave                              |
+| WhyUs Scene              | any         | SECTION_Z.whyUs                             |
+| whyToCapGlow             | any         | SECTION_Z.whyToCapGlow                      |
+| Capabilities Scene       | any         | SECTION_Z.capabilities                      |
+| Testimonials Scene       | any         | SECTION_Z.testimonials                      |
+| FaqBlog Scene            | any         | SECTION_Z.faqBlog                           |
+| faqToCtaGlow             | any         | SECTION_Z.faqToCtaGlow                      |
+| FinalCTA Scene           | 17          | SECTION_Z.finalCta                          |
+
+
+═══════════════════════════════════════════════════════ CHANGE 3 — src/components/LavaTypographyScene.tsx ═══════════════════════════════════════════════════════
+
+Find the root div of this component. If it has any of these:
+
+- style={{ zIndex: ... }}
+- style={{ zIndex: Z.lavaTypography }}
+- className containing z-10, z-[10], or any z-index Tailwind class
+
+REMOVE the zIndex from the root div entirely. The z-index is now controlled by the FlowScene wrapper in Index.tsx. Do not touch any other styles or logic in this file.
+
+═══════════════════════════════════════════════════════ CHANGE 4 — src/components/MoldCastScene.tsx ═══════════════════════════════════════════════════════
+
+Same as CHANGE 3. Find root div, remove any inline zIndex style or Tailwind z-index class from it. Leave everything else unchanged.
+
+═══════════════════════════════════════════════════════ CHANGE 5 — src/components/LiquidImage.tsx: forwardRef fix ═══════════════════════════════════════════════════════
+
+Wrap the component with React.forwardRef:
 
 ```tsx
 import { forwardRef } from 'react'
 
-export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
-  ({ text, scrollRotateX, ...props }, ref) => {
-    return (
-      <div ref={ref} {...props}>
-        {/* existing implementation unchanged */}
-      </div>
-    )
-  }
-)
-HeadlineStagger.displayName = 'HeadlineStagger'
-
-```
-
-────────────────────────────────────────────────────── FIX 2 — SectionHeader.tsx: Add forwardRef ────────────────────────────────────────────────────── Find SectionHeader.tsx. Apply identical forwardRef pattern:
-
-```tsx
-export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
+export const LiquidImage = forwardRef<HTMLDivElement, LiquidImageProps>(
   ({ ...props }, ref) => {
     return (
       <div ref={ref} {...props}>
@@ -44,293 +121,26 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
     )
   }
 )
-SectionHeader.displayName = 'SectionHeader'
+LiquidImage.displayName = 'LiquidImage'
 
 ```
 
-────────────────────────────────────────────────────── FIX 3 — HeadlineStagger.tsx: Fix mobile overflow ────────────────────────────────────────────────────── Find where fontSize is set (likely clamp(3.5rem, 9vw, 9rem)). Change to:
+═══════════════════════════════════════════════════════ VERIFICATION CHECKLIST ═══════════════════════════════════════════════════════
 
-```tsx
-fontSize: 'clamp(2.2rem, 7.5vw, 9rem)'
+After applying changes, confirm:
 
-```
+1. No two sections (excluding glowLine/services) share the same z-index
+2. SECTION_Z values range from 1-25 only
+3. Existing utility z-index values (header=50, cursor=90 etc.) are untouched
+4. LavaTypographyScene and MoldCastScene root divs have NO inline zIndex style
+5. FinalCTA z-index is 25, NOT 17
 
-Also add:
-
-```tsx
-wordBreak: 'break-word',
-overflowWrap: 'break-word',
-hyphens: 'auto',
-
-```
-
-────────────────────────────────────────────────────── FIX 4 — SectionDotNav.tsx: Add rAF throttle to scroll listener ────────────────────────────────────────────────────── Find the scroll event listener that calls updateActive(). Replace it with:
-
-```tsx
-useEffect(() => {
-  if (isHidden) return
-  let ticking = false
-
-  const onScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        updateActive()
-        ticking = false
-      })
-      ticking = true
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true })
-  return () => window.removeEventListener('scroll', onScroll)
-}, [updateActive, isHidden])
-
-```
-
-Also replace any document.getElementById calls inside updateActive with IntersectionObserver. If updateActive uses a loop of getElementById calls, replace with:
-
-```tsx
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setActive(entry.target.id)
-      }
-    })
-  },
-  { threshold: 0.5 }
-)
-
-sectionIds.forEach((id) => {
-  const el = document.getElementById(id)
-  if (el) observer.observe(el)
-})
-
-return () => observer.disconnect()
-
-```
-
-────────────────────────────────────────────────────── FIX 5 — Delete CursorFollower.tsx ────────────────────────────────────────────────────── Delete the file CursorFollower.tsx entirely. Remove any import of CursorFollower from App.tsx or any other file. Keep CustomCursor.tsx — it is the single cursor system.
-
-═══════════════════════════════════════════════════════ PHASE 2 — PERFORMANCE FIXES ═══════════════════════════════════════════════════════
-
-────────────────────────────────────────────────────── FIX 6 — HeroCanvas.tsx: Change position from fixed to absolute ────────────────────────────────────────────────────── Find HeroCanvas.tsx. Find className or style containing "fixed inset-0" or "position: fixed". Change to "absolute inset-0" or "position: absolute". Do not change any other styles.
-
-────────────────────────────────────────────────────── FIX 7 — HeroSection.tsx: Remove duplicate hero-cnc.jpg loads ────────────────────────────────────────────────────── hero-cnc.jpg is currently loaded 3 times:
-
-1. As video poster attribute
-2. As a masked layer img/div
-3. As a bgImg layer
-
-Keep only ONE instance — the masked layer. Remove the bgImg layer element entirely. For the video poster, use a low-quality placeholder (solid dark color or inline base64 1x1 pixel) instead of the full image.
-
-────────────────────────────────────────────────────── FIX 8 — HeroSection.tsx: Reduce scroll height from 650vh to 450vh ────────────────────────────────────────────────────── Find where Hero section height is defined as 650vh (likely in style={{ height: '650vh' }} or a className). Change to 450vh.
-
-Then find the GSAP ScrollTrigger phases. There are 4 phases. Remove Phase 2 entirely (the pause/hold phase, typically 45-60% of scroll progress). Compress the remaining 3 phases to fill 0-100%:
-
-- Phase 1 (mask reveal): 0% → 45%
-- Phase 3 (horizontal slide): 45% → 85%
-- Phase 4 (lava/exit): 85% → 100%
-
-────────────────────────────────────────────────────── FIX 9 — MotionGradientBg.tsx: Pause WebGL when not in viewport ────────────────────────────────────────────────────── Find MotionGradientBg.tsx. Add IntersectionObserver to pause the rAF loop when not visible:
-
-```tsx
-const containerRef = useRef<HTMLDivElement>(null)
-const isVisibleRef = useRef(false)
-
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => { isVisibleRef.current = entry.isIntersecting },
-    { threshold: 0 }
-  )
-  if (containerRef.current) observer.observe(containerRef.current)
-  return () => observer.disconnect()
-}, [])
-
-// Inside the rAF loop, add at the top:
-// if (!isVisibleRef.current) return
-
-```
-
-────────────────────────────────────────────────────── FIX 10 — servicePages.ts: Convert to lazy import ────────────────────────────────────────────────────── Find all files that import from servicePages.ts at the top level. Convert to dynamic imports inside the component:
-
-```tsx
-// BEFORE:
-import { servicePages } from '@/data/servicePages'
-
-// AFTER:
-const [servicePages, setServicePages] = useState(null)
-useEffect(() => {
-  import('@/data/servicePages').then((m) => setServicePages(m.servicePages))
-}, [])
-
-```
-
-═══════════════════════════════════════════════════════ PHASE 3 — SCROLL SYSTEM FIXES ═══════════════════════════════════════════════════════
-
-────────────────────────────────────────────────────── FIX 11 — PageLoader.tsx: Lock scroll during loader ────────────────────────────────────────────────────── Find PageLoader.tsx. Add scroll locking logic:
-
-```tsx
-useEffect(() => {
-  if (isVisible) {
-    // Lock scroll when loader is active
-    document.body.style.overflow = 'hidden'
-    if (window.__lenis) window.__lenis.stop()
-  } else {
-    // Unlock scroll when loader finishes
-    document.body.style.overflow = ''
-    
-    setTimeout(() => {
-      if (window.__lenis) {
-        window.__lenis.scrollTo(0, { immediate: true })
-        window.__lenis.start()
-      } else {
-        window.scrollTo(0, 0)
-      }
-      // Recalculate all ScrollTrigger positions
-      ScrollTrigger.refresh()
-    }, 100)
-  }
-}, [isVisible])
-
-```
-
-Add this type declaration at the top of the file (outside component):
-
-```tsx
-declare global {
-  interface Window { __lenis?: import('lenis').default }
-}
-
-```
-
-────────────────────────────────────────────────────── FIX 12 — SmoothScrollProvider.tsx: Start Lenis in stopped state ────────────────────────────────────────────────────── Find SmoothScrollProvider.tsx. After lenis is initialized, immediately call lenis.stop() on first visit:
-
-```tsx
-const isFirstVisit = !sessionStorage.getItem('visited')
-
-// After lenis initialization:
-if (isFirstVisit) {
-  lenis.stop()
-} else {
-  lenis.start()
-}
-
-sessionStorage.setItem('visited', 'true')
-
-// Expose lenis instance globally for PageLoader
-;(window as Window & { __lenis?: typeof lenis }).__lenis = lenis
-
-```
-
-────────────────────────────────────────────────────── FIX 13 — Index.tsx: ResizeObserver for ScrollTrigger.refresh() ────────────────────────────────────────────────────── Find Index.tsx (or the main page component). Add ResizeObserver on the main container:
-
-```tsx
-const mainRef = useRef<HTMLElement>(null)
-
-useEffect(() => {
-  const el = mainRef.current
-  if (!el) return
-
-  let prevHeight = el.offsetHeight
-  let debounceTimer: ReturnType<typeof setTimeout>
-
-  const observer = new ResizeObserver(() => {
-    const newHeight = el.offsetHeight
-    // Only fire on actual height change, not first render
-    if (newHeight !== prevHeight) {
-      prevHeight = newHeight
-      clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => {
-        ScrollTrigger.refresh()
-      }, 200)
-    }
-  })
-
-  observer.observe(el)
-  return () => {
-    observer.disconnect()
-    clearTimeout(debounceTimer)
-  }
-}, [])
-
-// Add ref to main element:
-// <main ref={mainRef}>
-
-```
-
-═══════════════════════════════════════════════════════ PHASE 4 — CONTENT & STRUCTURAL FIXES ═══════════════════════════════════════════════════════
-
-────────────────────────────────────────────────────── FIX 14 — IndustriesSection.tsx: Fix empty content ────────────────────────────────────────────────────── Find IndustriesSection.tsx. The section has a marquee band and title but no cards are rendering.
-
-Check if:
-
-1. Card data array exists but map() is not called
-2. Conditional render is blocking (e.g. data is null/undefined)
-3. CSS is hiding cards (overflow:hidden + height:0)
-
-Fix whichever is the cause. If card data is missing entirely, add placeholder cards with this structure:
-
-```tsx
-const industries = [
-  { id: 1, title: 'Savunma Sanayii', icon: '⚙️' },
-  { id: 2, title: 'Havacılık', icon: '✈️' },
-  { id: 3, title: 'Medikal', icon: '🔬' },
-  { id: 4, title: 'Otomotiv', icon: '🚗' },
-  { id: 5, title: 'Denizcilik', icon: '⚓' },
-  { id: 6, title: 'Enerji', icon: '⚡' },
-]
-
-```
-
-────────────────────────────────────────────────────── FIX 15 — Sticky z-index stacking order ────────────────────────────────────────────────────── Find all section components that use position:sticky and have z-index values. There are approximately 18 such sections with z-index 1-17.
-
-Ensure z-index values are assigned in DESCENDING order — the FIRST section should have the HIGHEST z-index so it appears on top when sections stack:
-
-```
-HeroSection:        z-index: 18
-LavaTypography:     z-index: 17
-MoldCast:           z-index: 16
-CNCScrollStory:     z-index: 15
-NexusPromo:         z-index: 14
-HowWeWork:          z-index: 13
-Certifications:     z-index: 12
-VideoScroll:        z-index: 11
-Services:           z-index: 10
-Industries:         z-index: 9
-ProjectShowcase:    z-index: 8
-MaterialMorph:      z-index: 7
-Materials:          z-index: 6
-WhyUs:              z-index: 5
-Capabilities:       z-index: 4
-Testimonials:       z-index: 3
-FAQ:                z-index: 2
-FinalCTA:           z-index: 1
-
-```
-
-Apply these z-index values to each section's wrapper element.
-
-═══════════════════════════════════════════════════════ EXECUTION ORDER — IMPORTANT ═══════════════════════════════════════════════════════
-
-Apply fixes in this exact order:
-
-1. FIX 5 (delete CursorFollower) — prevents conflicts
-2. FIX 1, FIX 2 (forwardRef) — stops console spam
-3. FIX 15 (z-index) — structural
-4. FIX 11, FIX 12, FIX 13 (scroll system) — scroll lock
-5. FIX 4 (SectionDotNav) — scroll performance
-6. FIX 3 (mobile font) — visual
-7. FIX 6, FIX 7, FIX 8 (hero fixes) — hero performance
-8. FIX 9, FIX 10 (lazy/IO fixes) — general performance
-9. FIX 14 (Industries content) — content fix
-
-Do NOT modify: color scheme, typography choices, animation easing curves, section order, or any content/copy. Do NOT add new dependencies. Report which files were modified after completion.
+Do NOT modify: animations, scroll behavior, colors, component logic, or any file not listed above. Report the exact z-index value applied to each section after completion.
 
 ```
 
 ---
 
-**Performans Notu:** Bu prompt'u **tek seferde** verme — Lovable 15 fix'i aynı anda almak yerine bazen yarısında karışıyor. Phase 1 → build al → Phase 2 → build al → Phase 3+4 şeklinde ver. Her phase sonrası build log'unu paylaş, sıradakini buna göre ayarlayalım.
-
+**Performans Notu:** Bu fix sonrası muhtemelen bazı glow/transition elemanları yanlış katmanda görünebilir — section'ların arasına sıkışabilirler. Build sonrası ekran görüntüsü at, kontrol edelim.
+ 
 ```
