@@ -1,4 +1,5 @@
-import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
+import { Suspense, lazy, useState, useEffect, useRef, forwardRef, type ReactNode } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
