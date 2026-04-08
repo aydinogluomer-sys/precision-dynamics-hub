@@ -135,9 +135,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         },
       });
 
-      // Phase 2: 45%–60% — NO animation (pause/hold)
-
-      // Phase 3: Horizontal slide (60% – 88%)
+      // Phase 2: Horizontal slide (45% – 85%)
       gsap.fromTo(
         horizontalWrap,
         { xPercent: 0 },
@@ -146,8 +144,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "power2.inOut",
           scrollTrigger: {
             trigger: scroller,
-            start: "60% top",
-            end: "88% top",
+            start: "45% top",
+            end: "85% top",
             scrub: 0.6,
           },
         },
