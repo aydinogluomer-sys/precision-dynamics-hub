@@ -39,7 +39,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const maskedRef = useRef<HTMLDivElement>(null);
-  const bgImgRef = useRef<HTMLDivElement>(null);
+  
   const contentRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const horizontalWrapRef = useRef<HTMLDivElement>(null);
