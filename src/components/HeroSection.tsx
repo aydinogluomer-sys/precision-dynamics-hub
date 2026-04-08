@@ -94,21 +94,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         },
       );
 
-      // Background image fade in
-      gsap.fromTo(
-        bgImg,
-        { opacity: 0 },
-        {
-          opacity: 0.85,
-          ease: "none",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "15% top",
-            end: "40% top",
-            scrub: 1,
-          },
-        },
-      );
+
+
 
       // Content fade out
       gsap.to(content, {
