@@ -285,7 +285,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             <div className="absolute inset-0 z-[1]">
               <video
                 src={cncVideo}
-                poster={heroBg}
+                poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 muted
                 autoPlay
                 loop
