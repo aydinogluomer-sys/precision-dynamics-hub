@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -18,36 +18,68 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const activeIndexRef = useRef(0);
 
   const isHidden =
     pathname !== "/" ||
     typeof window === "undefined" ||
     window.matchMedia("(pointer: coarse)").matches;
 
-  const updateActive = useCallback(() => {
-    if (isHidden) return;
-    const viewportH = window.innerHeight;
-
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const el = document.getElementById(sections[i].id);
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= viewportH * 0.5) {
-          setActiveIndex(i);
-          break;
-        }
-      }
-    }
-
-    setIsVisible(window.scrollY > viewportH * 0.3);
-  }, [sections, isHidden]);
-
+  // IO-based active section tracking
   useEffect(() => {
     if (isHidden) return;
-    window.addEventListener("scroll", updateActive, { passive: true });
-    updateActive();
-    return () => window.removeEventListener("scroll", updateActive);
-  }, [updateActive, isHidden]);
+
+    const map = new Map<string, number>();
+    sections.forEach((s, i) => map.set(s.id, i));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestIndex = activeIndexRef.current;
+        let bestRatio = 0;
+
+        for (const entry of entries) {
+          const idx = map.get(entry.target.id);
+          if (idx !== undefined && entry.isIntersecting && entry.intersectionRatio > bestRatio) {
+            bestRatio = entry.intersectionRatio;
+            bestIndex = idx;
+          }
+        }
+
+        if (bestIndex !== activeIndexRef.current) {
+          activeIndexRef.current = bestIndex;
+          setActiveIndex(bestIndex);
+        }
+      },
+      { threshold: [0, 0.25, 0.5, 0.75], rootMargin: "-10% 0px -40% 0px" },
+    );
+
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [sections, isHidden]);
+
+  // Visibility based on scroll (rAF throttled)
+  useEffect(() => {
+    if (isHidden) return;
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsVisible(window.scrollY > window.innerHeight * 0.3);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHidden]);
 
   if (isHidden) return null;
 
@@ -83,7 +115,6 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
                 aria-label={section.label}
                 aria-current={isActive ? "true" : undefined}
               >
-                {/* Label tooltip */}
                 <AnimatePresence>
                   {isHovered && (
                     <motion.span
@@ -102,7 +133,6 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
                   )}
                 </AnimatePresence>
 
-                {/* Dot */}
                 <motion.div
                   className="rounded-full transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary"
                   style={{

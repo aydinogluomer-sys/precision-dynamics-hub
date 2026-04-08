@@ -39,7 +39,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const maskedRef = useRef<HTMLDivElement>(null);
-  const bgImgRef = useRef<HTMLDivElement>(null);
+  
   const contentRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const horizontalWrapRef = useRef<HTMLDivElement>(null);
@@ -68,14 +68,14 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     if (prefersReduced) return;
     const scroller = scrollerRef.current;
     const masked = maskedRef.current;
-    const bgImg = bgImgRef.current;
+    
     const content = contentRef.current;
     const grid = gridRef.current;
     const horizontalWrap = horizontalWrapRef.current;
     const lavaFlow = lavaFlowRef.current;
     const lavaOverlay = lavaOverlayRef.current;
     const quotePanel = quotePanelRef.current;
-    if (!scroller || !masked || !bgImg || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
+    if (!scroller || !masked || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
 
     const ctx = gsap.context(() => {
       // Phase 1: Mask expansion (0% – 45%)
@@ -94,21 +94,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         },
       );
 
-      // Background image fade in
-      gsap.fromTo(
-        bgImg,
-        { opacity: 0 },
-        {
-          opacity: 0.85,
-          ease: "none",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "15% top",
-            end: "40% top",
-            scrub: 1,
-          },
-        },
-      );
+
+
 
       // Content fade out
       gsap.to(content, {
@@ -135,9 +122,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         },
       });
 
-      // Phase 2: 45%–60% — NO animation (pause/hold)
-
-      // Phase 3: Horizontal slide (60% – 88%)
+      // Phase 2: Horizontal slide (45% – 85%)
       gsap.fromTo(
         horizontalWrap,
         { xPercent: 0 },
@@ -146,14 +131,14 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "power2.inOut",
           scrollTrigger: {
             trigger: scroller,
-            start: "60% top",
-            end: "88% top",
+            start: "45% top",
+            end: "85% top",
             scrub: 0.6,
           },
         },
       );
 
-      // Phase 4: Lava pour (88% – 100%)
+      // Phase 3: Lava pour (85% – 100%)
       // Lava flow scaleY
       gsap.fromTo(
         lavaFlow,
@@ -163,7 +148,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "power2.out",
           scrollTrigger: {
             trigger: scroller,
-            start: "88% top",
+            start: "85% top",
             end: "100% top",
             scrub: 0.8,
           },
@@ -181,7 +166,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             ease: "none",
             scrollTrigger: {
               trigger: scroller,
-              start: "88% top",
+              start: "85% top",
               end: "100% top",
               scrub: true,
             },
@@ -195,7 +180,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         ease: "none",
         scrollTrigger: {
           trigger: scroller,
-          start: "90% top",
+          start: "87% top",
           end: "100% top",
           scrub: true,
         },
@@ -210,8 +195,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "none",
           scrollTrigger: {
             trigger: scroller,
-            start: "88% top",
-            end: "95% top",
+            start: "85% top",
+            end: "92% top",
             scrub: true,
           },
         },
@@ -238,7 +223,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "650vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
       <section
         ref={stickyRef}
         className="sticky top-0 h-screen overflow-hidden"
@@ -300,7 +285,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             <div className="absolute inset-0 z-[1]">
               <video
                 src={cncVideo}
-                poster={heroBg}
+                poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 muted
                 autoPlay
                 loop
@@ -352,20 +337,6 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               />
             </div>
 
-            {/* Layer 3: Background image fade-in */}
-            <div
-              ref={bgImgRef}
-              className="absolute inset-0 z-[2] pointer-events-none"
-              style={{ opacity: prefersReduced ? 0.6 : 0 }}
-            >
-              <img
-                src={heroBg}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover"
-                style={{ filter: "brightness(0.75) saturate(1.1)" }}
-              />
-            </div>
 
             {/* Layer 4: Grid overlay */}
             <div

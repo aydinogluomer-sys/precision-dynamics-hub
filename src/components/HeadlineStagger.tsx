@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion, useTransform } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -24,82 +25,88 @@ interface HeadlineStaggerProps {
   scrollRotateX?: ReturnType<typeof useTransform>;
 }
 
-export const HeadlineStagger = ({ text, scrollRotateX }: HeadlineStaggerProps) => {
-  const prefersReduced = usePrefersReducedMotion();
-  const allWords = text.replace(/\n/g, " ").split(" ");
-  const staggerWords = allWords.slice(0, 2);
-  const restWords = allWords.slice(2);
-  const staggerWordChars = staggerWords.join("").length;
+export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
+  ({ text, scrollRotateX }, ref) => {
+    const prefersReduced = usePrefersReducedMotion();
+    const allWords = text.replace(/\n/g, " ").split(" ");
+    const staggerWords = allWords.slice(0, 2);
+    const restWords = allWords.slice(2);
+    const staggerWordChars = staggerWords.join("").length;
 
-  return (
-    <motion.div
-      className="flex flex-col items-center"
-      style={{
-        perspective: 800,
-        transformStyle: "preserve-3d" as const,
-        rotateX: scrollRotateX,
-      }}
-      // Magnetic kerning: letters start spread, compress together
-      initial={prefersReduced ? undefined : { letterSpacing: "0.2em", opacity: 0 }}
-      animate={{ letterSpacing: "-0.05em", opacity: 1 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
-        {staggerWords.map((word, wi) => (
-          <span key={wi} className="inline-flex whitespace-nowrap">
-            {word.split("").map((char, ci) => {
-              const i = staggerWords.slice(0, wi).join("").length + ci;
-              // First word: outline only. Remaining: solid fill
-              const isFirstWord = wi === 0;
-              return (
-                <motion.span
-                  key={`${char}-${i}`}
-                  custom={i}
-                  variants={charVariants}
-                  initial={prefersReduced ? "enter" : "initial"}
-                  animate="enter"
-                  exit={prefersReduced ? "enter" : "exit"}
-                  className="inline-block font-extrabold uppercase"
-                  style={{
-                    fontSize: "clamp(3.5rem, 9vw, 9rem)",
-                    letterSpacing: "inherit",
-                    lineHeight: 1,
-                    ...(isFirstWord
-                      ? {
-                          WebkitTextStroke: "2px #0688AD",
-                          color: "transparent",
-                        }
-                      : {
-                          color: "#0688AD",
-                        }),
-                    textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
-                  }}
-                >
-                  {char}
-                </motion.span>
-              );
-            })}
-          </span>
-        ))}
-      </span>
-      {restWords.length > 0 && (
-        <motion.span
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 8 }}
-          transition={{ delay: staggerWordChars * 0.02 + 0.1, duration: 0.4 }}
-          className="font-extrabold uppercase whitespace-pre-line text-center"
-          style={{
-            fontSize: "clamp(3.5rem, 9vw, 9rem)",
-            color: "#0688AD",
-            letterSpacing: "inherit",
-            lineHeight: 1,
-            textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
-          }}
-        >
-          {restWords.join(" ")}
-        </motion.span>
-      )}
-    </motion.div>
-  );
-};
+    return (
+      <motion.div
+        ref={ref}
+        className="flex flex-col items-center"
+        style={{
+          perspective: 800,
+          transformStyle: "preserve-3d" as const,
+          rotateX: scrollRotateX,
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          hyphens: "auto",
+        }}
+        initial={prefersReduced ? undefined : { letterSpacing: "0.2em", opacity: 0 }}
+        animate={{ letterSpacing: "-0.05em", opacity: 1 }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span className="inline-flex flex-wrap justify-center gap-x-[0.3em]">
+          {staggerWords.map((word, wi) => (
+            <span key={wi} className="inline-flex whitespace-nowrap">
+              {word.split("").map((char, ci) => {
+                const i = staggerWords.slice(0, wi).join("").length + ci;
+                const isFirstWord = wi === 0;
+                return (
+                  <motion.span
+                    key={`${char}-${i}`}
+                    custom={i}
+                    variants={charVariants}
+                    initial={prefersReduced ? "enter" : "initial"}
+                    animate="enter"
+                    exit={prefersReduced ? "enter" : "exit"}
+                    className="inline-block font-extrabold uppercase"
+                    style={{
+                      fontSize: "clamp(2.2rem, 7.5vw, 9rem)",
+                      letterSpacing: "inherit",
+                      lineHeight: 1,
+                      ...(isFirstWord
+                        ? {
+                            WebkitTextStroke: "2px #0688AD",
+                            color: "transparent",
+                          }
+                        : {
+                            color: "#0688AD",
+                          }),
+                      textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
+                    }}
+                  >
+                    {char}
+                  </motion.span>
+                );
+              })}
+            </span>
+          ))}
+        </span>
+        {restWords.length > 0 && (
+          <motion.span
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ delay: staggerWordChars * 0.02 + 0.1, duration: 0.4 }}
+            className="font-extrabold uppercase whitespace-pre-line text-center"
+            style={{
+              fontSize: "clamp(2.2rem, 7.5vw, 9rem)",
+              color: "#0688AD",
+              letterSpacing: "inherit",
+              lineHeight: 1,
+              textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
+            }}
+          >
+            {restWords.join(" ")}
+          </motion.span>
+        )}
+      </motion.div>
+    );
+  }
+);
+
+HeadlineStagger.displayName = "HeadlineStagger";

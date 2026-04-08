@@ -23,7 +23,7 @@ export const HeroCanvas = () => {
   }, []);
 
   return (
-    <div ref={wrapRef} className="fixed inset-0 z-0" style={{ pointerEvents: "auto" }}>
+    <div ref={wrapRef} className="absolute inset-0 z-0" style={{ pointerEvents: "auto" }}>
       {visible ? (
         <Canvas
           dpr={[1, 1.5]}
