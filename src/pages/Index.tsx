@@ -312,7 +312,9 @@ export const Index = () => {
         </Scene>
 
         {/* Glow: WhyUs (dark) → Capabilities (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={14} fromColor="hsl(var(--forge-gunmetal))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={14} fromColor="hsl(var(--forge-gunmetal))" />
+        </Suspense>
 
         {/* 14 — Capabilities (sticky) */}
         <Scene z={14} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
