@@ -172,7 +172,9 @@ export const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <CustomCursor />
+        <Suspense fallback={null}>
+          <CustomCursor />
+        </Suspense>
         <ScrollProgress />
         <AppContent />
       </BrowserRouter>
