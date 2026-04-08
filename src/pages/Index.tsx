@@ -1,4 +1,5 @@
-import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
+import { Suspense, lazy, useState, useEffect, useRef, forwardRef, type ReactNode } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
@@ -150,6 +151,33 @@ export const Index = () => {
   });
 
   const gpu = useGPUCapability();
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  // ResizeObserver on <main> — refresh ScrollTrigger when lazy sections load
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+
+    let lastHeight = el.offsetHeight;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    const ro = new ResizeObserver(() => {
+      const newHeight = el.offsetHeight;
+      if (newHeight === lastHeight) return;
+      lastHeight = newHeight;
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
+    });
+
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      clearTimeout(debounceTimer);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,7 +188,7 @@ export const Index = () => {
         <SectionDotNav sections={SECTIONS} />
       </Suspense>
 
-      <main id="main-content" className="relative">
+      <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
         <FlowScene z={Z.content}>
           <HeroSection isFirstVisit={isFirstVisit} />

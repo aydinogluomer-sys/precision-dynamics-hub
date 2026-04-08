@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface PageLoaderProps {
   isFirstVisit: boolean;
@@ -12,6 +13,37 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
   const [count, setCount] = useState(0);
   const [done, setDone] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
+
+  // Lock scroll while loader is visible
+  useEffect(() => {
+    if (!isVisible) return;
+
+    document.body.style.overflow = "hidden";
+    window.__lenis?.stop();
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isVisible]);
+
+  // Unlock scroll + refresh triggers when loader hides
+  useEffect(() => {
+    if (isVisible) return;
+    if (!isFirstVisit || prefersReduced) return;
+
+    // Loader just closed — release scroll after a short buffer
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+      const lenis = window.__lenis;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+        lenis.start();
+      }
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [isVisible, isFirstVisit, prefersReduced]);
 
   useEffect(() => {
     if (!isFirstVisit || prefersReduced) return;
