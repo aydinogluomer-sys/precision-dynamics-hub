@@ -338,7 +338,9 @@ export const Index = () => {
         </Scene>
 
         {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
-        <SectionTransitionGlow variant="light-to-dark" z={17} toColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={17} toColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 17 — FinalCTA (sticky, last) */}
         <Scene z={17} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
