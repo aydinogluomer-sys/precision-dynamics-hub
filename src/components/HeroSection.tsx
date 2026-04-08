@@ -75,7 +75,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     const lavaFlow = lavaFlowRef.current;
     const lavaOverlay = lavaOverlayRef.current;
     const quotePanel = quotePanelRef.current;
-    if (!scroller || !masked || !bgImg || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
+    if (!scroller || !masked || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
 
     const ctx = gsap.context(() => {
       // Phase 1: Mask expansion (0% – 45%)
