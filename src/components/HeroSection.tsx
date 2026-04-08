@@ -166,7 +166,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             ease: "none",
             scrollTrigger: {
               trigger: scroller,
-              start: "88% top",
+              start: "85% top",
               end: "100% top",
               scrub: true,
             },
