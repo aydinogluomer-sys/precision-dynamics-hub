@@ -60,7 +60,6 @@ export const LavaTypographyScene = () => {
         className="h-screen flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, #ff6a00, #b8451a)',
-          zIndex: Z.lavaTypography,
         }}
       >
         <span
