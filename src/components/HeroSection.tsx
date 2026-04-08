@@ -151,7 +151,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         },
       );
 
-      // Phase 4: Lava pour (88% – 100%)
+      // Phase 3: Lava pour (85% – 100%)
       // Lava flow scaleY
       gsap.fromTo(
         lavaFlow,
@@ -161,7 +161,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           ease: "power2.out",
           scrollTrigger: {
             trigger: scroller,
-            start: "88% top",
+            start: "85% top",
             end: "100% top",
             scrub: 0.8,
           },
