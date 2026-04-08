@@ -1,23 +1,40 @@
 import { Suspense, lazy, useState, forwardRef, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
-import { NexusPromoSection } from "@/components/NexusPromoSection";
-import { HowWeWorkSection } from "@/components/HowWeWorkSection";
-import { CertificationsSection } from "@/components/CertificationsSection";
-import { Footer } from "@/components/Footer";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { PageLoader } from "@/components/PageLoader";
-
-import { GlowLineDivider } from "@/components/ui/GlowLineDivider";
-import { SectionDotNav } from "@/components/SectionDotNav";
-import { SectionTransitionGlow } from "@/components/ui/SectionTransitionGlow";
-
-import { CNCScrollStory } from "@/components/CNCScrollStory";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LavaTypographyScene } from "@/components/LavaTypographyScene";
-import { MoldCastScene } from "@/components/MoldCastScene";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
 import { Z } from "@/styles/z-index";
+
+const NexusPromoSection = lazy(() =>
+  import("@/components/NexusPromoSection").then((m) => ({ default: m.NexusPromoSection })),
+);
+const HowWeWorkSection = lazy(() =>
+  import("@/components/HowWeWorkSection").then((m) => ({ default: m.HowWeWorkSection })),
+);
+const CertificationsSection = lazy(() =>
+  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+);
+const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
+const GlowLineDivider = lazy(() =>
+  import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
+);
+const SectionDotNav = lazy(() =>
+  import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
+);
+const SectionTransitionGlow = lazy(() =>
+  import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
+);
+const CNCScrollStory = lazy(() =>
+  import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
+);
+const LavaTypographyScene = lazy(() =>
+  import("@/components/LavaTypographyScene").then((m) => ({ default: m.LavaTypographyScene })),
+);
+const MoldCastScene = lazy(() =>
+  import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
+);
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
@@ -139,7 +156,9 @@ export const Index = () => {
       <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <SectionDotNav sections={SECTIONS} />
+      <Suspense fallback={null}>
+        <SectionDotNav sections={SECTIONS} />
+      </Suspense>
 
       <main id="main-content" className="relative">
         {/* 1 — Hero + QuickQuote */}
@@ -151,7 +170,9 @@ export const Index = () => {
         {gpu !== 'none' && (
           <FlowScene z={Z.lavaTypography}>
             <ErrorBoundary>
-              <LavaTypographyScene />
+              <Suspense fallback={<SectionLoader />}>
+                <LavaTypographyScene />
+              </Suspense>
             </ErrorBoundary>
           </FlowScene>
         )}
@@ -160,7 +181,9 @@ export const Index = () => {
         {gpu !== 'none' && (
           <FlowScene z={Z.moldCast}>
             <ErrorBoundary>
-              <MoldCastScene />
+              <Suspense fallback={<SectionLoader />}>
+                <MoldCastScene />
+              </Suspense>
             </ErrorBoundary>
           </FlowScene>
         )}
@@ -168,29 +191,41 @@ export const Index = () => {
         {/* CNCScrollStory */}
         <FlowScene z={Z.cncStory}>
           <ErrorBoundary>
-            <CNCScrollStory />
+            <Suspense fallback={<SectionLoader />}>
+              <CNCScrollStory />
+            </Suspense>
           </ErrorBoundary>
         </FlowScene>
 
         {/* 4 — NexusPromo (sticky) */}
         <Scene z={4} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <NexusPromoSection />
+          <Suspense fallback={<SectionLoader />}>
+            <NexusPromoSection />
+          </Suspense>
         </Scene>
 
         {/* Glow: Nexus (dark) → HowWeWork (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={5} fromColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
         <FlowScene z={5} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
-          <HowWeWorkSection />
+          <Suspense fallback={<SectionLoader />}>
+            <HowWeWorkSection />
+          </Suspense>
         </FlowScene>
 
         {/* Glow: HowWeWork (light) → Certifications (dark) */}
-        <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={6} toColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 6 — Certifications (sticky) */}
         <Scene z={6} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <CertificationsSection />
+          <Suspense fallback={<SectionLoader />}>
+            <CertificationsSection />
+          </Suspense>
         </Scene>
 
         {/* 7 — VideoScroll (flow, scroll-linked video) */}
@@ -201,7 +236,9 @@ export const Index = () => {
         </FlowScene>
 
         {/* Glow: VideoScroll (dark) → Services (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 8 — Services (sticky) */}
         <Scene z={8} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
@@ -213,7 +250,9 @@ export const Index = () => {
         {/* GlowLine: Services → Industries (Açık → Açık) */}
         <div className="relative" style={{ zIndex: 8, backgroundColor: "hsl(var(--forge-concrete))" }}>
           <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <GlowLineDivider />
+            <Suspense fallback={null}>
+              <GlowLineDivider />
+            </Suspense>
           </div>
         </div>
 
@@ -225,7 +264,9 @@ export const Index = () => {
         </Scene>
 
         {/* Glow: Industries (light) → ProjectShowcase (dark) */}
-        <SectionTransitionGlow variant="light-to-dark" z={10} toColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={10} toColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
         <FlowScene z={10}>
@@ -271,7 +312,9 @@ export const Index = () => {
         </Scene>
 
         {/* Glow: WhyUs (dark) → Capabilities (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={14} fromColor="hsl(var(--forge-gunmetal))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={14} fromColor="hsl(var(--forge-gunmetal))" />
+        </Suspense>
 
         {/* 14 — Capabilities (sticky) */}
         <Scene z={14} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
@@ -295,7 +338,9 @@ export const Index = () => {
         </Scene>
 
         {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
-        <SectionTransitionGlow variant="light-to-dark" z={17} toColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={17} toColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 17 — FinalCTA (sticky, last) */}
         <Scene z={17} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
@@ -305,7 +350,9 @@ export const Index = () => {
         </Scene>
       </main>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };
