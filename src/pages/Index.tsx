@@ -170,7 +170,9 @@ export const Index = () => {
         {gpu !== 'none' && (
           <FlowScene z={Z.lavaTypography}>
             <ErrorBoundary>
-              <LavaTypographyScene />
+              <Suspense fallback={<SectionLoader />}>
+                <LavaTypographyScene />
+              </Suspense>
             </ErrorBoundary>
           </FlowScene>
         )}
@@ -179,7 +181,9 @@ export const Index = () => {
         {gpu !== 'none' && (
           <FlowScene z={Z.moldCast}>
             <ErrorBoundary>
-              <MoldCastScene />
+              <Suspense fallback={<SectionLoader />}>
+                <MoldCastScene />
+              </Suspense>
             </ErrorBoundary>
           </FlowScene>
         )}
@@ -187,7 +191,9 @@ export const Index = () => {
         {/* CNCScrollStory */}
         <FlowScene z={Z.cncStory}>
           <ErrorBoundary>
-            <CNCScrollStory />
+            <Suspense fallback={<SectionLoader />}>
+              <CNCScrollStory />
+            </Suspense>
           </ErrorBoundary>
         </FlowScene>
 
