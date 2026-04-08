@@ -236,7 +236,9 @@ export const Index = () => {
         </FlowScene>
 
         {/* Glow: VideoScroll (dark) → Services (light) */}
-        <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="dark-to-light" z={8} fromColor="hsl(var(--forge-obsidian))" />
+        </Suspense>
 
         {/* 8 — Services (sticky) */}
         <Scene z={8} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
