@@ -1,131 +1,116 @@
 ```
-Fix QuickQuote panel background to match the dark hero theme.
-DO NOT change any animations, layout, component logic, or content.
-ONLY change the specific values listed below.
+Fix light mode color inconsistency. Dark sections appear pure black
+in light mode, creating visual dissonance with lighter sections.
+DO NOT change dark mode values, animations, layout, or z-index.
 
 ═══════════════════════════════════════════════════════
-CHANGE 1 — src/components/HeroSection.tsx
+CHANGE 1 — src/index.css — Light mode forge variables
 ═══════════════════════════════════════════════════════
 
-Find line ~444:
-backgroundColor: "hsl(var(--forge-mist))"
-Change to:
-backgroundColor: "hsl(var(--forge-obsidian))"
+Find the :root block (light mode defaults).
+Change ONLY these three variable values:
 
-Find the MotionGradientBg block (~line 447-450).
-Delete the entire MotionGradientBg JSX element including
-its opening tag, props, and closing tag. Remove its import
-statement at the top of the file if it becomes unused.
+--forge-obsidian: 0 0% 6%        → 215 10% 24%
+--forge-gunmetal: 240 28% 14%    → 220 12% 30%
+--forge-iron:     220 46% 16%    → 215 18% 27%
 
-═══════════════════════════════════════════════════════
-CHANGE 2 — src/components/QuickQuoteSection.tsx
-═══════════════════════════════════════════════════════
-
-──────────────────────────────────────────────────────
-2A — Section background (~line 70)
-──────────────────────────────────────────────────────
-Find the section-level backgroundColor value.
-Change to:
-backgroundColor: "hsl(var(--forge-obsidian))"
-
-Do NOT use transparent — the panel must have its own
-solid dark background to prevent scroll bleed-through
-from sections below.
-
-──────────────────────────────────────────────────────
-2B — Radial gradient opacity (~line 76)
-──────────────────────────────────────────────────────
-Find the radial gradient definition.
-Change opacity from 0.06 to 0.08.
-Keep teal/primary color tone unchanged.
-
-──────────────────────────────────────────────────────
-2C — Delete ElegantShape block (~line 81-154)
-──────────────────────────────────────────────────────
-Find the ElegantShape JSX block. Delete the entire block
-including all nested elements. Remove its import statement
-at the top of the file if it becomes unused.
-
-──────────────────────────────────────────────────────
-2D — Text colors (~line 167-171)
-──────────────────────────────────────────────────────
-Find heading color:
-"hsl(var(--forge-gunmetal))"
-Change to:
-"white"
-
-Find subtext color:
-"hsl(var(--forge-steel) / 0.6)"
-Change to:
-"rgba(255,255,255,0.5)"
-
-──────────────────────────────────────────────────────
-2E — Card backgrounds (~line 178-180)
-──────────────────────────────────────────────────────
-Find main card background:
-"rgba(255,255,255,0.7)"
-Change to:
-"rgba(255,255,255,0.08)"
-
-Find card border:
-"rgba(0,113,144,0.18)"
-Change to:
-"rgba(0,113,144,0.25)"
-
-For any nested cards or form input backgrounds within
-this component, apply:
-background: rgba(255,255,255,0.06)
-border: 1px solid rgba(255,255,255,0.12)
-
-──────────────────────────────────────────────────────
-2F — Drop zone texts (~line 293-296)
-──────────────────────────────────────────────────────
-Find all text color values inside the drop zone area
-that reference dark colors (forge-gunmetal, forge-steel,
-or any dark hex/hsl values).
-Change all of them to white or rgba(255,255,255,0.X):
-- Primary drop zone text → "white"
-- Secondary drop zone text → "rgba(255,255,255,0.5)"
-- Icon colors inside drop zone → "rgba(255,255,255,0.4)"
-
-──────────────────────────────────────────────────────
-2G — Quick stats cards (~line 356-357)
-──────────────────────────────────────────────────────
-Find quick stats card backgrounds:
-White or light backgrounds → "rgba(255,255,255,0.06)"
-Find quick stats text colors:
-Dark text colors → "white" or "rgba(255,255,255,0.6)"
-
-──────────────────────────────────────────────────────
-2H — Global forge color sweep
-──────────────────────────────────────────────────────
-After applying all above changes, scan the entire
-QuickQuoteSection.tsx file for any remaining references to:
-- "hsl(var(--forge-gunmetal))"
-- "hsl(var(--forge-steel))"
-- "hsl(var(--forge-mist))"
-- Any rgba with dark values used as text on dark background
-
-Replace each with the appropriate light equivalent:
-- Heading/label text → "white"
-- Body/secondary text → "rgba(255,255,255,0.6)"
-- Muted/placeholder text → "rgba(255,255,255,0.35)"
+Do NOT touch the .dark block. Dark mode values stay exactly
+as they are.
 
 ═══════════════════════════════════════════════════════
-VERIFICATION
+CHANGE 2 — Cinematic scenes: hardcoded dark background
+═══════════════════════════════════════════════════════
+
+In each of the following 6 files, find ALL occurrences of:
+  hsl(var(--forge-obsidian))
+  hsl(var(--forge-gunmetal))
+  hsl(var(--forge-iron))
+
+used as background-color or backgroundColor values.
+Replace each with: #0f0f0f
+
+These scenes always require pure black — they contain
+video, canvas, or white text overlays that must never
+be affected by theme changes.
+
+Files to update:
+  - src/components/LavaTypographyScene.tsx
+  - src/components/MoldCastScene.tsx
+  - src/components/CNCScrollStory.tsx
+  - src/components/VideoScrollSection.tsx
+  - src/components/MaterialMorphScroll.tsx
+  - src/components/HeroSection.tsx  ← includes QuickQuote panel
+
+For HeroSection.tsx specifically: ALL forge variable
+background references become #0f0f0f — including the
+QuickQuote panel background set in the previous fix.
+The QuickQuote panel must stay pure black in both themes.
+
+Do NOT replace forge variables used for text color,
+border color, or non-background purposes in these files.
+ONLY replace background/backgroundColor usages.
+
+═══════════════════════════════════════════════════════
+CHANGE 3 — src/pages/Index.tsx — Wave SVG fill
+═══════════════════════════════════════════════════════
+
+Find the Wave SVG element. It has a hardcoded:
+  fill="#1a1a2e"
+
+Replace with a theme-aware value:
+  style={{ fill: 'hsl(var(--forge-gunmetal))' }}
+
+Remove the hardcoded fill attribute after adding the style prop.
+
+═══════════════════════════════════════════════════════
+CHANGE 4 — src/components/CertificationsSection.tsx
+═══════════════════════════════════════════════════════
+
+Find the <style> block containing:
+  .dark #sertifikalar { background-color: ... !important; }
+
+Do NOT delete it. Comment it out:
+  {/* .dark #sertifikalar { background-color: ... !important; } */}
+
+Reason: CSS variable now handles theme difference automatically.
+Keeping it commented allows quick revert if dark mode regression
+appears during testing.
+
+═══════════════════════════════════════════════════════
+CHANGE 5 — src/components/NexusPromoSection.tsx
+═══════════════════════════════════════════════════════
+
+Find the root element that has BOTH:
+  className="... bg-[hsl(var(--forge-gunmetal))] ..."
+  style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
+
+Remove the inline style={{ backgroundColor }} declaration.
+Keep the className version only.
+
+The Tailwind class already handles theme-awareness via
+the CSS variable — the duplicate inline style is redundant
+and can cause specificity conflicts.
+
+═══════════════════════════════════════════════════════
+VERIFICATION CHECKLIST
 ═══════════════════════════════════════════════════════
 
 After applying all changes confirm:
-1. MotionGradientBg is fully removed from HeroSection.tsx
-   and its import is cleaned up
-2. ElegantShape is fully removed from QuickQuoteSection.tsx
-   and its import is cleaned up
-3. No light-colored text remains on dark background
-4. Section background is solid obsidian, NOT transparent
-5. Card opacity is 0.08 (not 0.06 — too invisible)
-6. No blue wave effects remain in either component
 
-DO NOT modify: layout, spacing, animation logic, form
-functionality, file upload behavior, or any other component.
- 
+1. :root block has updated forge-obsidian/gunmetal/iron values
+2. .dark block is completely unchanged
+3. All 6 cinematic scene files use #0f0f0f for backgrounds
+4. HeroSection + QuickQuote backgrounds are #0f0f0f (not CSS var)
+5. Wave SVG uses style={{ fill }} not hardcoded hex
+6. CertificationsSection dark override is COMMENTED, not deleted
+7. NexusPromo has single className background declaration
+8. No forge variable background references remain in the 6
+   cinematic scene files
+9. Text colors, border colors, non-background forge usages
+   in cinematic files are untouched
+
+DO NOT modify: dark mode values, animations, scroll behavior,
+typography, section order, z-index, or any component not
+listed above.
+
 ```
