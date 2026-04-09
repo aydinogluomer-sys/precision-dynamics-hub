@@ -15,7 +15,7 @@ import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { HeadlineStagger } from "./HeadlineStagger";
 import { QuickQuoteSection } from "./QuickQuoteSection";
-import { MotionGradientBg } from "./MotionGradientBg";
+
 
 const HeroCanvas = lazy(() =>
   import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
@@ -441,14 +441,9 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             style={{
               width: "100vw",
               flexShrink: 0,
-              backgroundColor: "hsl(var(--forge-mist))",
+              backgroundColor: "hsl(var(--forge-obsidian))",
             }}
           >
-            {/* WebGL Motion Gradient background */}
-            <div className="absolute inset-0 z-0">
-              <MotionGradientBg mode={0} temperature={0.5} />
-            </div>
-
             {/* QuickQuote content */}
             <div className="relative z-10 w-full h-full flex items-center justify-center">
               <QuickQuoteSection />
