@@ -4,6 +4,7 @@ import cncVideo from "@/assets/cnc-sequence-scroll.mp4";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { TextScramble } from "@/components/ui/TextScramble";
 
 const features = [
   {
@@ -38,12 +39,10 @@ export const VideoScrollSection = () => {
     offset: ["start start", "end end"],
   });
 
-  // Scroll-driven video playback
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Wait for metadata to load
     const handleMetadata = () => {
       const unsubscribe = scrollYProgress.on("change", (progress) => {
         if (video.duration && isFinite(video.duration)) {
@@ -68,19 +67,17 @@ export const VideoScrollSection = () => {
     return () => unsubscribe?.();
   }, [scrollYProgress]);
 
-  // Opacity for video
   const opacity = useTransform(scrollYProgress, [0, 0.02, 0.85, 1], [1, 1, 1, 0]);
-
-  // Content reveals — visible immediately on first render
   const labelOpacity = useTransform(scrollYProgress, [0, 0.01], [1, 1]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.01], [1, 1]);
   const titleY = useTransform(scrollYProgress, [0, 0.01], [0, 0]);
   const descOpacity = useTransform(scrollYProgress, [0, 0.02], [1, 1]);
   const cardsOpacity = useTransform(scrollYProgress, [0, 0.03], [0, 1]);
   const cardsY = useTransform(scrollYProgress, [0, 0.03], [30, 0]);
-
-  // Exit transition overlay
   const exitOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+
+  // Blueprint grid opacity
+  const gridOpacity = useTransform(scrollYProgress, [0, 0.05, 0.8, 0.9], [0, 0.08, 0.08, 0]);
 
   return (
     <div
@@ -89,7 +86,7 @@ export const VideoScrollSection = () => {
       style={{ background: "#0f0f0f" }}
     >
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
-        {/* Video — no zoom, scrubbed by scroll */}
+        {/* Video */}
         <motion.div className="absolute inset-0" style={{ opacity }}>
           <video
             ref={videoRef}
@@ -101,12 +98,27 @@ export const VideoScrollSection = () => {
             className="w-full h-full object-cover hidden md:block"
             style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }}
           />
-          {/* Mobile: poster image only */}
           <img src={cncWorkshop} alt="CNC Workshop" className="w-full h-full object-cover md:hidden" loading="lazy" />
         </motion.div>
 
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ background: "rgba(15, 15, 15, 0.6)" }} />
+
+        {/* Blueprint grid overlay */}
+        {!prefersReduced && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              opacity: gridOpacity,
+              backgroundImage: `
+                linear-gradient(rgba(0,113,144,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,113,144,0.3) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+            aria-hidden="true"
+          />
+        )}
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 lg:px-8">
@@ -118,7 +130,7 @@ export const VideoScrollSection = () => {
               opacity: labelOpacity,
             }}
           >
-            {"MÜHENDİSLİK & ÜRETİM"}
+            <TextScramble text="MÜHENDİSLİK & ÜRETİM" speed={35} trigger="inView" />
           </motion.span>
 
           <motion.h2
@@ -140,24 +152,44 @@ export const VideoScrollSection = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
             style={{ opacity: cardsOpacity, y: cardsY }}
           >
-            {features.map((f) => (
-              <div
+            {features.map((f, i) => (
+              <motion.div
                 key={f.title}
-                className="p-4 md:p-5"
+                className="group p-4 md:p-5 transition-all duration-300"
                 style={{
                   border: "1px solid rgba(255,255,255,0.1)",
                   background: "rgba(255,255,255,0.03)",
                   backdropFilter: "blur(8px)",
+                  transformStyle: "preserve-3d",
                 }}
+                whileHover={prefersReduced ? {} : {
+                  rotateX: -3,
+                  rotateY: 3,
+                  scale: 1.02,
+                  boxShadow: "0 10px 40px rgba(0,113,144,0.15)",
+                  borderColor: "rgba(0,113,144,0.3)",
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
-                <f.icon className="w-6 h-6 mb-3" style={{ color: "hsl(var(--primary))" }} strokeWidth={1.5} />
+                <f.icon className="w-6 h-6 mb-3 transition-transform duration-300 group-hover:scale-110" style={{ color: "hsl(var(--primary))" }} strokeWidth={1.5} />
                 <h3 className="text-sm font-semibold text-white mb-1">{f.title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
                   {f.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
+        </div>
+
+        {/* Phase label */}
+        <div
+          className="absolute top-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
+          style={{ color: 'rgba(255,255,255,0.15)' }}
+        >
+          FAZE 04 — HASSAS İŞLEME
         </div>
 
         {/* Exit transition overlay */}
