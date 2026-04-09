@@ -1,146 +1,131 @@
-Bu plan doğru teşhis edilmiş. Lovable prompt:
-
----
-
 ```
-Fix critical z-index stacking issue. All middle sections 
-(NexusPromo through FinalCTA) are invisible during scroll — 
-early FlowScenes (z=10-12) are covering later sections (z=4-9).
-
-DO NOT change any visual design, animations, colors, or content.
-ONLY change z-index values and remove duplicate z-index declarations.
+Fix QuickQuote panel background to match the dark hero theme.
+DO NOT change any animations, layout, component logic, or content.
+ONLY change the specific values listed below.
 
 ═══════════════════════════════════════════════════════
-CHANGE 1 — src/styles/z-index.ts
+CHANGE 1 — src/components/HeroSection.tsx
 ═══════════════════════════════════════════════════════
 
-Keep ALL existing utility z-index values (header, cursor, modal etc.) 
-exactly as they are. ADD this new export at the bottom of the file:
+Find line ~444:
+backgroundColor: "hsl(var(--forge-mist))"
+Change to:
+backgroundColor: "hsl(var(--forge-obsidian))"
 
-```ts
-export const SECTION_Z = {
-  hero:                    1,
-  lavaTypography:          2,
-  moldCast:                3,
-  cncStory:                4,
-  nexus:                   5,
-  nexusToHwwGlow:          6,
-  howWeWork:               7,
-  hwwToCertGlow:           8,
-  certifications:          9,
-  videoScroll:             10,
-  videoToServicesGlow:     11,
-  services:                12,
-  glowLine:                12,
-  industries:              13,
-  industriesToProjectGlow: 14,
-  projectShowcase:         15,
-  materialMorph:           16,
-  materials:               17,
-  wave:                    18,
-  whyUs:                   19,
-  whyToCapGlow:            20,
-  capabilities:            21,
-  testimonials:            22,
-  faqBlog:                 23,
-  faqToCtaGlow:            24,
-  finalCta:                25,
-} as const
+Find the MotionGradientBg block (~line 447-450).
+Delete the entire MotionGradientBg JSX element including
+its opening tag, props, and closing tag. Remove its import
+statement at the top of the file if it becomes unused.
 
-```
+═══════════════════════════════════════════════════════
+CHANGE 2 — src/components/QuickQuoteSection.tsx
+═══════════════════════════════════════════════════════
 
-═══════════════════════════════════════════════════════ CHANGE 2 — src/pages/Index.tsx ═══════════════════════════════════════════════════════
+──────────────────────────────────────────────────────
+2A — Section background (~line 70)
+──────────────────────────────────────────────────────
+Find the section-level backgroundColor value.
+Change to:
+backgroundColor: "hsl(var(--forge-obsidian))"
 
-Add import at top:
+Do NOT use transparent — the panel must have its own
+solid dark background to prevent scroll bleed-through
+from sections below.
 
-```ts
-import { SECTION_Z } from '@/styles/z-index'
+──────────────────────────────────────────────────────
+2B — Radial gradient opacity (~line 76)
+──────────────────────────────────────────────────────
+Find the radial gradient definition.
+Change opacity from 0.06 to 0.08.
+Keep teal/primary color tone unchanged.
 
-```
+──────────────────────────────────────────────────────
+2C — Delete ElegantShape block (~line 81-154)
+──────────────────────────────────────────────────────
+Find the ElegantShape JSX block. Delete the entire block
+including all nested elements. Remove its import statement
+at the top of the file if it becomes unused.
 
-Find every Scene and FlowScene wrapper that has a z prop or zIndex value. Replace each with the corresponding SECTION_Z value:
+──────────────────────────────────────────────────────
+2D — Text colors (~line 167-171)
+──────────────────────────────────────────────────────
+Find heading color:
+"hsl(var(--forge-gunmetal))"
+Change to:
+"white"
 
+Find subtext color:
+"hsl(var(--forge-steel) / 0.6)"
+Change to:
+"rgba(255,255,255,0.5)"
 
-| Component / wrapper      | Old z value | New z value                                 |
-| ------------------------ | ----------- | ------------------------------------------- |
-| Hero Scene/wrapper       | any         | SECTION_Z.hero                              |
-| LavaTypography FlowScene | 10          | SECTION_Z.lavaTypography                    |
-| MoldCast FlowScene       | 11          | SECTION_Z.moldCast                          |
-| CNCScrollStory FlowScene | 12          | SECTION_Z.cncStory                          |
-| NexusPromo Scene         | 4           | SECTION_[Z.nexus](http://Z.nexus)           |
-| nexusToHwwGlow           | any         | SECTION_Z.nexusToHwwGlow                    |
-| HowWeWork Scene          | 5           | SECTION_Z.howWeWork                         |
-| hwwToCertGlow            | any         | SECTION_Z.hwwToCertGlow                     |
-| Certifications Scene     | 6           | SECTION_Z.certifications                    |
-| VideoScroll Scene        | 7           | SECTION_Z.videoScroll                       |
-| videoToServicesGlow      | any         | SECTION_Z.videoToServicesGlow               |
-| Services Scene           | 8           | SECTION_[Z.services](http://Z.services)     |
-| glowLine                 | any         | SECTION_Z.glowLine                          |
-| Industries Scene         | 9           | SECTION_[Z.industries](http://Z.industries) |
-| industriesToProjectGlow  | any         | SECTION_Z.industriesToProjectGlow           |
-| ProjectShowcase Scene    | any         | SECTION_Z.projectShowcase                   |
-| MaterialMorph FlowScene  | any         | SECTION_Z.materialMorph                     |
-| Materials Scene          | any         | SECTION_Z.materials                         |
-| wave/transition          | any         | SECTION_Z.wave                              |
-| WhyUs Scene              | any         | SECTION_Z.whyUs                             |
-| whyToCapGlow             | any         | SECTION_Z.whyToCapGlow                      |
-| Capabilities Scene       | any         | SECTION_Z.capabilities                      |
-| Testimonials Scene       | any         | SECTION_Z.testimonials                      |
-| FaqBlog Scene            | any         | SECTION_Z.faqBlog                           |
-| faqToCtaGlow             | any         | SECTION_Z.faqToCtaGlow                      |
-| FinalCTA Scene           | 17          | SECTION_Z.finalCta                          |
+──────────────────────────────────────────────────────
+2E — Card backgrounds (~line 178-180)
+──────────────────────────────────────────────────────
+Find main card background:
+"rgba(255,255,255,0.7)"
+Change to:
+"rgba(255,255,255,0.08)"
 
+Find card border:
+"rgba(0,113,144,0.18)"
+Change to:
+"rgba(0,113,144,0.25)"
 
-═══════════════════════════════════════════════════════ CHANGE 3 — src/components/LavaTypographyScene.tsx ═══════════════════════════════════════════════════════
+For any nested cards or form input backgrounds within
+this component, apply:
+background: rgba(255,255,255,0.06)
+border: 1px solid rgba(255,255,255,0.12)
 
-Find the root div of this component. If it has any of these:
+──────────────────────────────────────────────────────
+2F — Drop zone texts (~line 293-296)
+──────────────────────────────────────────────────────
+Find all text color values inside the drop zone area
+that reference dark colors (forge-gunmetal, forge-steel,
+or any dark hex/hsl values).
+Change all of them to white or rgba(255,255,255,0.X):
+- Primary drop zone text → "white"
+- Secondary drop zone text → "rgba(255,255,255,0.5)"
+- Icon colors inside drop zone → "rgba(255,255,255,0.4)"
 
-- style={{ zIndex: ... }}
-- style={{ zIndex: Z.lavaTypography }}
-- className containing z-10, z-[10], or any z-index Tailwind class
+──────────────────────────────────────────────────────
+2G — Quick stats cards (~line 356-357)
+──────────────────────────────────────────────────────
+Find quick stats card backgrounds:
+White or light backgrounds → "rgba(255,255,255,0.06)"
+Find quick stats text colors:
+Dark text colors → "white" or "rgba(255,255,255,0.6)"
 
-REMOVE the zIndex from the root div entirely. The z-index is now controlled by the FlowScene wrapper in Index.tsx. Do not touch any other styles or logic in this file.
+──────────────────────────────────────────────────────
+2H — Global forge color sweep
+──────────────────────────────────────────────────────
+After applying all above changes, scan the entire
+QuickQuoteSection.tsx file for any remaining references to:
+- "hsl(var(--forge-gunmetal))"
+- "hsl(var(--forge-steel))"
+- "hsl(var(--forge-mist))"
+- Any rgba with dark values used as text on dark background
 
-═══════════════════════════════════════════════════════ CHANGE 4 — src/components/MoldCastScene.tsx ═══════════════════════════════════════════════════════
+Replace each with the appropriate light equivalent:
+- Heading/label text → "white"
+- Body/secondary text → "rgba(255,255,255,0.6)"
+- Muted/placeholder text → "rgba(255,255,255,0.35)"
 
-Same as CHANGE 3. Find root div, remove any inline zIndex style or Tailwind z-index class from it. Leave everything else unchanged.
+═══════════════════════════════════════════════════════
+VERIFICATION
+═══════════════════════════════════════════════════════
 
-═══════════════════════════════════════════════════════ CHANGE 5 — src/components/LiquidImage.tsx: forwardRef fix ═══════════════════════════════════════════════════════
+After applying all changes confirm:
+1. MotionGradientBg is fully removed from HeroSection.tsx
+   and its import is cleaned up
+2. ElegantShape is fully removed from QuickQuoteSection.tsx
+   and its import is cleaned up
+3. No light-colored text remains on dark background
+4. Section background is solid obsidian, NOT transparent
+5. Card opacity is 0.08 (not 0.06 — too invisible)
+6. No blue wave effects remain in either component
 
-Wrap the component with React.forwardRef:
-
-```tsx
-import { forwardRef } from 'react'
-
-export const LiquidImage = forwardRef<HTMLDivElement, LiquidImageProps>(
-  ({ ...props }, ref) => {
-    return (
-      <div ref={ref} {...props}>
-        {/* existing implementation unchanged */}
-      </div>
-    )
-  }
-)
-LiquidImage.displayName = 'LiquidImage'
-
-```
-
-═══════════════════════════════════════════════════════ VERIFICATION CHECKLIST ═══════════════════════════════════════════════════════
-
-After applying changes, confirm:
-
-1. No two sections (excluding glowLine/services) share the same z-index
-2. SECTION_Z values range from 1-25 only
-3. Existing utility z-index values (header=50, cursor=90 etc.) are untouched
-4. LavaTypographyScene and MoldCastScene root divs have NO inline zIndex style
-5. FinalCTA z-index is 25, NOT 17
-
-Do NOT modify: animations, scroll behavior, colors, component logic, or any file not listed above. Report the exact z-index value applied to each section after completion.
-
-```
-
----
-
-**Performans Notu:** Bu fix sonrası muhtemelen bazı glow/transition elemanları yanlış katmanda görünebilir — section'ların arasına sıkışabilirler. Build sonrası ekran görüntüsü at, kontrol edelim.
+DO NOT modify: layout, spacing, animation logic, form
+functionality, file upload behavior, or any other component.
  
 ```
