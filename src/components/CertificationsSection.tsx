@@ -85,8 +85,18 @@ export const CertificationsSection = () => {
       style={{ backgroundColor: "hsl(var(--forge-iron))" }}
     >
       <style>{`
-        .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; }
+        /* .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; } */
         @keyframes marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .cert-marquee-track {
+          animation: marquee 30s linear infinite;
+        }
+        .cert-marquee-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
