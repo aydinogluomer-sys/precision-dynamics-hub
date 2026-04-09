@@ -120,7 +120,7 @@ export const CNCScrollStory = () => {
     return (
       <section
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         <motion.div
           className="absolute inset-0"
@@ -164,13 +164,13 @@ export const CNCScrollStory = () => {
 
   /* ── Desktop: scroll-driven canvas ── */
   return (
-    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "hsl(var(--forge-obsidian))" }}>
+    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "#0f0f0f" }}>
       <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <AmbientGlowOverlay />
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          style={{ backgroundColor: "#0f0f0f" }}
           aria-label="CNC işleme süreci animasyonu"
           role="img"
         />
@@ -199,7 +199,7 @@ export const CNCScrollStory = () => {
 
         {/* Loading state */}
         {!ready && !showFallback && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "#0f0f0f" }}>
             <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
             <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
               {`%${Math.round((loadedCount / TOTAL_FRAMES) * 100)} yükleniyor...`}

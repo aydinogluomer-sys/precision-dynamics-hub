@@ -86,7 +86,7 @@ export const VideoScrollSection = () => {
     <div
       ref={containerRef}
       className="relative h-[300vh]"
-      style={{ background: "hsl(var(--forge-obsidian))" }}
+      style={{ background: "#0f0f0f" }}
     >
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
         {/* Video — no zoom, scrubbed by scroll */}
@@ -165,7 +165,7 @@ export const VideoScrollSection = () => {
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
             opacity: exitOpacity,
-            background: "hsl(var(--forge-obsidian))",
+            background: "#0f0f0f",
           }}
         />
       </div>

@@ -117,7 +117,7 @@ export const MaterialMorphScroll = () => {
     return (
       <section
         className="relative min-h-[70vh] flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         <motion.div
           className="absolute inset-0"
@@ -179,7 +179,7 @@ export const MaterialMorphScroll = () => {
     <motion.div
       ref={containerRef}
       className="relative"
-      style={{ height: "300vh", backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ height: "300vh", backgroundColor: "#0f0f0f" }}
       initial={burnInitial}
       whileInView={burnAnimate}
       viewport={{ once: true, amount: 0.1 }}
@@ -189,7 +189,7 @@ export const MaterialMorphScroll = () => {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+          style={{ backgroundColor: "#0f0f0f" }}
           aria-label="Malzeme dönüşüm animasyonu"
           role="img"
         />
@@ -207,7 +207,7 @@ export const MaterialMorphScroll = () => {
 
         {/* Loading state */}
         {!ready && !showFallback && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "#0f0f0f" }}>
             <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
             <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
               {`%${Math.round((loadedCount / TOTAL_FRAMES) * 100)} yükleniyor...`}

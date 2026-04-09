@@ -97,7 +97,7 @@ export const MoldCastScene = () => {
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: 'hsl(var(--forge-obsidian))' }}
+        style={{ backgroundColor: '#0f0f0f' }}
       >
         <AmbientGlowOverlay />
 

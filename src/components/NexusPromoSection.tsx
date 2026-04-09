@@ -44,7 +44,6 @@ export const NexusPromoSection = () => {
   return (
     <motion.section
       className="relative min-h-screen bg-[hsl(var(--forge-gunmetal))]"
-      style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
       initial={inkInitial}
       whileInView={inkAnimate}
       viewport={{ once: true, amount: 0.2 }}
