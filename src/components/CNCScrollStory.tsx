@@ -6,6 +6,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CrosshairOverlay } from "@/components/ui/CrosshairOverlay";
+import { HUDOverlay } from "@/components/ui/HUDOverlay";
+import { TextScramble } from "@/components/ui/TextScramble";
 
 const TOTAL_FRAMES = 120;
 const FALLBACK_TIMEOUT = 5000;
@@ -15,6 +18,13 @@ const stories = [
   { range: [0.18, 0.42], text: "±0.005mm tolerans.", align: "left" as const, size: "text-2xl md:text-4xl", mono: true },
   { range: [0.38, 0.62], text: "Ti-6Al-4V. AS9100D.", align: "right" as const, size: "text-2xl md:text-4xl", mono: true },
   { range: [0.58, 0.82], text: "Prototipten\n50.000 adete.", align: "left" as const, size: "text-3xl md:text-5xl" },
+];
+
+const hudData = [
+  { label: "MİL DEVR", value: "12.000", unit: "RPM" },
+  { label: "İLERLEME", value: "2.400", unit: "mm/dk" },
+  { label: "TOLERANS", value: "±0.005", unit: "mm" },
+  { label: "EKS", value: "5", unit: "axis" },
 ];
 
 export const CNCScrollStory = () => {
@@ -31,7 +41,6 @@ export const CNCScrollStory = () => {
     eagerCount: 10,
   });
 
-  // Timeout fallback: if frames don't load in 5s, show poster
   useEffect(() => {
     if (ready) return;
     const timer = setTimeout(() => {
@@ -53,8 +62,9 @@ export const CNCScrollStory = () => {
   const story3Opacity = useTransform(scrollYProgress, [stories[3].range[0], stories[3].range[0] + 0.04, stories[3].range[1] - 0.04, stories[3].range[1]], [0, 1, 1, 0]);
   const ctaOpacity = useTransform(scrollYProgress, [0.85, 0.90], [0, 1]);
   const ctaY = useTransform(scrollYProgress, [0.85, 0.92], [30, 0]);
+  const hudOpacity = useTransform(scrollYProgress, [0.05, 0.12, 0.82, 0.88], [0, 1, 1, 0]);
+  const crosshairOpacity = useTransform(scrollYProgress, [0.15, 0.22, 0.75, 0.82], [0, 0.6, 0.6, 0]);
 
-  // Exit animation — fade + shrink as user scrolls past
   const exitOpacity = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.15]);
   const exitScale = useTransform(scrollYProgress, [0.88, 1], prefersReduced ? [1, 1] : [1, 0.88]);
 
@@ -175,7 +185,6 @@ export const CNCScrollStory = () => {
           role="img"
         />
 
-        {/* Fallback poster when frames fail to load */}
         {showFallback && !ready && (
           <img
             src="/sequence-cnc/frame_0001.webp"
@@ -197,6 +206,26 @@ export const CNCScrollStory = () => {
         {/* Dark overlay */}
         <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.5)" }} />
 
+        {/* Crosshair overlay */}
+        {!prefersReduced && <CrosshairOverlay opacity={crosshairOpacity} />}
+
+        {/* HUD data readout */}
+        {!prefersReduced && (
+          <HUDOverlay
+            data={hudData}
+            opacity={hudOpacity}
+            position="top-left"
+          />
+        )}
+
+        {/* Phase label */}
+        <motion.div
+          className="absolute top-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
+          style={{ color: 'rgba(255,255,255,0.15)', opacity: hudOpacity }}
+        >
+          FAZE 03 — CNC İŞLEME
+        </motion.div>
+
         {/* Loading state */}
         {!ready && !showFallback && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "#0f0f0f" }}>
@@ -207,7 +236,7 @@ export const CNCScrollStory = () => {
           </div>
         )}
 
-        {/* Story overlays */}
+        {/* Story overlays — with scramble text for mono items */}
         <div className="absolute inset-0 z-10">
           {stories.map((story, i) => (
             <motion.div
@@ -220,15 +249,30 @@ export const CNCScrollStory = () => {
               style={{ opacity: prefersReduced ? 1 : storyOpacities[i] }}
             >
               <div className={`max-w-5xl mx-auto px-6 lg:px-12 w-full ${story.align === "right" ? "flex justify-end" : ""}`}>
-                <h2
-                  className={`${story.size} font-bold text-white/90 whitespace-pre-line tracking-tight`}
-                  style={{
-                    fontFamily: story.mono ? "'IBM Plex Mono', monospace" : "'Space Grotesk', sans-serif",
-                    textShadow: "0 2px 20px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  {story.text}
-                </h2>
+                {story.mono ? (
+                  <TextScramble
+                    text={story.text}
+                    speed={30}
+                    trigger="immediate"
+                    once={false}
+                    className={`${story.size} font-bold tracking-tight block`}
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                      color: "rgba(255,255,255,0.9)",
+                    }}
+                  />
+                ) : (
+                  <h2
+                    className={`${story.size} font-bold text-white/90 whitespace-pre-line tracking-tight`}
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                    }}
+                  >
+                    {story.text}
+                  </h2>
+                )}
               </div>
             </motion.div>
           ))}
