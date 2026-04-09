@@ -85,7 +85,7 @@ export const CertificationsSection = () => {
       style={{ backgroundColor: "hsl(var(--forge-iron))" }}
     >
       <style>{`
-        .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; }
+        /* .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; } */
         @keyframes marquee {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }

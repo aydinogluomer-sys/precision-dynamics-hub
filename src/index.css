@@ -42,9 +42,9 @@
     --radius: 0rem;
 
     /* Forge & Steel — Section Palette */
-    --forge-obsidian: 0 0% 6%; /* #0f0f0f */
-    --forge-gunmetal: 240 28% 14%; /* #1a1a2e */
-    --forge-iron: 220 46% 16%; /* #16213e */
+    --forge-obsidian: 215 10% 24%; /* #353c46 — light mode softened */
+    --forge-gunmetal: 220 12% 30%; /* #424d5e — light mode softened */
+    --forge-iron: 215 18% 27%; /* #384050 — light mode softened */
     --forge-molten: 23 92% 47%; /* #e8610a */
     --forge-amber: 37 88% 44%; /* #d4850e */
     --forge-ember: 0 58% 45%; /* #b33030 */

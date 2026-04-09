@@ -227,7 +227,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       <section
         ref={stickyRef}
         className="sticky top-0 h-screen overflow-hidden"
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         {/* Hidden SVG filter for heat distortion */}
         <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
@@ -441,7 +441,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             style={{
               width: "100vw",
               flexShrink: 0,
-              backgroundColor: "hsl(var(--forge-obsidian))",
+              backgroundColor: "#0f0f0f",
             }}
           >
             {/* QuickQuote content */}
