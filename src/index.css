@@ -60,6 +60,15 @@
     --forge-magma: 14 73% 52%; /* #e25822 */
     --forge-coal: 14 53% 41%; /* #b8451a */
 
+    /* Blue & Gray extension palette */
+    --forge-blue: 217 100% 48%; /* #0061F4 */
+    --forge-indigo: 239 73% 51%; /* #2628DD */
+    --forge-navy: 239 85% 37%; /* #0D0FAC */
+    --forge-violet: 239 95% 66%; /* #5859F7 */
+    --forge-ash: 0 0% 65%; /* #A6A6A6 */
+    --forge-cloud: 0 0% 79%; /* #CACACA */
+    --forge-fog: 0 0% 92%; /* #EAEAEA */
+
     /* Sidebar */
     --sidebar-background: 38 20% 98%;
     --sidebar-foreground: 240 28% 14%;
@@ -105,6 +114,13 @@
     --forge-concrete: 36 12% 12%;
     --forge-workshop: 38 12% 10%;
     --forge-mist: 207 10% 12%;
+    --forge-blue: 217 90% 42%; /* darker blue for dark mode */
+    --forge-indigo: 239 65% 45%;
+    --forge-navy: 239 75% 32%;
+    --forge-violet: 239 85% 58%;
+    --forge-ash: 0 0% 45%;
+    --forge-cloud: 0 0% 32%;
+    --forge-fog: 0 0% 18%;
     --sidebar-background: 240 28% 10%;
     --sidebar-foreground: 36 22% 96%;
     --sidebar-primary: 186 80% 35%;
