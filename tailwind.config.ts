@@ -73,6 +73,13 @@ export default {
           concrete: "hsl(var(--forge-concrete))",
           workshop: "hsl(var(--forge-workshop))",
           mist: "hsl(var(--forge-mist))",
+          blue: "hsl(var(--forge-blue))",
+          indigo: "hsl(var(--forge-indigo))",
+          navy: "hsl(var(--forge-navy))",
+          violet: "hsl(var(--forge-violet))",
+          ash: "hsl(var(--forge-ash))",
+          cloud: "hsl(var(--forge-cloud))",
+          fog: "hsl(var(--forge-fog))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
