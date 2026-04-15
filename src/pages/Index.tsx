@@ -79,7 +79,6 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "lav-sahne", label: "Ergitme" },
   { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
@@ -190,17 +189,6 @@ export const Index = () => {
         <FlowScene z={SECTION_Z.hero}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
-
-        {/* Lava Typography Scene */}
-        {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.lavaTypography}>
-            <ErrorBoundary>
-              <Suspense fallback={<SectionLoader />}>
-                <LavaTypographyScene />
-              </Suspense>
-            </ErrorBoundary>
-          </FlowScene>
-        )}
 
         {/* Mold Cast Scene */}
         {gpu !== 'none' && (
