@@ -27,6 +27,7 @@ export default {
         mono: ['IBM Plex Mono', 'monospace'],
       },
       colors: {
+        /* ── shadcn semantic (HSL) ── */
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -60,6 +61,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        /* ── Legacy forge (HSL) ── */
         forge: {
           obsidian: "hsl(var(--forge-obsidian))",
           gunmetal: "hsl(var(--forge-gunmetal))",
@@ -81,6 +84,26 @@ export default {
           cloud: "hsl(var(--forge-cloud))",
           fog: "hsl(var(--forge-fog))",
         },
+
+        /* ── v2.0 token colors (raw var) ── */
+        "heat-molten": "var(--heat-molten)",
+        "heat-amber": "var(--heat-amber)",
+        "heat-ember": "var(--heat-ember)",
+        "heat-char": "var(--heat-char)",
+
+        "precision-blue": "var(--precision-blue)",
+        "precision-indigo": "var(--precision-indigo)",
+        "precision-navy": "var(--precision-navy)",
+        "precision-violet": "var(--precision-violet)",
+
+        "mat-ash": "var(--mat-ash)",
+        "mat-cloud": "var(--mat-cloud)",
+        "mat-fog": "var(--mat-fog)",
+        "mat-silver": "var(--mat-silver)",
+        "mat-steel-blue": "var(--mat-steel-blue)",
+
+        "accent-teal": "var(--accent-teal)",
+
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -91,6 +114,37 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundColor: {
+        "cinematic-deep": "var(--bg-cinematic-deep)",
+        "cinematic-mid": "var(--bg-cinematic-mid)",
+        "precision-deep": "var(--bg-precision-deep)",
+        "precision-mid": "var(--bg-precision-mid)",
+        "dark-gunmetal": "var(--bg-dark-gunmetal)",
+        "dark-obsidian": "var(--bg-dark-obsidian)",
+        "light-workshop": "var(--bg-light-workshop)",
+        "light-concrete": "var(--bg-light-concrete)",
+        "light-mist": "var(--bg-light-mist)",
+        "light-testimonial": "var(--bg-light-testimonial)",
+      },
+      textColor: {
+        "t-primary": "var(--text-primary)",
+        "t-secondary": "var(--text-secondary)",
+        "t-muted": "var(--text-muted)",
+        "t-hint": "var(--text-hint)",
+        "t-technical": "var(--text-technical)",
+        "t-vignette": "var(--text-vignette)",
+        "t-inverse": "var(--text-inverse)",
+        "t-inverse-secondary": "var(--text-inverse-secondary)",
+        "t-inverse-muted": "var(--text-inverse-muted)",
+        "t-accent-heat": "var(--text-accent-heat)",
+        "t-accent-precision": "var(--text-accent-precision)",
+      },
+      borderColor: {
+        "surface-border": "var(--surface-border)",
+        "surface-border-hover": "var(--surface-border-hover)",
+        "surface-border-light": "var(--surface-border-light)",
+        "precision-hover": "var(--precision-hover-border)",
       },
       borderRadius: {
         lg: "var(--radius)",

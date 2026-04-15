@@ -39,8 +39,8 @@ export const HUDOverlay = ({
       <div
         className="p-3 space-y-2 font-mono text-[10px] uppercase tracking-[0.2em]"
         style={{
-          backgroundColor: "rgba(0,0,0,0.4)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          backgroundColor: "var(--overlay-dark-mid)",
+          border: `1px solid var(--surface-border)`,
           backdropFilter: "blur(4px)",
         }}
       >
@@ -52,12 +52,12 @@ export const HUDOverlay = ({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1, duration: 0.4 }}
           >
-            <span style={{ color: "rgba(255,255,255,0.35)" }}>{d.label}</span>
-            <span className="ml-auto font-bold" style={{ color: "hsl(var(--forge-molten))" }}>
+            <span style={{ color: "var(--text-muted)" }}>{d.label}</span>
+            <span className="ml-auto font-bold" style={{ color: "var(--heat-molten)" }}>
               {d.value}
             </span>
             {d.unit && (
-              <span style={{ color: "rgba(255,255,255,0.25)" }}>{d.unit}</span>
+              <span style={{ color: "var(--text-hint)" }}>{d.unit}</span>
             )}
           </motion.div>
         ))}
@@ -66,7 +66,7 @@ export const HUDOverlay = ({
         {!reduced && (
           <motion.div
             className="absolute left-0 right-0 h-px"
-            style={{ backgroundColor: "hsl(var(--forge-molten))", opacity: 0.3 }}
+            style={{ backgroundColor: "var(--heat-molten)", opacity: 0.3 }}
             animate={{ top: ["0%", "100%", "0%"] }}
             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           />

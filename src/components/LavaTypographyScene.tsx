@@ -28,14 +28,12 @@ export const LavaTypographyScene = () => {
         },
       });
 
-      // 0–40%: Text fade in + scale
       tl.fromTo(
         textRef.current!,
         { opacity: 0, scale: 0.8 },
         { opacity: 1, scale: 1, duration: 40 }
       );
 
-      // Radial glow pulse behind text
       if (glowRef.current) {
         tl.fromTo(
           glowRef.current,
@@ -45,14 +43,12 @@ export const LavaTypographyScene = () => {
         );
       }
 
-      // 40–80%: Lava fill via CSS custom prop
       tl.fromTo(
         textRef.current!,
         { '--lava-fill': '0%' } as gsap.TweenVars,
         { '--lava-fill': '100%', duration: 40 } as gsap.TweenVars
       );
 
-      // Heat distortion ramp up during fill
       if (heatRef.current) {
         tl.fromTo(
           heatRef.current,
@@ -62,19 +58,17 @@ export const LavaTypographyScene = () => {
         );
       }
 
-      // 80–100%: Background burns to lava color
       tl.to(containerRef.current!, {
-        backgroundColor: '#e25822',
+        backgroundColor: 'var(--heat-peak)',
         duration: 20,
         onUpdate() {
           document.documentElement.style.setProperty(
             '--lava-current-color',
-            '#e25822'
+            'var(--heat-peak)'
           );
         },
       });
 
-      // Glow intensifies at end
       if (glowRef.current) {
         tl.to(glowRef.current, { opacity: 0.9, scale: 1.5, duration: 20 }, '<');
       }
@@ -88,14 +82,14 @@ export const LavaTypographyScene = () => {
       <div
         className="h-screen flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #ff6a00, #b8451a)',
+          background: `linear-gradient(135deg, var(--heat-ember), var(--heat-char))`,
         }}
       >
         <span
           className="font-mono font-bold select-none"
           style={{
             fontSize: 'clamp(3rem, 15vw, 20rem)',
-            color: 'rgba(255,255,255,0.8)',
+            color: 'var(--text-secondary)',
           }}
         >
           ERGİTME
@@ -111,7 +105,7 @@ export const LavaTypographyScene = () => {
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: '#0f0f0f' }}
+        style={{ backgroundColor: 'var(--bg-cinematic-deep)' }}
       >
         <AmbientGlowOverlay />
 
@@ -127,16 +121,16 @@ export const LavaTypographyScene = () => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            background: 'radial-gradient(circle, rgba(226,88,34,0.4) 0%, rgba(255,106,0,0.15) 40%, transparent 70%)',
+            background: `radial-gradient(circle, var(--heat-glow-strong) 0%, var(--heat-radial-base) 40%, transparent 70%)`,
             opacity: 0,
             pointerEvents: 'none',
           }}
         />
 
-        {/* Ember particles rising */}
+        {/* Ember particles */}
         <SparkParticles
           count={35}
-          colors={['#ff6a00', '#e25822', '#ffaa44', '#ff4400', '#ffcc66']}
+          colors={['var(--heat-ember)', 'var(--heat-peak)', 'var(--heat-amber)', 'var(--heat-char)', 'var(--heat-molten)']}
           speed={0.8}
           direction="up"
         />
@@ -147,7 +141,7 @@ export const LavaTypographyScene = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: 0,
-            background: 'repeating-linear-gradient(0deg, transparent 0px, rgba(255,106,0,0.03) 2px, transparent 4px)',
+            background: `repeating-linear-gradient(0deg, transparent 0px, var(--heat-glow-subtle) 2px, transparent 4px)`,
             animation: 'heatShimmer 2s ease-in-out infinite',
           }}
         />
@@ -158,56 +152,55 @@ export const LavaTypographyScene = () => {
           className="font-mono font-bold select-none relative z-10"
           style={{
             fontSize: 'clamp(3rem, 15vw, 20rem)',
-            background: 'linear-gradient(to bottom, #ff6a00, #e25822, #b8451a)',
+            background: `linear-gradient(to bottom, var(--heat-ember), var(--heat-peak), var(--heat-char))`,
             backgroundSize: '100% 200%',
             backgroundPosition: '0 calc(100% - var(--lava-fill, 0%))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             opacity: 0,
-            filter: 'drop-shadow(0 0 30px rgba(255,106,0,0.4))',
+            filter: `drop-shadow(0 0 30px var(--heat-radial-peak))`,
           }}
         >
           ERGİTME
         </div>
 
-        {/* Temperature readout — bottom left */}
+        {/* Temperature readout */}
         <div
           className="absolute bottom-8 left-8 font-mono text-[10px] tracking-[0.2em] uppercase space-y-1 pointer-events-none z-10"
-          style={{ color: 'rgba(255,255,255,0.2)' }}
+          style={{ color: 'var(--text-hint)' }}
         >
           <div>
-            <span style={{ color: 'rgba(255,255,255,0.35)' }}>SICAKLIK </span>
+            <span style={{ color: 'var(--text-muted)' }}>SICAKLIK </span>
             <TextScramble
               text="1.668°C"
               speed={60}
               trigger="inView"
               className="text-[10px]"
-              style={{ color: 'hsl(var(--forge-molten))' }}
+              style={{ color: 'var(--heat-molten)' }}
             />
           </div>
           <div>
-            <span style={{ color: 'rgba(255,255,255,0.35)' }}>MALZEME </span>
+            <span style={{ color: 'var(--text-muted)' }}>MALZEME </span>
             <TextScramble
               text="Ti-6Al-4V"
               speed={50}
               trigger="inView"
               className="text-[10px]"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--text-technical)' }}
             />
           </div>
         </div>
 
-        {/* Process label — top right */}
+        {/* Process label */}
         <div
           className="absolute top-8 right-8 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
-          style={{ color: 'rgba(255,255,255,0.15)' }}
+          style={{ color: 'var(--text-vignette)' }}
         >
           FAZE 01 — ERGİTME
         </div>
       </div>
 
-      {/* Heat shimmer keyframes */}
       <style>{`
         @keyframes heatShimmer {
           0%, 100% { transform: translateY(0) scaleY(1); }

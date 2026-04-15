@@ -30,14 +30,12 @@ export const MoldCastScene = () => {
         },
       });
 
-      // 0–30%: Lava stream flows down
       tl.fromTo(
         lavaStreamRef.current!,
         { y: '-100%', opacity: 0 },
         { y: '0%', opacity: 1, duration: 30, ease: 'none' }
       );
 
-      // Ripple effect when lava hits mold
       if (rippleRef.current) {
         tl.fromTo(
           rippleRef.current,
@@ -47,14 +45,12 @@ export const MoldCastScene = () => {
         );
       }
 
-      // 30–60%: Cooling color shift
       tl.to(
         moldRef.current!,
-        { '--mold-color': '#c0c0c0', duration: 30 } as gsap.TweenVars,
+        { '--mold-color': 'var(--mat-silver)', duration: 30 } as gsap.TweenVars,
         '+=0'
       );
 
-      // Steam particles during cooling
       steamRefs.current.forEach((el, i) => {
         if (!el) return;
         tl.fromTo(
@@ -73,7 +69,6 @@ export const MoldCastScene = () => {
         );
       });
 
-      // Label fade in
       if (labelRef.current) {
         tl.fromTo(
           labelRef.current,
@@ -83,7 +78,6 @@ export const MoldCastScene = () => {
         );
       }
 
-      // 60–100%: Zoom into cooled metal with 3D perspective
       tl.to(moldRef.current!, {
         scale: 3,
         rotateX: 5,
@@ -101,13 +95,13 @@ export const MoldCastScene = () => {
     return (
       <div
         className="h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#c0c0c0' }}
+        style={{ backgroundColor: 'var(--mat-silver)' }}
       >
         <span
           className="font-mono font-bold select-none"
           style={{
             fontSize: 'clamp(2rem, 8vw, 10rem)',
-            color: 'rgba(0,0,0,0.2)',
+            color: 'var(--text-inverse-muted)',
           }}
         >
           DÖKÜM
@@ -123,41 +117,40 @@ export const MoldCastScene = () => {
     >
       <div
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: '#0f0f0f', perspective: '1200px' }}
+        style={{ backgroundColor: 'var(--bg-cinematic-deep)', perspective: '1200px' }}
       >
         <AmbientGlowOverlay />
 
-        {/* Spark particles — embers floating up */}
         <SparkParticles
           count={25}
-          colors={['#ff6a00', '#e25822', '#ffaa44']}
+          colors={['var(--heat-ember)', 'var(--heat-peak)', 'var(--heat-amber)']}
           speed={0.6}
           direction="up"
         />
 
-        {/* Lava stream with glow */}
+        {/* Lava stream */}
         <div
           ref={lavaStreamRef}
           className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-full"
           style={{
             background:
-              'linear-gradient(to bottom, var(--lava-current-color, #ff6a00), #e25822)',
+              `linear-gradient(to bottom, var(--lava-current-color, var(--heat-ember)), var(--heat-peak))`,
             opacity: 0,
             filter: 'blur(2px)',
-            boxShadow: '0 0 40px rgba(255,106,0,0.4), 0 0 80px rgba(226,88,34,0.2)',
+            boxShadow: `0 0 40px var(--heat-radial-peak), 0 0 80px var(--heat-glow-mid)`,
           }}
         />
 
-        {/* Mold container with 3D transform origin */}
+        {/* Mold container */}
         <div
           ref={moldRef}
           className="relative w-[60vw] max-w-[500px] aspect-square"
           style={{
-            background: 'var(--mold-color, #ff6a00)',
+            background: 'var(--mold-color, var(--heat-ember))',
             clipPath: 'inset(0)',
-            border: '2px solid rgba(255,255,255,0.1)',
+            border: `2px solid var(--surface-border)`,
             transformStyle: 'preserve-3d',
-            boxShadow: '0 0 60px rgba(255,106,0,0.15)',
+            boxShadow: `0 0 60px var(--heat-radial-base)`,
           }}
         >
           {/* Ripple on impact */}
@@ -168,7 +161,7 @@ export const MoldCastScene = () => {
               width: 100,
               height: 100,
               borderRadius: '50%',
-              border: '2px solid rgba(255,106,0,0.4)',
+              border: `2px solid var(--heat-glow-strong)`,
               opacity: 0,
               pointerEvents: 'none',
             }}
@@ -178,7 +171,7 @@ export const MoldCastScene = () => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: 'repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px)',
+              backgroundImage: `repeating-linear-gradient(45deg, transparent 0px, transparent 10px, var(--surface-glass) 10px, var(--surface-glass) 11px)`,
               mixBlendMode: 'overlay',
             }}
           />
@@ -197,7 +190,7 @@ export const MoldCastScene = () => {
                 left: `${10 + i * 13}%`,
                 top: '-10%',
                 background:
-                  'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
+                  `radial-gradient(circle, var(--text-technical) 0%, transparent 70%)`,
                 opacity: 0,
                 pointerEvents: 'none',
                 filter: 'blur(4px)',
@@ -209,7 +202,7 @@ export const MoldCastScene = () => {
         {/* Phase label */}
         <div
           className="absolute top-8 right-8 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
-          style={{ color: 'rgba(255,255,255,0.15)' }}
+          style={{ color: 'var(--text-vignette)' }}
         >
           FAZE 02 — DÖKÜM
         </div>
@@ -218,26 +211,26 @@ export const MoldCastScene = () => {
         <div
           ref={labelRef}
           className="absolute bottom-8 left-8 font-mono text-[10px] tracking-[0.2em] uppercase space-y-1 pointer-events-none z-10"
-          style={{ color: 'rgba(255,255,255,0.2)', opacity: 0 }}
+          style={{ color: 'var(--text-hint)', opacity: 0 }}
         >
           <div>
-            <span style={{ color: 'rgba(255,255,255,0.35)' }}>BASIN&Ccedil; </span>
+            <span style={{ color: 'var(--text-muted)' }}>BASIN&Ccedil; </span>
             <TextScramble
               text="12.4 BAR"
               speed={50}
               trigger="inView"
               className="text-[10px]"
-              style={{ color: 'hsl(var(--forge-molten))' }}
+              style={{ color: 'var(--heat-molten)' }}
             />
           </div>
           <div>
-            <span style={{ color: 'rgba(255,255,255,0.35)' }}>SOĞUMA </span>
+            <span style={{ color: 'var(--text-muted)' }}>SOĞUMA </span>
             <TextScramble
               text="180 sn"
               speed={50}
               trigger="inView"
               className="text-[10px]"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              style={{ color: 'var(--text-technical)' }}
             />
           </div>
         </div>
