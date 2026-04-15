@@ -24,14 +24,11 @@ const GlowLineDivider = lazy(() =>
 const SectionDotNav = lazy(() =>
   import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
 );
-const SectionTransitionGlow = lazy(() =>
-  import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
+const TransitionBridge = lazy(() =>
+  import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
 );
 const CNCScrollStory = lazy(() =>
   import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
-);
-const LavaTypographyScene = lazy(() =>
-  import("@/components/LavaTypographyScene").then((m) => ({ default: m.LavaTypographyScene })),
 );
 const MoldCastScene = lazy(() =>
   import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
