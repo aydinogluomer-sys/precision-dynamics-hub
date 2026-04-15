@@ -93,8 +93,8 @@ export const WhyUsSection = () => {
       <div className="border-t border-border/20 py-20 md:py-28 overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <p
-            className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-white"
-            style={{ fontStyle: "italic" }}
+            className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight"
+            style={{ fontStyle: "italic", color: "var(--text-primary)" }}
           >
             {"Sadece bir tedarikçi değil — "}
             <TextHighlight color="hsl(var(--forge-molten) / 0.3)">
@@ -130,7 +130,7 @@ export const WhyUsSection = () => {
               </span>
             </div>
             <Reveal variant="word-stagger" duration={0.6}>
-              <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[0.95] tracking-tighter">
+              <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-[0.95] tracking-tighter" style={{ color: "var(--text-primary)" }}>
                 {"Endüstri Liderlerinin Mas Technic'i Tercih Etme Nedenleri."}
               </h2>
             </Reveal>
@@ -154,7 +154,7 @@ export const WhyUsSection = () => {
                     <Check className="w-3 h-3 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-white mb-0.5">{adv.title}</h4>
+                    <h4 className="font-semibold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>{adv.title}</h4>
                     <p className="text-xs leading-relaxed" style={{ color: "hsl(var(--forge-silver) / 0.7)" }}>
                       {adv.desc}
                     </p>

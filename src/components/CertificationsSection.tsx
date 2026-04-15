@@ -42,8 +42,8 @@ export const CertificationsSection = () => {
           <div
             className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-white/10"
             style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              backgroundColor: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--surface-border)",
+              backgroundColor: "var(--surface-glass)",
             }}
           >
             <cert.icon
@@ -82,7 +82,7 @@ export const CertificationsSection = () => {
     <section
       id="sertifikalar"
       className="section-industrial min-h-[100dvh] flex flex-col justify-center border-y border-border relative"
-      style={{ backgroundColor: "hsl(var(--forge-iron))" }}
+      style={{ backgroundColor: "var(--bg-dark-obsidian)" }}
     >
       <style>{`
         /* .dark #sertifikalar { background-color: hsl(var(--forge-iron)) !important; } */
@@ -102,7 +102,7 @@ export const CertificationsSection = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.01) 100%)",
+            "linear-gradient(135deg, var(--surface-glass) 0%, transparent 50%, var(--surface-glass) 100%)",
         }}
       />
 
@@ -116,7 +116,7 @@ export const CertificationsSection = () => {
             style={{
               top: `${(idx / VENETIAN_STRIPS) * 100}%`,
               height: `${100 / VENETIAN_STRIPS}%`,
-              backgroundColor: "hsl(var(--forge-iron))",
+              backgroundColor: "var(--bg-dark-obsidian)",
               willChange: "clip-path",
             }}
             initial={prefersReduced ? { clipPath: "inset(0 0 100% 0)" } : { clipPath: "inset(0 0 0% 0)" }}
