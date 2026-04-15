@@ -1,116 +1,92 @@
+
+
+# İçerik Kaybı Sorunu — Plan
+
+## Problem
+
+`Scene` wrapper (`sticky top-0 min-h-screen overflow-hidden`) viewport yüksekliğinden uzun içerikleri kesiyor. Etkilenen bölümler:
+
+| Bölüm | Neden taşıyor |
+|---|---|
+| **ServicesSection** | 5 servis + sağ görsel panel, mobilde dikey stack |
+| **IndustriesSection** | Marquee + 13 endüstri kartı grid |
+| **FAQBlogSection** | 7 FAQ + 3 blog kartı yan yana |
+| **CapabilitiesSection** | Sticky sol panel + 5 satırlı tablo |
+| **TestimonialsSection** | 6+ testimonial + logo loop |
+| **MaterialsSection** | 4 malzeme kartı + karşılaştırma grid |
+| **WhyUsSection** | 4 avantaj + 4 stat + 2 görsel |
+| **NexusPromoSection** | Feature list + dashboard mockup |
+| **CertificationsSection** | Sertifika kartları grid |
+
+## Kök Neden
+
+`Index.tsx` satır 107-124'teki `Scene` wrapper:
 ```
-Fix light mode color inconsistency. Dark sections appear pure black
-in light mode, creating visual dissonance with lighter sections.
-DO NOT change dark mode values, animations, layout, or z-index.
-
-═══════════════════════════════════════════════════════
-CHANGE 1 — src/index.css — Light mode forge variables
-═══════════════════════════════════════════════════════
-
-Find the :root block (light mode defaults).
-Change ONLY these three variable values:
-
---forge-obsidian: 0 0% 6%        → 215 10% 24%
---forge-gunmetal: 240 28% 14%    → 220 12% 30%
---forge-iron:     220 46% 16%    → 215 18% 27%
-
-Do NOT touch the .dark block. Dark mode values stay exactly
-as they are.
-
-═══════════════════════════════════════════════════════
-CHANGE 2 — Cinematic scenes: hardcoded dark background
-═══════════════════════════════════════════════════════
-
-In each of the following 6 files, find ALL occurrences of:
-  hsl(var(--forge-obsidian))
-  hsl(var(--forge-gunmetal))
-  hsl(var(--forge-iron))
-
-used as background-color or backgroundColor values.
-Replace each with: #0f0f0f
-
-These scenes always require pure black — they contain
-video, canvas, or white text overlays that must never
-be affected by theme changes.
-
-Files to update:
-  - src/components/LavaTypographyScene.tsx
-  - src/components/MoldCastScene.tsx
-  - src/components/CNCScrollStory.tsx
-  - src/components/VideoScrollSection.tsx
-  - src/components/MaterialMorphScroll.tsx
-  - src/components/HeroSection.tsx  ← includes QuickQuote panel
-
-For HeroSection.tsx specifically: ALL forge variable
-background references become #0f0f0f — including the
-QuickQuote panel background set in the previous fix.
-The QuickQuote panel must stay pure black in both themes.
-
-Do NOT replace forge variables used for text color,
-border color, or non-background purposes in these files.
-ONLY replace background/backgroundColor usages.
-
-═══════════════════════════════════════════════════════
-CHANGE 3 — src/pages/Index.tsx — Wave SVG fill
-═══════════════════════════════════════════════════════
-
-Find the Wave SVG element. It has a hardcoded:
-  fill="#1a1a2e"
-
-Replace with a theme-aware value:
-  style={{ fill: 'hsl(var(--forge-gunmetal))' }}
-
-Remove the hardcoded fill attribute after adding the style prop.
-
-═══════════════════════════════════════════════════════
-CHANGE 4 — src/components/CertificationsSection.tsx
-═══════════════════════════════════════════════════════
-
-Find the <style> block containing:
-  .dark #sertifikalar { background-color: ... !important; }
-
-Do NOT delete it. Comment it out:
-  {/* .dark #sertifikalar { background-color: ... !important; } */}
-
-Reason: CSS variable now handles theme difference automatically.
-Keeping it commented allows quick revert if dark mode regression
-appears during testing.
-
-═══════════════════════════════════════════════════════
-CHANGE 5 — src/components/NexusPromoSection.tsx
-═══════════════════════════════════════════════════════
-
-Find the root element that has BOTH:
-  className="... bg-[hsl(var(--forge-gunmetal))] ..."
-  style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
-
-Remove the inline style={{ backgroundColor }} declaration.
-Keep the className version only.
-
-The Tailwind class already handles theme-awareness via
-the CSS variable — the duplicate inline style is redundant
-and can cause specificity conflicts.
-
-═══════════════════════════════════════════════════════
-VERIFICATION CHECKLIST
-═══════════════════════════════════════════════════════
-
-After applying all changes confirm:
-
-1. :root block has updated forge-obsidian/gunmetal/iron values
-2. .dark block is completely unchanged
-3. All 6 cinematic scene files use #0f0f0f for backgrounds
-4. HeroSection + QuickQuote backgrounds are #0f0f0f (not CSS var)
-5. Wave SVG uses style={{ fill }} not hardcoded hex
-6. CertificationsSection dark override is COMMENTED, not deleted
-7. NexusPromo has single className background declaration
-8. No forge variable background references remain in the 6
-   cinematic scene files
-9. Text colors, border colors, non-background forge usages
-   in cinematic files are untouched
-
-DO NOT modify: dark mode values, animations, scroll behavior,
-typography, section order, z-index, or any component not
-listed above.
-
+sticky top-0 min-h-screen overflow-hidden
 ```
+
+`sticky` + `overflow-hidden` kombinasyonu, içerik `100vh`'den uzunsa alt kısmı keser. Stacking scroll efekti için `sticky` gerekli ama `overflow-hidden` ve sabit `min-h-screen` sorun yaratıyor.
+
+## Çözüm Stratejisi
+
+**İki farklı wrapper tipi:** İçerik yüksekliğine göre `Scene` veya `FlowScene` kullanımı.
+
+### Değişiklik 1 — `Scene` wrapper'ını güncelle
+
+`overflow-hidden` yerine `overflow-visible` kullan. Stacking efekti zaten `z-index` ile sağlanıyor — overflow-hidden gerekli değil. Ek olarak `min-h-screen` yerine `min-h-[100dvh]` kullanarak mobilde adres çubuğu sorununu da çöz.
+
+```tsx
+const Scene = ({ children, z, className = "", style }) => (
+  <div
+    className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
+    style={{ zIndex: z, ...style }}
+  >
+    {children}
+  </div>
+);
+```
+
+### Değişiklik 2 — İçerik-ağır bölümleri FlowScene'e taşı
+
+Aşağıdaki bölümler `Scene` → `FlowScene` olarak değiştirilecek çünkü içerikleri viewport'tan uzun:
+
+- **ServicesSection** (5 servis kartı)
+- **IndustriesSection** (13 endüstri kartı)
+- **FAQBlogSection** (7 FAQ + 3 blog)
+- **TestimonialsSection** (6 testimonial)
+- **MaterialsSection** (4 malzeme kartı)
+
+Bu bölümler zaten internal scroll/pin mantığı kullanmıyor, sadece statik içerik gösteriyor.
+
+### Değişiklik 3 — Kalan Scene bölümlerinde overflow düzeltmesi
+
+Scene olarak kalan bölümlerde (NexusPromo, Certifications, WhyUs, Capabilities, FinalCTA) `overflow-hidden` kaldırılacak.
+
+### Değişiklik 4 — Her bileşende `min-h-screen` → `min-h-[100dvh]` ve padding güvencesi
+
+Her section bileşeninin kendi CSS'inde `min-h-screen` yerine responsive padding ile doğal yüksekliğe izin ver:
+- `min-h-screen` → `py-24 md:py-32` (içerik kadar yer kapla)
+- Veya `min-h-[100dvh]` tut ama `overflow-y-auto` ekle
+
+## Dosya Değişiklikleri
+
+| Dosya | Değişiklik |
+|---|---|
+| `src/pages/Index.tsx` | Scene wrapper: `overflow-hidden` kaldır. Services, Industries, FAQ, Testimonials, Materials bölümlerini `Scene` → `FlowScene` olarak değiştir |
+| `src/components/ServicesSection.tsx` | `min-h-screen` → responsive padding |
+| `src/components/IndustriesSection.tsx` | `min-h-screen` → responsive padding |
+| `src/components/FAQBlogSection.tsx` | `min-h-screen` → responsive padding |
+| `src/components/TestimonialsSection.tsx` | İçerik taşmasını kontrol et |
+| `src/components/MaterialsSection.tsx` | İçerik taşmasını kontrol et |
+| `src/components/CapabilitiesSection.tsx` | `overflow-hidden` kontrol |
+| `src/components/NexusPromoSection.tsx` | `min-h-screen` korunur ama taşma düzeltilir |
+| `src/components/CertificationsSection.tsx` | `overflow-hidden` kaldır |
+| `src/components/WhyUsSection.tsx` | `overflow-hidden` kaldır |
+
+## Dokunulmayacaklar
+
+- Cinematic sahneler (Hero, Lava, MoldCast, CNC, Video, MaterialMorph) — bunlar tasarım gereği tam ekran ve scroll-driven, değişmeyecek
+- Z-index sıralaması
+- Animasyon mantığı
+- Renk sistemi
+
