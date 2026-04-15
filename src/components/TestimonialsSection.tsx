@@ -111,7 +111,7 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      className="relative py-24 md:py-32 lg:py-40 flex flex-col justify-center"
       style={{ backgroundColor: "rgba(235, 231, 225, 0.92)" }}
     >
       {/* Subtle grain texture for depth separation from Capabilities */}
