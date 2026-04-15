@@ -4,7 +4,6 @@ export const Z = {
   ambientGlow: 2,
   grain: 5,
   scrollVelocity: 8,
-  scrollVelocity: 8,
   moldCast: 11,
   cncStory: 12,
   marquee: 15,
