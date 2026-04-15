@@ -180,8 +180,7 @@ export const FinalCTASection = () => {
           >
             <MagneticButton
               href="/teklif-al"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all hover:brightness-110 border-2"
-              style={{ backgroundColor: "var(--heat-molten)", borderColor: "var(--heat-molten)", color: "var(--text-primary)" }}
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all hover:brightness-110 border-2 bg-heat-molten border-heat-molten text-t-primary"
               strength={0.25}
             >
               {"Teklif Al"}
