@@ -72,7 +72,7 @@ const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
   <div
     ref={ref}
     className="min-h-screen flex items-center justify-center"
-    style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+    style={{ backgroundColor: "var(--bg-dark-obsidian)" }}
   >
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
