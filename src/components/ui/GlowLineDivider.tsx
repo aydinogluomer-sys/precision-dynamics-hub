@@ -1,9 +1,4 @@
-/**
- * GlowLineDivider.tsx — CLEAN SEPARATED
- *
- * FIX: Lovable concatenated eslint.config.js, postcss.config.js, and
- * SectionHeader.tsx into this file. Now clean standalone.
- */
+/** GlowLineDivider — scroll-triggered glow sweep divider */
 import { useRef, useEffect } from "react";
 import { gsap } from "@/hooks/use-gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
