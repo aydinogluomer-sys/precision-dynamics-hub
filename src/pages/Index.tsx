@@ -24,14 +24,11 @@ const GlowLineDivider = lazy(() =>
 const SectionDotNav = lazy(() =>
   import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
 );
-const SectionTransitionGlow = lazy(() =>
-  import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
+const TransitionBridge = lazy(() =>
+  import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
 );
 const CNCScrollStory = lazy(() =>
   import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
-);
-const LavaTypographyScene = lazy(() =>
-  import("@/components/LavaTypographyScene").then((m) => ({ default: m.LavaTypographyScene })),
 );
 const MoldCastScene = lazy(() =>
   import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
@@ -82,7 +79,6 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "lav-sahne", label: "Ergitme" },
   { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
@@ -194,17 +190,6 @@ export const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
-        {/* Lava Typography Scene */}
-        {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.lavaTypography}>
-            <ErrorBoundary>
-              <Suspense fallback={<SectionLoader />}>
-                <LavaTypographyScene />
-              </Suspense>
-            </ErrorBoundary>
-          </FlowScene>
-        )}
-
         {/* Mold Cast Scene */}
         {gpu !== 'none' && (
           <FlowScene z={SECTION_Z.moldCast}>
@@ -232,9 +217,9 @@ export const Index = () => {
           </Suspense>
         </Scene>
 
-        {/* Glow: Nexus (dark) → HowWeWork (light) */}
+        {/* Bridge: Nexus (dark) → HowWeWork (light) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.nexusToHwwGlow} fromColor="var(--bg-dark-gunmetal)" />
+          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeNexusHww} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
         </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
@@ -244,9 +229,9 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Glow: HowWeWork (light) → Certifications (dark) */}
+        {/* Bridge: HowWeWork (light) → Certifications (dark) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.hwwToCertGlow} toColor="var(--bg-dark-obsidian)" />
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeHwwCert} fromColor="var(--bg-light-workshop)" toColor="var(--bg-dark-obsidian)" />
         </Suspense>
 
         {/* 6 — Certifications (sticky) */}
@@ -263,9 +248,9 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Glow: VideoScroll (dark) → Services (light) */}
+        {/* Bridge: VideoScroll (dark) → Services (light) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.videoToServicesGlow} fromColor="var(--bg-dark-obsidian)" />
+          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeVideoCert} fromColor="var(--bg-dark-obsidian)" toColor="var(--bg-light-concrete)" />
         </Suspense>
 
         {/* 8 — Services (flow — content exceeds viewport) */}
@@ -291,9 +276,9 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Glow: Industries (light) → ProjectShowcase (dark) */}
+        {/* Bridge: Industries (light) → ProjectShowcase (dark) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.industriesToProjectGlow} toColor="var(--bg-dark-obsidian)" />
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-obsidian)" />
         </Suspense>
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
@@ -317,20 +302,10 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* SVG wave: Materials → WhyUs (dark → dark subtle transition) */}
-        <div
-          className="relative"
-          style={{
-            height: 80,
-            overflow: "hidden",
-            backgroundColor: "var(--bg-dark-gunmetal)",
-            zIndex: SECTION_Z.wave,
-          }}
-        >
-          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
-            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" style={{ fill: 'var(--bg-dark-gunmetal)' }} />
-          </svg>
-        </div>
+        {/* Bridge: Materials → WhyUs (dark → dark) */}
+        <Suspense fallback={null}>
+          <TransitionBridge variant="dark-to-dark" z={SECTION_Z.bridgeMaterialsWhy} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-dark-gunmetal)" />
+        </Suspense>
 
         {/* 13 — WhyUs (sticky) */}
         <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
@@ -339,9 +314,9 @@ export const Index = () => {
           </Suspense>
         </Scene>
 
-        {/* Glow: WhyUs (dark) → Capabilities (light) */}
+        {/* Bridge: WhyUs (dark) → Capabilities (light) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.whyToCapGlow} fromColor="var(--bg-dark-gunmetal)" />
+          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeWhyCap} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
         </Suspense>
 
         {/* 14 — Capabilities (sticky) */}
@@ -365,9 +340,9 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
+        {/* Bridge: FAQ/Blog (light) → FinalCTA (dark) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.faqToCtaGlow} toColor="var(--bg-dark-obsidian)" />
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeFaqCta} fromColor="var(--bg-light-mist)" toColor="var(--bg-dark-obsidian)" />
         </Suspense>
 
         {/* 17 — FinalCTA (sticky, last) */}
