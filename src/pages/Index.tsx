@@ -116,7 +116,7 @@ const Scene = ({
   style?: React.CSSProperties;
 }) => (
   <div
-    className={`sticky top-0 min-h-screen w-full overflow-hidden ${className}`}
+    className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
     style={{ zIndex: z, ...style }}
   >
     {children}
@@ -268,12 +268,12 @@ export const Index = () => {
           <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.videoToServicesGlow} fromColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
-        {/* 8 — Services (sticky) */}
-        <Scene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 8 — Services (flow — content exceeds viewport) */}
+        <FlowScene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <ServicesSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* GlowLine: Services → Industries (Açık → Açık) */}
         <div className="relative" style={{ zIndex: SECTION_Z.glowLine, backgroundColor: "hsl(var(--forge-concrete))" }}>
@@ -284,12 +284,12 @@ export const Index = () => {
           </div>
         </div>
 
-        {/* 9 — Industries (sticky) */}
-        <Scene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 9 — Industries (flow — content exceeds viewport) */}
+        <FlowScene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <IndustriesSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: Industries (light) → ProjectShowcase (dark) */}
         <Suspense fallback={null}>
@@ -310,12 +310,12 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* 12 — Materials (sticky) */}
-        <Scene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        {/* 12 — Materials (flow — content exceeds viewport) */}
+        <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* SVG wave: Materials → WhyUs (dark → dark subtle transition) */}
         <div
@@ -351,19 +351,19 @@ export const Index = () => {
           </Suspense>
         </Scene>
 
-        {/* 15 — Testimonials (sticky) */}
-        <Scene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 15 — Testimonials (flow — content exceeds viewport) */}
+        <FlowScene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
-        {/* 16 — FAQ/Blog (sticky) */}
-        <Scene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+        {/* 16 — FAQ/Blog (flow — content exceeds viewport) */}
+        <FlowScene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
         <Suspense fallback={null}>

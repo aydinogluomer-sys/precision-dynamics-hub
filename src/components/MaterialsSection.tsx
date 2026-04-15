@@ -283,7 +283,7 @@ export const MaterialsSection = () => {
   return (
     <motion.section
       id="malzemeler"
-      className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      className="py-24 md:py-32 lg:py-40 flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))", perspective: 1000 }}
       initial={tiltInitial}
       whileInView={tiltAnimate}

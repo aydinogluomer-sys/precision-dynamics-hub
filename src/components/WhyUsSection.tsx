@@ -54,7 +54,7 @@ export const WhyUsSection = () => {
     <section
       ref={sectionRef}
       id="neden-biz"
-      className="min-h-screen relative overflow-hidden flex flex-col justify-center bg-forge-gunmetal"
+      className="min-h-[100dvh] relative flex flex-col justify-center bg-forge-gunmetal"
       style={{ perspective: 1000 }}
     >
       <AmbientGlowOverlay />
