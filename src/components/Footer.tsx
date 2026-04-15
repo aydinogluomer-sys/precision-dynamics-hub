@@ -58,13 +58,13 @@ const footerLinks = [
 const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-white/10">
+    <div className="border-b" style={{ borderColor: "var(--surface-border)" }}>
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-4 text-center"
       >
-        <h4 className="font-semibold uppercase tracking-wider text-xs text-white flex-1 text-center">{group.title}</h4>
-        <ChevronDown className={`w-4 h-4 text-white/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <h4 className="font-semibold uppercase tracking-wider text-xs flex-1 text-center" style={{ color: "var(--text-primary)" }}>{group.title}</h4>
+        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} style={{ color: "var(--text-technical)" }} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? "max-h-96 pb-4" : "max-h-0"}`}>
         <ul className="space-y-2.5 text-center">
@@ -138,7 +138,7 @@ export const Footer = () => {
             fontFamily: "IBM Plex Mono, monospace",
             fontWeight: 700,
             letterSpacing: "-0.02em",
-            color: "rgba(255,255,255,0.04)",
+            color: "var(--text-vignette)",
             lineHeight: 1,
             whiteSpace: "nowrap",
             padding: "20px 0",
@@ -174,10 +174,10 @@ export const Footer = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-16"
           style={{
-            background: "rgba(22, 32, 56, 0.4)",
+            background: "var(--precision-glow-subtle)",
             backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+            border: "1px solid var(--surface-border)",
+            boxShadow: "0 8px 32px 0 var(--overlay-vignette-light)",
           }}
         >
           <div
@@ -210,11 +210,12 @@ export const Footer = () => {
                   <input
                     type="email"
                     placeholder="E-posta adresiniz"
-                    className="w-full pl-11 pr-4 py-3.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
+                    className="w-full pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
                     style={{
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      background: "var(--surface-glass)",
+                      border: "1px solid var(--surface-border)",
                       borderRight: "none",
+                      color: "var(--text-primary)",
                     }}
                   />
                 </div>
@@ -244,7 +245,7 @@ export const Footer = () => {
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight text-white">MAS TECHNIC</span>
+                <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
                 <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "hsl(210 8% 45%)" }}>
                   Precision CNC
                 </span>
@@ -275,7 +276,7 @@ export const Footer = () => {
                   key={i}
                   href="#"
                   className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid rgba(255, 255, 255, 0.1)", color: "hsl(210 8% 50%)" }}
+                  style={{ border: "1px solid var(--surface-border)", color: "hsl(210 8% 50%)" }}
                 >
                   {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
                 </a>
@@ -304,7 +305,7 @@ export const Footer = () => {
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight text-white">MAS TECHNIC</span>
+                <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
                 <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "hsl(210 8% 45%)" }}>
                   Precision CNC
                 </span>
@@ -335,7 +336,7 @@ export const Footer = () => {
                   key={i}
                   href="#"
                   className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid rgba(255, 255, 255, 0.1)", color: "hsl(210 8% 50%)" }}
+                  style={{ border: "1px solid var(--surface-border)", color: "hsl(210 8% 50%)" }}
                 >
                   {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
                 </a>
@@ -346,7 +347,7 @@ export const Footer = () => {
           {/* Link groups */}
           {footerLinks.map((group) => (
             <motion.div key={group.title} variants={fadeUp}>
-              <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">{group.title}</h4>
+              <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs" style={{ color: "var(--text-primary)" }}>{group.title}</h4>
               <ul className="space-y-2.5">
                 {group.items.map((l) => (
                   <li key={l.label}>
@@ -368,10 +369,10 @@ export const Footer = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-12"
           style={{
-            background: "rgba(22, 32, 56, 0.4)",
+            background: "var(--precision-glow-subtle)",
             backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+            border: "1px solid var(--surface-border)",
+            boxShadow: "0 8px 32px 0 var(--overlay-vignette-light)",
           }}
         >
           <div
@@ -386,7 +387,7 @@ export const Footer = () => {
           />
 
           <div className="relative text-center">
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h3 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>
               Projenizi Hayata Geçirmeye{" "}
               <br className="hidden md:block" />
               <span className="text-primary">Hazır mısınız?</span>
@@ -404,8 +405,8 @@ export const Footer = () => {
               </a>
               <a
                 href="/iletisim"
-                className="px-8 py-3.5 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center text-white transition-all hover:bg-white/5"
-                style={{ border: "1px solid rgba(255, 255, 255, 0.15)" }}
+                className="px-8 py-3.5 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all"
+                style={{ border: "1px solid var(--surface-border-hover)", color: "var(--text-primary)" }}
               >
                 Bize Ulaşın
               </a>
@@ -420,7 +421,7 @@ export const Footer = () => {
         </motion.div>
 
         {/* Bottom Bar */}
-        <div className="pt-6" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
+        <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <div className="flex flex-col md:flex-row justify-between items-center gap-3">
             <div className="text-xs flex items-center gap-4" style={{ color: "hsl(210 8% 35%)" }}>
               <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
@@ -432,7 +433,7 @@ export const Footer = () => {
                   fontFamily: "IBM Plex Mono, monospace",
                   fontSize: "11px",
                   letterSpacing: "0.1em",
-                  color: "rgba(255,255,255,0.25)",
+                  color: "var(--text-hint)",
                 }}
               >
                 38°25'N 27°08'E — İZMİR, TR

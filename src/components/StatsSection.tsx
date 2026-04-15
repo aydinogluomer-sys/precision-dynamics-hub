@@ -148,7 +148,7 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
             title="Rakamlarla Mas Technic"
             sectionNumber={5}
             align="center"
-            titleClassName="text-4xl md:text-6xl font-bold text-white tracking-tighter"
+            titleClassName="text-4xl md:text-6xl font-bold tracking-tighter text-[color:var(--text-primary)]"
           />
         </div>
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8">

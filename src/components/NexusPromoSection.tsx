@@ -92,8 +92,8 @@ export const NexusPromoSection = () => {
 
             <Link
               to="/musteri-paneli"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 text-white font-semibold text-sm transition-all hover:brightness-110"
-              style={{ transform: "skewX(-4deg)", backgroundColor: "hsl(var(--forge-molten))" }}
+              className="group inline-flex items-center gap-2 px-7 py-3.5 font-semibold text-sm transition-all hover:brightness-110"
+              style={{ transform: "skewX(-4deg)", backgroundColor: "hsl(var(--forge-molten))", color: "var(--text-primary)" }}
             >
               <span style={{ transform: "skewX(4deg)" }} className="flex items-center gap-2">
                 <span>Paneli Keşfet</span>
@@ -243,7 +243,7 @@ const NexusDashboardMockup = () => (
 
     <motion.div
       className="absolute -bottom-4 -right-4 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider shadow-lg"
-      style={{ backgroundColor: "hsl(var(--forge-molten))", color: "#ffffff" }}
+      style={{ backgroundColor: "hsl(var(--forge-molten))", color: "var(--text-primary)" }}
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}

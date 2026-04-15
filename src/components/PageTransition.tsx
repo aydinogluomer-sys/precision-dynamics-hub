@@ -53,7 +53,7 @@ export const PageTransition = ({ children }: { children: ReactNode }) => {
               className="font-mono font-bold select-none"
               style={{
                 fontSize: 'clamp(32px, 8vw, 100px)',
-                color: 'rgba(255,255,255,0.15)',
+                color: 'var(--text-vignette)',
               }}
             >
               {pageName}

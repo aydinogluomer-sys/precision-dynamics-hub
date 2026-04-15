@@ -177,8 +177,8 @@ const ServicesDualColumn = () => {
 
           {/* Overlay info */}
           <div className="absolute bottom-6 left-6 right-6 z-10">
-            <span className="inline-block px-3 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/90 font-mono mb-3"
-              style={{ backgroundColor: "hsl(var(--primary) / 0.85)" }}
+            <span className="inline-block px-3 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono mb-3"
+              style={{ backgroundColor: "hsl(var(--primary) / 0.85)", color: "var(--text-primary)" }}
             >
               {services[activeIndex].title}
             </span>

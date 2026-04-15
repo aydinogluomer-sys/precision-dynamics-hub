@@ -24,10 +24,10 @@ export const MarqueeBand = ({ reverse = false, className = "" }: MarqueeBandProp
       className={`marquee-outer ${className}`}
       style={{
         overflow: "hidden",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderTop: "1px solid var(--surface-border)",
+        borderBottom: "1px solid var(--surface-border)",
         padding: "14px 0",
-        background: "rgba(0,0,0,0.2)",
+        background: "var(--overlay-vignette-light)",
       }}
     >
       <div className={reverse ? "marquee-inner marquee-reverse" : "marquee-inner"}>
@@ -38,12 +38,12 @@ export const MarqueeBand = ({ reverse = false, className = "" }: MarqueeBandProp
               fontFamily: "IBM Plex Mono, monospace",
               fontSize: "clamp(10px, 1.5vw, 13px)",
               letterSpacing: "0.25em",
-              color: "rgba(255,255,255,0.35)",
+              color: "var(--text-muted)",
               whiteSpace: "nowrap",
             }}
           >
             {term}
-            <span style={{ margin: "0 24px", color: "rgba(255,255,255,0.12)" }}>•</span>
+            <span style={{ margin: "0 24px", color: "var(--text-hint)" }}>•</span>
           </span>
         ))}
       </div>
