@@ -324,7 +324,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
         </p>
         <MagneticButton
           href={project.link}
-          className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 transition-all w-fit" style={{ color: "var(--text-primary)", border: "1px solid var(--surface-border-hover)" }}
+          className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 transition-all w-fit text-[color:var(--text-primary)] border border-[color:var(--surface-border-hover)]"
           strength={0.2}
         >
           <span>{"Detayları Gör"}</span>

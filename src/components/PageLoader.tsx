@@ -120,8 +120,9 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
 
             {/* Big monospace counter — 3 digits */}
             <span
-              className="font-mono font-bold select-none" style={{ color: "var(--text-primary)", fontSize: "clamp(4rem, 15vw, 10rem)", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}
+              className="font-mono font-bold select-none"
               style={{
+                color: "var(--text-primary)",
                 fontSize: "clamp(4rem, 15vw, 10rem)",
                 fontVariantNumeric: "tabular-nums",
                 lineHeight: 1,

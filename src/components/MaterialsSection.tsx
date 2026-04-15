@@ -117,8 +117,8 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
 
       <div className="absolute top-3 left-3 z-20">
         <span
-          className="px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] font-mono" style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
-          style={{ background: mat.color, opacity: 0.9 }}
+          className="px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] font-mono"
+          style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
         >
           {mat.tag}
         </span>
@@ -216,8 +216,8 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
 
           <div className="absolute top-4 left-4 z-20">
             <span
-              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono" style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
-              style={{ background: mat.color, opacity: 0.9 }}
+              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono"
+              style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
             >
               {mat.tag}
             </span>

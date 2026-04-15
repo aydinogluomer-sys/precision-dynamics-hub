@@ -179,7 +179,6 @@ const ServicesDualColumn = () => {
           <div className="absolute bottom-6 left-6 right-6 z-10">
             <span className="inline-block px-3 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono mb-3"
               style={{ backgroundColor: "hsl(var(--primary) / 0.85)", color: "var(--text-primary)" }}
-              style={{ backgroundColor: "hsl(var(--primary) / 0.85)" }}
             >
               {services[activeIndex].title}
             </span>
