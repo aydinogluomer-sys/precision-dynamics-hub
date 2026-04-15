@@ -372,11 +372,11 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 <ThemeToggle />
                 <Link
                   to="/giris"
-                  className="text-xs font-bold border border-primary px-4 py-2 hover:bg-primary hover:text-white transition-all"
+                  className="text-xs font-bold border border-primary px-4 py-2 hover:bg-primary hover:text-primary-foreground transition-all"
                 >
                   Giriş Yap
                 </Link>
-                <Link to="/teklif-al" className="bg-primary text-white text-xs font-bold px-4 py-2">
+                <Link to="/teklif-al" className="bg-primary text-primary-foreground text-xs font-bold px-4 py-2">
                   Teklif Al
                 </Link>
               </div>
@@ -430,7 +430,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   style={{
                     fontFamily: "IBM Plex Mono, monospace",
                     fontSize: "10px",
-                    color: "rgba(255,255,255,0.25)",
+                    color: "var(--text-hint)",
                   }}
                 >
                   MAS TECHNIC © {new Date().getFullYear()}

@@ -87,18 +87,18 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
           >
             <h2
               className="text-2xl md:text-3xl font-bold mb-2 font-mono uppercase tracking-[0.3em]"
-              style={{ color: "white" }}
+              style={{ color: "var(--text-primary)" }}
             >
               {"CAD DOSYANIZI YÜKLEYİN"}
             </h2>
-            <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
+            <p className="text-sm" style={{ color: "var(--text-technical)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
           {/* Upload Card */}
           <motion.div
             className="relative overflow-hidden"
             style={{
-              background: "rgba(255,255,255,0.08)",
+              background: "var(--surface-glass)",
               backdropFilter: "blur(20px)",
               border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.25)"}`,
               boxShadow: "0 0 60px rgba(0,113,144,0.08)",
@@ -121,7 +121,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
             >
               <span
                 className="text-[10px] uppercase tracking-[0.2em] font-mono"
-                style={{ color: "rgba(255,255,255,0.35)" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 {"YÜKLEME ARAYÜZÜ V2.4.0"}
               </span>

@@ -128,7 +128,7 @@ export const ProjectShowcase = () => {
     return (
       <section
         className="section-industrial"
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+        style={{ backgroundColor: "var(--bg-dark-obsidian)" }}
       >
         <div className="container-industrial">
           <div className="mb-12">
@@ -137,7 +137,7 @@ export const ProjectShowcase = () => {
               <span className="typo-tag text-primary">{"Projelerimiz"}</span>
             </div>
             <Reveal variant="word-stagger" duration={0.6}>
-              <h2 className="typo-h2 text-white mb-4">
+              <h2 className="typo-h2 mb-4" style={{ color: "var(--text-primary)" }}>
                 {"Referans Projeler"}
               </h2>
             </Reveal>
@@ -156,7 +156,7 @@ export const ProjectShowcase = () => {
     <section
       ref={containerRef}
       className="relative"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ backgroundColor: "var(--bg-dark-obsidian)" }}
     >
       {/* Chromatic aberration overlay — triggered on viewport entry */}
       <style>{`
@@ -190,7 +190,7 @@ export const ProjectShowcase = () => {
                   <div className="w-8 h-px bg-primary" />
                   <span className="typo-tag text-primary">{"Projelerimiz"}</span>
                 </div>
-                <h2 className="typo-h2 text-white">
+                <h2 className="typo-h2" style={{ color: "var(--text-primary)" }}>
                   <span>{"Referans Projeler"}</span>
                 </h2>
               </div>
@@ -301,30 +301,30 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
         className="absolute inset-0 pointer-events-none opacity-10"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)",
+            `linear-gradient(to right, var(--surface-border) 1px, transparent 1px), linear-gradient(to bottom, var(--surface-border) 1px, transparent 1px)`,
           backgroundSize: "40px 40px",
         }}
       />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-end p-10 lg:p-14">
-        <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/40 mb-4">
+        <span className="text-[10px] font-mono uppercase tracking-[0.4em] mb-4" style={{ color: "var(--text-muted)" }}>
           {project.tag}
         </span>
         <h3
           ref={titleRef}
-          className="text-3xl lg:text-5xl font-bold text-white tracking-tight mb-2"
+          className="text-3xl lg:text-5xl font-bold tracking-tight mb-2" style={{ color: "var(--text-primary)" }}
           aria-label={project.title}
         />
-        <p className="text-sm font-mono text-white/50 mb-4">
+        <p className="text-sm font-mono mb-4" style={{ color: "var(--text-technical)" }}>
           <span>{project.subtitle}</span>
         </p>
-        <p className="text-base text-white/60 max-w-lg leading-relaxed mb-6">
+        <p className="text-base max-w-lg leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
           <span>{project.description}</span>
         </p>
         <MagneticButton
           href={project.link}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-6 py-3 hover:bg-white/10 transition-all w-fit"
+          className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 transition-all w-fit" style={{ color: "var(--text-primary)", border: "1px solid var(--surface-border-hover)" }}
           strength={0.2}
         >
           <span>{"Detayları Gör"}</span>
@@ -335,7 +335,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
       {/* Number watermark */}
       <div
         className="absolute top-6 right-10 text-[120px] lg:text-[200px] font-bold leading-none pointer-events-none select-none"
-        style={{ color: "rgba(255,255,255,0.03)" }}
+        style={{ color: "var(--text-vignette)" }}
       >
         {`0${index + 1}`}
       </div>
@@ -351,21 +351,21 @@ const MobileProjectCard = ({ project, index }: { project: typeof projects[number
     viewport={{ once: true }}
     transition={{ delay: index * 0.1 }}
   >
-    <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/40 mb-3 block">
+    <span className="text-[10px] font-mono uppercase tracking-[0.4em] mb-3 block" style={{ color: "var(--text-muted)" }}>
       {project.tag}
     </span>
-    <h3 className="text-xl font-bold text-white tracking-tight mb-2">
+    <h3 className="text-xl font-bold tracking-tight mb-2" style={{ color: "var(--text-primary)" }}>
       <span>{project.title}</span>
     </h3>
-    <p className="text-xs font-mono text-white/50 mb-3">
+    <p className="text-xs font-mono mb-3" style={{ color: "var(--text-technical)" }}>
       <span>{project.subtitle}</span>
     </p>
-    <p className="text-sm text-white/60 leading-relaxed mb-4">
+    <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--text-secondary)" }}>
       <span>{project.description}</span>
     </p>
     <Link
       to={project.link}
-      className="inline-flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-4 py-2 hover:bg-white/10 transition-all"
+      className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 transition-all" style={{ color: "var(--text-primary)", border: "1px solid var(--surface-border-hover)" }}
     >
       {"Detaylar"}
       <ArrowRight className="w-3.5 h-3.5" />

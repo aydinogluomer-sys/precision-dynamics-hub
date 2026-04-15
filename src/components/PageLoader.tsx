@@ -110,7 +110,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
           <div className="relative flex flex-col items-center">
             {/* Brand */}
             <motion.span
-              className="text-[10px] uppercase tracking-[0.4em] text-white/25 font-mono mb-6"
+              className="text-[10px] uppercase tracking-[0.4em] font-mono mb-6" style={{ color: "var(--text-hint)" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -120,7 +120,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
 
             {/* Big monospace counter — 3 digits */}
             <span
-              className="font-mono font-bold text-white/90 select-none"
+              className="font-mono font-bold select-none" style={{ color: "var(--text-primary)", fontSize: "clamp(4rem, 15vw, 10rem)", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}
               style={{
                 fontSize: "clamp(4rem, 15vw, 10rem)",
                 fontVariantNumeric: "tabular-nums",
