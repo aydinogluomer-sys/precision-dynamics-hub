@@ -98,7 +98,7 @@ export const Malzemeler = () => {
       <JsonLdSchema type="productCatalog" name="Malzeme Kütüphanesi" description="CNC işleme için alüminyum, çelik, titanyum, pirinç, bakır ve mühendislik plastikleri. Teknik özellikler ve karşılaştırma." />
 
       {/* Hero */}
-      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
+      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, hsl(var(--forge-navy)) 100%)" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         {/* Ghost machine-loop video */}
         <video
@@ -321,7 +321,7 @@ export const Malzemeler = () => {
                   { label: "Isı İletkenliği (W/m·K)", key: "thermalConductivity" },
                   { label: "Maks. Sıcaklık (°C)", key: "maxTemperature" },
                 ].map(row => (
-                  <TableRow key={row.key}><TableCell className="font-medium">{row.label}</TableCell>{compareList.map(m => <TableCell key={m.id} className="text-center font-semibold">{String((m as any)[row.key])}{row.suffix || ""}</TableCell>)}</TableRow>
+                  <TableRow key={row.key}><TableCell className="font-medium">{row.label}</TableCell>{compareList.map(m => <TableCell key={m.id} className="text-center font-semibold">{String((m as unknown as Record<string, unknown>)[row.key])}{row.suffix || ""}</TableCell>)}</TableRow>
                 ))}
               </TableBody>
             </Table>
@@ -334,7 +334,7 @@ export const Malzemeler = () => {
       </Dialog>
 
       {/* CTA */}
-      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, #0f172a 100%)" }}>
+      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--forge-navy)) 100%)" }}>
         <div className="container-industrial text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Malzeme Seçiminde Yardıma mı İhtiyacınız Var?</h2>
           <p className="text-white/70 mb-8 max-w-lg mx-auto">Mühendislik ekibimiz projeniz için en uygun malzemeyi seçmenizde size yardımcı olabilir.</p>
