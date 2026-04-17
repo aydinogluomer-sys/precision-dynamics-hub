@@ -14,7 +14,7 @@ export const FloatingPaths = ({ position }: FloatingPathsProps) => {
     } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
       684 - i * 5 * position
     } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    color: `rgba(6, 136, 173, ${0.08 + i * 0.02})`,
+    color: `rgb(var(--precision-ice-rgb) / ${0.08 + i * 0.02})`,
     width: 0.5 + i * 0.03,
   }));
 
