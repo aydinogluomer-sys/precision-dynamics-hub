@@ -26,7 +26,7 @@ export const LiveClock = () => {
         fontFamily: "IBM Plex Mono, monospace",
         fontSize: "11px",
         letterSpacing: "0.1em",
-        color: "rgba(255,255,255,0.3)",
+        color: "rgb(var(--text-primary-rgb) / 0.3)",
       }}
     >
       IST {time}

@@ -59,7 +59,7 @@ export const MagneticButton = forwardRef<HTMLDivElement, MagneticButtonProps>(
         animate={{
           x: position.x,
           y: position.y,
-          boxShadow: isHovered ? "0 0 20px rgba(232, 97, 10, 0.3)" : "0 0 0px rgba(232, 97, 10, 0)",
+          boxShadow: isHovered ? "0 0 20px rgb(var(--heat-molten-rgb) / 0.3)" : "0 0 0px rgb(var(--heat-molten-rgb) / 0)",
         }}
         whileTap={{ scale: 0.97 }}
         transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
