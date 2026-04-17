@@ -78,6 +78,12 @@
     --heat-radial-peak:   rgba(255, 106, 0, 0.40);
     --heat-radial-base:   rgba(255, 106, 0, 0.15);
 
+    /* Heat RGB triplets — for alpha compositing via rgb(var(--x) / a) */
+    --heat-molten-rgb:    232 97 10;
+    --heat-ember-rgb:     255 106 0;
+    --heat-amber-rgb:     212 130 10;
+    --heat-peak-rgb:      226 88 34;
+
     /* ──────────────────────────────────────────────
        PRECISION SYSTEM (Industrial Steel Blue)
        Role: CNC scenes, scanlines, dashboards, data viz
