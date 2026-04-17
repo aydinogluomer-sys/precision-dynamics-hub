@@ -30,9 +30,6 @@ const TransitionBridge = lazy(() =>
 const CNCScrollStory = lazy(() =>
   import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
 );
-const MoldCastScene = lazy(() =>
-  import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
-);
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
