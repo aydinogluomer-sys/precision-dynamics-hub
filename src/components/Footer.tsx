@@ -255,12 +255,12 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
-                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "hsl(210 8% 45%)" }}>
+                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "var(--text-technical)" }}>
                   Precision CNC
                 </span>
               </div>
             </div>
-            <p className="text-xs leading-relaxed mb-5 max-w-xs mx-auto" style={{ color: "hsl(210 8% 50%)" }}>
+            <p className="text-xs leading-relaxed mb-5 max-w-xs mx-auto" style={{ color: "var(--text-secondary)" }}>
               CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
             </p>
             <div className="flex flex-col items-center gap-2.5 mb-5">
@@ -269,7 +269,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                 { icon: Mail, text: "info@mastechnic.com" },
                 { icon: MapPin, text: "İzmir, Türkiye" },
               ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "hsl(210 8% 50%)" }}>
+                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                   <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                   <span>{text}</span>
                 </div>
@@ -285,7 +285,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                   key={i}
                   href="#"
                   className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid var(--surface-border)", color: "hsl(210 8% 50%)" }}
+                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}
                 >
                   {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
                 </a>
@@ -315,12 +315,12 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
-                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "hsl(210 8% 45%)" }}>
+                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "var(--text-technical)" }}>
                   Precision CNC
                 </span>
               </div>
             </div>
-            <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "hsl(210 8% 50%)" }}>
+            <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--text-secondary)" }}>
               CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
             </p>
             <div className="space-y-2.5 mb-5">
@@ -329,7 +329,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                 { icon: Mail, text: "info@mastechnic.com" },
                 { icon: MapPin, text: "İzmir, Türkiye" },
               ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "hsl(210 8% 50%)" }}>
+                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                   <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                   <span>{text}</span>
                 </div>
@@ -345,7 +345,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                   key={i}
                   href="#"
                   className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid var(--surface-border)", color: "hsl(210 8% 50%)" }}
+                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}
                 >
                   {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
                 </a>
@@ -360,7 +360,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
               <ul className="space-y-2.5">
                 {group.items.map((l) => (
                   <li key={l.label}>
-                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "var(--text-technical)" }}>
                       {l.label}
                     </Link>
                   </li>
@@ -401,7 +401,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
               <br className="hidden md:block" />
               <span className="text-primary">Hazır mısınız?</span>
             </h3>
-            <p className="text-sm max-w-xl mx-auto mb-8" style={{ color: "hsl(210 8% 55%)" }}>
+            <p className="text-sm max-w-xl mx-auto mb-8" style={{ color: "var(--text-secondary)" }}>
               Uzman mühendislik ekibimiz ve yüksek teknolojili üretim altyapımızla projelerinizi en yüksek kalitede gerçeğe dönüştürüyoruz.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
@@ -432,11 +432,11 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
         {/* Bottom Bar */}
         <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
           <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="text-xs flex items-center gap-4" style={{ color: "hsl(210 8% 35%)" }}>
+            <div className="text-xs flex items-center gap-4" style={{ color: "var(--text-hint)" }}>
               <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
               <LiveClock />
             </div>
-            <div className="flex items-center gap-5 text-xs" style={{ color: "hsl(210 8% 35%)" }}>
+            <div className="flex items-center gap-5 text-xs" style={{ color: "var(--text-hint)" }}>
               <span
                 style={{
                   fontFamily: "IBM Plex Mono, monospace",

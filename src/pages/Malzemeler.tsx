@@ -99,7 +99,7 @@ export const Malzemeler = () => {
 
       {/* Hero */}
       <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         {/* Ghost machine-loop video */}
         <video
           src="/machine-loop.mp4"
