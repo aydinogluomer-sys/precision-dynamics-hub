@@ -258,7 +258,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
               </span>
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono"
-                style={{ color: "rgba(255,255,255,0.35)" }}
+                style={{ color: "rgb(var(--text-primary-rgb) / 0.35)" }}
               >
                 {"100% IP KORUMASI"}
               </span>
@@ -276,9 +276,9 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
                 key={stat.label}
                 className="text-center py-3"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
+                  background: "rgb(var(--text-primary-rgb) / 0.06)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  border: "1px solid rgb(var(--text-primary-rgb) / 0.12)",
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
