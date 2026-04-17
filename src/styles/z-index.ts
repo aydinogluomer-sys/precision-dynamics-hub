@@ -4,7 +4,6 @@ export const Z = {
   ambientGlow: 2,
   grain: 5,
   scrollVelocity: 8,
-  moldCast: 11,
   cncStory: 12,
   marquee: 15,
   dotNav: 20,
@@ -13,14 +12,15 @@ export const Z = {
   cursor: 90,
   pageTransition: 95,
   preloader: 100,
-} as const;
+} satisfies Record<string, number>;
 
 export type ZLayer = keyof typeof Z;
 
-/** Section stacking order — ascending so each section covers the previous */
+/** Section stacking order — ascending so each section covers the previous.
+ *  NOTE: gaps are intentional (e.g. moldCast=2 removed in v3.0). Do NOT renumber. */
 export const SECTION_Z = {
   hero:                    1,
-  moldCast:                2,
+  // moldCast:             2,  ← removed v3.0
   cncStory:                3,
   nexus:                   4,
   bridgeNexusHww:          5,
@@ -44,4 +44,4 @@ export const SECTION_Z = {
   faqBlog:                 22,
   bridgeFaqCta:            23,
   finalCta:                24,
-} as const;
+} satisfies Record<string, number>;

@@ -102,7 +102,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
             className="absolute inset-0 pointer-events-none opacity-20"
             style={{
               backgroundImage:
-                "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+                "linear-gradient(to right, rgb(var(--text-primary-rgb) / 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--text-primary-rgb) / 0.04) 1px, transparent 1px)",
               backgroundSize: "60px 60px",
             }}
           />
@@ -134,7 +134,7 @@ export const PageLoader = ({ isFirstVisit }: PageLoaderProps) => {
             {/* Progress bar */}
             <div
               className="mt-6 h-px overflow-hidden"
-              style={{ width: 200, backgroundColor: "rgba(255,255,255,0.1)" }}
+              style={{ width: 200, backgroundColor: "rgb(var(--text-primary-rgb) / 0.1)" }}
             >
               <div
                 ref={barRef}

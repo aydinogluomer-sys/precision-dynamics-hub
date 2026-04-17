@@ -70,13 +70,13 @@ export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
                       lineHeight: 1,
                       ...(isFirstWord
                         ? {
-                            WebkitTextStroke: "2px #0688AD",
+                            WebkitTextStroke: "2px var(--precision-ice)",
                             color: "transparent",
                           }
                         : {
-                            color: "#0688AD",
+                            color: "var(--precision-ice)",
                           }),
-                      textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
+                      textShadow: "0 4px 30px rgb(var(--precision-ice-rgb) / 0.15)",
                     }}
                   >
                     {char}
@@ -95,10 +95,10 @@ export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
             className="font-extrabold uppercase whitespace-pre-line text-center"
             style={{
               fontSize: "clamp(2.2rem, 7.5vw, 9rem)",
-              color: "#0688AD",
+              color: "var(--precision-ice)",
               letterSpacing: "inherit",
               lineHeight: 1,
-              textShadow: "0 4px 30px rgba(6, 136, 173, 0.15)",
+              textShadow: "0 4px 30px rgb(var(--precision-ice-rgb) / 0.15)",
             }}
           >
             {restWords.join(" ")}

@@ -78,6 +78,12 @@
     --heat-radial-peak:   rgba(255, 106, 0, 0.40);
     --heat-radial-base:   rgba(255, 106, 0, 0.15);
 
+    /* Heat RGB triplets — for alpha compositing via rgb(var(--x) / a) */
+    --heat-molten-rgb:    232 97 10;
+    --heat-ember-rgb:     255 106 0;
+    --heat-amber-rgb:     212 130 10;
+    --heat-peak-rgb:      226 88 34;
+
     /* ──────────────────────────────────────────────
        PRECISION SYSTEM (Industrial Steel Blue)
        Role: CNC scenes, scanlines, dashboards, data viz
@@ -97,11 +103,20 @@
     --precision-hover-shadow: rgba(26, 77, 143, 0.18);
     --precision-focus-ring:   rgba(46, 58, 140, 0.50);
 
+    /* Precision RGB triplets */
+    --precision-blue-rgb:   26 77 143;
+    --precision-indigo-rgb: 17 42 92;
+    --precision-navy-rgb:   10 26 50;
+    --precision-violet-rgb: 46 58 140;
+    --precision-ice-rgb:    6 136 173;
+    --precision-steel-rgb:  0 113 144;
+
     /* ──────────────────────────────────────────────
        TEAL ACCENT (demoted — utility only)
     ────────────────────────────────────────────── */
     --accent-teal:        #0a7e8c;
     --accent-teal-muted:  rgba(10, 126, 140, 0.15);
+    --accent-teal-rgb:    10 126 140;
 
     /* ──────────────────────────────────────────────
        MATERIAL SYSTEM (Neutrals)
@@ -125,6 +140,19 @@
     --bg-light-concrete:  #e8e4de;
     --bg-light-mist:      #dde3e8;
     --bg-light-testimonial: #ebe7e1;
+
+    /* Background RGB triplets */
+    --bg-cinematic-deep-rgb: 13 13 16;
+    --bg-dark-gunmetal-rgb:  26 29 38;
+    --bg-dark-obsidian-rgb:  12 13 18;
+    --bg-light-workshop-rgb: 240 237 232;
+    --surface-base-rgb:      10 10 10;
+    --surface-raised-rgb:    20 20 20;
+
+    /* Text RGB triplets */
+    --text-primary-rgb:   240 239 237;
+    --text-inverse-rgb:   26 24 20;
+    --material-chrome-rgb: 184 188 194;
 
     /* ──────────────────────────────────────────────
        TEXT TOKENS

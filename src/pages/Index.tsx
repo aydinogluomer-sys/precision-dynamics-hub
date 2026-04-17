@@ -30,9 +30,6 @@ const TransitionBridge = lazy(() =>
 const CNCScrollStory = lazy(() =>
   import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
 );
-const MoldCastScene = lazy(() =>
-  import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
-);
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
@@ -79,7 +76,6 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
@@ -190,16 +186,7 @@ export const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
-        {/* Mold Cast Scene */}
-        {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.moldCast}>
-            <ErrorBoundary>
-              <Suspense fallback={<SectionLoader />}>
-                <MoldCastScene />
-              </Suspense>
-            </ErrorBoundary>
-          </FlowScene>
-        )}
+
 
         {/* CNCScrollStory */}
         <FlowScene z={SECTION_Z.cncStory}>
