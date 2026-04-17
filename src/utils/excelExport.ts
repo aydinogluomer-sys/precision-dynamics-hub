@@ -239,7 +239,7 @@ export async function exportExcelReport(activeTab: string, onProgress?: ExportPr
   // Dynamically load xlsx-js-style only when the user actually exports a report.
   if (!XLSX) {
     const mod = await import("xlsx-js-style");
-    XLSX = (mod as unknown as { default: typeof XLSXType }).default ?? (mod as unknown as typeof XLSXType);
+    XLSX = (mod as unknown as { default: typeof XLSXNS }).default ?? (mod as unknown as typeof XLSXNS);
   }
 
   const now = new Date().toISOString().split("T")[0];
