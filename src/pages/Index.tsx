@@ -187,16 +187,7 @@ export const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
-        {/* Mold Cast Scene */}
-        {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.moldCast}>
-            <ErrorBoundary>
-              <Suspense fallback={<SectionLoader />}>
-                <MoldCastScene />
-              </Suspense>
-            </ErrorBoundary>
-          </FlowScene>
-        )}
+
 
         {/* CNCScrollStory */}
         <FlowScene z={SECTION_Z.cncStory}>
