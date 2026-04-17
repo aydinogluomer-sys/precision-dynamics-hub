@@ -189,7 +189,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
         className="flip-card-inner w-full h-full"
         style={{ filter: "drop-shadow(0 0 0px transparent)" }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgba(232,97,10,0.25))";
+          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgb(var(--heat-molten-rgb) / 0.25))";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)";
