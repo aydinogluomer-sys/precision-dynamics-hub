@@ -127,7 +127,7 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
       }}
       id="rakamlar"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center relative overflow-hidden"
-      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+      style={{ backgroundColor: "var(--surface-base)" }}
       initial={circleInitial}
       whileInView={circleAnimate}
       viewport={{ once: true, amount: 0.2 }}
@@ -137,7 +137,7 @@ export const StatsSection = forwardRef<HTMLElement>(function StatsSection(_props
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, rgba(10,126,140,0.15) 0%, rgba(232,97,10,0.05) 40%, transparent 60%)",
+            "radial-gradient(ellipse at 50% 50%, rgb(var(--accent-teal-rgb) / 0.15) 0%, rgb(var(--heat-molten-rgb) / 0.05) 40%, transparent 60%)",
           y: bgY,
         }}
       />
