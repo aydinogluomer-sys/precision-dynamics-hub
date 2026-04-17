@@ -141,6 +141,19 @@
     --bg-light-mist:      #dde3e8;
     --bg-light-testimonial: #ebe7e1;
 
+    /* Background RGB triplets */
+    --bg-cinematic-deep-rgb: 13 13 16;
+    --bg-dark-gunmetal-rgb:  26 29 38;
+    --bg-dark-obsidian-rgb:  12 13 18;
+    --bg-light-workshop-rgb: 240 237 232;
+    --surface-base-rgb:      10 10 10;
+    --surface-raised-rgb:    20 20 20;
+
+    /* Text RGB triplets */
+    --text-primary-rgb:   240 239 237;
+    --text-inverse-rgb:   26 24 20;
+    --material-chrome-rgb: 184 188 194;
+
     /* ──────────────────────────────────────────────
        TEXT TOKENS
     ────────────────────────────────────────────── */
