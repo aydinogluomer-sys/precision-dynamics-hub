@@ -103,11 +103,20 @@
     --precision-hover-shadow: rgba(26, 77, 143, 0.18);
     --precision-focus-ring:   rgba(46, 58, 140, 0.50);
 
+    /* Precision RGB triplets */
+    --precision-blue-rgb:   26 77 143;
+    --precision-indigo-rgb: 17 42 92;
+    --precision-navy-rgb:   10 26 50;
+    --precision-violet-rgb: 46 58 140;
+    --precision-ice-rgb:    6 136 173;
+    --precision-steel-rgb:  0 113 144;
+
     /* ──────────────────────────────────────────────
        TEAL ACCENT (demoted — utility only)
     ────────────────────────────────────────────── */
     --accent-teal:        #0a7e8c;
     --accent-teal-muted:  rgba(10, 126, 140, 0.15);
+    --accent-teal-rgb:    10 126 140;
 
     /* ──────────────────────────────────────────────
        MATERIAL SYSTEM (Neutrals)
