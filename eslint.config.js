@@ -21,6 +21,38 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector:
+            "Literal[value=/(#[0-9a-fA-F]{3,8}\\b|rgba?\\(\\s*\\d+|hsla?\\(\\s*\\d+)/]",
+          message:
+            "Hardcoded color tespit edildi. CSS token kullan: var(--heat-molten) veya alpha('heatMolten', 0.25).",
+        },
+        {
+          selector:
+            "TemplateElement[value.raw=/(#[0-9a-fA-F]{3,8}\\b|rgba?\\(\\s*\\d+|hsla?\\(\\s*\\d+)/]",
+          message:
+            "Template literal içinde hardcoded color. CSS token kullan.",
+        },
+        {
+          selector: "Property[key.name='zIndex'] > Literal[value=/^[0-9]+$/]",
+          message:
+            "Numeric zIndex literal yasak. SECTION_Z[<key>] kullan.",
+        },
+      ],
     },
+  },
+  {
+    files: [
+      "src/index.css",
+      "src/styles/**",
+      "src/lib/tokens.ts",
+      "**/*.stories.*",
+      "**/*.test.*",
+      "tailwind.config.ts",
+      "vite.config.ts",
+    ],
+    rules: { "no-restricted-syntax": "off" },
   },
 );
