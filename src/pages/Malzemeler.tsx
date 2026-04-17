@@ -342,7 +342,7 @@ export const Malzemeler = () => {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="static" />
     </div>
   );
 };
