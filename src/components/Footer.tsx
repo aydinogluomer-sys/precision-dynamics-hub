@@ -81,12 +81,19 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
   );
 };
 
-export const Footer = () => {
+type FooterVariant = "reveal" | "static";
+
+export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {}) => {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
   const [footerHeight, setFooterHeight] = useState(0);
 
+  // Reveal variant: measure footer height + push it to a CSS var so a spacer
+  // above can reserve room for the fixed footer (used on the long landing page).
+  // Static variant: footer flows in normal document order — no spacer, no measure.
   useEffect(() => {
+    if (variant !== "reveal") return;
+
     const el = footerRef.current;
     if (!el) return;
 
@@ -101,7 +108,7 @@ export const Footer = () => {
     const ro = new ResizeObserver(() => updateHeight());
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [variant]);
 
   const stagger = {
     hidden: {},
@@ -113,14 +120,16 @@ export const Footer = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
   };
 
+  const isReveal = variant === "reveal";
+
   return (
     <>
-      {/* Spacer for fixed footer */}
-      <div style={{ height: footerHeight }} />
+      {/* Spacer for fixed footer — only in reveal mode */}
+      {isReveal && <div style={{ height: footerHeight }} />}
 
       <footer
         ref={footerRef}
-        className="footer-reveal fixed bottom-0 left-0 w-full overflow-hidden font-mono"
+        className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
         style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
       >
       {/* Marquee band at top of footer */}
