@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, forwardRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:',.<>?/\\`~";
@@ -17,7 +17,7 @@ interface TextScrambleProps {
   once?: boolean;
 }
 
-export const TextScramble = ({
+export const TextScramble = forwardRef<HTMLSpanElement, TextScrambleProps>(({
   text,
   className = "",
   style,
@@ -25,11 +25,21 @@ export const TextScramble = ({
   trigger = "inView",
   charset = CHARS,
   once = true,
-}: TextScrambleProps) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once, amount: 0.5 });
+}, forwardedRef) => {
+  const innerRef = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(innerRef, { once, amount: 0.5 });
   const [displayText, setDisplayText] = useState(text);
   const hasAnimated = useRef(false);
+
+  // Merge forwarded ref with inner ref
+  const setRefs = useCallback((node: HTMLSpanElement | null) => {
+    (innerRef as React.MutableRefObject<HTMLSpanElement | null>).current = node;
+    if (typeof forwardedRef === "function") {
+      forwardedRef(node);
+    } else if (forwardedRef) {
+      (forwardedRef as React.MutableRefObject<HTMLSpanElement | null>).current = node;
+    }
+  }, [forwardedRef]);
 
   const scramble = useCallback(() => {
     if (hasAnimated.current && once) return;
@@ -43,11 +53,9 @@ export const TextScramble = ({
     );
 
     const interval = setInterval(() => {
-      // Resolve next character
       scrambled[resolved] = chars[resolved];
       resolved++;
 
-      // Scramble remaining
       for (let i = resolved; i < length; i++) {
         if (chars[i] === " " || chars[i] === "\n") {
           scrambled[i] = chars[i];
@@ -77,7 +85,7 @@ export const TextScramble = ({
 
   return (
     <motion.span
-      ref={ref}
+      ref={setRefs}
       className={`font-mono ${className}`}
       style={style}
       initial={{ opacity: 0 }}
@@ -87,4 +95,6 @@ export const TextScramble = ({
       {displayText}
     </motion.span>
   );
-};
+});
+
+TextScramble.displayName = "TextScramble";
