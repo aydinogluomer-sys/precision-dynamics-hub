@@ -11,7 +11,7 @@ interface GlowLineDividerProps {
   className?: string;
 }
 
-export const GlowLineDivider = ({ glowColor = "hsl(var(--primary))", className = "" }: GlowLineDividerProps) => {
+export const GlowLineDivider = ({ glowColor = "var(--precision-ice)", className = "" }: GlowLineDividerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
