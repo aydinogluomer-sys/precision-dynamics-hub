@@ -70,7 +70,7 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
         <ul className="space-y-2.5 text-center">
           {group.items.map((l) => (
             <li key={l.label}>
-              <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "hsl(210 8% 48%)" }}>
+              <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "var(--text-technical)" }}>
                 {l.label}
               </Link>
             </li>
@@ -161,7 +161,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(0, 113, 144, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 113, 144, 0.05) 1px, transparent 1px)",
+            "linear-gradient(to right, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
@@ -170,7 +170,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, rgba(0, 113, 144, 0.12) 0%, transparent 70%)",
+          background: "radial-gradient(circle at center, rgb(var(--precision-steel-rgb) / 0.12) 0%, transparent 70%)",
         }}
       />
 
@@ -208,14 +208,14 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
               >
                 E-Bülten
               </span>
-              <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0" style={{ color: "hsl(210 8% 60%)" }}>
+              <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0" style={{ color: "var(--text-secondary)" }}>
                 Sektörel yenilikler, teknik analizler ve daha fazlası... Son gelişmelerden haberdar olmak için bültenimize abone olun.
               </p>
             </div>
             <div className="w-full md:w-auto">
               <form onSubmit={(e) => e.preventDefault()} className="flex gap-0">
                 <div className="relative flex-1 md:w-72">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "hsl(210 8% 40%)" }} />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                   <input
                     type="email"
                     placeholder="E-posta adresiniz"
@@ -232,7 +232,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                   ABONE OL
                 </button>
               </form>
-              <p className="text-[11px] mt-2" style={{ color: "hsl(210 8% 35%)" }}>
+              <p className="text-[11px] mt-2" style={{ color: "var(--text-hint)" }}>
                 * Verileriniz KVKK kapsamında korunmaktadır.
               </p>
             </div>
