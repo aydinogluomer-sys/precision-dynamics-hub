@@ -72,12 +72,12 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
         ref={ref}
         className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
         style={{
-          background: "rgba(255, 255, 255, 0.05)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
+          background: "rgb(var(--text-primary-rgb) / 0.05)",
+          border: "1px solid rgb(var(--text-primary-rgb) / 0.1)",
         }}
         whileHover={{
-          borderColor: "rgba(232, 97, 10, 0.4)",
-          boxShadow: "0 0 30px rgba(232, 97, 10, 0.15)",
+          borderColor: "rgb(var(--heat-molten-rgb) / 0.4)",
+          boxShadow: "0 0 30px rgb(var(--heat-molten-rgb) / 0.15)",
         }}
         transition={{ delay: 0.15 * index }}
       >
@@ -85,9 +85,9 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
           style={{
             lineHeight: 1,
-            color: "hsl(var(--forge-molten))",
+            color: "var(--heat-molten)",
             fontVariantNumeric: "tabular-nums",
-            textShadow: "0 0 20px rgba(232, 97, 10, 0.4), 0 0 40px rgba(232, 97, 10, 0.15)",
+            textShadow: "0 0 20px rgb(var(--heat-molten-rgb) / 0.4), 0 0 40px rgb(var(--heat-molten-rgb) / 0.15)",
           }}
         >
           {displayCount}
@@ -95,7 +95,7 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
         </div>
         <div
           className="text-xs uppercase tracking-[0.2rem] font-semibold"
-          style={{ color: "rgba(255, 255, 255, 0.6)" }}
+          style={{ color: "rgb(var(--text-primary-rgb) / 0.6)" }}
         >
           {stat.label}
         </div>
