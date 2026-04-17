@@ -1,5 +1,10 @@
-import XLSX from "xlsx-js-style";
+// xlsx-js-style is dynamically imported inside exportExcelReport() to keep
+// the ~322KB (gzipped) library out of the landing-page bundle.
+import type XLSXType from "xlsx-js-style";
 import { supabase } from "@/integrations/supabase/client";
+
+// Module-level handle, populated on first export call.
+let XLSX: typeof XLSXType;
 
 /* ── Brand Colors ── */
 const BRAND = {
@@ -229,6 +234,12 @@ function kpiRow(category: string, metric: string, value: number | string) {
 export type ExportProgressCallback = (progress: number) => void;
 
 export async function exportExcelReport(activeTab: string, onProgress?: ExportProgressCallback) {
+  // Dynamically load xlsx-js-style only when the user actually exports a report.
+  if (!XLSX) {
+    const mod = await import("xlsx-js-style");
+    XLSX = (mod as unknown as { default: typeof XLSXType }).default ?? (mod as unknown as typeof XLSXType);
+  }
+
   const now = new Date().toISOString().split("T")[0];
   const wb = XLSX.utils.book_new();
 
