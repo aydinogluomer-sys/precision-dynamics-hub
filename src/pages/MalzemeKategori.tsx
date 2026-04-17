@@ -32,22 +32,22 @@ export const MalzemeKategori = () => {
       <meta name="description" content={category.seoDescription} />
 
       {/* Hero */}
-      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, var(--surface-base) 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         <div className="container-industrial relative z-10">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-white/50 mb-8">
-            <Link to="/" className="hover:text-white/80 transition-colors">Ana Sayfa</Link>
+          <nav className="flex items-center gap-2 text-sm mb-8" style={{ color: "rgb(var(--text-primary-rgb) / 0.5)" }}>
+            <Link to="/" className="transition-colors hover:opacity-80" style={{ color: "rgb(var(--text-primary-rgb) / 0.8)" }}>Ana Sayfa</Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <Link to="/malzemeler" className="hover:text-white/80 transition-colors">Malzemeler</Link>
+            <Link to="/malzemeler" className="transition-colors hover:opacity-80" style={{ color: "rgb(var(--text-primary-rgb) / 0.8)" }}>Malzemeler</Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-white/90 font-medium">{category.name}</span>
+            <span className="font-medium" style={{ color: "rgb(var(--text-primary-rgb) / 0.9)" }}>{category.name}</span>
           </nav>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
             <span className="text-4xl mb-4 block">{category.icon}</span>
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{category.heroTitle}</h1>
-            <p className="text-lg text-white/70 max-w-2xl mx-auto">{category.heroDescription}</p>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{category.heroTitle}</h1>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgb(var(--text-primary-rgb) / 0.7)" }}>{category.heroDescription}</p>
           </motion.div>
         </div>
       </section>
@@ -153,10 +153,10 @@ export const MalzemeKategori = () => {
       )}
 
       {/* CTA */}
-      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, #0f172a 100%)" }}>
+      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, var(--surface-base) 100%)" }}>
         <div className="container-industrial text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{category.name} ile CNC Parça Üretimi</h2>
-          <p className="text-white/70 mb-8 max-w-lg mx-auto">Projeniz için en uygun {category.name.toLowerCase()} alaşımını birlikte belirleyelim.</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{category.name} ile CNC Parça Üretimi</h2>
+          <p className="mb-8 max-w-lg mx-auto" style={{ color: "rgb(var(--text-primary-rgb) / 0.7)" }}>Projeniz için en uygun {category.name.toLowerCase()} alaşımını birlikte belirleyelim.</p>
           <Link to="/iletisim" className="btn-industrial-primary inline-block px-8 py-3">Teklif Al <ArrowRight className="w-4 h-4 inline ml-1" /></Link>
         </div>
       </section>
