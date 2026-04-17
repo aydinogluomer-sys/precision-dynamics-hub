@@ -1,10 +1,12 @@
 // xlsx-js-style is dynamically imported inside exportExcelReport() to keep
 // the ~322KB (gzipped) library out of the landing-page bundle.
-import type XLSXType from "xlsx-js-style";
+// We only import the type namespace at compile time — no runtime cost.
+import type * as XLSX from "xlsx-js-style";
+import type XLSXDefault from "xlsx-js-style";
 import { supabase } from "@/integrations/supabase/client";
 
-// Module-level handle, populated on first export call.
-let XLSX: typeof XLSXType;
+// Module-level handle, populated lazily on first export call.
+let XLSXLib: typeof XLSXDefault;
 
 /* ── Brand Colors ── */
 const BRAND = {
