@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { RotateCcw, Grid3x3, Scissors, Loader2, Box, Palette, TriangleRight, Ruler } from "lucide-react";
+import { getCSSVar } from "@/utils/cssVar";
+import { useTheme } from "@/hooks/use-theme";
 
 // ── Types ──
 interface ModelViewerProps {
@@ -254,6 +256,16 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
   const [measuring, setMeasuring] = useState(false);
   const [measurePoints, setMeasurePoints] = useState<THREE.Vector3[]>([]);
   const [measureDistance, setMeasureDistance] = useState<number | null>(null);
+
+  // Phase 11A-extended: grid renkleri runtime token'larından okunur, tema değişiminde yeniden hesaplanır
+  const { theme } = useTheme();
+  const gridConfig = useMemo(
+    () => ({
+      cellColor: getCSSVar("--material-chrome", "#64748b"),
+      sectionColor: getCSSVar("--precision-steel", "#475569"),
+    }),
+    [theme]
+  );
 
   useEffect(() => {
     if (!file) {
@@ -508,12 +520,10 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
                 args={[100, 100]}
                 cellSize={1}
                 cellThickness={0.5}
-                // eslint-disable-next-line no-restricted-syntax
-                cellColor="#64748b" /* OK: R3F runtime — grid */
+                cellColor={gridConfig.cellColor}
                 sectionSize={5}
                 sectionThickness={1}
-                // eslint-disable-next-line no-restricted-syntax
-                sectionColor="#475569" /* OK: R3F runtime — grid */
+                sectionColor={gridConfig.sectionColor}
                 fadeDistance={50}
                 fadeStrength={1}
                 followCamera={false}
