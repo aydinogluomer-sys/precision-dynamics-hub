@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -12,7 +12,7 @@ interface SectionDotNavProps {
   sections: Section[];
 }
 
-export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
+export const SectionDotNav = forwardRef<HTMLDivElement, SectionDotNavProps>(({ sections }, _ref) => {
   const { pathname } = useLocation();
   const prefersReduced = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
