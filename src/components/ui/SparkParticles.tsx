@@ -1,5 +1,6 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { getCSSVar } from "@/utils/cssVar";
 
 interface SparkParticlesProps {
   count?: number;
@@ -24,7 +25,7 @@ interface Particle {
 
 export const SparkParticles = ({
   count = 40,
-  colors = ["#ff6a00", "#e25822", "#ffaa44", "#ff4400"],
+  colors,
   speed = 1,
   direction = "up",
   className = "",
@@ -34,9 +35,21 @@ export const SparkParticles = ({
   const rafRef = useRef<number>(0);
   const reduced = usePrefersReducedMotion();
 
+  // Heat palette token'larından runtime'da renk havuzu (canvas 2D ctx token literal kabul eder)
+  const palette = useMemo(
+    () =>
+      colors ?? [
+        getCSSVar("--heat-ember", "#ff6a00"),
+        getCSSVar("--heat-peak", "#e25822"),
+        getCSSVar("--heat-amber", "#d4820a"),
+        getCSSVar("--heat-molten", "#e8610a"),
+      ],
+    [colors],
+  );
+
   const createParticle = useCallback(
     (w: number, h: number): Particle => {
-      const color = colors[Math.floor(Math.random() * colors.length)];
+      const color = palette[Math.floor(Math.random() * palette.length)];
       if (direction === "up") {
         return {
           x: Math.random() * w,
@@ -65,7 +78,7 @@ export const SparkParticles = ({
         glow: 6 + Math.random() * 10,
       };
     },
-    [colors, direction, speed],
+    [palette, direction, speed],
   );
 
   useEffect(() => {
