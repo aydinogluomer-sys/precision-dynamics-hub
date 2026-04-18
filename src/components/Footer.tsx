@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { MarqueeBand } from "./MarqueeBand";
 import { footerLinks, type FooterLinkGroup } from "./footer/footerLinks";
 import { FooterBrand } from "./footer/FooterBrand";
+import { FooterBackdrop } from "./footer/FooterBackdrop";
 import { FooterNewsletter } from "./footer/FooterNewsletter";
 import { FooterCTA } from "./footer/FooterCTA";
 import { FooterBottomBar } from "./footer/FooterBottomBar";
