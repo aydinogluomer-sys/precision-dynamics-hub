@@ -1,6 +1,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, Suspense } from "react";
 import * as THREE from "three";
+import { getCSSVar } from "@/utils/cssVar";
 
 // Procedural CNC gear/part geometry
 const CNCGear = () => {
@@ -13,12 +14,10 @@ const CNCGear = () => {
     }
   });
 
-  // eslint-disable-next-line no-restricted-syntax
-  const tealColor = new THREE.Color("#0688AD"); // OK: R3F runtime — token migration: cssVar.ts useEffect (phase-11A-extended)
-  // eslint-disable-next-line no-restricted-syntax
-  const darkColor = new THREE.Color("#1e293b"); // OK: R3F runtime
-  // eslint-disable-next-line no-restricted-syntax
-  const metalColor = new THREE.Color("#94a3b8"); // OK: R3F runtime
+  // Phase 11A-extended: runtime token sync — fallback hex'ler EXEMPT
+  const tealColor = new THREE.Color(getCSSVar("--precision-steel", "#0688AD"));
+  const darkColor = new THREE.Color(getCSSVar("--surface-base", "#1e293b"));
+  const metalColor = new THREE.Color(getCSSVar("--material-chrome", "#94a3b8"));
 
   return (
     <group ref={meshRef}>
