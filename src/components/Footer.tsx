@@ -74,6 +74,20 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
 
   const isReveal = variant === "reveal";
 
+  // Scroll-aware: up-arrow buton sayfa %50'den fazla scroll edildiğinde görünür
+  // → mobile'da footer alt bar linkleriyle çakışmayı engeller.
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrolled = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setShowScrollTop(max > 0 && scrolled / max > 0.5);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
       {isReveal && <div data-footer-spacer aria-hidden="true" style={{ height: footerHeight }} />}
@@ -130,8 +144,12 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
           <FooterBottomBar currentYear={currentYear} />
         </div>
 
-        {/* Floating Scroll-to-Top - sol alt */}
-        <div className="fixed bottom-6 left-6 z-50">
+        {/* Floating Scroll-to-Top - sol alt, sadece scroll>%50 sonrası */}
+        <div
+          className={`fixed bottom-6 left-6 z-50 transition-all duration-300 ${
+            showScrollTop ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
+          }`}
+        >
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl hover:border-primary"
