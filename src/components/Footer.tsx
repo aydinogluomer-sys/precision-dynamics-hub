@@ -121,7 +121,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
 
           {/* Mobile: Brand + Accordion */}
           <div className="md:hidden mb-12">
-            <BrandBlock centered />
+            <FooterBrand centered />
             {footerLinks.map((group) => (
               <FooterAccordion key={group.title} group={group} />
             ))}
@@ -136,7 +136,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
             className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
           >
             <motion.div variants={fadeUp} className="md:col-span-3 lg:col-span-1">
-              <BrandBlock />
+              <FooterBrand />
             </motion.div>
             {footerLinks.map((group) => (
               <motion.div key={group.title} variants={fadeUp}>
