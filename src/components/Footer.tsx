@@ -91,22 +91,36 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
   // Reveal variant: measure footer height + push it to a CSS var so a spacer
   // above can reserve room for the fixed footer (used on the long landing page).
   // Static variant: footer flows in normal document order — no spacer, no measure.
+  // RC-1: offsetHeight → scrollHeight (taşan içerik dahil).
+  // RC-3: ResizeObserver + document.fonts.ready ile font swap sonrası yeniden ölç.
   useEffect(() => {
     if (variant !== "reveal") return;
 
     const el = footerRef.current;
     if (!el) return;
 
+    let lastH = 0;
     const updateHeight = () => {
-      const h = el.offsetHeight;
-      setFooterHeight(h);
-      document.documentElement.style.setProperty("--footer-height", h + "px");
+      if (!footerRef.current) return;
+      requestAnimationFrame(() => {
+        if (!footerRef.current) return;
+        const h = footerRef.current.scrollHeight;
+        if (h === lastH) return;
+        lastH = h;
+        setFooterHeight(h);
+        document.documentElement.style.setProperty("--footer-height", h + "px");
+      });
     };
 
     updateHeight();
 
-    const ro = new ResizeObserver(() => updateHeight());
+    const ro = new ResizeObserver(updateHeight);
     ro.observe(el);
+
+    if (typeof document !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(updateHeight);
+    }
+
     return () => ro.disconnect();
   }, [variant]);
 
