@@ -1,729 +1,921 @@
-# MAS TECHNIC v3.4 — FAZ 11 EXECUTION CONTRACT (LOVABLE)
+# MAS TECHNIC v3.4 — FOOTER REVEAL: FINAL REVIEW & EXECUTION CONTRACT
 
-> Bu doküman tek bir execution contract'tır. Okuduğun andan itibaren PRE-FLIGHT ile başla ve fazları sırayla uygula. Açıklama isteme, onay sorma, scope genişletme. Her fazın sonunda zorunlu raporu üret.
+> **Statü:** PRODUCTION-GRADE · EVIDENCE-DRIVEN · DEPLOYMENT GATEKEEPER **Runner:** Lovable (Plan Mode → Execute Mode) **Strateji:** PROMPT 1 (Forensics) → kullanıcı root cause onayı → PROMPT 2 (Fix) **Dil:** Kod yorumları Türkçe, identifier'lar İngilizce
 
 ---
 
 ## 🔁 ENGINE
 
 ```
-EXECUTE → VALIDATE → (FAIL → DIAGNOSE → AUTO-FIX → RETRY) × max 2 → HARD STOP
+EXECUTE → VALIDATE → (FAIL → DIAGNOSE → PREDEFINED FIX → RETRY) × max 2 → HARD STOP
 
 ```
 
-- Retry limiti: faz başına **2**. Üçüncüde HARD STOP.
-- Freeform reasoning YASAK. Fix yalnızca `AUTO-FIX PROTOCOL` (FIX-01…08) içinden seçilir.
-- Scope expansion YASAK. Bu dokümanda olmayan dosyaya/işe dokunma.
-- Her faz sonunda `PHASE REPORT FORMAT` zorunlu. Rapor eksikse execution INVALID.
-- Her faz kendi commit'inde: `chore(v3): phase-11<letter> — <özet>` veya `docs(v3): …`
-- Kod yorumları Türkçe, identifier'lar İngilizce.
-- Belirsizlik → `AMBIGUITY DETECTED` raporu + FIX-07 + HARD STOP.
+- Scope dışı dosyaya dokunma.
+- Her adım sonunda rapor zorunlu — eksikse execution INVALID.
+- `package.json`'a yeni bağımlılık = HARD STOP.
+- Belirsizlik = AMBIGUITY raporu + HARD STOP.
 
 ---
 
-## 🚫 LOCKED ZONES (DOKUNMA)
+## 🚫 LOCKED ZONES
 
 - `src/pages/admin/**`, `src/pages/musteri-paneli/**`
-- `src/components/admin/**`, `src/components/musteri/**`
 - `src/integrations/supabase/**`, `src/hooks/useAuth*`
 - `src/components/ui/*` (shadcn vendor)
-- `src/lib/tokens.ts` (sadece yeni token ekleme OK)
-- `src/index.css` ve `src/styles/**` (token tanım dosyaları — yalnız FIX-01 için düzenlenebilir)
-- `vite.config.ts` `build/define/resolve` blokları
-- `tailwind.config.ts` `content` paths, `fontFamily`, `borderRadius.DEFAULT`
-- `package.json` **— yeni npm paketi YOK. Kurulum girişimi = HARD STOP.**
-
-Locked zone ihlali = HARD STOP.
+- `package.json`
+- `tailwind.config.ts` content paths, fontFamily, borderRadius.DEFAULT
+- `vite.config.ts` build/define/resolve blokları
+- `/malzemeler/aluminyum` — ISSUE-1 fix'i her adımda korunacak
 
 ---
 
-## 📐 GLOBAL RULES
+## ══════════════════════════════════════════════
 
-1. `border-radius: 0` global.
-2. Font: IBM Plex Mono + IBM Plex Sans.
-3. Scroll: yalnızca Lenis.
-4. Animasyon: GSAP + Framer Motion.
-5. Hardcoded renk YASAK (token tanım dosyaları hariç).
-6. `z-index` numeric literal YASAK — `SECTION_Z` üzerinden.
-7. `rgba(var(--x), A)` INVALID → `rgb(var(--x-rgb) / A)` zorunlu.
-8. Tailwind preset renk class YASAK: `text-white`, `text-black`, `bg-white`, `bg-black`, `border-white`, `border-black`, `ring-white/black`, `fill-white/black`, `stroke-white/black`.
-9. Her faz sonrası `tsc --noEmit` → 0 error.
+## PROMPT 1 — FORENSICS + RENDERING INTEGRITY
+
+## ══════════════════════════════════════════════
+
+> **HİÇBİR DOSYAYI DEĞİŞTİRME.** Bu prompt yalnızca okuma, ölçüm, analiz ve rapor üretir.
 
 ---
 
-## 🚦 PRE-FLIGHT (P1–P7) — HEPSİ PASS
+### F1 — Footer.tsx TAM OKUMA
 
-### P1 · v3.3 state integrity
+Aşağıdakileri tespit et — her madde için **gerçek değeri** yaz, "unknown" kabul edilmez:
 
-```bash
-git log --oneline | head -20 | grep -E "phase-[1-6]"
+**Pozisyon & layout:**
 
-```
+1. `position` değeri — `fixed` / `sticky` / `relative` / `absolute`
+2. `bottom` değeri (fixed ise) — sabit px mi, 0 mu?
+3. `height` veya `min-height` kısıtı var mı? Değer nedir?
+4. `max-height` kısıtı var mı? Değer nedir?
+5. `overflow` değeri — `hidden` / `auto` / `visible` / `clip`
+6. `overflow-y` ayrıca set edilmiş mi?
 
-FAIL → HARD STOP.
+**Spacer mekanizması:** 7. Spacer DOM'da nasıl oluşturuluyor? (`useRef` + style.height? Tailwind class? CSS var?) 8. Spacer'a yazılan değer: `footer.offsetHeight` mu, `footer.scrollHeight` mu, başka bir değer mi? 9. Spacer'ın ölçüm zamanlaması: mount anında mı, scroll event'inde mi, observer callback'inde mi?
 
-### P2 · Token existence audit
+**Variant sistemi:** 10. Prop adı ve alabileceği tüm değerler (`reveal` / `static` / başka?) 11. Her variant'ta `position` değeri ne oluyor? 12. Her variant'ta `overflow` değeri ne oluyor?
 
-```bash
-grep -rn "^\s*--" src/index.css src/styles/ 2>/dev/null | \
-  grep -E "(heat-|precision-|material-|surface-|text-|overlay-|border-|bg-dark-)"
+**Reveal trigger:** 13. Trigger mekanizması: scroll position listener mı, IntersectionObserver mı, başka? 14. Eğer scroll position: hangi eşik? `document.scrollHeight - window.innerHeight` mi, sabit px mi, yüzde mi? 15. Eğer IntersectionObserver: hangi element observe ediliyor? Threshold değeri nedir? 16. **KRİTİK:** Trigger başlatılmadan önce spacer DOM'a eklenmiş mi? Sıralama nedir?
 
-```
+**Observer:** 17. `ResizeObserver` var mı? 18. Varsa: neyi observe ediyor? (footer'ın kendisi mi, spacer mı, window mı?) 19. Callback ne zaman tetikleniyor: mount-only mu, her resize'da mı? 20. Callback'te hangi ölçüm alınıp nereye yazılıyor? 21. `document.fonts.ready` bekleniyor mu?
 
-Eksik token (özellikle `--precision-teal`, `--bg-dark-obsidian` ve `-rgb` variant'ları) → FIX-01.
-
-### P3 · ESLint baseline
-
-```bash
-npx eslint src/ --ext .ts,.tsx 2>&1 | tee /tmp/eslint-baseline.log
-grep -c "no-restricted-syntax" /tmp/eslint-baseline.log || echo "0"
-
-```
-
-Count kayda geç.
-
-### P4 · Residual literal scan (3 pass)
-
-```bash
-# Pass A — hex/rgb/hsl literal
-grep -rn -E "#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*[0-9]|hsla?\([^)]*[0-9]" src/ \
-  --include="*.tsx" --include="*.ts" --exclude-dir=node_modules \
-  | grep -v "src/index.css" | grep -v "src/styles/" \
-  | grep -v "\.test\." | grep -v "\.stories\." \
-  | grep -v "// OK:" | grep -v "var(--"
-
-# Pass B — Tailwind preset literal
-grep -rn -E "\b(text|bg|border|ring|fill|stroke|divide|placeholder|caret|accent)-(white|black)\b" src/ \
-  --include="*.tsx" --include="*.ts" --exclude-dir=node_modules \
-  | grep -v "\.test\." | grep -v "\.stories\."
-
-# Pass C — invalid rgba(var(--)
-grep -rn "rgba(var(--\|rgba(\s*var(--" src/ --include="*.tsx" --include="*.ts"
-
-```
-
-Üç pass çıktısını `docs/phase-11-residual-audit.md` dosyasına tablo olarak yaz:
-
-```markdown
-# Phase 11 Residual Literal Audit
-Date: <ISO>
-
-## Pass A — hex/rgb/hsl literals
-| File | Line | Value | Proposed Token |
-|---|---|---|---|
-
-## Pass B — Tailwind presets
-| File | Line | Class | Proposed Replacement |
-|---|---|---|---|
-
-## Pass C — invalid rgba(var(--)
-(should be empty)
-
-```
-
-### P5 · Build baseline
-
-```bash
-rm -rf dist/
-npm run build
-ls -la dist/assets/ > docs/phase-11-bundle-before.txt
-du -sh dist/assets/*.js | sort -rh > docs/phase-11-bundle-sizes-before.txt
-
-```
-
-### P6 · Responsive baseline
-
-`docs/baseline/v2.9-before.mp4` varsa reuse. Yoksa browser tool ile 6 kritik sayfa × 3 viewport = 18 screenshot, `docs/baseline/phase-11-before/`. Browser tool yoksa `SKIPPED`.
-
-### P7 · xlsx haritalama
-
-```bash
-grep -rn "xlsx" src/ --include="*.tsx" --include="*.ts"
-grep -rn "excelExport\|exportToExcel\|downloadExcel" src/ --include="*.tsx" --include="*.ts"
-
-```
-
-### PRE-FLIGHT raporu zorunlu:
-
-```
-PRE-FLIGHT 11 REPORT
-[P1] v3.3 state: PASS | FAIL
-[P2] Token audit: PASS | FAIL (missing: [...])
-[P3] ESLint baseline: <N> errors
-[P4] Pass A: <N>, Pass B: <N>, Pass C: <N>
-[P5] Build: PASS | FAIL, total: <KB>
-[P6] Responsive baseline: CAPTURED | REUSED | SKIPPED
-[P7] xlsx integrations: <file:line list>
-NEXT: BEGIN phase-11A | STOP
-
-```
-
-Herhangi bir P FAIL → HARD STOP.
+**Z-index:** 22. Footer'ın z-index değeri (sayısal veya CSS variable adı) 23. Stacking context oluşturuyor mu? (`transform`, `will-change`, `filter` var mı?)
 
 ---
 
-# 🧱 FAZ 11A — RESIDUAL COLOR SWEEP
+### F2 — Z-INDEX AUDIT
 
-### DETERMINISTIC MAPPING TABLE
+`Index.tsx` ve ilgili section dosyalarını tara:
 
-**Hex:**
-
-
-| FROM                          | TO                                                             |
-| ----------------------------- | -------------------------------------------------------------- |
-| `#ffffff` / `#fff`            | `var(--text-primary)`                                          |
-| `#000000` / `#000`            | `var(--surface-base)` veya `var(--overlay-dark-low)` (context) |
-| `#ff6b35`, `#e8610a` (molten) | `var(--heat-molten)`                                           |
-| `#0688ad` teal                | `var(--precision-ice)`                                         |
-| `#007190`                     | `var(--precision-steel)`                                       |
-| `#0f172a` slate-900           | `var(--surface-base)`                                          |
-| `#141414`                     | `var(--surface-raised)`                                        |
-| Başka brand-dışı hex          | **AMBIGUITY → FIX-07**                                         |
-
-
-**rgba:**
-
-
-| FROM                  | TO                                    |
-| --------------------- | ------------------------------------- |
-| `rgba(0,0,0,A)`       | `rgb(var(--surface-base-rgb) / A)`    |
-| `rgba(255,255,255,A)` | `rgb(var(--text-primary-rgb) / A)`    |
-| `rgba(232,97,10,A)`   | `rgb(var(--heat-molten-rgb) / A)`     |
-| `rgba(6,136,173,A)`   | `rgb(var(--precision-ice-rgb) / A)`   |
-| `rgba(0,113,144,A)`   | `rgb(var(--precision-steel-rgb) / A)` |
-
-
-**hsl:**
-
-
-| FROM                  | TO                                                                   |
-| --------------------- | -------------------------------------------------------------------- |
-| `hsl(var(--forge-*))` | v2.0 semantic (`--heat-ember`, `--surface-base`, `--surface-raised`) |
-| `hsl(180 100% 50%)`   | `var(--precision-teal)` veya `var(--precision-ice)`                  |
-| Başka hsl             | **AMBIGUITY → FIX-07**                                               |
-
-
-**Tailwind presets (FIX-03):**
-
-- `text-white` → `text-[var(--text-primary)]`
-- `text-black` → `text-[var(--text-inverse)]`
-- `bg-black` → `bg-[var(--surface-base)]`
-- `bg-white` → `bg-[var(--text-primary)]` (nadir; şüpheliyse AMBIGUITY)
-- `border-white` → `border-[rgb(var(--text-primary-rgb)/0.16)]`
-- `border-black` → `border-[var(--surface-base)]`
-
-**İstisna (dokunma):** `/* DO NOT tokenize */` yorumu olan blok (ProjectShowcase.tsx v3.3 Faz 3 Batch 5 PRESERVE).
-
-### BATCH STRATEJİSİ
-
-P4 toplam dosya sayısına göre:
-
-- **≤9 dosya** → 1 batch, file-by-file
-- **10–18 dosya** → 3 batch × max 6 dosya (UI primitives → interactive → sections)
-- **19+ dosya** → 5 batch × max 5 dosya:
-  - B1: `src/components/ui/**` (non-shadcn)
-  - B2: overlay/decoration (Floating*, Glow*, Elegant*, AmbientGlow*, HUD*, Spark*)
-  - B3: header/footer/navigation
-  - B4: section components (Hero*, FAQ*, Stats*, Quote*, Marquee*)
-  - B5: page components (`src/pages/*.tsx` public routes)
-
-**Global find-replace YASAK.** File-scoped AST/editör edit.
-
-### BATCH SONRASI VALIDATION
-
-```bash
-tsc --noEmit
-npx eslint src/ --ext .ts,.tsx 2>&1 | grep "no-restricted-syntax" | wc -l
-
-```
-
-- tsc: 0 error
-- ESLint count: önceki batch'e göre **düşmüş** olmalı
-- Dev server'da batch dosyalarını aç, görsel smoke (transparent render / renk kaybı / layout shift yok)
-
-Regresyon → FIX-05 (batch revert) + BLOCKED_ON_USER.
-
-### FINAL VALIDATION (11A kapanışı)
-
-```bash
-# Pass A
-grep -rn -E "#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*[0-9]|hsla?\([^)]*[0-9]" src/ \
-  --include="*.tsx" --include="*.ts" --exclude-dir=node_modules \
-  | grep -v "src/index.css" | grep -v "src/styles/" \
-  | grep -v "\.test\." | grep -v "\.stories\." \
-  | grep -v "// OK:" | grep -v "var(--"
-
-# Pass B
-grep -rn -E "\b(text|bg|border|ring|fill|stroke)-(white|black)\b" src/ \
-  --include="*.tsx" --include="*.ts" --exclude-dir=node_modules \
-  | grep -v "\.test\." | grep -v "\.stories\."
-
-# Pass C
-grep -rn "rgba(var(--" src/ --include="*.tsx" --include="*.ts"
-
-# ESLint
-npx eslint src/ --ext .ts,.tsx
-
-```
-
-**Expected:** Üç grep boş, ESLint 0 error.
-
-**Commit sırası (her batch ayrı):**
-
-```
-chore(v3): phase-11A batch-1 — ui primitive color migration
-chore(v3): phase-11A batch-2 — overlay/decoration color migration
-chore(v3): phase-11A batch-3 — nav/header/footer color migration
-chore(v3): phase-11A batch-4 — section components color migration
-chore(v3): phase-11A batch-5 — page components color migration
-
-```
-
-→ `PHASE 11A REPORT` → NEXT: `phase-11B`.
+1. `SECTION_Z` map'i (veya equivalent) — tüm değerleri listele
+2. `finalCta` (veya son sticky section) z-index değeri
+3. Footer z-index değeri
+4. İkisi arasındaki fark: Footer finalCta **üzerinde** mi **altında** mı?
+5. Footer'ın parent elementi stacking context oluşturuyor mu?
+  - `transform: translateY(...)` → **yeni stacking context açar**, z-index kardeşler arası çalışmaz
+  - `will-change: transform` → aynı etki
+  - Bu durum varsa z-index fix'i yetmez, stacking context fix'i de gerekir
 
 ---
 
-# 📦 FAZ 11B — BUNDLE FORENSICS
+### F3 — REVEAL TRIGGER: SIRALAMA ANALİZİ (KRİTİK)
 
-### 1. Clean build
+Bu soruyu koda bakarak yanıtla:
 
-```bash
-rm -rf dist/
-npm run build 2>&1 | tee docs/phase-11-build-after.log
+```
+Spacer DOM'a eklenip yüksekliği hesaplanıyor mu
+    ↓ ÖNCE mi?
+Trigger başlatılıyor mu
+    ↓ SONRA mı?
 
 ```
 
-### 2. Chunk inventory
+**Eğer sıralama ters ise** (trigger önce, spacer sonra):
 
-```bash
-ls -la dist/assets/ > docs/phase-11-bundle-after.txt
-du -sh dist/assets/*.js | sort -rh > docs/phase-11-bundle-sizes-after.txt
-diff docs/phase-11-bundle-sizes-before.txt docs/phase-11-bundle-sizes-after.txt || true
+- `document.scrollHeight` trigger hesaplanırken spacer yüksekliğini içermez
+- Sayfa "scroll edilemez" görünür veya reveal çok erken/geç tetiklenir
+- `scrollHeight` fix'i tek başına yetersizdir, trigger sıralaması da düzeltilmeli
 
-```
+**Ayrıca tespit et:**
 
-### 3. Filename-based chunk split
-
-```bash
-ls dist/assets/ | grep -iE "admin|musteri|xlsx" || echo "NO_SEPARATE_CHUNK"
-
-```
-
-### 4. Main chunk string scan
-
-```bash
-MAIN_CHUNK=$(ls dist/assets/index-*.js 2>/dev/null | head -1)
-
-grep -oE "AdminDashboard|AdminSidebar|RFQManager|FinancialView|user_roles|admin_panel" "$MAIN_CHUNK" | sort -u
-grep -oE "MusteriPaneli|MusteriSidebar|SiparislerimTab|customer_panel" "$MAIN_CHUNK" | sort -u
-grep -oE "XLSX\.utils|xlsx-js-style|SheetJS" "$MAIN_CHUNK" | sort -u
-grep -oE "user_roles|admin_logs" "$MAIN_CHUNK" | sort -u
-
-```
-
-### YORUMLAMA
-
-- **Separate chunk YOK + main'de string VAR** → `BUNDLE_LEAK` → FIX-06
-- **Separate chunk VAR + main'de string VAR + size delta < 50KB** → `MINIFIER_RESIDUAL` (OK, `// NOTE: minifier residual string, verified non-leak` ile raporla)
-- **Separate chunk VAR + size delta > 50KB** → gerçek leak → FIX-06
-- **Hiç bulunamadı** → CLEAN → PASS
-
-### 5. Rapor: `docs/bundle-forensics-v3.md`
-
-```markdown
-# Bundle Forensics — Phase 11B
-Date: <ISO>
-
-## Chunk Inventory
-| Chunk | Size (raw) | Purpose |
-|---|---|---|
-
-## Before/After Delta
-<diff output>
-
-## Leak Scan Results
-- Admin strings in main: <list or "none">
-- Customer strings in main: <list or "none">
-- xlsx strings in main: <list or "none">
-- Supabase admin-only: <list or "none">
-
-## Verdict
-- [ ] CLEAN
-- [ ] MINIFIER_RESIDUAL
-- [ ] LEAK_DETECTED (FIX-06 applied)
-
-## Total bundle
-- Total JS (raw): <KB>
-- Largest chunk: <name, size>
-- Red flags (>300 KB gzipped): <list or none>
-
-```
-
-Leak confirmed → FIX-06 × 2 retry → hâlâ leak ise HARD STOP.
-
-**Commit:** `docs(v3): phase-11B bundle forensics report` → `PHASE 11B REPORT` → NEXT: `phase-11C`.
+- Trigger, `window.innerHeight` kullanıyorsa iOS Safari'de `100vh ≠ window.innerHeight` problemi var mı?
+- `100dvh` veya `svh/lvh` kullanımı var mı?
 
 ---
 
-# 📱 FAZ 11C — RESPONSIVE QA
+### F4 — FOOTER KULLANAN SAYFALAR
 
-### MATRIX (6 sayfa × 3 viewport = 18)
-
-
-| #   | Sayfa                   | Neden kritik                            |
-| --- | ----------------------- | --------------------------------------- |
-| 1   | `/`                     | Stacking scroll, dot nav, full pipeline |
-| 2   | `/malzemeler`           | Footer "static" variant                 |
-| 3   | `/malzemeler/aluminyum` | Detail, card grid                       |
-| 4   | `/teklif-al`            | Wizard, footer YOK                      |
-| 5   | `/blog`                 | Footer "reveal" variant                 |
-| 6   | `/404`                  | Glitch effect, footer YOK               |
+Her sayfa için `variant` prop'unu ve Footer'ın nasıl import edildiğini tespit et:
 
 
-**Viewports:** 375×812, 768×1024, 1280×832.
+| Sayfa                    | Variant | Import tipi             | Layout wrapper var mı? |
+| ------------------------ | ------- | ----------------------- | ---------------------- |
+| `Index.tsx`              | ?       | Doğrudan / Layout / HOC | ?                      |
+| `Malzemeler.tsx`         | ?       | ?                       | ?                      |
+| `MalzemeKategori.tsx`    | ?       | ?                       | ?                      |
+| `Blog.tsx`               | ?       | ?                       | ?                      |
+| `Iletisim.tsx`           | ?       | ?                       | ?                      |
+| `Hakkimizda.tsx`         | ?       | ?                       | ?                      |
+| `KVKK.tsx`               | ?       | ?                       | ?                      |
+| `GizlilikPolitikasi.tsx` | ?       | ?                       | ?                      |
+| `CerezPolitikasi.tsx`    | ?       | ?                       | ?                      |
+| `SSS.tsx`                | ?       | ?                       | ?                      |
+| `ServiceDetail.tsx`      | ?       | ?                       | ?                      |
+| `CategoryPage.tsx`       | ?       | ?                       | ?                      |
 
-### HER HÜCRE İÇİN
-
-1. `navigate_to_sandbox` → route
-2. Viewport ayarla
-3. Top → bottom smooth scroll, her 500ms `take_screenshot`
-4. `read_console_logs` → error/warning capture
-5. Dot nav varsa her dot'a tıkla
-6. Footer variant doğrulama
-
-### CHECK-LIST (her hücre)
-
-- [ ] Üst üste binme yok
-- [ ] Footer variant doğru
-- [ ] Scroll kesintisiz (Lenis aktif)
-- [ ] Token renkleri tutarlı
-- [ ] Console 0 error, 0 warning
-- [ ] Dot nav doğru pozisyon, tıklanabilir
-- [ ] Image/asset yüklü
-- [ ] Mobile'da `document.documentElement.scrollWidth <= window.innerWidth`
-
-Browser tool erişimi yoksa → `SKIPPED` + `BLOCKED_ON_USER`.
-
-### Rapor: `docs/qa-responsive-v3.md`
-
-```markdown
-# Responsive QA — Phase 11C
-Date: <ISO>
-
-## Matrix
-| Page | 375px | 768px | 1280px | Console | Notes |
-|---|---|---|---|---|---|
-| / | ✅ | ✅ | ✅ | 0 err | — |
-| /malzemeler | | | | | |
-| /malzemeler/aluminyum | | | | | |
-| /teklif-al | | | | | footer absent ✓ |
-| /blog | | | | | footer reveal ✓ |
-| /404 | | | | | footer absent ✓ |
-
-## Issues Detected
-(none / list)
-
-## Baseline Comparison
-- [ ] Tolerance within limits
-- [ ] Deltas accepted (color shifts from v2.0)
-
-```
-
-Console error ≥1 per page → `RESPONSIVE_REGRESSION` → HARD STOP.
-
-**Commit:** `docs(v3): phase-11C responsive qa report` → `PHASE 11C REPORT` → NEXT: `phase-11D`.
 
 ---
 
-# 📊 FAZ 11D — XLSX EXPORT VERIFICATION
+### F5 — BROWSER REPRO (Görsel Kanıt)
 
-### MODE SEÇİMİ
+Dev server başlat. Her viewport için tam alt kısmı screenshot al.
 
-- Admin credential VAR + browser tool VAR → **E2E**
-- Biri veya ikisi YOK → **STATIC_FALLBACK** (FIX-08)
+**F5A —** `/` **(reveal variant):**
 
-### E2E MODE
+- 375×812 → `docs/footer-debug/home-375-bottom.png`
+- 768×1024 → `docs/footer-debug/home-768-bottom.png`
+- 1280×832 → `docs/footer-debug/home-1280-bottom.png`
 
-1. `navigate_to_sandbox` → `/admin/login`
-2. Credential ile login
-3. `/admin` → FinancialView veya CustomersView
-4. `list_network_requests` baseline
-5. Export butonuna tıkla
-6. `list_network_requests` delta
-7. Delta'da `xlsx-*.js` / `xlsx.min-*.js` async fetch var mı?
-8. Toast/download başarılı mı?
-9. Console error kontrolü
-10. Logout
+**F5B —** `/iletisim` **(static bekleniyor):**
 
-### STATIC_FALLBACK (FIX-08)
+- 375×812 → `docs/footer-debug/iletisim-375-bottom.png`
+- 768×1024 → `docs/footer-debug/iletisim-768-bottom.png`
+- 1280×832 → `docs/footer-debug/iletisim-1280-bottom.png`
+
+**F5C — Her screenshot için yanıtla:**
+
+```
+Kesik olan parça: alt bar / CTA card / link kolonları / hiçbiri
+Tahmini kesiklik: ~__ px
+Horizontal overflow: var / yok (scrollWidth vs innerWidth)
+Console error: <liste veya "yok">
+Static variant aynı sorunu gösteriyor: evet / hayır
+
+```
+
+Browser tool yoksa → `SKIPPED`, kullanıcıya bildir, forensics raporunu kısmi tamamla.
+
+---
+
+### F6 — RESIZEOBSERVER TIMING
+
+Footer `ResizeObserver` callback'inin gerçek zamanlama davranışını koddan tespit et:
+
+1. Callback yalnızca mount'ta mı tetikleniyor? (`[]` dependency veya tek seferlik setup)
+2. Font yüklenmesi sonrası `updateSpacerHeight` çağrılıyor mu? (`document.fonts.ready.then(...)`)
+3. Lazy load edilen image'ların yüklenmesi sonrası yeniden ölçüm var mı?
+
+**Risk değerlendirmesi:**
+
+- Mount-only + font/image sonrası güncelleme yok → **HIGH RISK**: footer 10-40px büyüyebilir, spacer güncellenmez, alt kısım scroll edilemez
+- Mount + resize → **MEDIUM RISK**: ilk yükleme anındaki gecikmeli font/image büyümesi yakalanmaz
+- Mount + resize + fonts.ready → **LOW RISK**: çoğu senaryoyu kapsar
+
+---
+
+### F7 — SCROLLHEIGHT vs OFFSETHEIGHT DELTA
+
+Footer için browser console'da ölç ve raporla:
+
+```javascript
+const footer = document.querySelector('footer');
+const data = {
+  offsetHeight: footer.offsetHeight,
+  scrollHeight: footer.scrollHeight,
+  delta: footer.scrollHeight - footer.offsetHeight,
+  windowInnerHeight: window.innerHeight,
+  footerExceedsViewport: footer.scrollHeight > window.innerHeight,
+  currentSpacerHeight: document.querySelector('[data-footer-spacer]')?.offsetHeight ?? 'spacer not found'
+};
+console.table(data);
+
+```
+
+Delta > 0 → RC-1 onaylanmış demektir. `footerExceedsViewport: true` → RC-7 değerlendirilmeli.
+
+---
+
+### F8 — CTA CARD OVERLAP TESTİ
+
+Footer'ın CTA card bölümünü incele:
+
+1. CTA card'ın `position` değeri nedir? (`absolute`, `relative`, `sticky`?)
+2. CTA card'ın `bottom` veya `top` değeri nedir?
+3. Link grid ile CTA card arasında `padding-top` veya `margin-top` rezervi var mı?
+4. 375px viewport'ta CTA card link kolonlarının üstüne biniyor mu? (F5 screenshot'larıyla karşılaştır)
+
+---
+
+### F9 — STACKING CONTEXT AUDIT (DERİN)
+
+Her sticky/fixed section için kontrol et:
 
 ```bash
-# 1. Dynamic import kanıtı
-grep -rn "import(['\"]xlsx" src/ --include="*.tsx" --include="*.ts"
-
-# 2. Statik import sızıntı kontrolü (OLMAMALI)
-grep -rn "^import.*from ['\"]xlsx['\"]" src/ --include="*.tsx" --include="*.ts"
-
-# 3. Build chunk varlığı
-ls dist/assets/ | grep -i xlsx
-
-# 4. Export lazy wrapper
-grep -rn "await import" src/lib/ src/components/admin/ 2>/dev/null | grep xlsx
+grep -rn "transform\|will-change\|filter\|isolation\|contain" \
+  src/components/ src/pages/Index.tsx \
+  --include="*.tsx" --include="*.css" \
+  | grep -v "node_modules" | grep -v ".test."
 
 ```
 
-Kriter:
-
-- (1) ≥1 match ✓
-- (2) 0 match ✓
-- (3) ≥1 chunk ✓
-- (4) ≥1 match ✓
-
-Dördü PASS → `e2e: STATIC_FALLBACK` + faz PASS. Biri FAIL → `E2E_BLOCKED` + HARD STOP.
-
-### Rapor: `docs/xlsx-verification-v3.md`
-
-```markdown
-# Excel Export Verification — Phase 11D
-Date: <ISO>
-Mode: E2E | STATIC_FALLBACK
-
-## If E2E
-- Login: admin credential
-- Triggered view: FinancialView | CustomersView
-- Network delta: Before <n>, After <n+k>
-- xlsx chunk fetched: ✓/✗
-- Toast/download: success | fail
-- Console errors: <list or none>
-
-## If STATIC_FALLBACK
-- Dynamic import: <match list>
-- Static import check: <clean or leak>
-- Build chunk: <filename>
-- Lazy wrapper: <match list>
-
-## Verdict
-CLEAN | LEAK_DETECTED | BLOCKED_NEEDS_USER
-
-```
-
-**Commit:** `docs(v3): phase-11D xlsx export verification` → `PHASE 11D REPORT` → NEXT: `phase-11E`.
+**Neden kritik:** `transform: translateY(...)` uygulanan her element yeni bir stacking context oluşturur. Bu bağlamda z-index sadece kardeş elementler arasında çalışır. Footer'ın parent'ı `transform` kullanıyorsa z-index: 30 bile footer'ı finalCta'nın altında bırakabilir.
 
 ---
 
-# 📚 FAZ 11E — CONSOLIDATION & DOCS
+### F10 — ISSUE-1 REGRESYON GUARD (FORENSICS SNAP)
 
-### 1. `docs/v3-changelog.md` güncelle
-
-```markdown
-## Phase 11 — Post-v3.3 Hardening
-
-### 11A — Residual Color Sweep
-- <N> dosyada hex/rgb/hsl literal migrate.
-- <M> dosyada Tailwind preset → semantic token.
-- Pass C ihlalleri: 0.
-- ESLint no-restricted-syntax: 0.
-
-### 11B — Bundle Forensics
-- Main chunk delta: <Δ KB>
-- Admin/customer/xlsx leak: <clean | detected+fix>
-- Largest chunk: <name, size>
-
-### 11C — Responsive QA
-- 6 × 3 = 18 snapshot.
-- Console error total: <N>
-- Regresyon: <none | list>
-
-### 11D — Excel Export Verification
-- Mode: <E2E | STATIC_FALLBACK>
-- Verdict: <CLEAN | LEAK_DETECTED>
-
-```
-
-### 2. `plan.md2` güncelle
-
-- Faz 7 (Performans): `✅ Tam ölçüldü (phase-11B)`
-- Faz 10 (Final QA): `✅ Kısmi (phase-11C)`
-
-### 3. `README.md` patch
-
-"Design System v2.0" altına:
-
-> Migration status: 100% — no residual literals (verified `phase-11A`).
-
-### 4. FINAL VALIDATION (aggregate)
+Fix başlamadan önce mevcut durumu kayıt altına al:
 
 ```bash
-tsc --noEmit
-npx eslint src/ --ext .ts,.tsx
-
-grep -rn -E "#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*[0-9]|hsla?\([^)]*[0-9]" src/ \
-  --include="*.tsx" --include="*.ts" \
-  | grep -v "src/index.css" | grep -v "src/styles/" \
-  | grep -v "\.test\." | grep -v "\.stories\." \
-  | grep -v "// OK:" | grep -v "var(--"
-
-grep -rn -E "\b(text|bg|border|ring|fill|stroke)-(white|black)\b" src/ \
-  --include="*.tsx" --include="*.ts" \
-  | grep -v "\.test\." | grep -v "\.stories\."
-
-grep -rn "rgba(var(--" src/ --include="*.tsx" --include="*.ts"
-
-npm run build
-
-ls docs/bundle-forensics-v3.md docs/qa-responsive-v3.md docs/xlsx-verification-v3.md docs/v3-changelog.md
+grep -n "aluminyum\|ISSUE-1\|MalzemeKategori\|kategori-slug" \
+  src/pages/MalzemeKategori.tsx \
+  src/components/Footer.tsx 2>/dev/null
 
 ```
 
-Hepsi PASS → `GO for production deploy`.
-
-**Commit:** `docs(v3): phase-11E consolidation + changelog` → `PHASE 11E REPORT`.
+Bu çıktıyı `docs/footer-debug/issue1-snapshot-before.txt` olarak kaydet.
 
 ---
 
-## 🛠️ AUTO-FIX PROTOCOL
-
-
-| ID         | Durum                     | Aksiyon                                                                                                                                                                 |
-| ---------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **FIX-01** | MISSING_TOKEN             | `:root` bloğuna solid + `-rgb` variant ekle, RETRY                                                                                                                      |
-| **FIX-02** | INVALID_RGBA_TOKEN_SYNTAX | `rgba(var(--x), A)` → `rgb(var(--x-rgb) / A)`. `--x-rgb` yoksa FIX-01                                                                                                   |
-| **FIX-03** | TAILWIND_LITERAL          | Preset class → arbitrary token (üst mapping)                                                                                                                            |
-| **FIX-04** | HARDCODED_LITERAL         | Deterministic Mapping Table'a bak; mapping yok → FIX-07                                                                                                                 |
-| **FIX-05** | BATCH_REVERT              | Batch commit'ini revert, önceki batch'ler korunur, HARD STOP                                                                                                            |
-| **FIX-06** | BUNDLE_LEAK_INVESTIGATION | Filename-based check → separate chunk varlığı. Yoksa `App.tsx` / route config'te `lazy()` import doğrula, eager ise `lazy()`'e çevir. **package.json'a dokunma.** RETRY |
-| **FIX-07** | AMBIGUITY_HALT            | Fazı durdur, AMBIGUITY raporu, kullanıcı kararı                                                                                                                         |
-| **FIX-08** | E2E_STATIC_FALLBACK       | STATIC mode'a geç: 4 grep kriteri                                                                                                                                       |
-
-
-Listede olmayan fix uygulanamaz → `UNKNOWN` + HARD STOP.
-
----
-
-## 📊 PHASE REPORT FORMAT (ZORUNLU)
+### FORENSICS RAPORU (F8 — ZORUNLU)
 
 ```
 ================================================
-PHASE 11<X> REPORT — <faz adı>
+FORENSICS REPORT — Footer Reveal
+================================================
+Tarih: <ISO>
+
+F1 — Footer.tsx:
+  position: <değer>
+  bottom (fixed ise): <değer>
+  height/min-height: <değer veya "yok">
+  max-height: <değer veya "yok">
+  overflow / overflow-y: <değer>
+  spacer DOM yöntemi: <useRef+style | class | cssVar>
+  spacer ölçüm değeri: <offsetHeight | scrollHeight | diğer>
+  spacer zamanlaması: <mount | scroll | observer-callback>
+  variant sistemi: <prop adı> → <değer listesi>
+  her variant'ta position: <reveal=fixed, static=relative, vb.>
+  reveal trigger: <scroll-listener | IntersectionObserver | diğer>
+  trigger threshold: <değer>
+  trigger ↔ spacer sıralaması: <spacer-önce | trigger-önce | eşzamanlı>
+  ResizeObserver: <yok | mount-only | mount+resize>
+  fonts.ready bekleniyor: <evet | hayır>
+  footer z-index: <değer>
+  stacking context oluşturuyor mu: <evet (neden) | hayır>
+
+F2 — Z-index audit:
+  SECTION_Z tam listesi: <...>
+  finalCta z-index: <değer>
+  footer z-index: <değer>
+  footer finalCta üzerinde: <evet | hayır>
+  parent stacking context riski: <var (element, neden) | yok>
+
+F3 — Trigger sıralaması:
+  Spacer önce mi trigger önce mi: <spacer-önce | trigger-önce>
+  iOS Safari dvh uyumu: <var | yok>
+  Trigger fix gerekli mi: <evet | hayır>
+
+F4 — Sayfa variant tablosu: [doldurulmuş tablo]
+
+F5 — Browser repro:
+  home-375: <kesik parça>, ~<Npx>
+  home-768: <kesik parça>, ~<Npx>
+  home-1280: <kesik parça>, ~<Npx>
+  iletisim-375: <kesik parça veya "yok">
+  Static variant sorunu: <evet | hayır>
+  Screenshots: docs/footer-debug/*.png
+
+F6 — ResizeObserver timing:
+  Davranış: <mount-only | mount+resize | mount+resize+fonts>
+  Risk seviyesi: <HIGH | MEDIUM | LOW>
+
+F7 — scrollHeight delta:
+  offsetHeight: <px>
+  scrollHeight: <px>
+  delta: <px>
+  footerExceedsViewport: <true | false>
+  currentSpacerHeight: <px veya "not found">
+  RC-1 onaylandı: <evet | hayır>
+  RC-7 değerlendirilmeli: <evet | hayır>
+
+F8 — CTA card:
+  position: <değer>
+  link grid reserve: <var (değer) | yok>
+  overlap tespit edildi: <evet | hayır>
+
+F9 — Stacking context:
+  transform/will-change kullanan elementler: <liste veya "yok">
+  z-index fix yeterli mi: <evet | hayır (stacking context fix de gerekli)>
+
+F10 — ISSUE-1 snapshot:
+  docs/footer-debug/issue1-snapshot-before.txt: SAVED
+
+ROOT CAUSES (forensics kanıtına göre seç):
+  [ ] RC-1: offsetHeight → scrollHeight geçişi gerekli (delta: <Npx>)
+  [ ] RC-2: Trigger spacer'dan önce başlatılıyor (trigger-önce tespit edildi)
+  [ ] RC-3: ResizeObserver mount-only, dinamik içerik sonrası güncellemiyor
+  [ ] RC-4: Footer z-index finalCta altında (footer=<N>, finalCta=<M>)
+  [ ] RC-5: CTA card link kolonlarına biniyor (overlap tespit edildi)
+  [ ] RC-6: Kolon grid 622–768px aralığında yanlış kırılıyor (F5 screenshot kanıtı)
+  [ ] RC-7: Footer fixed + scrollHeight > vh → alt içerik scroll edilemiyor
+
+SCREENSHOTS:
+  docs/footer-debug/home-375-bottom.png
+  docs/footer-debug/home-768-bottom.png
+  docs/footer-debug/home-1280-bottom.png
+  docs/footer-debug/iletisim-375-bottom.png
+  docs/footer-debug/iletisim-768-bottom.png
+  docs/footer-debug/iletisim-1280-bottom.png
+  docs/footer-debug/issue1-snapshot-before.txt
+
+NEXT: AWAIT_USER — root cause'ları onayla, sonra PROMPT 2
 ================================================
 
-STATUS: PASS | FAIL | HARD_STOP | BLOCKED_ON_USER
-ATTEMPT: 1 | 2
+```
 
-VALIDATION CHECKS:
-- tsc --noEmit: PASS | FAIL | N/A
-- eslint: PASS | FAIL | N/A
-- grep guard-N: PASS | FAIL
-- build: PASS | FAIL | N/A
-- visual smoke: PASS | FAIL | SKIPPED
-- e2e: PASS | FAIL | STATIC_FALLBACK
+---
 
-ERRORS (if any):
-  TYPE: TS_COMPILE | CSS_TOKEN | COLOR_MIGRATION | BUNDLE_LEAK |
-        RESPONSIVE_REGRESSION | E2E_BLOCKED | TAILWIND_LITERAL |
-        AMBIGUITY | UNKNOWN
-  FILE: <path>:<line>
-  CAUSE: <1-line>
-  ROOT CAUSE: <1-line>
+## ══════════════════════════════════════════════
 
-FIXES APPLIED (if retry):
-  - <fix ID>
+## PROMPT 2 — FIX + RENDERING INTEGRITY
 
-ARTIFACTS CREATED:
-  - <path> (size)
+## ══════════════════════════════════════════════
+
+> Forensics raporu + root cause onayı alındıktan sonra gönderilir. Yalnızca onaylanan RC'ler için ilgili fix uygulanır. Her fix atomik — ayrı commit.
+
+---
+
+### PRE-FIX — ISSUE-1 GUARD
+
+```bash
+grep -n "aluminyum\|ISSUE-1\|MalzemeKategori\|kategori-slug" \
+  src/pages/MalzemeKategori.tsx src/components/Footer.tsx 2>/dev/null \
+  > docs/footer-debug/issue1-snapshot-preflight.txt
+
+diff docs/footer-debug/issue1-snapshot-before.txt \
+     docs/footer-debug/issue1-snapshot-preflight.txt
+
+```
+
+Diff boş değilse → HARD STOP. ISSUE-1 fix'i zaten değişmiş demektir.
+
+---
+
+### FIX A — SPACER ÖLÇÜMÜ (RC-1 onaylandıysa)
+
+**Dosya:** `Footer.tsx`
+
+```tsx
+// ÖNCE:
+spacerRef.current.style.height = `${footerRef.current.offsetHeight}px`;
+// Sorun: fixed element overflow'u offsetHeight'a yansımaz.
+// offsetHeight = visible height (viewport ile sınırlı)
+// scrollHeight = tüm içerik yüksekliği (taşanlar dahil)
+
+// SONRA:
+spacerRef.current.style.height = `${footerRef.current.scrollHeight}px`;
+
+```
+
+**Ek guard — RC-7 ile birlikte değerlendir:**
+
+Eğer `footerExceedsViewport: true` ise iki seçenek var — forensics çıktısına göre **birini** seç:
+
+**Seçenek A1 — Overflow guard (küçük taşmalarda, < 20% vh):**
+
+```tsx
+const isOverflowing = footerRef.current.scrollHeight > window.innerHeight;
+if (isOverflowing) {
+  footerRef.current.style.overflowY = 'auto';
+  footerRef.current.style.maxHeight = '100dvh'; // dvh — iOS Safari uyumu
+}
+
+```
+
+**Seçenek A2 — Graceful degrade (büyük taşmalarda, > 20% vh):**
+
+```tsx
+// Footer içeriği viewport'un %90'ından uzunsa reveal pattern'i kapat, static'e düş
+const shouldDegrade = footerRef.current.scrollHeight > window.innerHeight * 0.9;
+if (shouldDegrade) {
+  setVariant('static'); // reveal → static override
+}
+
+```
+
+> **A1 ve A2'yi aynı anda uygulama** — çakışır. Forensics F7 delta'sına göre seç.
+
+**Commit:** `fix(v3): footer spacer offsetHeight → scrollHeight + overflow guard`
+
+---
+
+### FIX B — REVEAL TRIGGER SIRALAMASI (RC-2 onaylandıysa)
+
+**Dosya:** `Footer.tsx` veya trigger'ın bulunduğu dosya.
+
+**Sorun:** Trigger `document.scrollHeight` hesaplarken spacer henüz DOM'a eklenmemiş veya doğru yüksekliğe ayarlanmamış. Sonuç: sayfa kısa görünür, reveal çok erken tetiklenir veya hiç tetiklenmez.
+
+```tsx
+useEffect(() => {
+  if (!spacerRef.current || !footerRef.current) return;
+
+  // ADIM 1: Önce spacer'ı doğru yüksekliğe ayarla
+  spacerRef.current.style.height = `${footerRef.current.scrollHeight}px`;
+
+  // ADIM 2: DOM reflow'u bekle, sonra trigger'ı başlat
+  // rAF garantisi: tarayıcı layout hesaplamayı bitirmiş olacak
+  requestAnimationFrame(() => {
+    const triggerPoint =
+      document.documentElement.scrollHeight - window.innerHeight;
+    initRevealTrigger(triggerPoint);
+  });
+}, []);
+
+```
+
+**iOS Safari notu:** `window.innerHeight` yerine `visualViewport?.height ?? window.innerHeight` kullan — iOS soft keyboard açıkken innerHeight değişir.
+
+**Commit:** `fix(v3): footer reveal trigger ordering — spacer before trigger init`
+
+---
+
+### FIX C — RESIZEOBSERVER + FONT TIMING (RC-3 onaylandıysa)
+
+**Dosya:** `Footer.tsx`
+
+**Sorun:** Mount anında footer'ın gerçek yüksekliği belli değildir. Web fontları ortalama 100–400ms gecikmeli yüklenir, bu sürede footer 10–40px büyüyebilir. Mount-only observer bu değişimi yakalamaz.
+
+```tsx
+useEffect(() => {
+  if (!footerRef.current || !spacerRef.current) return;
+
+  const updateSpacerHeight = () => {
+    if (!footerRef.current || !spacerRef.current) return;
+    // scrollHeight: taşan içerik dahil tam yükseklik
+    spacerRef.current.style.height = `${footerRef.current.scrollHeight}px`;
+  };
+
+  // İlk ölçüm (sistem fontuyla — geçici)
+  updateSpacerHeight();
+
+  // Her resize'da güncelle (orientation change, zoom, font değişimi dahil)
+  const observer = new ResizeObserver(updateSpacerHeight);
+  observer.observe(footerRef.current);
+
+  // Web fontları yüklenince yeniden ölç (kritik — font swap sonrası layout kayması)
+  document.fonts.ready.then(updateSpacerHeight);
+
+  return () => {
+    observer.disconnect();
+  };
+}, []); // footer DOM'u değişmediği sürece tek mount yeterli
+
+```
+
+**Commit:** `fix(v3): footer ResizeObserver — mount+resize+fonts.ready`
+
+---
+
+### FIX D — Z-INDEX + STACKING CONTEXT (RC-4 onaylandıysa)
+
+**Dosya:** `src/lib/tokens.ts` (SECTION_Z) veya `Footer.tsx`
+
+**Sorun A — Sıradan z-index:**
+
+```tsx
+// SECTION_Z'de:
+export const SECTION_Z = {
+  // mevcut değerler korunacak
+  footer: 30, // finalCta (24) üzerinde
+} as const;
+
+```
+
+**Sorun B — Stacking context çakışması (F9'da transform tespit edildiyse):**
+
+Eğer footer'ın parent elementi `transform: translateY(...)` kullanıyorsa z-index kardeşler arası çalışmaz. Bu durumda:
+
+```tsx
+// Footer wrapper'ına isolation ekle:
+<div style={{ isolation: 'isolate', zIndex: SECTION_Z.footer }}>
+  <footer ...>
+
+```
+
+veya parent transform'u kaldır, yerine margin/padding kullan.
+
+> **Hangisini uygulayacağını F9 çıktısı belirler.** Transform yoksa Sorun A yeterli.
+
+**Commit:** `fix(v3): footer z-index + stacking context audit`
+
+---
+
+### FIX E — CTA CARD OVERLAP (RC-5 onaylandıysa)
+
+**Dosya:** `Footer.tsx`
+
+**Sorun:** CTA card `absolute` veya negatif `top/bottom` ile konumlandırılmış, link grid'in başlangıcı CTA yüksekliğini hesaba katmıyor.
+
+```tsx
+// CTA card'a ref ekle
+const ctaRef = useRef<HTMLDivElement>(null);
+
+// Link grid container'ına CTA yüksekliğini reserve et
+useEffect(() => {
+  if (!ctaRef.current) return;
+  // Gerçek yüksekliği + gap ölç, CSS variable olarak set et
+  const ctaHeight = ctaRef.current.offsetHeight;
+  document.documentElement.style.setProperty(
+    '--footer-cta-height',
+    `${ctaHeight + 24}px` // 24px = tasarım gap'i
+  );
+}, []);
+
+// JSX'te:
+<div ref={ctaRef}>{/* CTA card */}</div>
+<div
+  className="grid ..."
+  style={{ paddingTop: 'var(--footer-cta-height, 120px)' }}
+>
+  {/* link kolonları */}
+</div>
+
+```
+
+**Commit:** `fix(v3): footer CTA card reserve area — --footer-cta-height`
+
+---
+
+### FIX F — RESPONSIVE GRID (RC-6 onaylandıysa)
+
+**Dosya:** `Footer.tsx`
+
+**Koşul:** Yalnızca F5 screenshot'larında 622–768px aralığında kolon kırılması görüldüyse uygula.
+
+```tsx
+// ÖNCE:
+<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+// SONRA — 640px eşiğinde 2 kolon (Tailwind sm = 640px):
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+```
+
+**Static variant smoke test:** Fix sonrası `/iletisim` ve `/malzemeler`'de grid bozulması yok, static variant'ta görsel regression yok.
+
+**Commit:** `fix(v3): footer grid sm:grid-cols-2 breakpoint`
+
+---
+
+## RENDERING & LAYOUT INTEGRITY ANALYSIS
+
+> Bu bölüm fix'lerin render tarafı etkilerini kapsar. Her fix uygulandıktan sonra gözlemlenmesi gereken davranışları tanımlar.
+
+### scrollHeight Doğruluğu
+
+`scrollHeight` değeri tarayıcı layout hesabından gelir ve şu durumlarda **güvenilmez** olabilir:
+
+- Ölçüm anında element henüz paint edilmemiş (ilk render, SSR hydration anı)
+- Parent'ın `overflow: hidden` tanımlı olması — alt elementlerin taşmasını `scrollHeight`'a yansıtmaz
+- `display: none` olan child'lar yüksekliğe katkıda bulunmaz
+
+**Guard:** `scrollHeight` ölçümünü her zaman `requestAnimationFrame` içinde veya `MutationObserver` + `ResizeObserver` ile doğrula.
+
+### ResizeObserver + Reflow Riski
+
+`ResizeObserver` callback'te yüksek frekanslı DOM yazma işlemi yapılırsa layout thrashing oluşur:
+
+```tsx
+// KÖTÜ — her callback'te okuma+yazma:
+observer = new ResizeObserver(() => {
+  const h = footer.scrollHeight; // okuma → layout flush
+  spacer.style.height = h + 'px'; // yazma → reflow tetikler → callback tekrar çalışır
+});
+
+// İYİ — yazma'yı rAF'a taşı:
+observer = new ResizeObserver(() => {
+  requestAnimationFrame(() => {
+    spacer.style.height = `${footer.scrollHeight}px`;
+  });
+});
+
+```
+
+### Sticky + Overflow Etkileşimi
+
+CSS kuralı: `overflow: hidden/auto/scroll` olan bir element `position: sticky` child'larını keser. Footer'ın parent'ı veya scroll container'ı `overflow` kısıtı taşıyorsa sticky/fixed reveal çalışmaz.
+
+**Tespit:**
+
+```javascript
+let el = footer.parentElement;
+while (el) {
+  const style = getComputedStyle(el);
+  if (['hidden','auto','scroll','clip'].includes(style.overflow) ||
+      ['hidden','auto','scroll','clip'].includes(style.overflowY)) {
+    console.warn('Overflow kısıtı:', el, style.overflow, style.overflowY);
+  }
+  el = el.parentElement;
+}
+
+```
+
+### Mobile Viewport Edge Cases
+
+
+| Senaryo                  | Risk                                                   | Önlem                                  |
+| ------------------------ | ------------------------------------------------------ | -------------------------------------- |
+| iOS Safari soft keyboard | `window.innerHeight` küçülür, reveal yanlış tetiklenir | `visualViewport.height` kullan         |
+| iOS Safari tab bar       | `100vh` görünür alanı aşar                             | `100dvh` kullan                        |
+| Android Chrome URL bar   | Scroll sırasında viewport yüksekliği değişir           | `dvh` ve `visualViewport` resize event |
+| Yatay ekran (landscape)  | Footer yüksekliği viewport'u aşabilir                  | RC-7 threshold'unu 0.9→0.7'ye çek      |
+
+
+---
+
+## QA MATRİSİ — GENİŞLETİLMİŞ
+
+**4 sayfa × 3 viewport = 12 zorunlu kontrol**
+
+Her hücre için **beklenen davranış** ve **hata sinyalleri** tanımlıdır.
+
+---
+
+### `/` — REVEAL VARIANT
+
+**375×812**
+
+```
+Beklenen:
+  - Scroll bottom'a ulaşınca footer tamamen reveal olmuş
+  - Alt bar (telif + sosyal ikonlar) görünür, kesik yok
+  - CTA card link kolonlarının üstüne binmiyor
+  - Horizontal scrollbar yok
+  - Console: 0 error, 0 warning
+
+Hata sinyalleri:
+  - Footer son ~40-80px görünmüyor → RC-1 fix eksik veya yetersiz
+  - CTA card link text'ini kapatıyor → RC-5 fix eksik
+  - Footer reveal hiç tetiklenmiyor → RC-2 (trigger sıralaması) düzelmemiş
+  - Yatay scroll → kolon grid taşıyor, RC-6 yetersiz
+
+```
+
+**768×1024**
+
+```
+Beklenen:
+  - Kolon grid sm:grid-cols-2 veya lg:grid-cols-4 doğru kırılıyor
+  - CTA card konumlanması masaüstü görünümüne geçiş sırasında bozulmuyor
+  - Footer z-index: sticky section'lar altında değil
+
+Hata sinyalleri:
+  - Kolonlar tek kolon'a düşüyor (md breakpoint tanımsız) → tailwind config kontrolü
+  - Footer sticky section'ın üstünde görünmüyor → RC-4 fix eksik
+
+```
+
+**1280×832**
+
+```
+Beklenen:
+  - 4 kolon grid tam görünür
+  - CTA card geniş layout'ta taşmıyor
+  - Reveal animasyonu smooth
+
+Hata sinyalleri:
+  - Geniş viewportta footer yüksekliği artıyor, spacer buna ayak uydurmuyorsa alt boşluk kalır
+
+```
+
+---
+
+### `/malzemeler` — STATIC VARIANT
+
+**375 / 768 / 1280**
+
+```
+Beklenen:
+  - Footer position: relative/static (fixed değil)
+  - Spacer yok (static variant'ta gerekmez)
+  - Tüm link kolonları ve alt bar görünür
+  - Reveal animasyonu YOK (static variant)
+
+Hata sinyalleri:
+  - Footer'ın altında boş alan var → static variant yanlışlıkla spacer oluşturuyor
+  - Footer'da reveal animasyonu var → variant override bozulmuş
+
+```
+
+---
+
+### `/iletisim` — STATIC VARIANT
+
+**375 / 768 / 1280**
+
+```
+Beklenen: /malzemeler ile aynı
+Ek kontrol:
+  - Form footer'dan önce tam görünür (footer form'un üstüne binmiyor)
+
+Hata sinyalleri:
+  - /malzemeler'de sorun yok ama /iletisim'de var → sayfa-specific layout wrapper sorunu
+
+```
+
+---
+
+### `/malzemeler/aluminyum` — ISSUE-1 REGRESYON
+
+**375 / 768 / 1280**
+
+```
+Beklenen:
+  - ISSUE-1 snapshot diff temiz (issue1-snapshot-before.txt ile eşleşiyor)
+  - Footer davranışı bu fix öncesiyle identik
+  - Kategori sayfası layout bozulmamış
+
+Hata sinyalleri:
+  - Diff boş değil → HARD STOP, rollback
+  - Layout shift var → Footer.tsx değişikliği bu sayfayı etkiliyor
+
+```
+
+---
+
+## REGRESYON RİSK ANALİZİ
+
+### Kırılabilecekler
+
+
+| Risk                                              | Neden                                                        | Önlem                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| Static variant'ta spacer oluşması                 | `scrollHeight` fix'i variant kontrolü yapmıyorsa             | Fix'e `if (variant !== 'reveal') return` guard'ı ekle |
+| Trigger yanlış tetiklenmesi                       | rAF'tan önce kullanıcı hızlı scroll ederse                   | Trigger'a debounce (16ms) ekle                        |
+| iOS keyboard açılınca layout bozulması            | `window.innerHeight` değişir                                 | `visualViewport` kullan                               |
+| ResizeObserver callback döngüsü                   | spacer büyümesi footer'ı büyütür, observer tekrar tetiklenir | Önceki değeri karşılaştır, değişmemişse yazma         |
+| Font değişiminde CTA reserve alanı güncellenmiyor | `--footer-cta-height` yalnızca mount'ta hesaplanıyor         | `ctaRef` üzerine de `ResizeObserver` ekle             |
+
+
+### Kapsanmayanlar (Bilinen Eksikler)
+
+- Server-side rendering (SSR) senaryosu: `window` tanımsız → `getCSSVar` SSR guard var ama footer DOM ölçümlerinde guard yok. SSR varsa `typeof window !== 'undefined'` kontrolü gerekir.
+- Print view: Footer fixed ise print'te çakışabilir. `@media print { footer { position: static; } }` gerekebilir.
+- Zoom > 200%: `scrollHeight` zoom'a göre ölçülür ama `window.innerHeight` değişmez. Bu kenar case QA'ya dahil edilmedi.
+
+---
+
+## CHANGELOG — KOD DÜZEYİ ÖZET
+
+### Footer.tsx
+
+
+| Bölüm                   | Değişiklik                                                                 | RC   |
+| ----------------------- | -------------------------------------------------------------------------- | ---- |
+| Spacer hook             | `offsetHeight` → `scrollHeight`                                            | RC-1 |
+| Spacer hook             | `overflowY: auto` + `maxHeight: 100dvh` guard veya variant degrade         | RC-7 |
+| useEffect setup         | `initRevealTrigger()` → `requestAnimationFrame(() => initRevealTrigger())` | RC-2 |
+| ResizeObserver          | `disconnect` + `document.fonts.ready.then(update)` eklendi                 | RC-3 |
+| ResizeObserver callback | `requestAnimationFrame` wrapper — layout thrashing önlemi                  | RC-3 |
+| z-index                 | `SECTION_Z.footer` değeri 30'a yükseltildi                                 | RC-4 |
+| Stacking context        | `isolation: isolate` wrapper (eğer F9'da transform tespit edildiyse)       | RC-4 |
+| CTA card                | `ctaRef` + `--footer-cta-height` CSS variable                              | RC-5 |
+| Link grid               | `sm:grid-cols-2` ara breakpoint                                            | RC-6 |
+
+
+### tokens.ts (`src/lib/tokens.ts`)
+
+```ts
+// SECTION_Z değişikliği:
+footer: 30, // önceki değer → 30 (finalCta=24 üzerinde)
+
+```
+
+---
+
+## MEMORY UPDATE KARARI
+
+**Durum: CONDITIONAL**
+
+Memory update yalnızca şu koşulların tamamı sağlandıktan sonra yapılır:
+
+1. QA matrisinin 12 hücresi PASS aldı
+2. ISSUE-1 regresyon diff temiz
+3. `tsc --noEmit` 0 error
+4. Static variant smoke test PASS
+5. Console 0 error (tüm sayfalar)
+
+**Koşul sağlanmadan memory update = HARD STOP.**
+
+```
+mem://design/footer-reveal-pattern güncelle (QA PASS sonrası):
+- Spacer: scrollHeight kullan, offsetHeight değil
+- Guard: footerExceedsViewport → overflowY:auto+maxHeight:100dvh VEYA variant degrade
+- ResizeObserver: mount + her resize + document.fonts.ready.then()
+- Observer callback: rAF wrapper — layout thrashing önlemi
+- Trigger sıralaması: spacer → rAF → initRevealTrigger()
+- iOS: visualViewport.height, 100dvh
+- Z-index: footer=30, finalCta=24
+- Stacking context: isolation:isolate (transform varsa)
+- CTA reserve: --footer-cta-height CSS variable
+- Grid: sm:grid-cols-2 (640px eşiği)
+- ISSUE-1: /malzemeler/aluminyum korundu, diff temiz
+
+```
+
+---
+
+## FİX RAPORU (ZORUNLU FORMAT)
+
+```
+================================================
+FIX REPORT — Footer Reveal
+================================================
+Tarih: <ISO>
+
+STATUS: PASS | FAIL | PARTIAL
+
+ROOT CAUSES addressed:
+  RC-1 (spacer offsetHeight→scrollHeight): FIXED | SKIPPED
+  RC-2 (trigger sıralaması): FIXED | SKIPPED
+  RC-3 (ResizeObserver+fonts.ready): FIXED | SKIPPED
+  RC-4 (z-index+stacking context): FIXED | SKIPPED
+  RC-5 (CTA overlap+reserve): FIXED | SKIPPED
+  RC-6 (grid breakpoint): FIXED | SKIPPED
+  RC-7 (fixed overflow guard): FIXED | SKIPPED
+
+ISSUE-1 regresyon:
+  snapshot diff: TEMIZ | FARKLI (HARD STOP)
+
+RENDERING INTEGRITY:
+  scrollHeight güvenilirliği: PASS | RISK (neden: ...)
+  ResizeObserver thrashing önlemi: PASS | EKSIK
+  sticky+overflow çakışması: YOK | VAR (element: ...)
+  iOS viewport uyumu: PASS | EKSIK
+
+QA MATRIX:
+  / 375: PASS | FAIL (neden: ...)
+  / 768: PASS | FAIL
+  / 1280: PASS | FAIL
+  /malzemeler 375: PASS | FAIL
+  /malzemeler 768: PASS | FAIL
+  /malzemeler 1280: PASS | FAIL
+  /iletisim 375: PASS | FAIL
+  /iletisim 768: PASS | FAIL
+  /iletisim 1280: PASS | FAIL
+  /malzemeler/aluminyum 375: PASS | FAIL
+  /malzemeler/aluminyum 768: PASS | FAIL
+  /malzemeler/aluminyum 1280: PASS | FAIL
 
 CHANGES:
-  - <file>: <what>
+  Footer.tsx:
+    - spacer: offsetHeight → scrollHeight
+    - ResizeObserver: mount+resize+fonts.ready, rAF wrapper
+    - trigger: rAF sıralaması düzeltildi
+    - CTA: --footer-cta-height CSS variable
+    - grid: sm:grid-cols-2
+    [RC-7 seçilen fix: overflow-guard | variant-degrade]
+  tokens.ts:
+    - SECTION_Z.footer: <önceki> → 30
+  <diğer dosya>: <ne değişti>
 
-COMMIT: <SHA>
-NEXT ACTION: CONTINUE phase-11<X+1> | STOP | AWAIT_USER
+MEMORY UPDATE: CONDITIONAL — QA PASS sonrası uygulanacak
+
+COMMITS:
+  fix(v3): footer spacer offsetHeight→scrollHeight + ResizeObserver rAF
+  fix(v3): footer reveal trigger ordering — rAF after spacer
+  fix(v3): footer z-index + stacking context isolation
+  fix(v3): footer CTA reserve area + --footer-cta-height
+  fix(v3): footer responsive grid sm:grid-cols-2
+  docs(v3): footer-reveal-pattern memory update [QA PASS sonrası]
 ================================================
 
 ```
 
 ---
 
-## ✅ POST-EXECUTION GATE
+## 🔴 HARD STOP TETİKLEYİCİLER
 
-**Zorunlu artifact'lar:**
-
-- `docs/phase-11-residual-audit.md`
-- `docs/phase-11-bundle-before.txt` + `-sizes-before.txt`
-- `docs/phase-11-bundle-after.txt` + `-sizes-after.txt`
-- `docs/bundle-forensics-v3.md`
-- `docs/qa-responsive-v3.md`
-- `docs/xlsx-verification-v3.md`
-- `docs/v3-changelog.md` (Phase 11 bölümü)
-- `docs/baseline/phase-11-before/` + `after/` (varsa)
-
-**Zorunlu commit'ler:**
-
-- 11A batch commit'leri (1–5)
-- `docs(v3): phase-11B bundle forensics report`
-- `docs(v3): phase-11C responsive qa report`
-- `docs(v3): phase-11D xlsx export verification`
-- `docs(v3): phase-11E consolidation + changelog`
-
-**Zorunlu test sonuçları:**
-
-- tsc: 0 error
-- eslint: 0 error
-- grep Pass A/B/C: tümü boş
-- npm run build: success
-- responsive aggregated console error: 0
-- bundle: LEAK yok veya MINIFIER_RESIDUAL (verified)
-- xlsx: E2E PASS veya STATIC_FALLBACK CLEAN
-
----
-
-## 🟢 GO / 🔴 NO-GO
-
-### GO (hepsi zorunlu)
-
-- [ ] P1–P7 PASS
-- [ ] 11A–11E sıralı tamamlandı
-- [ ] Post-execution gate artifact'ları mevcut
-- [ ] 7 final validation komutu PASS
-- [ ] Responsive baseline comparison tutarlı (varsa)
-- [ ] Bundle: LEAK_DETECTED değil
-- [ ] xlsx: PASS veya STATIC_FALLBACK CLEAN
-
-### NO-GO (biri bile → HARD STOP)
-
-- tsc error
-- ESLint `no-restricted-syntax` error
-- Pass A/B/C grep dolu
-- Build fail
-- BUNDLE_LEAK confirmed
-- RESPONSIVE_REGRESSION (onaysız)
-- E2E_BLOCKED + fallback fail
+- ISSUE-1 snapshot diff boş değil
+- `tsc --noEmit` error
+- Fix A1 ve A2 aynı anda uygulandı
+- Static variant'ta regression (reveal animasyonu çıktı veya spacer oluştu)
+- ResizeObserver callback'te layout thrashing oluştu (sonsuz döngü)
+- `package.json`'a müdahale
 - Locked zone ihlali
-- `package.json` müdahalesi
-- Yeni npm dependency
+- Memory update QA PASS öncesi yapıldı
 
 ---
 
-## 📦 MEMORY UPDATES (11E SONRASI, KOD DIŞI)
+## 🟢 FINAL VERDICT
 
-11E bitince kullanıcıya **ayrı listede** raporla (kendin çalıştırma):
+**Deploy readiness:** QA matrisinin 12/12 PASS + ISSUE-1 temiz + tsc 0 error koşuluna bağlı.
 
-- `mem://design/forge-steel-palette` → "100% migrated (v3.4 phase-11A)"
-- `mem://architecture/stacking-scroll-system` → 11C matrix sonuçları
-- `mem://infrastructure/performance-baseline` → bundle-forensics-v3.md ref
-- `mem://infrastructure/xlsx-export-lazy-pattern` → STATIC_FALLBACK/E2E kanıtı
+**Blocking issues (şu an):** Forensics tamamlanmadan belirlenemez. Root cause sayısı ve türü fix süresini ve deployment riskini doğrudan etkiler.
 
----
+**Required next action:** PROMPT 1'i çalıştır, F8 forensics raporunu al, root cause'ları onayla, sonra PROMPT 2.
 
-## ⚡ EXECUTION DIRECTIVE
-
-PRE-FLIGHT (P1–P7) çalıştır ve `PRE-FLIGHT 11 REPORT` üret. Hepsi PASS değilse HARD STOP. Sonra sırayla: 11A → 11B → 11C → 11D → 11E.
-
-- 11A: residual audit'e göre batch sayısını seç (≤9 / 10–18 / 19+). Her batch sonrası `tsc --noEmit` + dev görsel smoke. Her batch kendi commit'inde.
-- 11B: clean build → before/after diff → main chunk string scan → separate chunk varlığıyla leak vs. minifier residual ayırt et.
-- 11C: 6 × 3 = 18 matrix. Tool yoksa SKIPPED + BLOCKED_ON_USER.
-- 11D: credential varsa E2E, yoksa FIX-08 STATIC_FALLBACK (4 grep kriteri).
-- 11E: docs konsolide et, final 7 validation komutu.
-
-Her faz sonunda `PHASE REPORT FORMAT` doldur. Fix sadece FIX-01…08 içinden. Max 2 retry, üçüncüde HARD STOP. `package.json`'a dokunma, yeni dependency ekleme. Belirsizlik → AMBIGUITY + FIX-07 + HARD STOP. Memory updates 11E sonrası liste olarak raporla. Sonda Post-Execution Gate → GO/NO-GO kararı.
-
-**BAŞLA.**
+**BAŞLA — PROMPT 1.**
