@@ -198,4 +198,5 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
       </div>
     </section>
   );
-};
+});
+FinalCTASection.displayName = "FinalCTASection";
