@@ -150,15 +150,15 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
       {/* Marquee band at top of footer */}
       <MarqueeBand reverse />
 
-      {/* Big signature watermark */}
+      {/* Big signature watermark — RC-9: max-w-full + overflow-hidden mobil overflow guard */}
       <div
-        className="pointer-events-none select-none overflow-hidden relative"
+        className="pointer-events-none select-none overflow-hidden relative w-full max-w-full"
         style={{ zIndex: 0 }}
         aria-hidden="true"
       >
         <div
           style={{
-            fontSize: "clamp(60px, 12vw, 160px)",
+            fontSize: "clamp(40px, 12vw, 160px)",
             fontFamily: "IBM Plex Mono, monospace",
             fontWeight: 700,
             letterSpacing: "-0.02em",
@@ -166,6 +166,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
             lineHeight: 1,
             whiteSpace: "nowrap",
             padding: "20px 0",
+            textAlign: "center",
           }}
         >
           MAS TECHNIC
