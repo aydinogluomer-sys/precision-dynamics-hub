@@ -7,6 +7,8 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getCSSVar } from "@/utils/cssVar";
+import { useTheme } from "@/hooks/use-theme";
 import {
   Cog,
   ChevronLeft,
@@ -291,6 +293,16 @@ export const TeklifAl = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+
+  // Phase 11A-extended: grid renkleri runtime token'larından okunur, tema değişiminde yeniden hesaplanır
+  const { theme } = useTheme();
+  const gridConfig = useMemo(
+    () => ({
+      cellColor: getCSSVar("--material-chrome", "#94a3b8"),
+      sectionColor: getCSSVar("--precision-steel", "#64748b"),
+    }),
+    [theme]
+  );
 
   const currentService = services.find((s) => s.id === selectedService)!;
   const materialLabel =
@@ -736,12 +748,10 @@ export const TeklifAl = () => {
                       args={[100, 100]}
                       cellSize={1}
                       cellThickness={0.5}
-                      // eslint-disable-next-line no-restricted-syntax
-                      cellColor="#94a3b8" /* OK: R3F runtime — grid */
+                      cellColor={gridConfig.cellColor}
                       sectionSize={5}
                       sectionThickness={1}
-                      // eslint-disable-next-line no-restricted-syntax
-                      sectionColor="#64748b" /* OK: R3F runtime — grid */
+                      sectionColor={gridConfig.sectionColor}
                       fadeDistance={30}
                       fadeStrength={1}
                       followCamera={false}
