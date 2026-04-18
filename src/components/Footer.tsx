@@ -139,12 +139,13 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
   return (
     <>
       {/* Spacer for fixed footer — only in reveal mode */}
-      {isReveal && <div style={{ height: footerHeight }} />}
+      {/* Spacer for fixed footer — only in reveal mode */}
+      {isReveal && <div data-footer-spacer aria-hidden="true" style={{ height: footerHeight }} />}
 
       <footer
         ref={footerRef}
         className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 30 : 0 }}
       >
       {/* Marquee band at top of footer */}
       <MarqueeBand reverse />
