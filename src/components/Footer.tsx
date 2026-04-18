@@ -74,14 +74,16 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
 
   const isReveal = variant === "reveal";
 
-  // Scroll-aware: up-arrow buton sayfa %50'den fazla scroll edildiğinde görünür
-  // → mobile'da footer alt bar linkleriyle çakışmayı engeller.
+  // Scroll-aware: up-arrow buton, footer alt-bar henüz viewport'a girmemişken görünür.
+  // Footer'a yaklaşıldığında gizlenir → mobile'da legal linklerle çakışmaz.
   const [showScrollTop, setShowScrollTop] = useState(false);
   useEffect(() => {
     const onScroll = () => {
       const scrolled = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      setShowScrollTop(max > 0 && scrolled / max > 0.5);
+      // Görünür: %30 < scroll < (max - 200px footer reserve)
+      const reserve = 220;
+      setShowScrollTop(max > 0 && scrolled > max * 0.3 && scrolled < max - reserve);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
