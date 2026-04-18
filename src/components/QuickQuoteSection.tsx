@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) => {
+export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => {
   const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<"idle" | "success" | "error">("idle");
@@ -64,6 +64,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
 
   return (
     <section
+      ref={ref as React.Ref<HTMLElement>}
       id="hizli-teklif"
       className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
