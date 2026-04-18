@@ -445,15 +445,16 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
           </div>
         </motion.div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar — RC-8: flex-wrap + mobil stack, floating chat (sağ alt) için pr rezervi */}
         <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="text-xs flex items-center gap-4" style={{ color: "var(--text-hint)" }}>
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-3 lg:gap-4 lg:pr-20">
+            <div className="text-xs flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5" style={{ color: "var(--text-hint)" }}>
               <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
               <LiveClock />
             </div>
-            <div className="flex items-center gap-5 text-xs" style={{ color: "var(--text-hint)" }}>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs" style={{ color: "var(--text-hint)" }}>
               <span
+                className="hidden md:inline"
                 style={{
                   fontFamily: "IBM Plex Mono, monospace",
                   fontSize: "11px",
