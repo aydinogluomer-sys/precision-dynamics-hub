@@ -121,6 +121,47 @@ Muafiyet: `src/index.css`, `src/styles/**`, `src/lib/tokens.ts`, `*.test.*`, `*.
 ## Geriye Kalan İşler (Faz 7+)
 
 - [ ] Final QA (mobile + theme switch full scroll smoke)
-- [ ] `xlsx` dynamic import (bundle baseline öneri)
-- [ ] Footer/Malzemeler/NotFound içindeki kalan hardcoded renkler (v3.1)
+- [x] `xlsx` dynamic import — verified clean (phase-11D)
+- [ ] Footer/Malzemeler/NotFound içindeki kalan hardcoded renkler (v3.1) — deferred to phase-11A
 - [ ] Memory dosyaları güncellemesi (`forge-steel-palette` → v2.0 referansı)
+
+---
+
+## Phase 11 — Post-v3.3 Hardening (Partial — 11A deferred)
+
+### AMBIGUITY Decisions (pre-11A)
+5 kategori EXEMPT olarak kilitlendi (`docs/phase-11-ambiguity-decisions.md`):
+1. R3F THREE.Color literalleri — runtime, cssVar.ts helper ile 11A-extended'de migrate
+2. Brand SVG fill/stroke — tokenize edilemez
+3. Gizmo XYZ eksen renkleri — endüstri standardı
+4. Material picker palette — kullanıcıya gösterilen veri
+5. NotFound dynamic hsla hue — runtime hesaplama
+
+### 11B — Bundle Forensics
+- Build: 22.44s, total dist ~18MB
+- Main chunk (`index-onPjJrZ5.js`): 470K raw / 145K gzipped
+- Largest async chunk: `xlsx.min-CJ8YSDyO.js` 850K raw / 323K gz (lazy ✓)
+- Admin/customer/xlsx leak scan: **CLEAN** with documented MINIFIER_RESIDUAL
+  (AdminDashboard / MusteriPaneli string refs in main = Vite preload manifest + React.lazy() wrappers; verified via separate chunks 324K + 134K, zero size delta)
+- `user_roles` query in main = intentional (auth role check, all routes)
+
+### 11C — Responsive QA (6 sayfa × 3 viewport audit)
+- 5/6 sayfa temiz render
+- 🔴 ISSUE-1: `/malzemeler/:slug` (kategori detay) Footer reveal CTA card overlaps hero — cross-viewport layout bug
+- 🟡 ISSUE-2: Pre-existing `forwardRef` warn TestimonialsSection + CNCScrollStory (PageTransition motion.div → lazy children); not introduced this session
+- Pre-11A baseline — color regression N/A this session
+
+### 11D — Excel Export Verification
+- Mode: STATIC_FALLBACK (no admin credentials)
+- 4/4 statik kriter PASS:
+  1. `await import("xlsx-js-style")` @ excelExport.ts:241 ✓
+  2. Sadece `import type` (build-time stripped) ✓
+  3. `xlsx.min-CJ8YSDyO.js` async chunk mevcut ✓
+  4. Lazy wrapper mevcut ✓
+- Verdict: **CLEAN** — xlsx landing initial load'a sızmıyor
+
+### 11A — Residual Color Sweep
+- Status: **DEFERRED** (next session)
+- Audit: `docs/phase-11-residual-audit.md` (Pass A: 584, Pass B: 380, Pass C: 0 net)
+- Non-locked scope: ~14 dosya, 3 batch
+- AMBIGUITY kararları kilitli — FIX-07 tetiklenmeyecek
