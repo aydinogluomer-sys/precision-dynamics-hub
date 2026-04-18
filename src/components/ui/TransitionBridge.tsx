@@ -14,16 +14,19 @@ interface TransitionBridgeProps {
   z: number;
 }
 
-export const TransitionBridge = ({
+import { forwardRef } from "react";
+
+export const TransitionBridge = forwardRef<HTMLDivElement, TransitionBridgeProps>(({
   variant,
   fromColor,
   toColor,
   z,
-}: TransitionBridgeProps) => {
+}, ref) => {
   const height = variant === 'dark-to-dark' ? 40 : 120;
 
   return (
     <div
+      ref={ref}
       className="relative w-full pointer-events-none"
       style={{ zIndex: z, height }}
       aria-hidden="true"
@@ -50,4 +53,5 @@ export const TransitionBridge = ({
       )}
     </div>
   );
-};
+});
+TransitionBridge.displayName = "TransitionBridge";

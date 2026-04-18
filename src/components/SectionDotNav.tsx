@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -12,7 +12,7 @@ interface SectionDotNavProps {
   sections: Section[];
 }
 
-export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
+export const SectionDotNav = forwardRef<HTMLDivElement, SectionDotNavProps>(({ sections }, _ref) => {
   const { pathname } = useLocation();
   const prefersReduced = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -106,7 +106,7 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
             const isHovered = i === hoveredIndex;
 
             return (
-              <button
+              <motion.button
                 key={section.id}
                 onClick={() => handleClick(section.id)}
                 onMouseEnter={() => setHoveredIndex(i)}
@@ -145,11 +145,12 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
                   layout={!prefersReduced}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 />
-              </button>
+              </motion.button>
             );
           })}
         </motion.nav>
       )}
     </AnimatePresence>
   );
-};
+});
+SectionDotNav.displayName = "SectionDotNav";

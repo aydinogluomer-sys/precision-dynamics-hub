@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { supabase } from "@/integrations/supabase/client";
+import { getCSSVar } from "@/utils/cssVar";
+import { useTheme } from "@/hooks/use-theme";
 import {
   Loader2, Download, Box, FileText, Calendar, HardDrive,
   RotateCcw, Grid3x3, Scissors, TriangleRight, Palette, Ruler,
@@ -335,6 +337,13 @@ const CadViewer = ({ signedUrl, extension, stepGeometry }: { signedUrl: string; 
   const [measurePoints, setMeasurePoints] = useState<THREE.Vector3[]>([]);
   const [measureDistance, setMeasureDistance] = useState<number | null>(null);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const { theme } = useTheme();
+  const gridConfig = useMemo(() => ({
+    cellColor: getCSSVar("--material-chrome", "#64748b"),
+    sectionColor: getCSSVar("--precision-steel", "#475569"),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _t: theme,
+  }), [theme]);
 
   const handleDimensions = useCallback((d: Dimensions) => setDimensions(d), []);
 
@@ -464,10 +473,10 @@ const CadViewer = ({ signedUrl, extension, stepGeometry }: { signedUrl: string; 
                 args={[100, 100]}
                 cellSize={1}
                 cellThickness={0.5}
-                cellColor="#64748b"
+                cellColor={gridConfig.cellColor}
                 sectionSize={5}
                 sectionThickness={1}
-                sectionColor="#475569"
+                sectionColor={gridConfig.sectionColor}
                 fadeDistance={50}
                 fadeStrength={1}
                 followCamera={false}
@@ -478,7 +487,8 @@ const CadViewer = ({ signedUrl, extension, stepGeometry }: { signedUrl: string; 
             <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={500} />
 
             <GizmoHelper alignment="bottom-right" margin={[50, 50]}>
-              <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
+              {/* eslint-disable-next-line no-restricted-syntax */}
+              <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} /* OK: XYZ convention */ labelColor="white" />
             </GizmoHelper>
 
             <CameraReset trigger={resetTrigger} />

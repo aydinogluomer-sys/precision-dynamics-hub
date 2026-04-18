@@ -96,41 +96,40 @@ const SECTIONS = [
 /* ── Scene wrappers ── */
 
 /** Sticky scene — pins at top, next section scrolls over it */
-const Scene = ({
-  children,
-  z,
-  className = "",
-  style,
-}: {
-  children: ReactNode;
-  z: number;
-  className?: string;
-  style?: React.CSSProperties;
-}) => (
+const Scene = forwardRef<
+  HTMLDivElement,
+  {
+    children: ReactNode;
+    z: number;
+    className?: string;
+    style?: React.CSSProperties;
+  }
+>(({ children, z, className = "", style }, ref) => (
   <div
+    ref={ref}
     className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
     style={{ zIndex: z, ...style }}
   >
     {children}
   </div>
-);
+));
+Scene.displayName = "Scene";
 
 /** Flow scene — for sections with internal scroll/pin logic */
-const FlowScene = ({
-  children,
-  z,
-  className = "",
-  style,
-}: {
-  children: ReactNode;
-  z: number;
-  className?: string;
-  style?: React.CSSProperties;
-}) => (
-  <div className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
+const FlowScene = forwardRef<
+  HTMLDivElement,
+  {
+    children: ReactNode;
+    z: number;
+    className?: string;
+    style?: React.CSSProperties;
+  }
+>(({ children, z, className = "", style }, ref) => (
+  <div ref={ref} className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
     {children}
   </div>
-);
+));
+FlowScene.displayName = "FlowScene";
 
 export const Index = () => {
   const [isFirstVisit] = useState(() => {
