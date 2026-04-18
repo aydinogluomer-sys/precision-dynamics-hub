@@ -18,15 +18,17 @@ interface Dimensions {
   z: number;
 }
 
-// Color presets
+// Color presets — kullanıcıya gösterilen statik palet
+/* eslint-disable no-restricted-syntax */
 const COLOR_PRESETS = [
-  { label: "Çelik", color: "#94a3b8" },
-  { label: "Altın", color: "#d4a574" },
-  { label: "Mavi", color: "#3b82f6" },
-  { label: "Yeşil", color: "#22c55e" },
-  { label: "Kırmızı", color: "#ef4444" },
-  { label: "Siyah", color: "#1e293b" },
+  { label: "Çelik", color: "#94a3b8" },   // OK: user-facing palette
+  { label: "Altın", color: "#d4a574" },   // OK: user-facing palette
+  { label: "Mavi", color: "#3b82f6" },    // OK: user-facing palette
+  { label: "Yeşil", color: "#22c55e" },   // OK: user-facing palette
+  { label: "Kırmızı", color: "#ef4444" }, // OK: user-facing palette
+  { label: "Siyah", color: "#1e293b" },   // OK: user-facing palette
 ];
+/* eslint-enable no-restricted-syntax */
 
 // ── Measurement Points Visual ──
 const MeasurementPoints = ({ points, distance }: { points: THREE.Vector3[]; distance: number | null }) => {
@@ -37,7 +39,8 @@ const MeasurementPoints = ({ points, distance }: { points: THREE.Vector3[]; dist
       {points.map((p, i) => (
         <mesh key={i} position={p}>
           <sphereGeometry args={[0.3, 16, 16]} />
-          <meshBasicMaterial color="#ef4444" />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <meshBasicMaterial color="#ef4444" /* OK: R3F runtime — measurement marker */ />
         </mesh>
       ))}
       {points.length === 2 && (
@@ -50,7 +53,8 @@ const MeasurementPoints = ({ points, distance }: { points: THREE.Vector3[]; dist
               itemSize={3}
             />
           </bufferGeometry>
-          <lineBasicMaterial color="#ef4444" linewidth={2} />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <lineBasicMaterial color="#ef4444" /* OK: R3F runtime — measurement line */ linewidth={2} />
         </line>
       )}
     </group>
@@ -244,7 +248,8 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
   const [resetTrigger, setResetTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
   const [wireframe, setWireframe] = useState(false);
-  const [modelColor, setModelColor] = useState("#94a3b8");
+  // eslint-disable-next-line no-restricted-syntax
+  const [modelColor, setModelColor] = useState("#94a3b8"); // OK: user-facing palette default
   const [showColors, setShowColors] = useState(false);
   const [measuring, setMeasuring] = useState(false);
   const [measurePoints, setMeasurePoints] = useState<THREE.Vector3[]>([]);
@@ -503,10 +508,12 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
                 args={[100, 100]}
                 cellSize={1}
                 cellThickness={0.5}
-                cellColor="#64748b"
+                // eslint-disable-next-line no-restricted-syntax
+                cellColor="#64748b" /* OK: R3F runtime — grid */
                 sectionSize={5}
                 sectionThickness={1}
-                sectionColor="#475569"
+                // eslint-disable-next-line no-restricted-syntax
+                sectionColor="#475569" /* OK: R3F runtime — grid */
                 fadeDistance={50}
                 fadeStrength={1}
                 followCamera={false}
@@ -517,7 +524,8 @@ export const ModelViewer = ({ file, onDimensions }: ModelViewerProps) => {
             <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={500} />
 
             <GizmoHelper alignment="bottom-right" margin={[60, 60]}>
-              <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
+              {/* eslint-disable-next-line no-restricted-syntax */}
+              <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} /* OK: XYZ convention */ labelColor="white" />
             </GizmoHelper>
 
             <CameraReset trigger={resetTrigger} />

@@ -13,9 +13,12 @@ const CNCGear = () => {
     }
   });
 
-  const tealColor = new THREE.Color("#0688AD");
-  const darkColor = new THREE.Color("#1e293b");
-  const metalColor = new THREE.Color("#94a3b8");
+  // eslint-disable-next-line no-restricted-syntax
+  const tealColor = new THREE.Color("#0688AD"); // OK: R3F runtime — token migration: cssVar.ts useEffect (phase-11A-extended)
+  // eslint-disable-next-line no-restricted-syntax
+  const darkColor = new THREE.Color("#1e293b"); // OK: R3F runtime
+  // eslint-disable-next-line no-restricted-syntax
+  const metalColor = new THREE.Color("#94a3b8"); // OK: R3F runtime
 
   return (
     <group ref={meshRef}>
@@ -104,9 +107,12 @@ export const CNCModel = () => (
     >
       <Suspense fallback={null}>
         <ambientLight intensity={0.3} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" />
-        <directionalLight position={[-3, 2, -3]} intensity={0.4} color="#0688AD" />
-        <pointLight position={[0, -2, 3]} intensity={0.5} color="#0688AD" />
+        {/* eslint-disable-next-line no-restricted-syntax */}
+        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" /* OK: R3F runtime */ />
+        {/* eslint-disable-next-line no-restricted-syntax */}
+        <directionalLight position={[-3, 2, -3]} intensity={0.4} color="#0688AD" /* OK: R3F runtime */ />
+        {/* eslint-disable-next-line no-restricted-syntax */}
+        <pointLight position={[0, -2, 3]} intensity={0.5} color="#0688AD" /* OK: R3F runtime */ />
         <CNCGear />
       </Suspense>
     </Canvas>

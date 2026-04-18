@@ -7,10 +7,14 @@ import * as THREE from "three";
 const usePalette = () =>
   useMemo(
     () => ({
-      teal: new THREE.Color("#0688AD"),
-      metal: new THREE.Color("#94a3b8"),
-      dark: new THREE.Color("#1e293b"),
-      white: new THREE.Color("#e2e8f0"),
+      // eslint-disable-next-line no-restricted-syntax
+      teal: new THREE.Color("#0688AD"), // OK: R3F runtime — token migration: cssVar.ts useEffect (phase-11A-extended)
+      // eslint-disable-next-line no-restricted-syntax
+      metal: new THREE.Color("#94a3b8"), // OK: R3F runtime
+      // eslint-disable-next-line no-restricted-syntax
+      dark: new THREE.Color("#1e293b"), // OK: R3F runtime
+      // eslint-disable-next-line no-restricted-syntax
+      white: new THREE.Color("#e2e8f0"), // OK: R3F runtime
     }),
     []
   );
@@ -345,10 +349,14 @@ export const IndustryCanvas = ({ type }: { type: IndustryType }) => {
         <Suspense fallback={null}>
           <ambientLight intensity={0.35} />
           <directionalLight position={[5, 5, 5]} intensity={1.4} castShadow />
-          <directionalLight position={[-4, 3, -3]} intensity={0.5} color="#0688AD" />
-          <pointLight position={[0, -2, 4]} intensity={0.6} color="#0688AD" />
-          <pointLight position={[2, 3, -2]} intensity={0.3} color="#e2e8f0" />
-          <spotLight position={[-3, 4, -4]} intensity={0.4} angle={0.5} penumbra={1} color="#0688AD" />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <directionalLight position={[-4, 3, -3]} intensity={0.5} color="#0688AD" /* OK: R3F runtime */ />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <pointLight position={[0, -2, 4]} intensity={0.6} color="#0688AD" /* OK: R3F runtime */ />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <pointLight position={[2, 3, -2]} intensity={0.3} color="#e2e8f0" /* OK: R3F runtime */ />
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <spotLight position={[-3, 4, -4]} intensity={0.4} angle={0.5} penumbra={1} color="#0688AD" /* OK: R3F runtime */ />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} dampingFactor={0.1} />
           <ModelComponent />
         </Suspense>

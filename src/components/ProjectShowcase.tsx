@@ -178,8 +178,11 @@ export const ProjectShowcase = () => {
         viewport={{ once: true }}
       />
       {/* chromatic aberration / RGB channel split — intentional, DO NOT tokenize */}
+      {/* eslint-disable-next-line no-restricted-syntax */}
       <div className="chroma-layer chroma-r" style={{ backgroundColor: "rgba(255,0,0,0.15)" /* OK: chroma split */ }} />
+      {/* eslint-disable-next-line no-restricted-syntax */}
       <div className="chroma-layer chroma-g" style={{ backgroundColor: "rgba(0,255,0,0.1)" /* OK: chroma split */ }} />
+      {/* eslint-disable-next-line no-restricted-syntax */}
       <div className="chroma-layer chroma-b" style={{ backgroundColor: "rgba(0,0,255,0.15)" /* OK: chroma split */ }} />
       <div className="h-screen flex flex-col justify-center">
         {/* Header */}
