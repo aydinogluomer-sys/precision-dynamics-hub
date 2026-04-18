@@ -1215,14 +1215,14 @@ export const TeklifAl = () => {
         {/* Teknik Destek */}
         <div className="relative p-5 overflow-hidden bg-industrial-dark">
           <div className="absolute -right-4 -bottom-4 opacity-10">
-            <HardHat size={100} className="text-white" />
+            <HardHat size={100} className="text-[var(--text-primary)]" />
           </div>
-          <h3 className="text-sm font-bold text-white mb-2">Teknik Destek</h3>
+          <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">Teknik Destek</h3>
           <p className="text-xs leading-relaxed mb-4 text-industrial-steel">
             Hassas mühendislerimiz, tasarımınızı üretilebilirlik açısından incelemeye ve üretim sürecinizi optimize
             etmeye hazır.
           </p>
-          <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border border-white/20 text-white hover:bg-white/10 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border border-[rgb(var(--text-primary-rgb)/0.2)] text-[var(--text-primary)] hover:bg-[rgb(var(--text-primary-rgb)/0.1)] transition-colors">
             <HardHat size={14} /> MÜHENDİSE DANIŞIN
             <ArrowRight size={12} />
           </button>

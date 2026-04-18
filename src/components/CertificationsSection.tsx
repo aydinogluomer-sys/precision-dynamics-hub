@@ -40,7 +40,7 @@ export const CertificationsSection = () => {
       {[...certifications, ...certifications].map((cert, i) => (
         <div key={i} className="inline-flex items-center gap-4 mx-8 md:mx-12 cursor-default group">
           <div
-            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-white/10"
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-[rgb(var(--text-primary-rgb)/0.1)]"
             style={{
               border: "1px solid var(--surface-border)",
               backgroundColor: "var(--surface-glass)",

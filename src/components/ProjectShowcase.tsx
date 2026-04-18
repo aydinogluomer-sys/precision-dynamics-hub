@@ -221,7 +221,7 @@ export const ProjectShowcase = () => {
 
         {/* Progress bar */}
         <div className="container-industrial py-6">
-          <div className="w-full h-px bg-white/10 overflow-hidden">
+          <div className="w-full h-px bg-[rgb(var(--text-primary-rgb)/0.1)] overflow-hidden">
             <div
               ref={progressRef}
               className="h-full origin-left"

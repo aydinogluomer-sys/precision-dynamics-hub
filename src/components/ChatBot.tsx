@@ -237,7 +237,7 @@ export function ChatBot() {
                 <p className="text-sm font-semibold">MAS Technic Asistan</p>
                 <p className="text-xs opacity-80">CNC & İmalat Uzmanı</p>
               </div>
-              <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-white/20 transition-colors">
+              <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-[rgb(var(--text-primary-rgb)/0.2)] transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
