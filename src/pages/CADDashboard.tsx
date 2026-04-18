@@ -47,22 +47,23 @@ const columns = [
 ];
 
 // ── 3D Placeholder Model (Flanş/Silindir) ──
+/* eslint-disable no-restricted-syntax */
 const PlaceholderModel = () => (
   <group>
     {/* Base cylinder */}
     <mesh position={[0, 0, 0]}>
       <cylinderGeometry args={[1.5, 1.5, 0.4, 64]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      <meshStandardMaterial color="#475569" /* OK: R3F runtime */ metalness={0.7} roughness={0.3} />
     </mesh>
     {/* Shaft */}
     <mesh position={[0, 1.5, 0]}>
       <cylinderGeometry args={[0.5, 0.5, 2.6, 32]} />
-      <meshStandardMaterial color="#64748b" metalness={0.6} roughness={0.35} />
+      <meshStandardMaterial color="#64748b" /* OK: R3F runtime */ metalness={0.6} roughness={0.35} />
     </mesh>
     {/* Top cap */}
     <mesh position={[0, 3, 0]}>
       <cylinderGeometry args={[0.7, 0.7, 0.3, 32]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      <meshStandardMaterial color="#475569" /* OK: R3F runtime */ metalness={0.7} roughness={0.3} />
     </mesh>
     {/* Bolt holes on base */}
     {[0, 60, 120, 180, 240, 300].map((angle, i) => {
@@ -70,12 +71,13 @@ const PlaceholderModel = () => (
       return (
         <mesh key={i} position={[Math.cos(rad) * 1.1, 0.21, Math.sin(rad) * 1.1]}>
           <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
-          <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
+          <meshStandardMaterial color="#334155" /* OK: R3F runtime */ metalness={0.8} roughness={0.2} />
         </mesh>
       );
     })}
   </group>
 );
+/* eslint-enable no-restricted-syntax */
 
 // ── STL Model for Dashboard ──
 const DashSTLModel = ({ url, color, wireframe }: { url: string; color: string; wireframe: boolean }) => {
@@ -141,14 +143,16 @@ const CameraReset = ({ trigger }: { trigger: number }) => {
   return null;
 };
 
-// ── COLOR PRESETS ──
+// ── COLOR PRESETS — kullanıcıya gösterilen statik palet ──
+/* eslint-disable no-restricted-syntax */
 const COLORS = [
-  { label: "Çelik", color: "#64748b" },
-  { label: "Altın", color: "#d4a574" },
-  { label: "Mavi", color: "#3b82f6" },
-  { label: "Kırmızı", color: "#ef4444" },
-  { label: "Siyah", color: "#1e293b" },
+  { label: "Çelik", color: "#64748b" },   // OK: user-facing palette
+  { label: "Altın", color: "#d4a574" },   // OK: user-facing palette
+  { label: "Mavi", color: "#3b82f6" },    // OK: user-facing palette
+  { label: "Kırmızı", color: "#ef4444" }, // OK: user-facing palette
+  { label: "Siyah", color: "#1e293b" },   // OK: user-facing palette
 ];
+/* eslint-enable no-restricted-syntax */
 
 // ── Main Dashboard ──
 export const CADDashboard = () => {
@@ -159,7 +163,8 @@ export const CADDashboard = () => {
   const [activeView, setActiveView] = useState<"3d" | "2d">("3d");
   const [showGrid, setShowGrid] = useState(true);
   const [wireframe, setWireframe] = useState(false);
-  const [modelColor, setModelColor] = useState("#64748b");
+  // eslint-disable-next-line no-restricted-syntax
+  const [modelColor, setModelColor] = useState("#64748b"); // OK: user-facing palette default
   const [showColors, setShowColors] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -648,10 +653,12 @@ export const CADDashboard = () => {
                         args={[100, 100]}
                         cellSize={1}
                         cellThickness={0.5}
-                        cellColor="#94a3b8"
+                        // eslint-disable-next-line no-restricted-syntax
+                        cellColor="#94a3b8" /* OK: R3F runtime — grid */
                         sectionSize={5}
                         sectionThickness={1}
-                        sectionColor="#64748b"
+                        // eslint-disable-next-line no-restricted-syntax
+                        sectionColor="#64748b" /* OK: R3F runtime — grid */
                         fadeDistance={30}
                         fadeStrength={1}
                         followCamera={false}
@@ -662,7 +669,8 @@ export const CADDashboard = () => {
                     <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={100} />
 
                     <GizmoHelper alignment="top-right" margin={[70, 70]}>
-                      <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
+                      {/* eslint-disable-next-line no-restricted-syntax */}
+                      <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} /* OK: XYZ convention */ labelColor="white" />
                     </GizmoHelper>
 
                     <CameraReset trigger={resetTrigger} />
