@@ -8,7 +8,7 @@ import { LiveClock } from "../LiveClock";
 export const FooterBottomBar = ({ currentYear }: { currentYear: number }) => {
   return (
     <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
-      <div className="flex flex-col lg:flex-row justify-between items-center gap-3 lg:gap-4 lg:pr-20">
+      <div className="flex flex-col lg:flex-row justify-between items-center gap-3 lg:gap-4 md:pr-20">
         <div
           className="text-xs flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5"
           style={{ color: "var(--text-hint)" }}
