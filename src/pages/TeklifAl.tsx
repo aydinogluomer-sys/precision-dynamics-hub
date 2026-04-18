@@ -59,13 +59,14 @@ interface Dimensions {
   z: number;
 }
 
+/* eslint-disable no-restricted-syntax */
 const COLOR_PRESETS = [
-  { label: "Çelik", color: "#94a3b8" },
-  { label: "Altın", color: "#d4a574" },
-  { label: "Mavi", color: "#3b82f6" },
-  { label: "Yeşil", color: "#22c55e" },
-  { label: "Kırmızı", color: "#ef4444" },
-  { label: "Siyah", color: "#1e293b" },
+  { label: "Çelik", color: "#94a3b8" },   // OK: user-facing palette
+  { label: "Altın", color: "#d4a574" },   // OK: user-facing palette
+  { label: "Mavi", color: "#3b82f6" },    // OK: user-facing palette
+  { label: "Yeşil", color: "#22c55e" },   // OK: user-facing palette
+  { label: "Kırmızı", color: "#ef4444" }, // OK: user-facing palette
+  { label: "Siyah", color: "#1e293b" },   // OK: user-facing palette
 ];
 
 // Placeholder 3D part shown before file upload
@@ -73,26 +74,27 @@ const PlaceholderModel = () => (
   <group>
     <mesh position={[0, 0, 0]}>
       <cylinderGeometry args={[1.5, 1.5, 0.4, 64]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      <meshStandardMaterial color="#475569" /* OK: R3F runtime */ metalness={0.7} roughness={0.3} />
     </mesh>
     <mesh position={[0, 1.5, 0]}>
       <cylinderGeometry args={[0.5, 0.5, 2.6, 32]} />
-      <meshStandardMaterial color="#64748b" metalness={0.6} roughness={0.35} />
+      <meshStandardMaterial color="#64748b" /* OK: R3F runtime */ metalness={0.6} roughness={0.35} />
     </mesh>
     <mesh position={[0, 3, 0]}>
       <cylinderGeometry args={[0.7, 0.7, 0.3, 32]} />
-      <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      <meshStandardMaterial color="#475569" /* OK: R3F runtime */ metalness={0.7} roughness={0.3} />
     </mesh>
     {[0, 60, 120, 180, 240, 300].map((angle, i) => {
       const rad = (angle * Math.PI) / 180;
       return (
         <mesh key={i} position={[Math.cos(rad) * 1.1, 0.21, Math.sin(rad) * 1.1]}>
           <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
-          <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
+          <meshStandardMaterial color="#334155" /* OK: R3F runtime */ metalness={0.8} roughness={0.2} />
         </mesh>
       );
     })}
   </group>
+/* eslint-enable no-restricted-syntax */
 );
 
 // STL Model
@@ -282,7 +284,8 @@ export const TeklifAl = () => {
   const [stepLoading, setStepLoading] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
   const [wireframe, setWireframe] = useState(false);
-  const [modelColor, setModelColor] = useState("#94a3b8");
+  // eslint-disable-next-line no-restricted-syntax
+  const [modelColor, setModelColor] = useState("#94a3b8"); // OK: user-facing palette default
   const [showColors, setShowColors] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -733,10 +736,12 @@ export const TeklifAl = () => {
                       args={[100, 100]}
                       cellSize={1}
                       cellThickness={0.5}
-                      cellColor="#94a3b8"
+                      // eslint-disable-next-line no-restricted-syntax
+                      cellColor="#94a3b8" /* OK: R3F runtime — grid */
                       sectionSize={5}
                       sectionThickness={1}
-                      sectionColor="#64748b"
+                      // eslint-disable-next-line no-restricted-syntax
+                      sectionColor="#64748b" /* OK: R3F runtime — grid */
                       fadeDistance={30}
                       fadeStrength={1}
                       followCamera={false}
@@ -747,7 +752,8 @@ export const TeklifAl = () => {
                   <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={100} />
 
                   <GizmoHelper alignment="top-right" margin={[70, 70]}>
-                    <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
+                    {/* eslint-disable-next-line no-restricted-syntax */}
+                    <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} /* OK: XYZ convention */ labelColor="white" />
                   </GizmoHelper>
 
                   <CameraReset trigger={resetTrigger} />
@@ -1209,14 +1215,14 @@ export const TeklifAl = () => {
         {/* Teknik Destek */}
         <div className="relative p-5 overflow-hidden bg-industrial-dark">
           <div className="absolute -right-4 -bottom-4 opacity-10">
-            <HardHat size={100} className="text-white" />
+            <HardHat size={100} className="text-[var(--text-primary)]" />
           </div>
-          <h3 className="text-sm font-bold text-white mb-2">Teknik Destek</h3>
+          <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">Teknik Destek</h3>
           <p className="text-xs leading-relaxed mb-4 text-industrial-steel">
             Hassas mühendislerimiz, tasarımınızı üretilebilirlik açısından incelemeye ve üretim sürecinizi optimize
             etmeye hazır.
           </p>
-          <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border border-white/20 text-white hover:bg-white/10 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border border-[rgb(var(--text-primary-rgb)/0.2)] text-[var(--text-primary)] hover:bg-[rgb(var(--text-primary-rgb)/0.1)] transition-colors">
             <HardHat size={14} /> MÜHENDİSE DANIŞIN
             <ArrowRight size={12} />
           </button>

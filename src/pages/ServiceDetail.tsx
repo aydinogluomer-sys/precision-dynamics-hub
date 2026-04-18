@@ -186,25 +186,25 @@ export const ServiceDetail = () => {
               style={{ mixBlendMode: "luminosity" }}
               aria-hidden="true"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,15%,8%)] via-[hsl(220,15%,8%,0.75)] to-[hsl(220,15%,8%,0.2)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-base)] via-[rgb(var(--surface-base-rgb)/0.75)] to-[rgb(var(--surface-base-rgb)/0.2)]" />
 
             <motion.div
               className="absolute bottom-0 left-0 right-0 container-industrial pb-10"
               style={{ opacity: heroOpacity }}
             >
-              <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
-                <Link to="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
+              <nav className="flex items-center gap-2 text-xs text-[rgb(var(--text-primary-rgb)/0.6)] mb-4">
+                <Link to="/" className="hover:text-[var(--text-primary)] transition-colors">Ana Sayfa</Link>
                 <ChevronRight size={12} />
                 <span>{categoryLabels[page.category] || page.category}</span>
                 <ChevronRight size={12} />
-                <span className="text-white font-medium">{page.title}</span>
+                <span className="text-[var(--text-primary)] font-medium">{page.title}</span>
               </nav>
 
               <motion.div {...clipReveal(0.2)}>
                 <span className="text-xs font-semibold uppercase tracking-[0.4em] mb-2 block text-primary">
                   {page.categoryLabel}
                 </span>
-                <h1 className="heading-industrial text-3xl md:text-5xl text-white">{page.title}</h1>
+                <h1 className="heading-industrial text-3xl md:text-5xl text-[var(--text-primary)]">{page.title}</h1>
               </motion.div>
 
               {page.technicalSpecs && page.technicalSpecs.length > 0 && (
@@ -218,10 +218,10 @@ export const ServiceDetail = () => {
                     <motion.div
                       key={i}
                       variants={staggerItem}
-                      className="bg-white/10 backdrop-blur-sm border border-white/10 px-4 py-2 hover:bg-white/15 transition-colors"
+                      className="bg-[rgb(var(--text-primary-rgb)/0.1)] backdrop-blur-sm border border-[rgb(var(--text-primary-rgb)/0.1)] px-4 py-2 hover:bg-[rgb(var(--text-primary-rgb)/0.15)] transition-colors"
                     >
-                      <span className="text-[10px] uppercase tracking-wider text-white/50 block">{spec.label}</span>
-                      <span className="text-technical text-sm font-bold text-white">{spec.value}</span>
+                      <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--text-primary-rgb)/0.5)] block">{spec.label}</span>
+                      <span className="text-technical text-sm font-bold text-[var(--text-primary)]">{spec.value}</span>
                     </motion.div>
                   ))}
                 </motion.div>

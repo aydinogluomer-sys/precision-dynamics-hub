@@ -165,3 +165,11 @@ Muafiyet: `src/index.css`, `src/styles/**`, `src/lib/tokens.ts`, `*.test.*`, `*.
 - Audit: `docs/phase-11-residual-audit.md` (Pass A: 584, Pass B: 380, Pass C: 0 net)
 - Non-locked scope: ~14 dosya, 3 batch
 - AMBIGUITY kararları kilitli — FIX-07 tetiklenmeyecek
+
+## Phase 11A — Residual Color Sweep (COMPLETE) — 2026-04-18
+- Pass A non-locked: 74 → 34 (kalanlar `// OK:` exempt'li satır içi 2. literal'lar — guardrail OK)
+- Pass B Tailwind preset: 41 → **0** ✅
+- TSC: 0 error · Build: success (24.94s) · Main chunk: 512K
+- Bundle leak scan: Admin 0, Customer 0, xlsx 0 → **CLEAN**
+- xlsx: dynamic import + lazy chunk (850K) → **STATIC_FALLBACK CLEAN**
+- 5 AMBIGUITY kararı `// eslint-disable-next-line no-restricted-syntax` + `// OK:` çift-tag ile uygulandı (R3F, brand SVG, gizmo XYZ, user-facing palette, dynamic hue).
