@@ -188,7 +188,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
                     <motion.div
                       key="check"
                       className="w-14 h-14 rounded-full flex items-center justify-center bg-green-500/20"
-                      style={{ border: "1px solid rgb(34 197 94 / 0.4)" }}
+                      style={{ border: "1px solid rgb(var(--success-rgb, 34 197 94) / 0.4)" }}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}

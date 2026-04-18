@@ -186,7 +186,7 @@ export const ServiceDetail = () => {
               style={{ mixBlendMode: "luminosity" }}
               aria-hidden="true"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(220,15%,8%)] via-[hsl(220,15%,8%,0.75)] to-[hsl(220,15%,8%,0.2)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-base)] via-[rgb(var(--surface-base-rgb)/0.75)] to-[rgb(var(--surface-base-rgb)/0.2)]" />
 
             <motion.div
               className="absolute bottom-0 left-0 right-0 container-industrial pb-10"

@@ -289,7 +289,7 @@ export const ServicesSection = () => {
               style={{
                 backgroundColor: "hsl(var(--forge-molten))",
                 borderColor: "hsl(var(--forge-molten))",
-                color: "#ffffff",
+                color: "var(--text-primary)",
               }}
             >
               {"Danışmanlık Al"}
