@@ -6,7 +6,7 @@
  * Phase 3 (60–88%): Horizontal slide — Hero slides left, QuickQuote slides in
  * Phase 4 (88–100%): Lava pour + heat distortion
  */
-import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
+import { useRef, useEffect, useCallback, useState, lazy, Suspense, forwardRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap } from "@/hooks/use-gsap";
@@ -32,7 +32,7 @@ interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
-export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
+export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFirstVisit = false }, _forwardedRef) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -479,4 +479,5 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       </section>
     </div>
   );
-};
+});
+HeroSection.displayName = "HeroSection";

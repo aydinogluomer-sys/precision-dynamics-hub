@@ -70,7 +70,7 @@ const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
 
 GsapCtaHeadline.displayName = "GsapCtaHeadline";
 
-export const FinalCTASection = () => {
+export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef) => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
@@ -198,4 +198,5 @@ export const FinalCTASection = () => {
       </div>
     </section>
   );
-};
+});
+FinalCTASection.displayName = "FinalCTASection";
