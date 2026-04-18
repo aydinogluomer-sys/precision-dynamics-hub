@@ -106,7 +106,7 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
             const isHovered = i === hoveredIndex;
 
             return (
-              <button
+              <motion.button
                 key={section.id}
                 onClick={() => handleClick(section.id)}
                 onMouseEnter={() => setHoveredIndex(i)}
@@ -145,7 +145,7 @@ export const SectionDotNav = ({ sections }: SectionDotNavProps) => {
                   layout={!prefersReduced}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 />
-              </button>
+              </motion.button>
             );
           })}
         </motion.nav>
