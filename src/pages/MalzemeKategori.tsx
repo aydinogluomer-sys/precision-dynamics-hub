@@ -161,7 +161,7 @@ export const MalzemeKategori = () => {
         </div>
       </section>
 
-      <Footer />
+      <Footer variant="static" />
     </div>
   );
 };

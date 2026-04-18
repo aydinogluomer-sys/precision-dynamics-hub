@@ -2,19 +2,18 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useRef, Suspense, useMemo } from "react";
 import * as THREE from "three";
+import { getCSSVar } from "@/utils/cssVar";
 
-/* ──────── Shared colors ──────── */
+/* ──────── Shared colors — runtime token sync (phase-11A-extended) ────────
+ * useMemo ile mount anında token oku; tema değişimi için key prop ile remount.
+ * Fallback hex'ler EXEMPT: token okunamazsa SSR/hydration güvenli default. */
 const usePalette = () =>
   useMemo(
     () => ({
-      // eslint-disable-next-line no-restricted-syntax
-      teal: new THREE.Color("#0688AD"), // OK: R3F runtime — token migration: cssVar.ts useEffect (phase-11A-extended)
-      // eslint-disable-next-line no-restricted-syntax
-      metal: new THREE.Color("#94a3b8"), // OK: R3F runtime
-      // eslint-disable-next-line no-restricted-syntax
-      dark: new THREE.Color("#1e293b"), // OK: R3F runtime
-      // eslint-disable-next-line no-restricted-syntax
-      white: new THREE.Color("#e2e8f0"), // OK: R3F runtime
+      teal: new THREE.Color(getCSSVar("--precision-steel", "#0688AD")),
+      metal: new THREE.Color(getCSSVar("--material-chrome", "#94a3b8")),
+      dark: new THREE.Color(getCSSVar("--surface-base", "#1e293b")),
+      white: new THREE.Color(getCSSVar("--text-primary", "#e2e8f0")),
     }),
     []
   );
