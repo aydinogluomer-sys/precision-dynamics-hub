@@ -152,4 +152,5 @@ export const SectionDotNav = forwardRef<HTMLDivElement, SectionDotNavProps>(({ s
       )}
     </AnimatePresence>
   );
-};
+});
+SectionDotNav.displayName = "SectionDotNav";
