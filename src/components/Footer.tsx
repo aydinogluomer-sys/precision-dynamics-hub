@@ -91,22 +91,36 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
   // Reveal variant: measure footer height + push it to a CSS var so a spacer
   // above can reserve room for the fixed footer (used on the long landing page).
   // Static variant: footer flows in normal document order — no spacer, no measure.
+  // RC-1: offsetHeight → scrollHeight (taşan içerik dahil).
+  // RC-3: ResizeObserver + document.fonts.ready ile font swap sonrası yeniden ölç.
   useEffect(() => {
     if (variant !== "reveal") return;
 
     const el = footerRef.current;
     if (!el) return;
 
+    let lastH = 0;
     const updateHeight = () => {
-      const h = el.offsetHeight;
-      setFooterHeight(h);
-      document.documentElement.style.setProperty("--footer-height", h + "px");
+      if (!footerRef.current) return;
+      requestAnimationFrame(() => {
+        if (!footerRef.current) return;
+        const h = footerRef.current.scrollHeight;
+        if (h === lastH) return;
+        lastH = h;
+        setFooterHeight(h);
+        document.documentElement.style.setProperty("--footer-height", h + "px");
+      });
     };
 
     updateHeight();
 
-    const ro = new ResizeObserver(() => updateHeight());
+    const ro = new ResizeObserver(updateHeight);
     ro.observe(el);
+
+    if (typeof document !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(updateHeight);
+    }
+
     return () => ro.disconnect();
   }, [variant]);
 
@@ -125,25 +139,26 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
   return (
     <>
       {/* Spacer for fixed footer — only in reveal mode */}
-      {isReveal && <div style={{ height: footerHeight }} />}
+      {/* Spacer for fixed footer — only in reveal mode */}
+      {isReveal && <div data-footer-spacer aria-hidden="true" style={{ height: footerHeight }} />}
 
       <footer
         ref={footerRef}
         className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 30 : 0 }}
       >
       {/* Marquee band at top of footer */}
       <MarqueeBand reverse />
 
-      {/* Big signature watermark */}
+      {/* Big signature watermark — RC-9: max-w-full + overflow-hidden mobil overflow guard */}
       <div
-        className="pointer-events-none select-none overflow-hidden relative"
+        className="pointer-events-none select-none overflow-hidden relative w-full max-w-full"
         style={{ zIndex: 0 }}
         aria-hidden="true"
       >
         <div
           style={{
-            fontSize: "clamp(60px, 12vw, 160px)",
+            fontSize: "clamp(40px, 12vw, 160px)",
             fontFamily: "IBM Plex Mono, monospace",
             fontWeight: 700,
             letterSpacing: "-0.02em",
@@ -151,6 +166,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
             lineHeight: 1,
             whiteSpace: "nowrap",
             padding: "20px 0",
+            textAlign: "center",
           }}
         >
           MAS TECHNIC
@@ -212,14 +228,14 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                 Sektörel yenilikler, teknik analizler ve daha fazlası... Son gelişmelerden haberdar olmak için bültenimize abone olun.
               </p>
             </div>
-            <div className="w-full md:w-auto">
-              <form onSubmit={(e) => e.preventDefault()} className="flex gap-0">
-                <div className="relative flex-1 md:w-72">
+            <div className="w-full md:w-auto min-w-0">
+              <form onSubmit={(e) => e.preventDefault()} className="flex gap-0 w-full">
+                <div className="relative flex-1 min-w-0 md:w-72">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                   <input
                     type="email"
                     placeholder="E-posta adresiniz"
-                    className="w-full pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
+                    className="w-full min-w-0 pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
                     style={{
                       background: "var(--surface-glass)",
                       border: "1px solid var(--surface-border)",
@@ -228,7 +244,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                     }}
                   />
                 </div>
-                <button className="px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap">
+                <button className="px-4 sm:px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap shrink-0">
                   ABONE OL
                 </button>
               </form>
@@ -429,15 +445,16 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
           </div>
         </motion.div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar — RC-8: flex-wrap + mobil stack, floating chat (sağ alt) için pr rezervi */}
         <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="text-xs flex items-center gap-4" style={{ color: "var(--text-hint)" }}>
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-3 lg:gap-4 lg:pr-20">
+            <div className="text-xs flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5" style={{ color: "var(--text-hint)" }}>
               <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
               <LiveClock />
             </div>
-            <div className="flex items-center gap-5 text-xs" style={{ color: "var(--text-hint)" }}>
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs" style={{ color: "var(--text-hint)" }}>
               <span
+                className="hidden md:inline"
                 style={{
                   fontFamily: "IBM Plex Mono, monospace",
                   fontSize: "11px",
