@@ -4,6 +4,7 @@ import { OrbitControls, Grid, Center, GizmoHelper, GizmoViewport } from "@react-
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { getCSSVar } from "@/utils/cssVar";
 import {
   Box, Camera, Ruler, Search, Lightbulb, Download, Share2,
   ChevronDown, ChevronUp, Pencil, Maximize, RotateCcw,
@@ -653,12 +654,10 @@ export const CADDashboard = () => {
                         args={[100, 100]}
                         cellSize={1}
                         cellThickness={0.5}
-                        // eslint-disable-next-line no-restricted-syntax
-                        cellColor="#94a3b8" /* OK: R3F runtime — grid */
+                        cellColor={getCSSVar("--material-chrome", "#94a3b8")}
                         sectionSize={5}
                         sectionThickness={1}
-                        // eslint-disable-next-line no-restricted-syntax
-                        sectionColor="#64748b" /* OK: R3F runtime — grid */
+                        sectionColor={getCSSVar("--precision-steel", "#64748b")}
                         fadeDistance={30}
                         fadeStrength={1}
                         followCamera={false}
