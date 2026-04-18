@@ -1,69 +1,21 @@
-import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
+import { Linkedin, Instagram, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { LiveClock } from "./LiveClock";
 import { MarqueeBand } from "./MarqueeBand";
+import { footerLinks, type FooterLinkGroup } from "./footer/footerLinks";
+import { FooterNewsletter } from "./footer/FooterNewsletter";
+import { FooterCTA } from "./footer/FooterCTA";
+import { FooterBottomBar } from "./footer/FooterBottomBar";
 
-const footerLinks = [
-  {
-    title: "Endüstriyel",
-    titleHref: null as string | null,
-    items: [
-      { label: "Yüksek Teknoloji", href: "/endustriyel/kategori/yuksek-teknoloji" },
-      { label: "Seri Üretim", href: "/endustriyel/kategori/seri-uretim" },
-      { label: "Endüstriyel Sistemler", href: "/endustriyel/kategori/endustriyel-sistemler" },
-      { label: "Üretim Çözümleri", href: "/endustriyel/kategori/uretim-cozumleri" },
-      { label: "Enerji & Altyapı", href: "/endustriyel/kategori/enerji-altyapi" },
-    ],
-  },
-  {
-    title: "Kabiliyetler",
-    titleHref: null as string | null,
-    items: [
-      { label: "Üretim Altyapısı", href: "/kabiliyetler/kategori/uretim-altyapisi" },
-      { label: "Kalite & Standartlar", href: "/kabiliyetler/kategori/kalite-standartlar" },
-      { label: "Mühendislik Desteği", href: "/kabiliyetler/kategori/muhendislik-destegi" },
-      { label: "Prototipten Seri Üretime", href: "/kabiliyetler/kategori/prototipten-seri-uretime" },
-      { label: "Süreç & Operasyon", href: "/kabiliyetler/kategori/surec-operasyon" },
-    ],
-  },
-  {
-    title: "Hizmetler",
-    titleHref: null as string | null,
-    items: [
-      { label: "Talaşlı İmalat", href: "/hizmetler/kategori/talasli-imalat" },
-      { label: "Ön Üretim", href: "/hizmetler/kategori/on-uretim" },
-      { label: "Yüzey İşlemleri", href: "/hizmetler/kategori/yuzey-islemleri" },
-      { label: "İşaretleme & Tanımlama", href: "/hizmetler/kategori/isaretleme-tanimlama" },
-      { label: "Montaj & Birleştirme", href: "/hizmetler/kategori/montaj-birlestirme" },
-    ],
-  },
-  {
-    title: "Kurumsal & Destek",
-    titleHref: null as string | null,
-    items: [
-      { label: "Ana Sayfa", href: "/" },
-      { label: "Hakkımızda", href: "/hakkimizda" },
-      { label: "Teklif & Üretim Süreci", href: "/#nasil-calisiyoruz" },
-      { label: "Kapasite", href: "/#kabiliyetler" },
-      { label: "Sevkiyat Standartları", href: "/#kabiliyetler" },
-      { label: "Kalite Güvencesi", href: "/#sertifikalar" },
-      { label: "SSS", href: "/sss" },
-      { label: "İletişim", href: "/iletisim" },
-    ],
-  },
-];
-
-const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
+const FooterAccordion = ({ group }: { group: FooterLinkGroup }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b" style={{ borderColor: "var(--surface-border)" }}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-4 text-center"
-      >
-        <h4 className="font-semibold uppercase tracking-wider text-xs flex-1 text-center" style={{ color: "var(--text-primary)" }}>{group.title}</h4>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-4 text-center">
+        <h4 className="font-semibold uppercase tracking-wider text-xs flex-1 text-center" style={{ color: "var(--text-primary)" }}>
+          {group.title}
+        </h4>
         <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`} style={{ color: "var(--text-technical)" }} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? "max-h-96 pb-4" : "max-h-0"}`}>
@@ -81,27 +33,69 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
   );
 };
 
+const BrandBlock = ({ centered = false }: { centered?: boolean }) => {
+  const align = centered ? "items-center text-center" : "";
+  const justify = centered ? "justify-center" : "";
+  return (
+    <div className={centered ? "mb-8 text-center" : ""}>
+      <div className={`flex items-center gap-3 mb-5 ${justify}`}>
+        <div className="w-10 h-10 bg-primary flex items-center justify-center">
+          <span className="text-primary-foreground font-bold text-lg">MT</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
+          <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "var(--text-technical)" }}>Precision CNC</span>
+        </div>
+      </div>
+      <p className={`text-xs leading-relaxed mb-5 max-w-xs ${centered ? "mx-auto" : ""}`} style={{ color: "var(--text-secondary)" }}>
+        CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
+      </p>
+      <div className={`${centered ? "flex flex-col items-center" : "space-y-2.5"} gap-2.5 mb-5`}>
+        {[
+          { icon: Phone, text: "+90 (536) 564 51 94" },
+          { icon: Mail, text: "info@mastechnic.com" },
+          { icon: MapPin, text: "İzmir, Türkiye" },
+        ].map(({ icon: Icon, text }) => (
+          <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
+            <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+            <span>{text}</span>
+          </div>
+        ))}
+      </div>
+      <div className={`flex gap-2 ${justify}`}>
+        {[{ icon: Linkedin, label: "in" }, { icon: null, label: "X" }, { icon: Instagram, label: null }].map((item, i) => (
+          <a
+            key={i}
+            href="#"
+            className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
+            style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}
+          >
+            {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 type FooterVariant = "reveal" | "static";
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } } };
 
 export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {}) => {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
   const [footerHeight, setFooterHeight] = useState(0);
 
-  // Reveal variant: measure footer height + push it to a CSS var so a spacer
-  // above can reserve room for the fixed footer (used on the long landing page).
-  // Static variant: footer flows in normal document order — no spacer, no measure.
-  // RC-1: offsetHeight → scrollHeight (taşan içerik dahil).
-  // RC-3: ResizeObserver + document.fonts.ready ile font swap sonrası yeniden ölç.
+  // RC-1: scrollHeight (taşan içerik dahil) · RC-3: ResizeObserver + fonts.ready
   useEffect(() => {
     if (variant !== "reveal") return;
-
     const el = footerRef.current;
     if (!el) return;
 
     let lastH = 0;
     const updateHeight = () => {
-      if (!footerRef.current) return;
       requestAnimationFrame(() => {
         if (!footerRef.current) return;
         const h = footerRef.current.scrollHeight;
@@ -113,33 +107,18 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
     };
 
     updateHeight();
-
     const ro = new ResizeObserver(updateHeight);
     ro.observe(el);
-
     if (typeof document !== "undefined" && "fonts" in document) {
       document.fonts.ready.then(updateHeight);
     }
-
     return () => ro.disconnect();
   }, [variant]);
-
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.08 } },
-  };
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
-  };
 
   const isReveal = variant === "reveal";
 
   return (
     <>
-      {/* Spacer for fixed footer — only in reveal mode */}
-      {/* Spacer for fixed footer — only in reveal mode */}
       {isReveal && <div data-footer-spacer aria-hidden="true" style={{ height: footerHeight }} />}
 
       <footer
@@ -147,352 +126,106 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
         className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
         style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 30 : 0 }}
       >
-      {/* Marquee band at top of footer */}
-      <MarqueeBand reverse />
+        <MarqueeBand reverse />
 
-      {/* Big signature watermark — RC-9: max-w-full + overflow-hidden mobil overflow guard */}
-      <div
-        className="pointer-events-none select-none overflow-hidden relative w-full max-w-full"
-        style={{ zIndex: 0 }}
-        aria-hidden="true"
-      >
-        <div
-          style={{
-            fontSize: "clamp(40px, 12vw, 160px)",
-            fontFamily: "IBM Plex Mono, monospace",
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            color: "var(--text-vignette)",
-            lineHeight: 1,
-            whiteSpace: "nowrap",
-            padding: "20px 0",
-            textAlign: "center",
-          }}
-        >
-          MAS TECHNIC
-        </div>
-      </div>
-      {/* Grid Pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* Radial Glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at center, rgb(var(--precision-steel-rgb) / 0.12) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="relative z-10 container-industrial pt-20 pb-10">
-        {/* Newsletter Glass Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-16"
-          style={{
-            background: "var(--precision-glow-subtle)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid var(--surface-border)",
-            boxShadow: "0 8px 32px 0 var(--overlay-vignette-light)",
-          }}
-        >
+        {/* RC-9: watermark mobil clip */}
+        <div className="pointer-events-none select-none overflow-hidden relative w-full max-w-full" style={{ zIndex: 0 }} aria-hidden="true">
           <div
-            className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(135deg, transparent 40%, hsl(var(--primary) / 0.04) 50%, transparent 60%)",
+              fontSize: "clamp(40px, 12vw, 160px)",
+              fontFamily: "IBM Plex Mono, monospace",
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              color: "var(--text-vignette)",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+              padding: "20px 0",
+              textAlign: "center",
             }}
-          />
-
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex-1 text-center md:text-left">
-              <span
-                className="text-xs font-bold uppercase tracking-[0.2em] mb-3 block"
-                style={{ color: "hsl(var(--primary))" }}
-              >
-                E-Bülten
-              </span>
-              <p className="text-sm leading-relaxed max-w-md mx-auto md:mx-0" style={{ color: "var(--text-secondary)" }}>
-                Sektörel yenilikler, teknik analizler ve daha fazlası... Son gelişmelerden haberdar olmak için bültenimize abone olun.
-              </p>
-            </div>
-            <div className="w-full md:w-auto min-w-0">
-              <form onSubmit={(e) => e.preventDefault()} className="flex gap-0 w-full">
-                <div className="relative flex-1 min-w-0 md:w-72">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
-                  <input
-                    type="email"
-                    placeholder="E-posta adresiniz"
-                    className="w-full min-w-0 pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
-                    style={{
-                      background: "var(--surface-glass)",
-                      border: "1px solid var(--surface-border)",
-                      borderRight: "none",
-                      color: "var(--text-primary)",
-                    }}
-                  />
-                </div>
-                <button className="px-4 sm:px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap shrink-0">
-                  ABONE OL
-                </button>
-              </form>
-              <p className="text-[11px] mt-2" style={{ color: "var(--text-hint)" }}>
-                * Verileriniz KVKK kapsamında korunmaktadır.
-              </p>
-            </div>
+          >
+            MAS TECHNIC
           </div>
+        </div>
 
-          <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-1 opacity-20">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="w-1 h-1 rounded-full bg-primary" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--precision-steel-rgb) / 0.05) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(circle at center, rgb(var(--precision-steel-rgb) / 0.12) 0%, transparent 70%)" }}
+        />
+
+        <div className="relative z-10 container-industrial pt-20 pb-10">
+          <FooterNewsletter />
+
+          {/* Mobile: Brand + Accordion */}
+          <div className="md:hidden mb-12">
+            <BrandBlock centered />
+            {footerLinks.map((group) => (
+              <FooterAccordion key={group.title} group={group} />
             ))}
           </div>
-        </motion.div>
 
-        {/* Mobile: Accordion links */}
-        <div className="md:hidden mb-12">
-          {/* Brand */}
-          <div className="mb-8 text-center">
-            <div className="flex items-center justify-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">MT</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
-                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "var(--text-technical)" }}>
-                  Precision CNC
-                </span>
-              </div>
-            </div>
-            <p className="text-xs leading-relaxed mb-5 max-w-xs mx-auto" style={{ color: "var(--text-secondary)" }}>
-              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
-            </p>
-            <div className="flex flex-col items-center gap-2.5 mb-5">
-              {[
-                { icon: Phone, text: "+90 (536) 564 51 94" },
-                { icon: Mail, text: "info@mastechnic.com" },
-                { icon: MapPin, text: "İzmir, Türkiye" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
-                  <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center gap-2">
-              {[
-                { icon: Linkedin, label: "in" },
-                { icon: null, label: "X" },
-                { icon: Instagram, label: null },
-              ].map((item, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}
-                >
-                  {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Accordion groups */}
-          {footerLinks.map((group) => (
-            <FooterAccordion key={group.title} group={group} />
-          ))}
-        </div>
-
-        {/* Desktop: Grid links */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
-        >
-          {/* Brand & Contact */}
-          <motion.div variants={fadeUp} className="md:col-span-3 lg:col-span-1">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">MT</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight" style={{ color: "var(--text-primary)" }}>MAS TECHNIC</span>
-                <span className="text-[10px] tracking-[0.15em] uppercase" style={{ color: "var(--text-technical)" }}>
-                  Precision CNC
-                </span>
-              </div>
-            </div>
-            <p className="text-xs leading-relaxed mb-5 max-w-xs" style={{ color: "var(--text-secondary)" }}>
-              CNC Freze, Torna ve Talaşlı İmalatta; ölçü hassasiyeti, yüksek doğruluk ve proses kontrollü üretim anlayışıyla hizmet veriyoruz.
-            </p>
-            <div className="space-y-2.5 mb-5">
-              {[
-                { icon: Phone, text: "+90 (536) 564 51 94" },
-                { icon: Mail, text: "info@mastechnic.com" },
-                { icon: MapPin, text: "İzmir, Türkiye" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
-                  <Icon className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              {[
-                { icon: Linkedin, label: "in" },
-                { icon: null, label: "X" },
-                { icon: Instagram, label: null },
-              ].map((item, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-8 h-8 flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                  style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}
-                >
-                  {item.label ? item.label : item.icon && <item.icon className="w-3.5 h-3.5" />}
-                </a>
-              ))}
-            </div>
+          {/* Desktop: Brand + 4 link kolonu */}
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
+          >
+            <motion.div variants={fadeUp} className="md:col-span-3 lg:col-span-1">
+              <BrandBlock />
+            </motion.div>
+            {footerLinks.map((group) => (
+              <motion.div key={group.title} variants={fadeUp}>
+                <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs" style={{ color: "var(--text-primary)" }}>
+                  {group.title}
+                </h4>
+                <ul className="space-y-2.5">
+                  {group.items.map((l) => (
+                    <li key={l.label}>
+                      <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "var(--text-technical)" }}>
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </motion.div>
 
-          {/* Link groups */}
-          {footerLinks.map((group) => (
-            <motion.div key={group.title} variants={fadeUp}>
-              <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs" style={{ color: "var(--text-primary)" }}>{group.title}</h4>
-              <ul className="space-y-2.5">
-                {group.items.map((l) => (
-                  <li key={l.label}>
-                    <Link to={l.href} className="text-xs hover:text-primary transition-colors duration-200" style={{ color: "var(--text-technical)" }}>
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* CTA Glass Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-12"
-          style={{
-            background: "var(--precision-glow-subtle)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid var(--surface-border)",
-            boxShadow: "0 8px 32px 0 var(--overlay-vignette-light)",
-          }}
-        >
-          <div
-            className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "linear-gradient(135deg, transparent 40%, hsl(var(--primary) / 0.04) 50%, transparent 60%)",
-            }}
-          />
-
-          <div className="relative text-center">
-            <h3 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-              Projenizi Hayata Geçirmeye{" "}
-              <br className="hidden md:block" />
-              <span className="text-primary">Hazır mısınız?</span>
-            </h3>
-            <p className="text-sm max-w-xl mx-auto mb-8" style={{ color: "var(--text-secondary)" }}>
-              Uzman mühendislik ekibimiz ve yüksek teknolojili üretim altyapımızla projelerinizi en yüksek kalitede gerçeğe dönüştürüyoruz.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <a
-                href="/teklif-al"
-                className="px-8 py-3.5 bg-primary text-primary-foreground font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-              >
-                Hemen Teklif Al
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="/iletisim"
-                className="px-8 py-3.5 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center transition-all"
-                style={{ border: "1px solid var(--surface-border-hover)", color: "var(--text-primary)" }}
-              >
-                Bize Ulaşın
-              </a>
-            </div>
-          </div>
-
-          <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-1 opacity-20">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="w-1 h-1 rounded-full bg-primary" />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Bottom Bar — RC-8: flex-wrap + mobil stack, floating chat (sağ alt) için pr rezervi */}
-        <div className="pt-6" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-3 lg:gap-4 lg:pr-20">
-            <div className="text-xs flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5" style={{ color: "var(--text-hint)" }}>
-              <span>© {currentYear} MAS TECHNIC. Tüm hakları saklıdır.</span>
-              <LiveClock />
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs" style={{ color: "var(--text-hint)" }}>
-              <span
-                className="hidden md:inline"
-                style={{
-                  fontFamily: "IBM Plex Mono, monospace",
-                  fontSize: "11px",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-hint)",
-                }}
-              >
-                38°25'N 27°08'E — İZMİR, TR
-              </span>
-              <Link to="/gizlilik-politikasi" className="hover:text-primary transition-colors">Gizlilik Politikası</Link>
-              <Link to="/kvkk" className="hover:text-primary transition-colors">KVKK Aydınlatma Metni</Link>
-              <Link to="/cerez-politikasi" className="hover:text-primary transition-colors">Çerez Politikası</Link>
-            </div>
-          </div>
+          <FooterCTA />
+          <FooterBottomBar currentYear={currentYear} />
         </div>
-      </div>
 
-      {/* Floating Scroll-to-Top Button - Left */}
-      <div className="fixed bottom-6 left-6 z-50">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl hover:border-primary"
-          aria-label="Yukarı çık"
-        >
-          <ArrowLeft className="w-5 h-5 rotate-90" />
-        </button>
-      </div>
+        {/* Floating Scroll-to-Top - sol alt */}
+        <div className="fixed bottom-6 left-6 z-50">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center shadow-lg transition-all text-foreground hover:shadow-xl hover:border-primary"
+            aria-label="Yukarı çık"
+          >
+            <ArrowLeft className="w-5 h-5 rotate-90" />
+          </button>
+        </div>
 
-      {/* Floating Chat Button - Right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <a
-          href="#"
-          className="w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:brightness-110 transition-all"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </a>
-      </div>
-    </footer>
+        {/* Floating Chat - sağ alt (FooterBottomBar lg:pr-20 ile rezerve eder) */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <a
+            href="#"
+            className="w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:brightness-110 transition-all"
+            aria-label="Sohbet"
+          >
+            <MessageCircle className="w-6 h-6" />
+          </a>
+        </div>
+      </footer>
     </>
   );
 };
