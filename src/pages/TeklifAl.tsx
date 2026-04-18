@@ -284,7 +284,8 @@ export const TeklifAl = () => {
   const [stepLoading, setStepLoading] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
   const [wireframe, setWireframe] = useState(false);
-  const [modelColor, setModelColor] = useState("#94a3b8");
+  // eslint-disable-next-line no-restricted-syntax
+  const [modelColor, setModelColor] = useState("#94a3b8"); // OK: user-facing palette default
   const [showColors, setShowColors] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -735,10 +736,12 @@ export const TeklifAl = () => {
                       args={[100, 100]}
                       cellSize={1}
                       cellThickness={0.5}
-                      cellColor="#94a3b8"
+                      // eslint-disable-next-line no-restricted-syntax
+                      cellColor="#94a3b8" /* OK: R3F runtime — grid */
                       sectionSize={5}
                       sectionThickness={1}
-                      sectionColor="#64748b"
+                      // eslint-disable-next-line no-restricted-syntax
+                      sectionColor="#64748b" /* OK: R3F runtime — grid */
                       fadeDistance={30}
                       fadeStrength={1}
                       followCamera={false}
@@ -749,7 +752,8 @@ export const TeklifAl = () => {
                   <OrbitControls makeDefault enableDamping dampingFactor={0.1} minDistance={0.5} maxDistance={100} />
 
                   <GizmoHelper alignment="top-right" margin={[70, 70]}>
-                    <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} labelColor="white" />
+                    {/* eslint-disable-next-line no-restricted-syntax */}
+                    <GizmoViewport axisColors={["#ef4444", "#22c55e", "#3b82f6"]} /* OK: XYZ convention */ labelColor="white" />
                   </GizmoHelper>
 
                   <CameraReset trigger={resetTrigger} />
