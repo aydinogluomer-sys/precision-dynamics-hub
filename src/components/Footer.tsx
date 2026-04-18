@@ -228,14 +228,14 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                 Sektörel yenilikler, teknik analizler ve daha fazlası... Son gelişmelerden haberdar olmak için bültenimize abone olun.
               </p>
             </div>
-            <div className="w-full md:w-auto">
-              <form onSubmit={(e) => e.preventDefault()} className="flex gap-0">
-                <div className="relative flex-1 md:w-72">
+            <div className="w-full md:w-auto min-w-0">
+              <form onSubmit={(e) => e.preventDefault()} className="flex gap-0 w-full">
+                <div className="relative flex-1 min-w-0 md:w-72">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                   <input
                     type="email"
                     placeholder="E-posta adresiniz"
-                    className="w-full pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
+                    className="w-full min-w-0 pl-11 pr-4 py-3.5 text-sm placeholder:opacity-30 focus:outline-none focus:ring-1 focus:ring-primary rounded-l-lg"
                     style={{
                       background: "var(--surface-glass)",
                       border: "1px solid var(--surface-border)",
@@ -244,7 +244,7 @@ export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {})
                     }}
                   />
                 </div>
-                <button className="px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap">
+                <button className="px-4 sm:px-6 py-3.5 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:brightness-110 rounded-r-lg whitespace-nowrap shrink-0">
                   ABONE OL
                 </button>
               </form>
