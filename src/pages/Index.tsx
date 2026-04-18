@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { PageLoader } from "@/components/PageLoader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SectionDotNav } from "@/components/SectionDotNav";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
 import { Z, SECTION_Z } from "@/styles/z-index";
 
@@ -20,9 +21,6 @@ const CertificationsSection = lazy(() =>
 const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
 const GlowLineDivider = lazy(() =>
   import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
-);
-const SectionDotNav = lazy(() =>
-  import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
 );
 const TransitionBridge = lazy(() =>
   import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
@@ -175,9 +173,7 @@ export const Index = () => {
       <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <Suspense fallback={null}>
-        <SectionDotNav sections={SECTIONS} />
-      </Suspense>
+      <SectionDotNav sections={SECTIONS} />
 
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
