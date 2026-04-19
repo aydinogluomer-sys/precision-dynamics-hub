@@ -63,13 +63,31 @@ Footer'ı `<Suspense>` dışında tut, ResizeObserver'ı `document.fonts.ready` 
 - [ ] /hizmetler/:slug
 - [ ] /404
 
-## Taranan sayfalar
+## Taranan sayfalar (STEP 4 — grep audit)
 
-| Sayfa | Variant | Kategori | Aynı bug? |
+Grep komutu: `grep -rn "<Footer" src/pages/`
+
+| Sayfa | Çağrı | Kategori | Risk |
 |---|---|---|---|
-| / (Index.tsx) | static (bypassed) | A | ✅ FIXED |
+| / (Index.tsx) | `variant="static"` | A | ✅ FIXED (bypass) |
+| /malzemeler | `variant="static"` | A | ✅ Güvenli |
+| /malzemeler/:slug (MalzemeKategori) | `variant="static"` | A | ✅ Güvenli |
+| /blog (Blog) | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /blog/:slug (BlogDetail) | `<Footer />` x2 | C | ❌ POTANSİYEL BUG |
+| /:prefix/kategori/:slug (CategoryPage) | `<Footer />` x2 | C | ❌ POTANSİYEL BUG |
+| /cerez-politikasi | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /gizlilik-politikasi | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /hakkimizda | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /iletisim | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /kvkk | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /sss | `<Footer />` | C | ❌ POTANSİYEL BUG |
+| /hizmetler/:slug (ServiceDetail) | `<Footer />` x2 | C | ❌ POTANSİYEL BUG |
+| /test-how-we-work | `<Footer />` | C | ⚠️ dev-only |
 
-(STEP 4 tamamlandığında güncellenecek)
+**Özet:** A=3, B=0, C=12, D=0. Çoğu içerik sayfası Kategori C — Index.tsx'teki ile aynı bug riski taşıyor. Ancak bu sayfalarda sticky/stacking section yok, dolayısıyla z-index çakışması praktikte daha az görünür olabilir; yine de spacer yarışı bug'ı tetikleyebilir.
+
+**Kalıcı fix önerisi:** Footer.tsx default variant'ını `"static"` yap (Yaklaşım 1). 12 sayfa explicit prop olmadan da güvenli hale gelir.
+
 
 ## İlgili commit'ler
 - `fix(v3): footer variant=static on Index — emergency bypass`
