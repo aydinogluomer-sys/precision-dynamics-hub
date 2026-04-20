@@ -347,32 +347,36 @@ const ProjectCard = ({ project, index }: { project: typeof projects[number]; ind
   );
 };
 
-const MobileProjectCard = ({ project, index }: { project: typeof projects[number]; index: number }) => (
-  <motion.div
-    className={`relative bg-gradient-to-br ${project.gradient} overflow-hidden p-6`}
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay: index * 0.1 }}
-  >
-    <span className="text-[10px] font-mono uppercase tracking-[0.4em] mb-3 block" style={{ color: "var(--text-muted)" }}>
-      {project.tag}
-    </span>
-    <h3 className="text-xl font-bold tracking-tight mb-2" style={{ color: "var(--text-primary)" }}>
-      <span>{project.title}</span>
-    </h3>
-    <p className="text-xs font-mono mb-3" style={{ color: "var(--text-technical)" }}>
-      <span>{project.subtitle}</span>
-    </p>
-    <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--text-secondary)" }}>
-      <span>{project.description}</span>
-    </p>
-    <Link
-      to={project.link}
-      className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 transition-all" style={{ color: "var(--text-primary)", border: "1px solid var(--surface-border-hover)" }}
+const MobileProjectCard = forwardRef<HTMLDivElement, { project: typeof projects[number]; index: number }>(
+  ({ project, index }, ref) => (
+    <motion.div
+      ref={ref}
+      className={`relative bg-gradient-to-br ${project.gradient} overflow-hidden p-6`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
     >
-      {"Detaylar"}
-      <ArrowRight className="w-3.5 h-3.5" />
-    </Link>
-  </motion.div>
+      <span className="text-[10px] font-mono uppercase tracking-[0.4em] mb-3 block" style={{ color: "var(--text-muted)" }}>
+        {project.tag}
+      </span>
+      <h3 className="text-xl font-bold tracking-tight mb-2" style={{ color: "var(--text-primary)" }}>
+        <span>{project.title}</span>
+      </h3>
+      <p className="text-xs font-mono mb-3" style={{ color: "var(--text-technical)" }}>
+        <span>{project.subtitle}</span>
+      </p>
+      <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--text-secondary)" }}>
+        <span>{project.description}</span>
+      </p>
+      <Link
+        to={project.link}
+        className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 transition-all" style={{ color: "var(--text-primary)", border: "1px solid var(--surface-border-hover)" }}
+      >
+        {"Detaylar"}
+        <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    </motion.div>
+  )
 );
+MobileProjectCard.displayName = "MobileProjectCard";
