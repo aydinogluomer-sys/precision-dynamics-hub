@@ -160,6 +160,8 @@ export const Malzemeler = () => {
         )}
       </section>
 
+      {/* Sticky scope wrapper — bar releases when this wrapper ends (before CTA + Footer) */}
+      <div className="relative">
       {/* Filters Bar */}
       <section className="sticky top-[60px] z-40 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="container-industrial py-3">
@@ -260,6 +262,7 @@ export const Malzemeler = () => {
           </div>
         )}
       </section>
+      </div>
 
       {/* Material Detail Modal */}
       <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
