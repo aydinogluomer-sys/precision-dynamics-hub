@@ -380,27 +380,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
               <QuickQuoteSection />
             </div>
 
-            {/* Lava Overlay */}
-            <div
-              ref={lavaOverlayRef}
-              className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
-              style={{ opacity: 0 }}
-            >
-              <div
-                ref={lavaFlowRef}
-                className="absolute top-0 left-0 right-0 h-full"
-                style={{
-                  background: `
-                    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
-                    linear-gradient(to bottom, var(--heat-lava-start) 0%, var(--heat-lava-mid) 40%, var(--heat-lava-end) 70%, var(--heat-char) 100%)
-                  `,
-                  backgroundBlendMode: "overlay",
-                  clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
-                  transform: "scaleY(0)",
-                  transformOrigin: "top",
-                }}
-              />
-            </div>
+            {/* Lav efekti tamamen kaldırıldı */}
 
             {/* Bottom gradient */}
             <div
