@@ -336,7 +336,7 @@ export const Index = () => {
       </main>
 
       <Suspense fallback={null}>
-        <Footer variant="static" />
+        <Footer variant="reveal" />
       </Suspense>
     </div>
   );
