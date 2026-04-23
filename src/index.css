@@ -736,9 +736,18 @@ html::-webkit-scrollbar {
   }
 }
 
-/* ═══ iOS Safari Footer Fix ═══ */
-@supports (-webkit-touch-callout: none) {
+/* ═══ Mobile Footer Reveal Fix ═══
+ * Reveal-from-behind pattern relies on fixed positioning + dynamic spacer.
+ * On mobile (≤768px), Lenis is disabled and native scroll-snap stops at the
+ * last sticky scene (FinalCTA, z=24), so the fixed footer is unreachable.
+ * Force static layout on all mobile browsers — desktop reveal preserved.
+ */
+@media (max-width: 768px) {
   footer.footer-reveal {
     position: relative !important;
+    bottom: auto !important;
+  }
+  [data-footer-spacer] {
+    display: none !important;
   }
 }
