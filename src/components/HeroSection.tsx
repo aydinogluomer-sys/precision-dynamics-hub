@@ -45,8 +45,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   const horizontalWrapRef = useRef<HTMLDivElement>(null);
   const heroPanelRef = useRef<HTMLDivElement>(null);
   const quotePanelRef = useRef<HTMLDivElement>(null);
-  const lavaFlowRef = useRef<HTMLDivElement>(null);
-  const lavaOverlayRef = useRef<HTMLDivElement>(null);
+  // Lav efekti kaldırıldı
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -72,10 +71,8 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
     const content = contentRef.current;
     const grid = gridRef.current;
     const horizontalWrap = horizontalWrapRef.current;
-    const lavaFlow = lavaFlowRef.current;
-    const lavaOverlay = lavaOverlayRef.current;
     const quotePanel = quotePanelRef.current;
-    if (!scroller || !masked || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
+    if (!scroller || !masked || !content || !grid || !horizontalWrap || !quotePanel) return;
 
     const ctx = gsap.context(() => {
       // Phase 1: Mask expansion (0% – 45%)
@@ -135,68 +132,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
         },
       );
 
-      // Phase 3: Lava pour (85% – 100%)
-      gsap.fromTo(
-        lavaFlow,
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "85% top",
-            end: "100% top",
-            scrub: 0.8,
-          },
-        },
-      );
-
-      // Heat distortion
-      const displacementEl = document.getElementById("heat-displacement");
-      if (displacementEl) {
-        gsap.fromTo(
-          displacementEl,
-          { attr: { scale: 0 } },
-          {
-            attr: { scale: 3 },
-            ease: "none",
-            scrollTrigger: {
-              trigger: scroller,
-              start: "85% top",
-              end: "100% top",
-              scrub: true,
-            },
-          },
-        );
-      }
-
-      // Background color shift on quote panel
-      gsap.to(quotePanel, {
-        background: `linear-gradient(135deg, var(--heat-ember) 0%, var(--heat-lava-end) 50%, var(--heat-char) 100%)`,
-        ease: "none",
-        scrollTrigger: {
-          trigger: scroller,
-          start: "87% top",
-          end: "100% top",
-          scrub: true,
-        },
-      });
-
-      // Lava overlay opacity
-      gsap.fromTo(
-        lavaOverlay,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "85% top",
-            end: "92% top",
-            scrub: true,
-          },
-        },
-      );
+      // Lav/ısı efektleri kaldırıldı (Phase 3)
     }, scroller);
 
     return () => ctx.revert();
@@ -444,27 +380,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
               <QuickQuoteSection />
             </div>
 
-            {/* Lava Overlay */}
-            <div
-              ref={lavaOverlayRef}
-              className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
-              style={{ opacity: 0 }}
-            >
-              <div
-                ref={lavaFlowRef}
-                className="absolute top-0 left-0 right-0 h-full"
-                style={{
-                  background: `
-                    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
-                    linear-gradient(to bottom, var(--heat-lava-start) 0%, var(--heat-lava-mid) 40%, var(--heat-lava-end) 70%, var(--heat-char) 100%)
-                  `,
-                  backgroundBlendMode: "overlay",
-                  clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
-                  transform: "scaleY(0)",
-                  transformOrigin: "top",
-                }}
-              />
-            </div>
+            {/* Lav efekti tamamen kaldırıldı */}
 
             {/* Bottom gradient */}
             <div
