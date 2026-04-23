@@ -40,7 +40,7 @@ type FooterVariant = "reveal" | "static";
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } } };
 
-export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {}) => {
+export const Footer = ({ variant = "static" }: { variant?: FooterVariant } = {}) => {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
   const [footerHeight, setFooterHeight] = useState(0);
