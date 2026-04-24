@@ -803,4 +803,36 @@ Beklenen: 0 error.
 ```
 feat(v3): ServicesSection — Spec Ledger layout (Claude Design handoff)
 
-```
+``````
+
+---
+
+## P1 — Playwright e2e Setup (Deferred to New Session)
+
+**Status:** TODO — yeni session'da uygulanacak (scope büyük: ~300MB browser binaries + config + test suite + CI).
+
+**Scope:**
+
+1. **Install:** `@playwright/test` devDependency + `npx playwright install --with-deps chromium webkit`
+2. **Config:** `playwright.config.ts` root'ta — projects: `mobile-375` (Pixel 5), `tablet-768` (iPad mini), `desktop-1280`. baseURL: `http://localhost:8080`. `webServer` ile `npm run dev` otomatik başlat.
+3. **Test klasörü:** `e2e/` — read-only migration klasörüne dokunma.
+4. **Regression testleri:**
+   - `e2e/footer-reveal.spec.ts` → FIX·A·05: `/`, `/iletisim`, `/hakkimizda`, `/sss`, `/blog` rotalarında footer bottom-bar `© 2026` text reachable (scrollIntoView).
+   - `e2e/malzemeler-sticky.spec.ts` → FIX·MAL·01: 375/768'de filter bar footer link grid ile overlap yok (boundingBox karşılaştırma).
+   - `e2e/homepage-mobile-snap.spec.ts` → FIX·INDEX·MOBILE·01: 375px'de FinalCTA → reveal footer ulaşılabilir (footer copyright span görünür, `scrollIntoView({block:'end'})`).
+5. **Scripts:** `package.json`'a `"test:e2e": "playwright test"`, `"test:e2e:ui": "playwright test --ui"`.
+6. **CI (opsiyonel):** `.github/workflows/e2e.yml` — PR'da headless run.
+7. **Snapshot baseline:** `e2e/__screenshots__/` — visual regression için 6 route × 3 viewport.
+
+**Manual screenshot suite ile ilişki:**
+`/mnt/documents/footer-smoke-test/` mevcut manual proof paketi referans olarak korunacak; Playwright bunun otomatik karşılığı olacak. REPORT.md'ye "automated regression: see e2e/" notu eklenecek.
+
+**Why deferred:**
+- Browser binaries ~300MB → install süresi uzun
+- CI workflow + secrets ayrı bir scope
+- Kullanıcı notu: "ayrı session daha temiz olur"
+
+**Acceptance:**
+- `npm run test:e2e` lokal yeşil
+- 3 spec dosyası, 6 route × 3 viewport coverage
+- README'ye e2e bölümü eklenmiş
