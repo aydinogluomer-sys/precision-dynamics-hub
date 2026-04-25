@@ -44,6 +44,9 @@ const ChatBot = lazy(() => import("@/components/ChatBot").then((m) => ({ default
 const CustomCursor = lazy(() =>
   import("@/components/ui/CustomCursor").then((m) => ({ default: m.CustomCursor })),
 );
+const ScrollDebugPanel = lazy(() =>
+  import("@/components/ScrollDebugPanel").then((m) => ({ default: m.ScrollDebugPanel })),
+);
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -161,6 +164,9 @@ const AppContent = () => {
       <AnimatedRoutes />
       <Suspense fallback={null}>
         <ChatBot />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ScrollDebugPanel />
       </Suspense>
     </>
   );

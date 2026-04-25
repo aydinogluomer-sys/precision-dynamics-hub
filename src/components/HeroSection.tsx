@@ -65,6 +65,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   // GSAP: 4-phase scroll
   useEffect(() => {
     if (prefersReduced) return;
+    if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const scroller = scrollerRef.current;
     const masked = maskedRef.current;
     
@@ -155,10 +156,10 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "450vh", minHeight: "450dvh" }}>
       <section
         ref={stickyRef}
-        className="sticky top-0 h-screen overflow-hidden"
+        className="sticky top-0 h-screen min-h-[100dvh] overflow-hidden"
         style={{ backgroundColor: "var(--bg-cinematic-deep)" }}
       >
         {/* Hidden SVG filter for heat distortion */}
@@ -292,7 +293,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
             {/* Layer 6: Content */}
             <motion.div
               ref={contentRef}
-              className="container-industrial relative z-10 w-full hero-content-behind-lava"
+              className="container-industrial relative z-10 w-full hero-content-behind-lava px-4"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               style={{
@@ -339,7 +340,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                 </motion.div>
 
                 {/* Headlines */}
-                <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
+                <div className="relative min-h-56 sm:min-h-72 md:min-h-80 overflow-visible mb-8">
                   <AnimatePresence mode="wait">
                     <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
                   </AnimatePresence>

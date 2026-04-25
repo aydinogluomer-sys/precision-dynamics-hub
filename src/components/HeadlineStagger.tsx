@@ -33,12 +33,24 @@ export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
     const lines = text.split("\n");
 
     useEffect(() => {
-      if (prefersReduced || !localRef.current) return;
+      if (!localRef.current) return;
+      if (prefersReduced) {
+        gsap.set(localRef.current.querySelectorAll(".hero-title-line-inner"), { yPercent: 0, opacity: 1 });
+        return;
+      }
       const ctx = gsap.context(() => {
         gsap.fromTo(
           ".hero-title-line-inner",
           { yPercent: 110 },
-          { yPercent: 0, duration: 2, stagger: 0.08, ease: "expo.out" },
+          {
+            yPercent: 0,
+            duration: 2,
+            stagger: 0.08,
+            ease: "expo.out",
+            onComplete: () => window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
+              detail: { type: "text", id: "hero-title", progress: 1 },
+            })),
+          },
         );
       }, localRef);
       return () => ctx.revert();

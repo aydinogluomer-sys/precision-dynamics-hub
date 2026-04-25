@@ -115,23 +115,20 @@ export const SectionDotNav = forwardRef<HTMLDivElement, SectionDotNavProps>(({ s
                 aria-label={section.label}
                 aria-current={isActive ? "true" : undefined}
               >
-                <AnimatePresence>
-                  {isHovered && (
-                    <motion.span
-                      className="text-[10px] font-mono uppercase tracking-wider whitespace-nowrap px-2 py-1"
-                      style={{
-                        color: "hsl(var(--primary-foreground))",
-                        backgroundColor: "hsl(var(--forge-steel))",
-                      }}
-                      initial={{ opacity: 0, x: 8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 8 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      {section.label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                {isHovered && (
+                  <motion.span
+                    className="text-[10px] font-mono uppercase tracking-wider whitespace-nowrap px-2 py-1"
+                    style={{
+                      color: "hsl(var(--primary-foreground))",
+                      backgroundColor: "hsl(var(--forge-steel))",
+                    }}
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {section.label}
+                  </motion.span>
+                )}
 
                 <motion.div
                   className="rounded-full transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary"
