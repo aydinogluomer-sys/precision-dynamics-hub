@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState, useEffect, useRef, forwardRef, type ReactNode } from "react";
+import { Suspense, lazy, useState, useEffect, useRef, forwardRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
@@ -7,6 +7,7 @@ import { PageLoader } from "@/components/PageLoader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionDotNav } from "@/components/SectionDotNav";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
+import { Scene, FlowScene } from "@/components/StackingScene";
 import { Z, SECTION_Z } from "@/styles/z-index";
 
 const NexusPromoSection = lazy(() =>
@@ -96,44 +97,6 @@ const SECTIONS = [
   { id: "sss-blog", label: "SSS & Blog" },
   { id: "iletisim", label: "İletişim" },
 ];
-
-/* ── Scene wrappers ── */
-
-/** Sticky scene — pins at top, next section scrolls over it */
-const Scene = forwardRef<
-  HTMLDivElement,
-  {
-    children: ReactNode;
-    z: number;
-    className?: string;
-    style?: React.CSSProperties;
-  }
->(({ children, z, className = "", style }, ref) => (
-  <div
-    ref={ref}
-    className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
-    style={{ zIndex: z, ...style }}
-  >
-    {children}
-  </div>
-));
-Scene.displayName = "Scene";
-
-/** Flow scene — for sections with internal scroll/pin logic */
-const FlowScene = forwardRef<
-  HTMLDivElement,
-  {
-    children: ReactNode;
-    z: number;
-    className?: string;
-    style?: React.CSSProperties;
-  }
->(({ children, z, className = "", style }, ref) => (
-  <div ref={ref} className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
-    {children}
-  </div>
-));
-FlowScene.displayName = "FlowScene";
 
 export const Index = () => {
   const [isFirstVisit] = useState(() => {
