@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getCSSVar } from "@/utils/cssVar";
 import { useTheme } from "@/hooks/use-theme";
+import { createCadStoragePath, uploadCadFile, type UploadedCadFile } from "@/utils/cadUpload";
 import {
   Cog,
   ChevronLeft,
@@ -60,6 +61,8 @@ interface Dimensions {
   y: number;
   z: number;
 }
+
+type PendingHeroUpload = UploadedCadFile & { source?: "hero" };
 
 /* eslint-disable no-restricted-syntax */
 const COLOR_PRESETS = [
@@ -276,6 +279,12 @@ export const TeklifAl = () => {
   const [selectedMaterial, setSelectedMaterial] = useState("al-6061-t6");
   const [customMaterial, setCustomMaterial] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedCadMeta, setUploadedCadMeta] = useState<UploadedCadFile | null>(null);
+  const [contactForm, setContactForm] = useState({ name: "", email: "", company: "", phone: "" });
+  const [selectedTolerance, setSelectedTolerance] = useState("±0.010 mm");
+  const [drawingNumber, setDrawingNumber] = useState("");
+  const [criticalFeatures, setCriticalFeatures] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // CAD Viewer state
@@ -321,9 +330,18 @@ export const TeklifAl = () => {
 
   // Pick up file from Hero section drop zone
   useEffect(() => {
-    const heroFile = (window as any).__heroUploadFile as File | undefined;
+    const pendingUpload = sessionStorage.getItem("mas_pending_cad_upload");
+    if (pendingUpload) {
+      try {
+        setUploadedCadMeta(JSON.parse(pendingUpload) as PendingHeroUpload);
+      } catch {
+        sessionStorage.removeItem("mas_pending_cad_upload");
+      }
+    }
+
+    const heroFile = (window as unknown as { __heroUploadFile?: File }).__heroUploadFile;
     if (heroFile) {
-      delete (window as any).__heroUploadFile;
+      delete (window as unknown as { __heroUploadFile?: File }).__heroUploadFile;
       processFile(heroFile);
     }
   }, []);
@@ -343,6 +361,8 @@ export const TeklifAl = () => {
     }
 
     setUploadedFile(file);
+    setUploadedCadMeta(null);
+    sessionStorage.removeItem("mas_pending_cad_upload");
     setStepGeometry(null);
     setDimensions(null);
 
