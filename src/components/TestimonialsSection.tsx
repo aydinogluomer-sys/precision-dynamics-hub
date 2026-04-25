@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { forwardRef, useRef, useEffect, type ForwardedRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Reveal as TextReveal } from "./ui/Reveal";
@@ -55,7 +55,13 @@ const stats = [
   { value: "%100", label: "Zamanında Teslimat" },
 ];
 
-export const TestimonialsSection = () => {
+const setRefs = <T,>(node: T | null, localRef: { current: T | null }, forwardedRef: ForwardedRef<T>) => {
+  localRef.current = node;
+  if (typeof forwardedRef === "function") forwardedRef(node);
+  else if (forwardedRef) forwardedRef.current = node;
+};
+
+export const TestimonialsSection = forwardRef<HTMLElement>((_, ref) => {
   const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
@@ -109,7 +115,7 @@ export const TestimonialsSection = () => {
 
   return (
     <section
-      ref={sectionRef}
+      ref={(node) => setRefs(node, sectionRef, ref)}
       id="referanslar"
       className="relative py-24 md:py-32 lg:py-40 flex flex-col justify-center"
       style={{ backgroundColor: "var(--bg-light-testimonial)" }}
@@ -334,4 +340,6 @@ export const TestimonialsSection = () => {
       </div>
     </section>
   );
-};
+});
+
+TestimonialsSection.displayName = "TestimonialsSection";
