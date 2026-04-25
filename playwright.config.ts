@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { existsSync } from "node:fs";
 
 /**
  * Playwright config — footer/scroll-snap regression suite.
@@ -6,6 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 4173);
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
+const CHROMIUM_EXECUTABLE_PATH = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/bin/chromium";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -18,6 +20,7 @@ export default defineConfig({
     : [["html", { open: "never" }], ["list"]],
   use: {
     baseURL: BASE_URL,
+    launchOptions: existsSync(CHROMIUM_EXECUTABLE_PATH) ? { executablePath: CHROMIUM_EXECUTABLE_PATH } : undefined,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -25,11 +28,11 @@ export default defineConfig({
   projects: [
     {
       name: "mobile-375",
-      use: { ...devices["iPhone SE"], viewport: { width: 375, height: 812 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true },
     },
     {
       name: "tablet-768",
-      use: { ...devices["iPad Mini"], viewport: { width: 768, height: 1024 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 }, isMobile: true, hasTouch: true },
     },
     {
       name: "desktop-1280",
