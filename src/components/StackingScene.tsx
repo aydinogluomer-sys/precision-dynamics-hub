@@ -16,8 +16,9 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
     if (prefersReduced || !ref.current) return;
     if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const el = ref.current;
+    const debugId = el.id || el.querySelector<HTMLElement>("[id]")?.id || "scene";
     window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
-      detail: { type: "inset:init", id: el.dataset.sceneId || el.id || "scene", progress: 0 },
+      detail: { type: "inset:init", id: debugId, progress: 0 },
     }));
     const tween = gsap.fromTo(el,
       { clipPath: "inset(3% 0% 3% 0%)" },
@@ -32,7 +33,7 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
           scrub: 0.8,
           onUpdate: (self) => {
             window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
-              detail: { type: "inset", id: el.dataset.sceneId || el.id || "scene", progress: self.progress },
+              detail: { type: "inset", id: debugId, progress: self.progress },
             }));
           },
         },
@@ -64,7 +65,6 @@ export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
         }}
         className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
         data-gsap-reveal="inset"
-        data-scene-id={style?.zIndex ? undefined : undefined}
         style={{ clipPath: "inset(0% 0% 0% 0%)", zIndex: z, ...style }}
       >
         {children}
