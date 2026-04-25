@@ -1063,6 +1063,8 @@ export const TeklifAl = () => {
                 ["Malzeme", materialLabel],
                 ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
                 ["Miktar", `${quantity} Adet`],
+                ["Tolerans", selectedTolerance],
+                ["Parça/Rev.", drawingNumber || "Belirtilmedi"],
                 ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
               ].map(([key, value]) => (
                 <div key={key} className="flex items-center justify-between">
@@ -1114,8 +1116,11 @@ export const TeklifAl = () => {
         <div className="text-left max-w-sm mx-auto space-y-2 mb-6 p-4 bg-muted/50 border border-border">
           {[
             ["Dosya", uploadedFile?.name ?? "-"],
+            ["Yetkili", contactForm.name || "-"],
+            ["E-posta", contactForm.email || "-"],
             ["Hizmet", currentService.label],
             ["Malzeme", materialLabel],
+            ["Tolerans", selectedTolerance],
             ["Miktar", `${quantity} Adet`],
           ].map(([k, v]) => (
             <div key={k} className="flex justify-between text-xs">
@@ -1124,6 +1129,15 @@ export const TeklifAl = () => {
             </div>
           ))}
         </div>
+        {isSubmitting && (
+          <div className="mx-auto mb-6 max-w-sm text-left">
+            <div className="mb-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <span>CAD yükleme</span>
+              <span>%{uploadProgress}</span>
+            </div>
+            <div className="h-1.5 bg-muted"><div className="h-full bg-primary transition-all" style={{ width: `${uploadProgress}%` }} /></div>
+          </div>
+        )}
       </div>
     </div>
   );
