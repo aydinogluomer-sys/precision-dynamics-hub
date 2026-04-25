@@ -40,3 +40,29 @@ export async function gotoAndSettle(page: Page, path: string) {
   // Allow lazy-loaded sections + ResizeObserver-driven --footer-height to settle.
   await page.waitForTimeout(600);
 }
+
+export async function freezeVisualState(page: Page) {
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation-play-state: paused !important;
+        transition-duration: 0s !important;
+        scroll-behavior: auto !important;
+      }
+    `,
+  });
+  await page.evaluate(async () => {
+    window.scrollTo(0, 0);
+    document.querySelectorAll("video").forEach((video) => video.pause());
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
+}
+
+export async function assertLovableAuthWasNotCaptured(page: Page) {
+  const loginSignature = page.getByRole("heading", { name: /^Log in$/i });
+  const googleButton = page.getByRole("button", { name: /Continue with Google/i });
+  const githubButton = page.getByRole("button", { name: /Continue with GitHub/i });
+  await expect(loginSignature).toHaveCount(0);
+  await expect(googleButton).toHaveCount(0);
+  await expect(githubButton).toHaveCount(0);
+}
