@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionHeader } from "./SectionHeader";
 import { OverlayReveal } from "./ui/OverlayReveal";
 import { BlurImage } from "./BlurImage";
+import { BentoTilt } from "./ui/BentoTilt";
 import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
@@ -225,6 +226,7 @@ const ServicesDualColumn = () => {
 /* ── Desktop: Spec Ledger Layout (Claude Design v2.0) ── */
 const ServicesLedger = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const prefersReduced = usePrefersReducedMotion();
 
   return (
     <div>
@@ -316,14 +318,15 @@ const ServicesLedger = () => {
       </div>
 
       {/* ── Ledger tablosu ── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "72px 1fr 2.1fr 1fr 200px",
-          borderTop: "1px solid var(--text-inverse, #1a1814)",
-          borderBottom: "1px solid var(--text-inverse, #1a1814)",
-        }}
-      >
+      <BentoTilt disabled={prefersReduced} className="overflow-hidden">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "72px 1fr 2.1fr 1fr 200px",
+            borderTop: "1px solid var(--text-inverse, #1a1814)",
+            borderBottom: "1px solid var(--text-inverse, #1a1814)",
+          }}
+        >
         {/* Header row */}
         {["—", "Hizmet", "Kapsam", "Spec", "Detay"].map((col) => (
           <div
@@ -504,7 +507,8 @@ const ServicesLedger = () => {
             </div>
           );
         })}
-      </div>
+        </div>
+      </BentoTilt>
 
       {/* ── Bottom CTA ── */}
       <div
