@@ -92,6 +92,8 @@
     --precision-indigo:   #112a5c;
     --precision-navy:     #0a1a32;
     --precision-violet:   #2e3a8c;
+    --precision-ice:      #e8ecf0;
+    --precision-steel:    #007190;
 
     /* Precision opacity tokens */
     --precision-scanline:     rgba(10, 26, 50, 0.06);
@@ -126,6 +128,7 @@
     --mat-fog:            #EAEAEA;
     --mat-silver:         #C0C0C0;
     --mat-steel-blue:     #3a4a5c;
+    --material-chrome:    #b8bcc2;
 
     /* ──────────────────────────────────────────────
        BACKGROUND TOKENS
@@ -175,6 +178,7 @@
        OVERLAY TOKENS
     ────────────────────────────────────────────── */
     --overlay-vignette-light: rgba(13, 13, 16, 0.25);
+    --overlay-dark-low:       rgba(13, 13, 16, 0.28);
     --overlay-vignette-heavy: rgba(13, 13, 16, 0.75);
     --overlay-dark-mid:       rgba(13, 13, 16, 0.50);
     --overlay-dark-heavy:     rgba(13, 13, 16, 0.60);
@@ -184,6 +188,8 @@
        SURFACE TOKENS
     ────────────────────────────────────────────── */
     --surface-glass:          rgba(255, 255, 255, 0.03);
+    --surface-base:           #0a0a0a;
+    --surface-raised:         #141414;
     --surface-glass-hover:    rgba(255, 255, 255, 0.06);
     --surface-border:         rgba(255, 255, 255, 0.08);
     --surface-border-hover:   rgba(255, 255, 255, 0.14);
