@@ -41,6 +41,12 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
         const max = document.documentElement.scrollHeight - window.innerHeight;
         target = Math.max(0, Math.min(max, target + event.deltaY * 0.8));
       };
+      const onNativeScroll = () => {
+        if (Math.abs(window.scrollY - current) > 24) {
+          current = window.scrollY;
+          target = window.scrollY;
+        }
+      };
       const tick = () => {
         current += (target - current) * 0.12;
         if (Math.abs(target - current) > 0.5) window.scrollTo(0, current);
@@ -48,9 +54,11 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
       };
       window.__gsapSmoothScrollFallback = true;
       window.addEventListener("wheel", onWheel, { passive: false });
+      window.addEventListener("scroll", onNativeScroll, { passive: true });
       gsap.ticker.add(tick);
       return () => {
         window.removeEventListener("wheel", onWheel);
+        window.removeEventListener("scroll", onNativeScroll);
         gsap.ticker.remove(tick);
         delete window.__gsapSmoothScrollFallback;
       };
