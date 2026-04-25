@@ -11,6 +11,20 @@ const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 const WINDOW_MS = 60 * 1000; // 1 minute window
 const MAX_REQUESTS = 5; // max 5 RFQ submissions per minute per IP
+const ACCEPTED_FILE_EXTENSIONS = ["step", "stp", "stl", "obj", "iges", "igs", "3mf"];
+
+function isValidEmail(email: unknown): email is string {
+  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && email.length <= 255;
+}
+
+function isValidFileList(files: unknown): files is string[] {
+  if (!Array.isArray(files)) return false;
+  return files.every((filePath) => {
+    if (typeof filePath !== "string" || filePath.length > 512) return false;
+    const ext = filePath.split(".").pop()?.toLowerCase() ?? "";
+    return ACCEPTED_FILE_EXTENSIONS.includes(ext);
+  });
+}
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -77,6 +91,34 @@ Deno.serve(async (req) => {
       );
     }
 
+    if (!isValidEmail(email)) {
+      return new Response(
+        JSON.stringify({ error: "Geçerli bir e-posta adresi zorunludur." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (typeof customer !== "string" || customer.trim().length < 2 || customer.length > 120) {
+      return new Response(
+        JSON.stringify({ error: "Ad soyad alanı zorunludur." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (typeof company !== "string" || company.trim().length < 2 || company.length > 160) {
+      return new Response(
+        JSON.stringify({ error: "Firma adı alanı zorunludur." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!isValidFileList(files)) {
+      return new Response(
+        JSON.stringify({ error: "CAD dosyası formatı geçersiz." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Create Supabase client with service role for insert
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -86,7 +128,7 @@ Deno.serve(async (req) => {
       id,
       customer: customer || null,
       company: company || null,
-      email: email || null,
+      email: email.trim(),
       phone: phone || null,
       service: service || null,
       material: material || null,
