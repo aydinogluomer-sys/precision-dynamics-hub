@@ -5,6 +5,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 interface StackingSceneProps {
   children: ReactNode;
   z: number;
+  id?: string;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -53,12 +54,13 @@ const setForwardedRef = (forwardedRef: React.ForwardedRef<HTMLDivElement>, node:
 };
 
 export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
-  ({ children, z, className = "", style }, forwardedRef) => {
+  ({ children, z, id, className = "", style }, forwardedRef) => {
     const localRef = useRef<HTMLDivElement>(null);
     useInsetReveal(localRef);
 
     return (
       <div
+        id={id}
         ref={(node) => {
           localRef.current = node;
           setForwardedRef(forwardedRef, node);
@@ -76,12 +78,13 @@ export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
 Scene.displayName = "Scene";
 
 export const FlowScene = forwardRef<HTMLDivElement, StackingSceneProps>(
-  ({ children, z, className = "", style }, forwardedRef) => {
+  ({ children, z, id, className = "", style }, forwardedRef) => {
     const localRef = useRef<HTMLDivElement>(null);
     useInsetReveal(localRef);
 
     return (
       <div
+        id={id}
         ref={(node) => {
           localRef.current = node;
           setForwardedRef(forwardedRef, node);
