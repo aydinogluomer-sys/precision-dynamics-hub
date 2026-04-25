@@ -120,54 +120,7 @@ export const Index = () => {
 
 
 
-        {/* CNCScrollStory */}
-        <FlowScene id="cnc-story" z={SECTION_Z.cncStory}>
-          <ErrorBoundary>
-            <Suspense fallback={<SectionLoader />}>
-              <CNCScrollStory />
-            </Suspense>
-          </ErrorBoundary>
-        </FlowScene>
-
-        {/* 4 — NexusPromo (sticky) */}
-        <Scene id="nexus" z={SECTION_Z.nexus} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <NexusPromoSection />
-          </Suspense>
-        </Scene>
-
-        {/* Bridge: Nexus (dark) → HowWeWork (light) */}
-        <Suspense fallback={null}>
-          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeNexusHww} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
-        </Suspense>
-
-        {/* 5 — HowWeWork (flow, GSAP pin inside) */}
-        <FlowScene z={SECTION_Z.howWeWork} style={{ backgroundColor: "var(--bg-light-workshop)" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <HowWeWorkSection />
-          </Suspense>
-        </FlowScene>
-
-        {/* Bridge: HowWeWork (light) → Certifications (dark) */}
-        <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeHwwCert} fromColor="var(--bg-light-workshop)" toColor="var(--bg-dark-obsidian)" />
-        </Suspense>
-
-        {/* 6 — Certifications (sticky) */}
-        <Scene z={SECTION_Z.certifications} style={{ backgroundColor: "var(--bg-dark-obsidian)" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <CertificationsSection />
-          </Suspense>
-        </Scene>
-
-        {/* 7 — VideoScroll (flow, scroll-linked video) */}
-        <FlowScene id="video" z={SECTION_Z.videoScroll}>
-          <Suspense fallback={<SectionLoader />}>
-            <VideoScrollSection />
-          </Suspense>
-        </FlowScene>
-
-        {/* Bridge: VideoScroll (dark) → Services (light) */}
+        {/* Bridge: Hero (dark) → Services (light) */}
         <Suspense fallback={null}>
           <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeVideoCert} fromColor="var(--bg-dark-obsidian)" toColor="var(--bg-light-concrete)" />
         </Suspense>
@@ -195,26 +148,12 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Bridge: Industries (light) → ProjectShowcase (dark) */}
+        {/* Bridge: Industries (light) → Materials (dark) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-obsidian)" />
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-gunmetal)" />
         </Suspense>
 
-        {/* 10 — ProjectShowcase (flow, internal pin) */}
-        <FlowScene id="projeler" z={SECTION_Z.projectShowcase}>
-          <Suspense fallback={<SectionLoader />}>
-            <ProjectShowcase />
-          </Suspense>
-        </FlowScene>
-
-        {/* 11 — MaterialMorphScroll (flow, scroll-linked) */}
-        <FlowScene id="malzeme-morph" z={SECTION_Z.materialMorph}>
-          <Suspense fallback={<SectionLoader />}>
-            <MaterialMorphScroll />
-          </Suspense>
-        </FlowScene>
-
-        {/* 12 — Materials (flow — content exceeds viewport) */}
+        {/* 10 — Materials (flow — content exceeds viewport) */}
         <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
