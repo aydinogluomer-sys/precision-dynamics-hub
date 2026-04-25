@@ -35,6 +35,7 @@ interface HeroSectionProps {
 export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFirstVisit = false }, _forwardedRef) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const prefersReduced = usePrefersReducedMotion();
+  const [isCompactScroll, setIsCompactScroll] = useState(false);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
@@ -56,11 +57,20 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
 
   // Headline rotation
   useEffect(() => {
+    if (prefersReduced) return;
     const interval = setInterval(() => {
       setCurrentHeadline((prev) => (prev + 1) % headlines.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [prefersReduced]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 768px), (pointer: coarse)");
+    const update = () => setIsCompactScroll(query.matches || prefersReduced);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, [prefersReduced]);
 
   // GSAP: 4-phase scroll
   useEffect(() => {
@@ -154,12 +164,13 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   }, [mouseX, mouseY]);
 
   const heroDelay = isFirstVisit ? 0.3 : 0;
+  const heroHeight = isCompactScroll ? "100dvh" : "450vh";
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "450vh", minHeight: "450dvh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: heroHeight, minHeight: heroHeight }}>
       <section
         ref={stickyRef}
-        className="sticky top-0 h-screen min-h-[100dvh] overflow-hidden"
+          className={isCompactScroll ? "relative h-screen min-h-[100dvh] overflow-hidden" : "sticky top-0 h-screen min-h-[100dvh] overflow-hidden"}
         style={{ backgroundColor: "var(--bg-cinematic-deep)" }}
       >
         {/* Hidden SVG filter for heat distortion */}
@@ -341,9 +352,13 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
 
                 {/* Headlines */}
                 <div className="relative min-h-56 sm:min-h-72 md:min-h-80 overflow-visible mb-8">
-                  <AnimatePresence mode="wait">
-                    <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
-                  </AnimatePresence>
+                  {prefersReduced ? (
+                    <HeadlineStagger text={headlines[0]} />
+                  ) : (
+                    <AnimatePresence mode="wait">
+                      <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                    </AnimatePresence>
+                  )}
                 </div>
 
                 {/* Scroll indicator */}

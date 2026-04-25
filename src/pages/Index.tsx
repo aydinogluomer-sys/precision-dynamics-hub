@@ -146,14 +146,14 @@ export const Index = () => {
 
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
-        <FlowScene z={SECTION_Z.hero}>
+        <FlowScene id="hero" z={SECTION_Z.hero}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
 
 
         {/* CNCScrollStory */}
-        <FlowScene z={SECTION_Z.cncStory}>
+        <FlowScene id="cnc-story" z={SECTION_Z.cncStory}>
           <ErrorBoundary>
             <Suspense fallback={<SectionLoader />}>
               <CNCScrollStory />
@@ -162,7 +162,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 4 — NexusPromo (sticky) */}
-        <Scene z={SECTION_Z.nexus} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
+        <Scene id="nexus" z={SECTION_Z.nexus} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
           <Suspense fallback={<SectionLoader />}>
             <NexusPromoSection />
           </Suspense>
@@ -193,7 +193,7 @@ export const Index = () => {
         </Scene>
 
         {/* 7 — VideoScroll (flow, scroll-linked video) */}
-        <FlowScene z={SECTION_Z.videoScroll}>
+        <FlowScene id="video" z={SECTION_Z.videoScroll}>
           <Suspense fallback={<SectionLoader />}>
             <VideoScrollSection />
           </Suspense>
@@ -233,14 +233,14 @@ export const Index = () => {
         </Suspense>
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
-        <FlowScene z={SECTION_Z.projectShowcase}>
+        <FlowScene id="projeler" z={SECTION_Z.projectShowcase}>
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
         </FlowScene>
 
         {/* 11 — MaterialMorphScroll (flow, scroll-linked) */}
-        <FlowScene z={SECTION_Z.materialMorph}>
+        <FlowScene id="malzeme-morph" z={SECTION_Z.materialMorph}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>

@@ -64,9 +64,6 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
       };
     }
 
-    const isFirstVisit = !sessionStorage.getItem("mas_visited_lenis");
-    sessionStorage.setItem("mas_visited_lenis", "1");
-
     const lenis = new Lenis({
       lerp: 0.08,
       duration: 1.4,
@@ -77,11 +74,6 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
 
     lenisRef.current = lenis;
     window.__lenis = lenis;
-
-    // Start stopped if PageLoader is active (first visit)
-    if (isFirstVisit) {
-      lenis.stop();
-    }
 
     lenis.on("scroll", () => {
       ScrollTrigger.update();
