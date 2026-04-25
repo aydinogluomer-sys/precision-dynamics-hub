@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -229,6 +229,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<number | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -280,14 +281,15 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     }
   };
 
-  let hoverTimeout: any;
   const handleDropdownEnter = (index: number) => {
-    clearTimeout(hoverTimeout);
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setActiveDropdown(index);
   };
   const handleDropdownLeave = () => {
-    hoverTimeout = setTimeout(() => setActiveDropdown(null), 120);
+    hoverTimeoutRef.current = setTimeout(() => setActiveDropdown(null), 120);
   };
+
+  const useDifferenceBlend = !isScrolled && !isMenuOpen && activeDropdown === null;
 
   return (
     <>
@@ -295,12 +297,18 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{
-            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
+            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background) / 0)",
             backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
         >
-          <div className="container-industrial px-4 mx-auto">
+          <div
+            className="container-industrial px-4 mx-auto"
+            style={{
+              mixBlendMode: useDifferenceBlend ? "difference" : "normal",
+              color: useDifferenceBlend ? "hsl(var(--primary-foreground))" : undefined,
+            }}
+          >
             <div
               className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? "h-14" : "h-20"}`}
             >
