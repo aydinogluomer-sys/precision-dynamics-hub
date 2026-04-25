@@ -14,6 +14,7 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
 
   useEffect(() => {
     if (prefersReduced || !ref.current) return;
+    if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const el = ref.current;
     const tween = gsap.fromTo(
       el,
@@ -21,7 +22,18 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
       {
         clipPath: "inset(0% 0 0% 0)",
         ease: "none",
-        scrollTrigger: { trigger: el, start: "top 88%", end: "top 32%", scrub: 0.8 },
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          end: "top 32%",
+          scrub: 0.8,
+          onUpdate: (self) => {
+            window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
+              detail: { type: "inset", id: el.id || "scene", progress: self.progress },
+            }));
+          },
+        },
       },
     );
     return () => {
@@ -49,7 +61,8 @@ export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
           setForwardedRef(forwardedRef, node);
         }}
         className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
-        style={{ zIndex: z, willChange: "clip-path", ...style }}
+        data-gsap-reveal="inset"
+        style={{ zIndex: z, clipPath: "inset(0% 0 0% 0)", willChange: "clip-path", ...style }}
       >
         {children}
       </div>
@@ -71,7 +84,8 @@ export const FlowScene = forwardRef<HTMLDivElement, StackingSceneProps>(
           setForwardedRef(forwardedRef, node);
         }}
         className={`relative w-full ${className}`}
-        style={{ zIndex: z, willChange: "clip-path", ...style }}
+        data-gsap-reveal="inset"
+        style={{ zIndex: z, clipPath: "inset(0% 0 0% 0)", willChange: "clip-path", ...style }}
       >
         {children}
       </div>
