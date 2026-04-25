@@ -5,6 +5,8 @@ export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    document.documentElement.style.scrollBehavior = "auto";
+    document.body.style.overflow = "";
     if (window.__lenis) {
       window.__lenis.scrollTo(0, { immediate: true });
     } else {
