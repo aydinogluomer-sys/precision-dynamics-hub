@@ -65,6 +65,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   // GSAP: 4-phase scroll
   useEffect(() => {
     if (prefersReduced) return;
+    if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const scroller = scrollerRef.current;
     const masked = maskedRef.current;
     
@@ -155,10 +156,10 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
   const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
+    <div ref={scrollerRef} className="relative" style={{ height: "450vh", minHeight: "450dvh" }}>
       <section
         ref={stickyRef}
-        className="sticky top-0 h-screen overflow-hidden"
+        className="sticky top-0 h-screen min-h-[100dvh] overflow-hidden"
         style={{ backgroundColor: "var(--bg-cinematic-deep)" }}
       >
         {/* Hidden SVG filter for heat distortion */}
