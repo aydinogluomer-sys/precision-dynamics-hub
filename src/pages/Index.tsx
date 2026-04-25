@@ -8,17 +8,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionDotNav } from "@/components/SectionDotNav";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
 import { Scene, FlowScene } from "@/components/StackingScene";
-import { Z, SECTION_Z } from "@/styles/z-index";
+import { SECTION_Z } from "@/styles/z-index";
 
-const NexusPromoSection = lazy(() =>
-  import("@/components/NexusPromoSection").then((m) => ({ default: m.NexusPromoSection })),
-);
-const HowWeWorkSection = lazy(() =>
-  import("@/components/HowWeWorkSection").then((m) => ({ default: m.HowWeWorkSection })),
-);
-const CertificationsSection = lazy(() =>
-  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
-);
 const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
 const GlowLineDivider = lazy(() =>
   import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
@@ -26,27 +17,11 @@ const GlowLineDivider = lazy(() =>
 const TransitionBridge = lazy(() =>
   import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
 );
-const CNCScrollStory = lazy(() =>
-  import("@/components/CNCScrollStory").then((m) => {
-    const Component = m.CNCScrollStory;
-    return { default: function LazyCNCScrollStory() { return <Component />; } };
-  }),
-);
-
-const VideoScrollSection = lazy(() =>
-  import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
-);
 const TestimonialsSection = lazy(() =>
   import("@/components/TestimonialsSection").then((m) => {
     const Component = m.TestimonialsSection;
     return { default: function LazyTestimonialsSection() { return <Component />; } };
   }),
-);
-const MaterialMorphScroll = lazy(() =>
-  import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll })),
-);
-const ProjectShowcase = lazy(() =>
-  import("@/components/ProjectShowcase").then((m) => ({ default: m.ProjectShowcase })),
 );
 const ServicesSection = lazy(() =>
   import("@/components/ServicesSection").then((m) => ({ default: m.ServicesSection })),
