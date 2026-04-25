@@ -18,6 +18,7 @@ export default defineConfig({
     : [["html", { open: "never" }], ["list"]],
   use: {
     baseURL: BASE_URL,
+    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/bin/chromium" },
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
