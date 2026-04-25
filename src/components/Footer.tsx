@@ -97,7 +97,7 @@ export const Footer = ({ variant = "static" }: { variant?: FooterVariant } = {})
       <footer
         ref={footerRef}
         className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 30 : 0 }}
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 0 : 0 }}
       >
         <MarqueeBand reverse />
         <FooterBackdrop />
