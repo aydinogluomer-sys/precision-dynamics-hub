@@ -8,6 +8,25 @@ import { supabase } from "@/integrations/supabase/client";
 // Typed as the same shape as the static import so existing `XLSX.utils.*` calls type-check.
 let XLSX: typeof XLSXNS;
 
+const XLSX_RETRY_DELAYS_MS = [200, 800, 3200] as const;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function loadXlsx() {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= XLSX_RETRY_DELAYS_MS.length; attempt++) {
+    try {
+      const mod = await import("xlsx-js-style");
+      return (mod as unknown as { default: typeof XLSXNS }).default ?? (mod as unknown as typeof XLSXNS);
+    } catch (error) {
+      lastError = error;
+      const delay = XLSX_RETRY_DELAYS_MS[attempt];
+      if (delay) await wait(delay);
+    }
+  }
+  throw lastError;
+}
+
 /* ── Brand Colors ── */
 const BRAND = {
   primary: "0688AD",      // teal/cyan
@@ -238,8 +257,7 @@ export type ExportProgressCallback = (progress: number) => void;
 export async function exportExcelReport(activeTab: string, onProgress?: ExportProgressCallback) {
   // Dynamically load xlsx-js-style only when the user actually exports a report.
   if (!XLSX) {
-    const mod = await import("xlsx-js-style");
-    XLSX = (mod as unknown as { default: typeof XLSXNS }).default ?? (mod as unknown as typeof XLSXNS);
+    XLSX = await loadXlsx();
   }
 
   const now = new Date().toISOString().split("T")[0];
