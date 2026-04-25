@@ -56,15 +56,8 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
-  { id: "cnc-story", label: "CNC Story" },
-  { id: "nexus", label: "Nexus" },
-  { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
-  { id: "sertifikalar", label: "Sertifikalar" },
-  { id: "video", label: "Video" },
   { id: "hizmetler", label: "Hizmetler" },
   { id: "endustriler", label: "Endüstriler" },
-  { id: "projeler", label: "Projeler" },
-  { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "neden-biz", label: "Neden Biz" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
