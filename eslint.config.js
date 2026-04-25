@@ -50,6 +50,7 @@ export default tseslint.config(
       "src/lib/tokens.ts",
       "**/*.stories.*",
       "**/*.test.*",
+      "e2e/**",
       "tailwind.config.ts",
       "vite.config.ts",
     ],
