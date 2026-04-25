@@ -16,29 +16,18 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
     if (prefersReduced || !ref.current) return;
     if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const el = ref.current;
-    const tween = gsap.fromTo(
-      el,
-      { clipPath: "inset(7% 0 7% 0)" },
-      {
-        clipPath: "inset(0% 0 0% 0)",
-        ease: "none",
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          end: "top 32%",
-          scrub: 0.8,
-          onUpdate: (self) => {
-            window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
-              detail: { type: "inset", id: el.id || "scene", progress: self.progress },
-            }));
-          },
-        },
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: "top 88%",
+      end: "top 32%",
+      onUpdate: (self) => {
+        window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
+          detail: { type: "inset", id: el.id || "scene", progress: self.progress },
+        }));
       },
-    );
+    });
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      trigger.kill();
       ScrollTrigger.refresh();
     };
   }, [prefersReduced, ref]);
@@ -62,7 +51,7 @@ export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
         }}
         className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
         data-gsap-reveal="inset"
-        style={{ zIndex: z, clipPath: "inset(0% 0 0% 0)", willChange: "clip-path", ...style }}
+        style={{ zIndex: z, ...style }}
       >
         {children}
       </div>
@@ -85,7 +74,7 @@ export const FlowScene = forwardRef<HTMLDivElement, StackingSceneProps>(
         }}
         className={`relative w-full ${className}`}
         data-gsap-reveal="inset"
-        style={{ zIndex: z, clipPath: "inset(0% 0 0% 0)", willChange: "clip-path", ...style }}
+        style={{ zIndex: z, ...style }}
       >
         {children}
       </div>
