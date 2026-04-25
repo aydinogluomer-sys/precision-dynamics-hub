@@ -472,8 +472,23 @@ export const TeklifAl = () => {
 
   const hasModel = !!(fileUrl || stepGeometry);
 
+  const validateContactForm = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!contactForm.name.trim()) return "Ad soyad zorunludur.";
+    if (!emailPattern.test(contactForm.email.trim())) return "Geçerli bir e-posta adresi girin.";
+    if (!contactForm.company.trim()) return "Firma adı zorunludur.";
+    return null;
+  };
+
   const handleSubmit = async () => {
+    const contactError = validateContactForm();
+    if (contactError) {
+      toast.error(contactError);
+      return;
+    }
+
     setIsSubmitting(true);
+    setUploadProgress(uploadedCadMeta ? 100 : 0);
     const rfqId = `RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     try {
       const {
@@ -491,29 +506,35 @@ export const TeklifAl = () => {
       }
 
       let uploadedFilePaths: string[] = [];
-      if (uploadedFile) {
+      if (uploadedCadMeta) {
+        uploadedFilePaths = [uploadedCadMeta.path];
+      } else if (uploadedFile) {
         const storagePath = `${user?.id || "anonymous"}/${rfqId}/${Date.now()}-${uploadedFile.name}`;
-        const { error: uploadError } = await supabase.storage.from("cad-uploads").upload(storagePath, uploadedFile);
-        if (uploadError) {
-          toast.error("Dosya yüklenemedi: " + uploadError.message);
-          setIsSubmitting(false);
-          return;
-        }
+        const uploaded = await uploadCadFile(uploadedFile, createCadStoragePath(uploadedFile, rfqId, user?.id), (nextProgress) => {
+          setUploadProgress(nextProgress.percent);
+        });
         uploadedFilePaths = [storagePath];
+        setUploadedCadMeta(uploaded);
       }
 
       const { data: fnData, error: fnError } = await supabase.functions.invoke("rfq-rate-limit", {
         body: {
           id: rfqId,
-          customer: profileData.full_name || null,
-          company: profileData.company || null,
-          email: user?.email || null,
-          phone: profileData.phone || null,
+          customer: contactForm.name.trim() || profileData.full_name || null,
+          company: contactForm.company.trim() || profileData.company || null,
+          email: contactForm.email.trim() || user?.email || null,
+          phone: contactForm.phone.trim() || profileData.phone || null,
           user_id: user?.id || null,
           quantity,
           service: currentService.label,
           material: materialLabel,
-          notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
+          notes: [
+            `Yüzey: ${surfaceFinishes.find((f) => f.id === selectedFinish)!.label}`,
+            `Teslimat: ${delivery}`,
+            `Tolerans: ${selectedTolerance}`,
+            `Parça/Revizyon: ${drawingNumber || "Belirtilmedi"}`,
+            `Kritik ölçüler: ${criticalFeatures || "Belirtilmedi"}`,
+          ].join(" | "),
           files: uploadedFilePaths.length > 0 ? uploadedFilePaths : [],
         },
       });
@@ -532,6 +553,7 @@ export const TeklifAl = () => {
             }
           : undefined,
       });
+      sessionStorage.removeItem("mas_pending_cad_upload");
     } catch (err: unknown) {
       toast.error("Gönderim hatası: " + (err instanceof Error ? err.message : "Bilinmeyen hata"));
     } finally {
