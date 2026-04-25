@@ -40,7 +40,7 @@ type FooterVariant = "reveal" | "static";
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } } };
 
-export const Footer = ({ variant = "static" }: { variant?: FooterVariant } = {}) => {
+export const Footer = ({ variant = "reveal" }: { variant?: FooterVariant } = {}) => {
   const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
   const [footerHeight, setFooterHeight] = useState(0);
@@ -96,13 +96,13 @@ export const Footer = ({ variant = "static" }: { variant?: FooterVariant } = {})
 
       <footer
         ref={footerRef}
-        className={`${isReveal ? "footer-reveal fixed bottom-0 left-0 pointer-events-none" : "relative"} w-full overflow-hidden font-mono`}
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 0 : 0 }}
+        className={`${isReveal ? "footer-reveal fixed bottom-0 left-0" : "relative"} w-full overflow-hidden font-mono`}
+        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: isReveal ? 30 : 0 }}
       >
         <MarqueeBand reverse />
         <FooterBackdrop />
 
-        <div className="relative z-10 container-industrial pt-20 pb-10 pointer-events-auto">
+        <div className="relative z-10 container-industrial pt-20 pb-10">
           <FooterNewsletter />
 
           {/* Mobile: Brand + Accordion */}

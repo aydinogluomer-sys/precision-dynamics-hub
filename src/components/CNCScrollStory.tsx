@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useEffect, useCallback, useState, type ForwardedRef } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
@@ -27,13 +27,7 @@ const hudData = [
   { label: "EKS", value: "5", unit: "axis" },
 ];
 
-const setRefs = <T,>(node: T | null, localRef: { current: T | null }, forwardedRef: ForwardedRef<T>) => {
-  localRef.current = node;
-  if (typeof forwardedRef === "function") forwardedRef(node);
-  else if (forwardedRef) forwardedRef.current = node;
-};
-
-export const CNCScrollStory = forwardRef<HTMLDivElement>((_, ref) => {
+export const CNCScrollStory = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentFrameRef = useRef(0);
@@ -180,7 +174,7 @@ export const CNCScrollStory = forwardRef<HTMLDivElement>((_, ref) => {
 
   /* ── Desktop: scroll-driven canvas ── */
   return (
-    <div ref={(node) => setRefs(node, containerRef, ref)} className="relative" style={{ height: "350vh", backgroundColor: "var(--bg-precision-deep)" }}>
+    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "var(--bg-precision-deep)" }}>
       <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <AmbientGlowOverlay />
         <canvas
@@ -302,6 +296,4 @@ export const CNCScrollStory = forwardRef<HTMLDivElement>((_, ref) => {
       </motion.div>
     </div>
   );
-});
-
-CNCScrollStory.displayName = "CNCScrollStory";
+};

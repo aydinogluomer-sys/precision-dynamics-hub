@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -229,17 +229,30 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<number | null>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       const y = window.scrollY;
-      setIsScrolled(y > 24);
+      setIsScrolled(y > 40);
+      // Hide header when Hero MAS mask starts growing (scrollY > 200)
+      const header = document.getElementById("main-header");
+      if (header) {
+        const heroHeight = window.innerHeight * 3; // 300vh Hero
+        const progress = Math.min(y / heroHeight, 1);
+        if (progress > 0.07) {
+          header.style.transform = `translateY(-100%)`;
+          header.style.opacity = "0";
+          header.style.pointerEvents = "none";
+        } else {
+          header.style.transform = `translateY(0)`;
+          header.style.opacity = "1";
+          header.style.pointerEvents = "auto";
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -267,19 +280,14 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     }
   };
 
+  let hoverTimeout: any;
   const handleDropdownEnter = (index: number) => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    clearTimeout(hoverTimeout);
     setActiveDropdown(index);
   };
   const handleDropdownLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => setActiveDropdown(null), 120);
+    hoverTimeout = setTimeout(() => setActiveDropdown(null), 120);
   };
-
-  const useDifferenceBlend = location.pathname === "/" && !isScrolled && !isMenuOpen && activeDropdown === null;
-  const contrastClass = useDifferenceBlend
-    ? "text-primary-foreground [&_.text-muted-foreground]:text-primary-foreground/80"
-    : "text-foreground";
-  const solidHeader = isScrolled || activeDropdown !== null || isMenuOpen;
 
   return (
     <>
@@ -287,17 +295,12 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{
-            backgroundColor: solidHeader ? "hsl(var(--background) / 0.96)" : "hsl(var(--background) / 0)",
-            backdropFilter: solidHeader ? "blur(16px)" : "blur(0px)",
+            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
+            backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
         >
-          <div
-            className={`container-industrial px-4 mx-auto ${contrastClass}`}
-            style={{
-              mixBlendMode: useDifferenceBlend ? "difference" : "normal",
-            }}
-          >
+          <div className="container-industrial px-4 mx-auto">
             <div
               className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? "h-14" : "h-20"}`}
             >
@@ -323,7 +326,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   >
                     <Link
                       to={item.path}
-                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
                     >
                       {item.label}
                     </Link>
@@ -335,7 +338,6 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           className="fixed left-0 right-0 bg-background border-b shadow-xl top-[inherit] mt-4"
-                          style={{ mixBlendMode: "normal" }}
                         >
                           <div className="container-industrial mx-auto p-8 grid grid-cols-5 gap-6">
                             {item.children?.map((col, cIdx) => (
@@ -366,8 +368,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
               {/* Actions */}
               <div className="hidden lg:flex items-center gap-3">
-                {isScrolled && <SoundToggle />}
-                {isScrolled && <ThemeToggle />}
+                <SoundToggle />
+                <ThemeToggle />
                 <Link
                   to="/giris"
                   className="text-xs font-bold border border-primary px-4 py-2 hover:bg-primary hover:text-primary-foreground transition-all"

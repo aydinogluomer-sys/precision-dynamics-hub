@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getCSSVar } from "@/utils/cssVar";
 import { useTheme } from "@/hooks/use-theme";
-import { createCadStoragePath, uploadCadFile, type UploadedCadFile } from "@/utils/cadUpload";
 import {
   Cog,
   ChevronLeft,
@@ -61,8 +60,6 @@ interface Dimensions {
   y: number;
   z: number;
 }
-
-type PendingHeroUpload = UploadedCadFile & { source?: "hero" };
 
 /* eslint-disable no-restricted-syntax */
 const COLOR_PRESETS = [
@@ -279,12 +276,6 @@ export const TeklifAl = () => {
   const [selectedMaterial, setSelectedMaterial] = useState("al-6061-t6");
   const [customMaterial, setCustomMaterial] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadedCadMeta, setUploadedCadMeta] = useState<UploadedCadFile | null>(null);
-  const [contactForm, setContactForm] = useState({ name: "", email: "", company: "", phone: "" });
-  const [selectedTolerance, setSelectedTolerance] = useState("±0.010 mm");
-  const [drawingNumber, setDrawingNumber] = useState("");
-  const [criticalFeatures, setCriticalFeatures] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // CAD Viewer state
@@ -330,18 +321,9 @@ export const TeklifAl = () => {
 
   // Pick up file from Hero section drop zone
   useEffect(() => {
-    const pendingUpload = sessionStorage.getItem("mas_pending_cad_upload");
-    if (pendingUpload) {
-      try {
-        setUploadedCadMeta(JSON.parse(pendingUpload) as PendingHeroUpload);
-      } catch {
-        sessionStorage.removeItem("mas_pending_cad_upload");
-      }
-    }
-
-    const heroFile = (window as unknown as { __heroUploadFile?: File }).__heroUploadFile;
+    const heroFile = (window as any).__heroUploadFile as File | undefined;
     if (heroFile) {
-      delete (window as unknown as { __heroUploadFile?: File }).__heroUploadFile;
+      delete (window as any).__heroUploadFile;
       processFile(heroFile);
     }
   }, []);
@@ -361,8 +343,6 @@ export const TeklifAl = () => {
     }
 
     setUploadedFile(file);
-    setUploadedCadMeta(null);
-    sessionStorage.removeItem("mas_pending_cad_upload");
     setStepGeometry(null);
     setDimensions(null);
 
@@ -472,23 +452,8 @@ export const TeklifAl = () => {
 
   const hasModel = !!(fileUrl || stepGeometry);
 
-  const validateContactForm = () => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!contactForm.name.trim()) return "Ad soyad zorunludur.";
-    if (!emailPattern.test(contactForm.email.trim())) return "Geçerli bir e-posta adresi girin.";
-    if (!contactForm.company.trim()) return "Firma adı zorunludur.";
-    return null;
-  };
-
   const handleSubmit = async () => {
-    const contactError = validateContactForm();
-    if (contactError) {
-      toast.error(contactError);
-      return;
-    }
-
     setIsSubmitting(true);
-    setUploadProgress(uploadedCadMeta ? 100 : 0);
     const rfqId = `RFQ-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     try {
       const {
@@ -506,34 +471,29 @@ export const TeklifAl = () => {
       }
 
       let uploadedFilePaths: string[] = [];
-      if (uploadedCadMeta) {
-        uploadedFilePaths = [uploadedCadMeta.path];
-      } else if (uploadedFile) {
-        const uploaded = await uploadCadFile(uploadedFile, createCadStoragePath(uploadedFile, rfqId, user?.id), (nextProgress) => {
-          setUploadProgress(nextProgress.percent);
-        });
-        uploadedFilePaths = [uploaded.path];
-        setUploadedCadMeta(uploaded);
+      if (uploadedFile) {
+        const storagePath = `${user?.id || "anonymous"}/${rfqId}/${Date.now()}-${uploadedFile.name}`;
+        const { error: uploadError } = await supabase.storage.from("cad-uploads").upload(storagePath, uploadedFile);
+        if (uploadError) {
+          toast.error("Dosya yüklenemedi: " + uploadError.message);
+          setIsSubmitting(false);
+          return;
+        }
+        uploadedFilePaths = [storagePath];
       }
 
       const { data: fnData, error: fnError } = await supabase.functions.invoke("rfq-rate-limit", {
         body: {
           id: rfqId,
-          customer: contactForm.name.trim() || profileData.full_name || null,
-          company: contactForm.company.trim() || profileData.company || null,
-          email: contactForm.email.trim() || user?.email || null,
-          phone: contactForm.phone.trim() || profileData.phone || null,
+          customer: profileData.full_name || null,
+          company: profileData.company || null,
+          email: user?.email || null,
+          phone: profileData.phone || null,
           user_id: user?.id || null,
           quantity,
           service: currentService.label,
           material: materialLabel,
-          notes: [
-            `Yüzey: ${surfaceFinishes.find((f) => f.id === selectedFinish)!.label}`,
-            `Teslimat: ${delivery}`,
-            `Tolerans: ${selectedTolerance}`,
-            `Parça/Revizyon: ${drawingNumber || "Belirtilmedi"}`,
-            `Kritik ölçüler: ${criticalFeatures || "Belirtilmedi"}`,
-          ].join(" | "),
+          notes: `Yüzey: ${selectedFinish}, Teslimat: ${delivery}`,
           files: uploadedFilePaths.length > 0 ? uploadedFilePaths : [],
         },
       });
@@ -552,7 +512,6 @@ export const TeklifAl = () => {
             }
           : undefined,
       });
-      sessionStorage.removeItem("mas_pending_cad_upload");
     } catch (err: unknown) {
       toast.error("Gönderim hatası: " + (err instanceof Error ? err.message : "Bilinmeyen hata"));
     } finally {
@@ -851,26 +810,6 @@ export const TeklifAl = () => {
           <Cog size={16} className="text-primary" /> Üretim Spesifikasyonları
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {[
-            ["AD SOYAD", "name", "Satın alma / mühendislik yetkilisi"],
-            ["E-POSTA", "email", "ornek@firma.com"],
-            ["FİRMA", "company", "Firma unvanı"],
-            ["TELEFON", "phone", "+90 5xx xxx xx xx"],
-          ].map(([label, key, placeholder]) => (
-            <div key={key}>
-              <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">{label}</label>
-              <input
-                type={key === "email" ? "email" : "text"}
-                value={contactForm[key as keyof typeof contactForm]}
-                onChange={(e) => setContactForm((prev) => ({ ...prev, [key]: e.target.value }))}
-                placeholder={placeholder}
-                className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-          ))}
-        </div>
-
         {/* Hizmet & Malzeme */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
@@ -1003,29 +942,6 @@ export const TeklifAl = () => {
             </div>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          <div>
-            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">TOLERANS</label>
-            <select
-              value={selectedTolerance}
-              onChange={(e) => setSelectedTolerance(e.target.value)}
-              className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              {["±0.005 mm", "±0.010 mm", "±0.020 mm", "Teknik resme göre"].map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">PARÇA / REV.</label>
-            <input value={drawingNumber} onChange={(e) => setDrawingNumber(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring" placeholder="MT-042 / Rev B" />
-          </div>
-          <div>
-            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">KRİTİK ÖLÇÜ</label>
-            <input value={criticalFeatures} onChange={(e) => setCriticalFeatures(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Delik ekseni, Ra, geçme" />
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -1063,8 +979,6 @@ export const TeklifAl = () => {
                 ["Malzeme", materialLabel],
                 ["Yüzey İşlemi", surfaceFinishes.find((f) => f.id === selectedFinish)!.label],
                 ["Miktar", `${quantity} Adet`],
-                ["Tolerans", selectedTolerance],
-                ["Parça/Rev.", drawingNumber || "Belirtilmedi"],
                 ["Teslimat", delivery === "express" ? "Ekspres (3-5 Gün)" : "Standart (10-12 Gün)"],
               ].map(([key, value]) => (
                 <div key={key} className="flex items-center justify-between">
@@ -1116,11 +1030,8 @@ export const TeklifAl = () => {
         <div className="text-left max-w-sm mx-auto space-y-2 mb-6 p-4 bg-muted/50 border border-border">
           {[
             ["Dosya", uploadedFile?.name ?? "-"],
-            ["Yetkili", contactForm.name || "-"],
-            ["E-posta", contactForm.email || "-"],
             ["Hizmet", currentService.label],
             ["Malzeme", materialLabel],
-            ["Tolerans", selectedTolerance],
             ["Miktar", `${quantity} Adet`],
           ].map(([k, v]) => (
             <div key={k} className="flex justify-between text-xs">
@@ -1129,15 +1040,6 @@ export const TeklifAl = () => {
             </div>
           ))}
         </div>
-        {isSubmitting && (
-          <div className="mx-auto mb-6 max-w-sm text-left">
-            <div className="mb-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              <span>CAD yükleme</span>
-              <span>%{uploadProgress}</span>
-            </div>
-            <div className="h-1.5 bg-muted"><div className="h-full bg-primary transition-all" style={{ width: `${uploadProgress}%` }} /></div>
-          </div>
-        )}
       </div>
     </div>
   );

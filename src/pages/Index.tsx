@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState, useEffect, useRef, forwardRef } from "react";
+import { Suspense, lazy, useState, useEffect, useRef, forwardRef, type ReactNode } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
@@ -7,9 +7,17 @@ import { PageLoader } from "@/components/PageLoader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionDotNav } from "@/components/SectionDotNav";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
-import { Scene, FlowScene } from "@/components/StackingScene";
-import { SECTION_Z } from "@/styles/z-index";
+import { Z, SECTION_Z } from "@/styles/z-index";
 
+const NexusPromoSection = lazy(() =>
+  import("@/components/NexusPromoSection").then((m) => ({ default: m.NexusPromoSection })),
+);
+const HowWeWorkSection = lazy(() =>
+  import("@/components/HowWeWorkSection").then((m) => ({ default: m.HowWeWorkSection })),
+);
+const CertificationsSection = lazy(() =>
+  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+);
 const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
 const GlowLineDivider = lazy(() =>
   import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
@@ -17,11 +25,21 @@ const GlowLineDivider = lazy(() =>
 const TransitionBridge = lazy(() =>
   import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
 );
+const CNCScrollStory = lazy(() =>
+  import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
+);
+
+const VideoScrollSection = lazy(() =>
+  import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
+);
 const TestimonialsSection = lazy(() =>
-  import("@/components/TestimonialsSection").then((m) => {
-    const Component = m.TestimonialsSection;
-    return { default: function LazyTestimonialsSection() { return <Component />; } };
-  }),
+  import("@/components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+);
+const MaterialMorphScroll = lazy(() =>
+  import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll })),
+);
+const ProjectShowcase = lazy(() =>
+  import("@/components/ProjectShowcase").then((m) => ({ default: m.ProjectShowcase })),
 );
 const ServicesSection = lazy(() =>
   import("@/components/ServicesSection").then((m) => ({ default: m.ServicesSection })),
@@ -56,8 +74,15 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
+  { id: "cnc-story", label: "CNC Story" },
+  { id: "nexus", label: "Nexus" },
+  { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
+  { id: "sertifikalar", label: "Sertifikalar" },
+  { id: "video", label: "Video" },
   { id: "hizmetler", label: "Hizmetler" },
   { id: "endustriler", label: "Endüstriler" },
+  { id: "projeler", label: "Projeler" },
+  { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "neden-biz", label: "Neden Biz" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
@@ -65,6 +90,44 @@ const SECTIONS = [
   { id: "sss-blog", label: "SSS & Blog" },
   { id: "iletisim", label: "İletişim" },
 ];
+
+/* ── Scene wrappers ── */
+
+/** Sticky scene — pins at top, next section scrolls over it */
+const Scene = forwardRef<
+  HTMLDivElement,
+  {
+    children: ReactNode;
+    z: number;
+    className?: string;
+    style?: React.CSSProperties;
+  }
+>(({ children, z, className = "", style }, ref) => (
+  <div
+    ref={ref}
+    className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
+    style={{ zIndex: z, ...style }}
+  >
+    {children}
+  </div>
+));
+Scene.displayName = "Scene";
+
+/** Flow scene — for sections with internal scroll/pin logic */
+const FlowScene = forwardRef<
+  HTMLDivElement,
+  {
+    children: ReactNode;
+    z: number;
+    className?: string;
+    style?: React.CSSProperties;
+  }
+>(({ children, z, className = "", style }, ref) => (
+  <div ref={ref} className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
+    {children}
+  </div>
+));
+FlowScene.displayName = "FlowScene";
 
 export const Index = () => {
   const [isFirstVisit] = useState(() => {
@@ -114,13 +177,60 @@ export const Index = () => {
 
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
-        <FlowScene id="hero" z={SECTION_Z.hero}>
+        <FlowScene z={SECTION_Z.hero}>
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
 
 
-        {/* Bridge: Hero (dark) → Services (light) */}
+        {/* CNCScrollStory */}
+        <FlowScene z={SECTION_Z.cncStory}>
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <CNCScrollStory />
+            </Suspense>
+          </ErrorBoundary>
+        </FlowScene>
+
+        {/* 4 — NexusPromo (sticky) */}
+        <Scene z={SECTION_Z.nexus} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
+          <Suspense fallback={<SectionLoader />}>
+            <NexusPromoSection />
+          </Suspense>
+        </Scene>
+
+        {/* Bridge: Nexus (dark) → HowWeWork (light) */}
+        <Suspense fallback={null}>
+          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeNexusHww} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
+        </Suspense>
+
+        {/* 5 — HowWeWork (flow, GSAP pin inside) */}
+        <FlowScene z={SECTION_Z.howWeWork} style={{ backgroundColor: "var(--bg-light-workshop)" }}>
+          <Suspense fallback={<SectionLoader />}>
+            <HowWeWorkSection />
+          </Suspense>
+        </FlowScene>
+
+        {/* Bridge: HowWeWork (light) → Certifications (dark) */}
+        <Suspense fallback={null}>
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeHwwCert} fromColor="var(--bg-light-workshop)" toColor="var(--bg-dark-obsidian)" />
+        </Suspense>
+
+        {/* 6 — Certifications (sticky) */}
+        <Scene z={SECTION_Z.certifications} style={{ backgroundColor: "var(--bg-dark-obsidian)" }}>
+          <Suspense fallback={<SectionLoader />}>
+            <CertificationsSection />
+          </Suspense>
+        </Scene>
+
+        {/* 7 — VideoScroll (flow, scroll-linked video) */}
+        <FlowScene z={SECTION_Z.videoScroll}>
+          <Suspense fallback={<SectionLoader />}>
+            <VideoScrollSection />
+          </Suspense>
+        </FlowScene>
+
+        {/* Bridge: VideoScroll (dark) → Services (light) */}
         <Suspense fallback={null}>
           <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeVideoCert} fromColor="var(--bg-dark-obsidian)" toColor="var(--bg-light-concrete)" />
         </Suspense>
@@ -148,12 +258,26 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Bridge: Industries (light) → Materials (dark) */}
+        {/* Bridge: Industries (light) → ProjectShowcase (dark) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-gunmetal)" />
+          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-obsidian)" />
         </Suspense>
 
-        {/* 10 — Materials (flow — content exceeds viewport) */}
+        {/* 10 — ProjectShowcase (flow, internal pin) */}
+        <FlowScene z={SECTION_Z.projectShowcase}>
+          <Suspense fallback={<SectionLoader />}>
+            <ProjectShowcase />
+          </Suspense>
+        </FlowScene>
+
+        {/* 11 — MaterialMorphScroll (flow, scroll-linked) */}
+        <FlowScene z={SECTION_Z.materialMorph}>
+          <Suspense fallback={<SectionLoader />}>
+            <MaterialMorphScroll />
+          </Suspense>
+        </FlowScene>
+
+        {/* 12 — Materials (flow — content exceeds viewport) */}
         <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
@@ -212,7 +336,7 @@ export const Index = () => {
       </main>
 
       <Suspense fallback={null}>
-        <Footer variant="reveal" />
+        <Footer variant="static" />
       </Suspense>
     </div>
   );

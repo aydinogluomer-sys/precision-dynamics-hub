@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import cncVideo from "@/assets/cnc-sequence-scroll.mp4";
-import cncPoster from "@/assets/cnc-start-frame.jpg";
+import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { TextScramble } from "@/components/ui/TextScramble";
@@ -91,14 +91,14 @@ export const VideoScrollSection = () => {
           <video
             ref={videoRef}
             src={cncVideo}
-            poster={cncPoster}
+            poster={cncWorkshop}
             muted
             playsInline
             preload="none"
             className="w-full h-full object-cover hidden md:block"
-            style={{ background: `url(${cncPoster}) center/cover no-repeat` }}
+            style={{ background: `url(${cncWorkshop}) center/cover no-repeat` }}
           />
-          <img src={cncPoster} alt="CNC Hassas İşleme" className="w-full h-full object-cover md:hidden" loading="lazy" />
+          <img src={cncWorkshop} alt="CNC Workshop" className="w-full h-full object-cover md:hidden" loading="lazy" />
         </motion.div>
 
         {/* Dark overlay */}

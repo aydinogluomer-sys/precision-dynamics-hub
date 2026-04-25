@@ -1,142 +1,483 @@
-import { forwardRef } from "react";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+/**
+ * HeroSection.tsx — Stacking scroll with horizontal slide reveal + lava effect
+ *
+ * Phase 1 (0–45%): MAS mask grows, content fades, header hides
+ * Phase 2 (45–60%): PAUSE — section locked fullscreen
+ * Phase 3 (60–88%): Horizontal slide — Hero slides left, QuickQuote slides in
+ * Phase 4 (88–100%): Lava pour + heat distortion
+ */
+import { useRef, useEffect, useCallback, useState, lazy, Suspense, forwardRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap } from "@/hooks/use-gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
-import { LiveLedgerCard } from "./LiveLedgerCard";
-import { HeroCadDropzone } from "./HeroCadDropzone";
+import { HeadlineStagger } from "./HeadlineStagger";
+import { QuickQuoteSection } from "./QuickQuoteSection";
+
+
+const HeroCanvas = lazy(() =>
+  import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
+);
+
+const headlines = [
+  "Profesyonel CNC\nOperasyonları",
+  "Yüksek Hassasiyetli\nÜretim",
+  "Stabil Kalite &\nGüvenilir Teslimat",
+];
+
 
 interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
-const ticker = [
-  ["İşlem hattı", "7 / 9 aktif"],
-  ["Son FAIR", "2026·04·22 14:06"],
-  ["Aç. teklif", "24"],
-  ["48s SLA", "%98.4"],
-  ["ISO 9001", "rev J · 2025·11"],
-];
-
-export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFirstVisit = false }, ref) => {
+export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFirstVisit = false }, _forwardedRef) => {
+  const [currentHeadline, setCurrentHeadline] = useState(0);
   const prefersReduced = usePrefersReducedMotion();
-  const delay = isFirstVisit ? 0.25 : 0;
-  const itemInitial = prefersReduced ? false : { opacity: 0, y: 26 };
+
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const maskedRef = useRef<HTMLDivElement>(null);
+  
+  const contentRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const horizontalWrapRef = useRef<HTMLDivElement>(null);
+  const heroPanelRef = useRef<HTMLDivElement>(null);
+  const quotePanelRef = useRef<HTMLDivElement>(null);
+  const lavaFlowRef = useRef<HTMLDivElement>(null);
+  const lavaOverlayRef = useRef<HTMLDivElement>(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [8, -8]);
+  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], prefersReduced ? [0, 0] : [-8, 8]);
+  const rotateX = useSpring(rawRotateX, { stiffness: 120, damping: 18 });
+  const rotateY = useSpring(rawRotateY, { stiffness: 120, damping: 18 });
+
+  // Headline rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeadline((prev) => (prev + 1) % headlines.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // GSAP: 4-phase scroll
+  useEffect(() => {
+    if (prefersReduced) return;
+    const scroller = scrollerRef.current;
+    const masked = maskedRef.current;
+    
+    const content = contentRef.current;
+    const grid = gridRef.current;
+    const horizontalWrap = horizontalWrapRef.current;
+    const lavaFlow = lavaFlowRef.current;
+    const lavaOverlay = lavaOverlayRef.current;
+    const quotePanel = quotePanelRef.current;
+    if (!scroller || !masked || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
+
+    const ctx = gsap.context(() => {
+      // Phase 1: Mask expansion (0% – 45%)
+      gsap.fromTo(
+        masked,
+        { "--mask-size": "22%" },
+        {
+          "--mask-size": "320%",
+          ease: "none",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "top top",
+            end: "45% top",
+            scrub: 1.5,
+          },
+        },
+      );
+
+      // Content fade out
+      gsap.to(content, {
+        y: -140,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "8% top",
+          end: "25% top",
+          scrub: 1,
+        },
+      });
+
+      // Grid parallax
+      gsap.to(grid, {
+        y: 400,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "top top",
+          end: "45% top",
+          scrub: 1,
+        },
+      });
+
+      // Phase 2: Horizontal slide (45% – 85%)
+      gsap.fromTo(
+        horizontalWrap,
+        { xPercent: 0 },
+        {
+          xPercent: -50,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "45% top",
+            end: "85% top",
+            scrub: 0.6,
+          },
+        },
+      );
+
+      // Phase 3: Lava pour (85% – 100%)
+      gsap.fromTo(
+        lavaFlow,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "85% top",
+            end: "100% top",
+            scrub: 0.8,
+          },
+        },
+      );
+
+      // Heat distortion
+      const displacementEl = document.getElementById("heat-displacement");
+      if (displacementEl) {
+        gsap.fromTo(
+          displacementEl,
+          { attr: { scale: 0 } },
+          {
+            attr: { scale: 3 },
+            ease: "none",
+            scrollTrigger: {
+              trigger: scroller,
+              start: "85% top",
+              end: "100% top",
+              scrub: true,
+            },
+          },
+        );
+      }
+
+      // Background color shift on quote panel
+      gsap.to(quotePanel, {
+        background: `linear-gradient(135deg, var(--heat-ember) 0%, var(--heat-lava-end) 50%, var(--heat-char) 100%)`,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "87% top",
+          end: "100% top",
+          scrub: true,
+        },
+      });
+
+      // Lava overlay opacity
+      gsap.fromTo(
+        lavaOverlay,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: scroller,
+            start: "85% top",
+            end: "92% top",
+            scrub: true,
+          },
+        },
+      );
+    }, scroller);
+
+    return () => ctx.revert();
+  }, [prefersReduced]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+      mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [mouseX, mouseY],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(0);
+    mouseY.set(0);
+  }, [mouseX, mouseY]);
+
+  const heroDelay = isFirstVisit ? 0.3 : 0;
 
   return (
-    <section
-      ref={ref}
-      id="top"
-      className="relative min-h-[100dvh] overflow-hidden pt-24 pb-16 md:pt-28"
-      style={{ backgroundColor: "var(--bg-cinematic-deep)", color: "var(--text-primary)" }}
-    >
-      <div className="absolute inset-0 z-0">
-        <video
-          src={cncVideo}
-          poster={heroBg}
-          muted
-          autoPlay
-          loop
-          playsInline
-          preload="metadata"
-          className="hidden h-full w-full object-cover md:block"
-          style={{ opacity: 0.2, filter: "brightness(0.65) saturate(0.9)" }}
-        />
-        <img src={heroBg} alt="CNC üretim hattı" className="h-full w-full object-cover md:hidden" style={{ opacity: 0.24 }} />
-      </div>
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(900px 540px at 72% 28%, var(--data-accent-soft), transparent 62%), linear-gradient(180deg, var(--overlay-dark-low), var(--bg-cinematic-deep))",
-        }}
-      />
-      <div
-        className="absolute inset-0 z-[2] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, var(--surface-scanline) 1px, transparent 1px), linear-gradient(to bottom, var(--surface-scanline) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-        }}
-      />
+    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
+      <section
+        ref={stickyRef}
+        className="sticky top-0 h-screen overflow-hidden"
+        style={{ backgroundColor: "var(--bg-cinematic-deep)" }}
+      >
+        {/* Hidden SVG filter for heat distortion */}
+        <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
+          <defs>
+            <filter id="heat-distortion">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.015"
+                numOctaves={2}
+                result="noise"
+              />
+              <feDisplacementMap
+                id="heat-displacement"
+                in="SourceGraphic"
+                in2="noise"
+                scale={0}
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
 
-      <div className="container-industrial relative z-10 flex min-h-[calc(100dvh-10rem)] flex-col justify-center gap-8">
-        <motion.div
-          className="grid border font-mono text-[10px] uppercase tracking-[0.16em] md:grid-cols-5"
-          style={{ borderColor: "var(--rule)", color: "var(--text-muted)" }}
-          initial={itemInitial}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
-          role="status"
-          aria-label="Canlı operasyon durumu"
+        {/* Horizontal sliding container */}
+        <div
+          ref={horizontalWrapRef}
+          className="flex h-full"
+          style={{ width: "200vw" }}
         >
-          {ticker.map(([key, value]) => (
-            <div key={key} className="flex justify-between gap-4 border-b px-4 py-3 last:border-b-0 md:block md:border-b-0 md:border-r md:last:border-r-0" style={{ borderColor: "var(--rule)" }}>
-              <span className="block" style={{ color: "var(--text-muted)" }}>{key}</span>
-              <b className="block pt-1 font-medium tabular-nums" style={{ color: "var(--text-primary)" }}>{value}</b>
+          {/* ── LEFT PANEL: Hero ── */}
+          <div
+            ref={heroPanelRef}
+            className="relative h-full flex items-center justify-center overflow-hidden"
+            style={{ width: "100vw", flexShrink: 0 }}
+          >
+            {/* R3F Liquid Distortion Canvas */}
+            <Suspense fallback={null}>
+              <div className="absolute inset-0 z-0">
+                <HeroCanvas />
+              </div>
+            </Suspense>
+
+            {/* Flash overlay for first visit */}
+            {!prefersReduced && (
+              <motion.div
+                className="absolute inset-0 z-[50] pointer-events-none"
+                initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
+                animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
+                style={{ backgroundColor: "var(--text-primary)" }}
+              />
+            )}
+
+            {/* Layer 1: Background video/image */}
+            <div className="absolute inset-0 z-[1]">
+              <video
+                src={cncVideo}
+                poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover hidden md:block"
+                style={{ opacity: 0.1 }}
+              />
+              <img
+                src={heroBg}
+                alt="CNC Factory"
+                className="w-full h-full object-cover md:hidden"
+                style={{ opacity: 0.15 }}
+              />
             </div>
-          ))}
-        </motion.div>
 
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-          <div>
+            {/* Layer 2: Masked image */}
+            <div
+              ref={maskedRef}
+              className="absolute inset-0 z-[1]"
+              style={{
+                maskImage: "url('/images/mas-logo.svg')",
+                WebkitMaskImage: "url('/images/mas-logo.svg')",
+                maskRepeat: "no-repeat",
+                WebkitMaskRepeat: "no-repeat",
+                maskPosition: "center",
+                WebkitMaskPosition: "center",
+                maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
+                WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
+              }}
+            >
+              <video
+                src={cncVideo}
+                poster={heroBg}
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover hidden md:block"
+                style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
+              />
+              <img
+                src={heroBg}
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover md:hidden"
+                style={{ filter: "brightness(0.8) saturate(1.15)" }}
+              />
+            </div>
+
+            {/* Layer 4: Grid overlay */}
+            <div
+              ref={gridRef}
+              className="absolute inset-0 pointer-events-none z-[3]"
+              style={{
+                backgroundImage:
+                  `linear-gradient(to right, var(--precision-scanline) 1px, transparent 1px), linear-gradient(to bottom, var(--precision-scanline) 1px, transparent 1px)`,
+                backgroundSize: "40px 40px",
+              }}
+            />
+
+            {/* Layer 5: Vignette */}
+            <div
+              className="absolute inset-0 pointer-events-none z-[4]"
+              style={{
+                background:
+                  `radial-gradient(ellipse at center, var(--overlay-vignette-light) 0%, var(--overlay-dark-mid) 60%, var(--overlay-vignette-heavy) 100%)`,
+              }}
+            />
+
+            {/* Layer 6: Content */}
             <motion.div
-              className="mb-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.34em]"
-              style={{ color: "var(--text-muted)" }}
-              initial={itemInitial}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: delay + 0.08 }}
+              ref={contentRef}
+              className="container-industrial relative z-10 w-full hero-content-behind-lava"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                rotateX,
+                rotateY,
+                transformPerspective: 1200,
+                transformStyle: "preserve-3d" as const,
+              }}
             >
-              <span className="h-px w-10" style={{ background: "var(--action-primary)" }} />
-              MT·DHF·01 / Engineering Ledger
+              <motion.div
+                className="max-w-6xl mx-auto text-center"
+                initial={isFirstVisit ? { opacity: 0 } : false}
+                animate={{ opacity: 1 }}
+                transition={{ delay: heroDelay, duration: 0.6 }}
+              >
+                {/* Eyebrow */}
+                <motion.div
+                  className="flex items-center justify-center gap-4 mb-8"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
+                >
+                  <motion.div
+                    className="h-1 bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: 64 }}
+                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+                  />
+                  <span
+                    className="text-xs uppercase tracking-widest"
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      color: "var(--text-technical)",
+                    }}
+                  >
+                    CNC Hassas İşleme
+                  </span>
+                  <motion.div
+                    className="h-1 bg-primary"
+                    initial={{ width: 0 }}
+                    animate={{ width: 64 }}
+                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+                  />
+                </motion.div>
+
+                {/* Headlines */}
+                <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
+                  <AnimatePresence mode="wait">
+                    <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                  </AnimatePresence>
+                </div>
+
+                {/* Scroll indicator */}
+                <motion.div
+                  className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.4 }}
+                  transition={{ delay: 1.5 + heroDelay }}
+                >
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono" style={{ color: "var(--text-muted)" }}>Scroll</span>
+                  <motion.div
+                    className="w-px h-8"
+                    style={{ backgroundColor: "var(--text-hint)" }}
+                    animate={{ scaleY: [0, 1, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    /* transformOrigin handled by style */
+                  />
+                </motion.div>
+              </motion.div>
             </motion.div>
-
-            <motion.h1
-              className="max-w-4xl text-[clamp(3.25rem,10vw,8.8rem)] font-bold leading-[0.9] tracking-tight"
-              style={{ color: "var(--text-primary)" }}
-              initial={itemInitial}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: delay + 0.14 }}
-            >
-              Her iddia<br />
-              <em className="font-normal not-italic" style={{ color: "var(--text-secondary)" }}>bir ölçümdür.</em>
-              <sup className="ml-3 align-super font-mono text-sm font-medium tracking-normal" style={{ color: "var(--action-primary)" }}>± 0.005 mm</sup>
-            </motion.h1>
-
-            <motion.p
-              className="mt-7 max-w-2xl text-base leading-8 md:text-lg"
-              style={{ color: "var(--text-secondary)" }}
-              initial={itemInitial}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: delay + 0.22 }}
-            >
-              MAS Technic, İzmir Atatürk Organize'de 5 eksen CNC işleme, CMM doğrulama ve yüzey proseslerini tek bir ölçüm defterinden yönetir. Her parçanın spindle saati, tolerans bandı ve QC imzası kayıt altında.
-            </motion.p>
-
-            <motion.div
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
-              initial={itemInitial}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: delay + 0.3 }}
-            >
-              <Link to="/teklif-al" className="inline-flex items-center justify-center gap-3 px-6 py-4 font-mono text-xs font-semibold uppercase tracking-[0.18em]" style={{ background: "var(--action-primary)", color: "var(--action-primary-ink)" }}>
-                48 saatte teklif al <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a href="#hizmetler" className="inline-flex items-center justify-center border px-6 py-4 font-mono text-xs font-semibold uppercase tracking-[0.18em]" style={{ borderColor: "var(--rule-strong)", color: "var(--text-primary)" }}>
-                Traveler örneği gör
-              </a>
-            </motion.div>
-
-            <HeroCadDropzone />
           </div>
 
-          <LiveLedgerCard />
+          {/* ── RIGHT PANEL: QuickQuote with FloatingPaths ── */}
+          <div
+            ref={quotePanelRef}
+            className="relative h-full flex items-center justify-center overflow-hidden quick-quote-panel"
+            style={{
+              width: "100vw",
+              flexShrink: 0,
+              backgroundColor: "var(--bg-cinematic-deep)",
+            }}
+          >
+            {/* QuickQuote content */}
+            <div className="relative z-10 w-full h-full flex items-center justify-center">
+              <QuickQuoteSection />
+            </div>
+
+            {/* Lava Overlay */}
+            <div
+              ref={lavaOverlayRef}
+              className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
+              style={{ opacity: 0 }}
+            >
+              <div
+                ref={lavaFlowRef}
+                className="absolute top-0 left-0 right-0 h-full"
+                style={{
+                  background: `
+                    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
+                    linear-gradient(to bottom, var(--heat-lava-start) 0%, var(--heat-lava-mid) 40%, var(--heat-lava-end) 70%, var(--heat-char) 100%)
+                  `,
+                  backgroundBlendMode: "overlay",
+                  clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
+                  transform: "scaleY(0)",
+                  transformOrigin: "top",
+                }}
+              />
+            </div>
+
+            {/* Bottom gradient */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
+              style={{
+                background:
+                  "linear-gradient(to top, hsl(var(--forge-mist)) 0%, hsl(var(--forge-mist) / 0.8) 40%, transparent 100%)",
+              }}
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 });
-
 HeroSection.displayName = "HeroSection";

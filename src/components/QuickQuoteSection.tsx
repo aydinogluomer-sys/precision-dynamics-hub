@@ -67,7 +67,16 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
       ref={ref as React.Ref<HTMLElement>}
       id="hizli-teklif"
       className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
+      {/* Subtle gradient */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 50% 50%, rgb(var(--precision-steel-rgb) / 0.08) 0%, transparent 60%)",
+        }}
+      />
+
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
         <div className="w-full">
           {/* Header */}
