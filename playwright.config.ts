@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { existsSync } from "node:fs";
 
 /**
  * Playwright config — footer/scroll-snap regression suite.
@@ -6,6 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 const PORT = Number(process.env.PLAYWRIGHT_PORT ?? 4173);
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
+const CHROMIUM_EXECUTABLE_PATH = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/bin/chromium";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -18,7 +20,7 @@ export default defineConfig({
     : [["html", { open: "never" }], ["list"]],
   use: {
     baseURL: BASE_URL,
-    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? "/bin/chromium" },
+    launchOptions: existsSync(CHROMIUM_EXECUTABLE_PATH) ? { executablePath: CHROMIUM_EXECUTABLE_PATH } : undefined,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
