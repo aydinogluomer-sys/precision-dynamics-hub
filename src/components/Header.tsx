@@ -236,24 +236,10 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   useEffect(() => {
     const handleScroll = () => {
       const y = window.scrollY;
-      setIsScrolled(y > 40);
-      // Hide header when Hero MAS mask starts growing (scrollY > 200)
-      const header = document.getElementById("main-header");
-      if (header) {
-        const heroHeight = window.innerHeight * 3; // 300vh Hero
-        const progress = Math.min(y / heroHeight, 1);
-        if (progress > 0.07) {
-          header.style.transform = `translateY(-100%)`;
-          header.style.opacity = "0";
-          header.style.pointerEvents = "none";
-        } else {
-          header.style.transform = `translateY(0)`;
-          header.style.opacity = "1";
-          header.style.pointerEvents = "auto";
-        }
-      }
+      setIsScrolled(y > 24);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -289,10 +275,10 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     hoverTimeoutRef.current = setTimeout(() => setActiveDropdown(null), 120);
   };
 
-  const useDifferenceBlend = !isScrolled && !isMenuOpen && activeDropdown === null;
+  const useDifferenceBlend = location.pathname === "/" && !isScrolled && !isMenuOpen && activeDropdown === null;
   const contrastClass = useDifferenceBlend
-    ? "text-primary-foreground [&_.text-muted-foreground]:text-primary-foreground/75"
-    : "";
+    ? "text-primary-foreground [&_.text-muted-foreground]:text-primary-foreground/80"
+    : "text-foreground";
 
   return (
     <>
@@ -300,8 +286,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{
-            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background) / 0)",
-            backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
+            backgroundColor: isScrolled || activeDropdown !== null ? "hsl(var(--background) / 0.94)" : "hsl(var(--background) / 0)",
+            backdropFilter: isScrolled || activeDropdown !== null ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
         >
