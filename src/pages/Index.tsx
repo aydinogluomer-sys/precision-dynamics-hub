@@ -26,14 +26,20 @@ const TransitionBridge = lazy(() =>
   import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
 );
 const CNCScrollStory = lazy(() =>
-  import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
+  import("@/components/CNCScrollStory").then((m) => {
+    const Component = m.CNCScrollStory;
+    return { default: function LazyCNCScrollStory() { return <Component />; } };
+  }),
 );
 
 const VideoScrollSection = lazy(() =>
   import("@/components/VideoScrollSection").then((m) => ({ default: m.VideoScrollSection })),
 );
 const TestimonialsSection = lazy(() =>
-  import("@/components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+  import("@/components/TestimonialsSection").then((m) => {
+    const Component = m.TestimonialsSection;
+    return { default: function LazyTestimonialsSection() { return <Component />; } };
+  }),
 );
 const MaterialMorphScroll = lazy(() =>
   import("@/components/MaterialMorphScroll").then((m) => ({ default: m.MaterialMorphScroll })),
