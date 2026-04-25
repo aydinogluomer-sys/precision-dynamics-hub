@@ -47,6 +47,9 @@ const CustomCursor = lazy(() =>
 const ScrollDebugPanel = lazy(() =>
   import("@/components/ScrollDebugPanel").then((m) => ({ default: m.ScrollDebugPanel })),
 );
+const MobileCTABar = lazy(() =>
+  import("@/components/MobileCTABar").then((m) => ({ default: m.MobileCTABar })),
+);
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -167,6 +170,9 @@ const AppContent = () => {
       </Suspense>
       <Suspense fallback={null}>
         <ScrollDebugPanel />
+      </Suspense>
+      <Suspense fallback={null}>
+        <MobileCTABar />
       </Suspense>
     </>
   );
