@@ -4,10 +4,18 @@ import { ScrollTrigger } from "@/hooks/use-gsap";
 type DebugEvent = { type: string; id: string; progress: number };
 
 export const ScrollDebugPanel = () => {
+  const [enabled, setEnabled] = useState(false);
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState<DebugEvent[]>([]);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isDebug = params.get("debug") === "gsap" || localStorage.getItem("mas_gsap_debug") === "1";
+    setEnabled(isDebug);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const onDebug = (event: Event) => {
       const detail = (event as CustomEvent<DebugEvent>).detail;
       if (!detail) return;
@@ -15,7 +23,9 @@ export const ScrollDebugPanel = () => {
     };
     window.addEventListener("mas:scroll-debug", onDebug);
     return () => window.removeEventListener("mas:scroll-debug", onDebug);
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div className="fixed bottom-4 left-4 z-[80] font-mono text-[10px]">
