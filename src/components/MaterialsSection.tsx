@@ -1,362 +1,74 @@
-import { useState, useRef } from "react";
-import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Reveal } from "@/components/ui/Reveal";
-import { Check, ArrowRight, Layers } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ToleranceMaterialCard } from "@/components/ToleranceMaterialCard";
+import { toleranceMaterials } from "@/data/toleranceMaterials";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
-import { useTilt } from "@/hooks/useTilt";
-import materialAluminium from "@/assets/material-aluminium.jpg";
-import materialSteel from "@/assets/material-steel.jpg";
-import materialStainless from "@/assets/material-stainless.jpg";
-import materialBrass from "@/assets/material-brass.jpg";
-import { BlurImage } from "./BlurImage";
-import { OverlayReveal } from "./ui/OverlayReveal";
 
-const isTouchDevice =
-  typeof window !== 'undefined' &&
-  window.matchMedia('(hover: none)').matches;
+const proofPoints = ["EN 10204 3.1 izlenebilirlik", "CMM raporu", "FAIR / PPAP hazırlığı"] as const;
 
-const materials = [
-  {
-    name: "Alüminyum",
-    typeCode: "6061-T6 / 7075-T6 / 2024",
-    color: "hsl(var(--primary))",
-    image: materialAluminium,
-    tag: "En Popüler",
-    specs: [
-      { label: "SERTLIK", value: "95 HB" },
-      { label: "YOĞUNLUK", value: "2.7 g/cm³" },
-      { label: "ÇEKME", value: "310 MPa" },
-    ],
-    applications: ["Havacılık", "Otomotiv", "Elektronik"],
-  },
-  {
-    name: "Çelik",
-    typeCode: "1045 / 4140 / A36",
-    color: "hsl(var(--accent-warm))",
-    image: materialSteel,
-    tag: "Yüksek Mukavemet",
-    specs: [
-      { label: "SERTLIK", value: "201 HB" },
-      { label: "YOĞUNLUK", value: "7.85 g/cm³" },
-      { label: "ÇEKME", value: "585 MPa" },
-    ],
-    applications: ["Makine", "Konstrüksiyon", "Kalıp"],
-  },
-  {
-    name: "Paslanmaz",
-    typeCode: "304 / 316L / 17-4 PH",
-    color: "hsl(var(--accent-slate))",
-    image: materialStainless,
-    tag: "Korozyon Direnci",
-    specs: [
-      { label: "SERTLIK", value: "201 HB" },
-      { label: "YOĞUNLUK", value: "8.0 g/cm³" },
-      { label: "ÇEKME", value: "515 MPa" },
-    ],
-    applications: ["Medikal", "Gıda", "Kimya"],
-  },
-  {
-    name: "Pirinç",
-    typeCode: "C360 / C260 / C280",
-    color: "hsl(var(--accent-copper))",
-    image: materialBrass,
-    tag: "Kolay İşlenir",
-    specs: [
-      { label: "SERTLIK", value: "78 HB" },
-      { label: "YOĞUNLUK", value: "8.5 g/cm³" },
-      { label: "ÇEKME", value: "338 MPa" },
-    ],
-    applications: ["Hidrolik", "Elektrik", "Dekoratif"],
-  },
-];
-
-const badges = ["50+ Malzeme Seçeneği", "Sertifikalı Tedarikçiler", "Malzeme Test Raporları"];
-
-/* ── Flip card CSS (respects prefers-reduced-motion) ── */
-const flipStyles = `
-.flip-card { perspective: 1000px; }
-.flip-card-inner {
-  position: relative;
-  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1);
-  transform-style: preserve-3d;
-}
-.flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
-.flip-card-front,
-.flip-card-back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.flip-card-back { transform: rotateY(180deg); }
-@media (prefers-reduced-motion: reduce) {
-  .flip-card-inner { transition: none; }
-  .flip-card:hover .flip-card-inner { transform: none; }
-}
-`;
-
-/* ── Mobile Material Card ── */
-const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
-  const [flipped, setFlipped] = useState(false);
+export const MaterialsSection = () => {
+  const prefersReduced = usePrefersReducedMotion();
 
   return (
-    <div
-      className="relative h-[240px] overflow-hidden border border-border/30 cursor-pointer"
-      onClick={() => setFlipped(!flipped)}
+    <section
+      id="malzemeler"
+      className="relative overflow-hidden bg-background py-24 md:py-32 lg:py-36"
+      style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}
     >
-      <div className="absolute inset-0 z-10">
-        <BlurImage src={mat.image} alt={mat.name} className="w-full h-full object-cover" disableScaleTransform />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(to top, var(--overlay-dark-heavy) 0%, var(--overlay-vignette-light) 50%, var(--overlay-vignette-light) 100%)",
-          }}
-        />
-      </div>
-
-      <div className="absolute top-3 left-3 z-20">
-        <span
-          className="px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] font-mono"
-          style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
-        >
-          {mat.tag}
-        </span>
-      </div>
-
-      <div className="absolute top-3 right-3 z-20">
-        <Layers className="w-3.5 h-3.5" style={{ color: "var(--text-muted)" }} />
-      </div>
-
-      <div className="absolute inset-0 p-4 flex flex-col justify-end z-20">
-        <div className={`transition-opacity duration-200 ${flipped ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-          <div className="w-8 h-1 mb-3" style={{ background: mat.color }} />
-          <h3 className="text-lg font-bold mb-1" style={{ color: "var(--text-primary)" }}>{mat.name}</h3>
-          <div className="text-[9px] tracking-[0.2em] mb-2 font-mono" style={{ color: "var(--text-technical)" }}>{mat.typeCode}</div>
-          <div className="flex gap-1.5 flex-wrap">
-            {mat.applications.map((app) => (
-              <span key={app} className="text-[8px] px-1.5 py-0.5 font-mono" style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}>
-                {app}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,hsl(var(--border)/0.12)_1px,transparent_1px),linear-gradient(180deg,hsl(var(--border)/0.08)_1px,transparent_1px)] bg-[size:48px_48px] opacity-35" />
+      <div className="container relative z-10 mx-auto max-w-7xl px-4 md:px-8">
+        <div className="mb-10 grid gap-8 border-b border-surface-border pb-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-10 bg-primary" />
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.5em] text-primary">
+                Materials Ledger
               </span>
-            ))}
-          </div>
-        </div>
-
-        <div
-          className={`absolute inset-0 p-4 flex flex-col justify-end transition-opacity duration-200 ${flipped ? "opacity-100" : "opacity-0"}`}
-        >
-          <div className="pt-2">
-            {mat.specs.map((spec) => (
-              <div key={spec.label} className="flex justify-between mb-2 font-mono" style={{ fontSize: "10px" }}>
-                <span style={{ color: "var(--text-secondary)" }}>{spec.label}</span>
-                <span style={{ color: "var(--text-primary)" }} className="font-semibold">{spec.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ── Tilt Wrapper for desktop cards ── */
-const TiltWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(3);
-
-  if (isTouchDevice) return <div className="h-full">{children}</div>;
-
-  return (
-    <div
-      ref={tiltRef}
-      className="relative h-full"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ willChange: 'transform' }}
-    >
-      <div ref={spotRef} className="absolute inset-0 z-10 pointer-events-none" />
-      {children}
-    </div>
-  );
-};
-
-/* ── Desktop Material Card — 3D CSS Flip ── */
-const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
-  return (
-    <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
-    <TiltWrapper>
-    <div className="flip-card material-card h-full cursor-pointer group/card">
-      <div
-        className="flip-card-inner w-full h-full"
-        style={{ filter: "drop-shadow(0 0 0px transparent)" }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgb(var(--heat-molten-rgb) / 0.25))";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)";
-        }}
-      >
-        {/* Front face */}
-        <div className="flip-card-front absolute inset-0 overflow-hidden border border-border/30 group">
-          <div className="absolute inset-0 z-10">
-            <BlurImage
-              src={mat.image}
-              alt={mat.name}
-              className="w-full h-full object-cover transition-transform duration-700"
-              disableScaleTransform
-            />
-            <div
-              className="absolute inset-0 transition-all duration-500"
-              style={{
-                background: "linear-gradient(to top, var(--overlay-dark-heavy) 0%, var(--overlay-dark-mid) 50%, var(--overlay-vignette-light) 100%)",
-              }}
-            />
-          </div>
-
-          <div className="absolute inset-0 bg-card" />
-
-          <div className="absolute top-4 left-4 z-20">
-            <span
-              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono"
-              style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
+            </div>
+            <motion.h2
+              className="max-w-3xl text-4xl font-semibold leading-[0.95] tracking-normal text-foreground md:text-6xl"
+              initial={prefersReduced ? false : { opacity: 0, y: 24 }}
+              whileInView={prefersReduced ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
-              {mat.tag}
-            </span>
+              Malzeme seçimi artık tolerans verisiyle okunur.
+            </motion.h2>
           </div>
-
-          <div className="absolute top-0 right-0 p-5 text-[10px] z-20 font-mono text-foreground/20">
-            {String(index + 1).padStart(2, "0")}
-          </div>
-
-          <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
-            <div className="w-12 h-1 mb-5 transition-all duration-300" style={{ background: mat.color }} />
-            <h3 className="text-2xl font-bold mb-2 leading-tight" style={{ color: "var(--text-primary)" }}>{mat.name}</h3>
-            <div className="text-[10px] tracking-[0.2em] mb-4 font-mono" style={{ color: "var(--text-technical)" }}>{mat.typeCode}</div>
-
-            <div className="flex gap-2 mb-5 flex-wrap">
-              {mat.applications.map((app) => (
-                <span key={app} className="text-[9px] px-2 py-0.5 font-mono" style={{ border: "1px solid var(--surface-border)", color: "var(--text-technical)" }}>
-                  {app}
+          <div className="lg:pl-8">
+            <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
+              Kritik alaşımlar, hedef tolerans bandı, ölçülen sapma ve kalite kontrol iziyle birlikte sunulur; satın alma ve mühendislik aynı ledger üzerinden karar verir.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {proofPoints.map((point) => (
+                <span key={point} className="inline-flex items-center gap-2 border border-surface-border bg-card/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  {point}
                 </span>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Back face — specs table */}
-        <div className="flip-card-back absolute inset-0 overflow-hidden border border-border/30 bg-card flex flex-col justify-center p-8 md:p-10">
-          <div className="w-12 h-1 mb-6" style={{ background: mat.color }} />
-          <h3 className="text-xl font-bold text-foreground mb-2">{mat.name}</h3>
-          <div className="text-[10px] tracking-[0.2em] mb-6 font-mono text-muted-foreground">{mat.typeCode}</div>
-
-          <div className="border-t border-border pt-4">
-            {mat.specs.map((spec) => (
-              <div key={spec.label} className="flex justify-between py-3 border-b border-border/50 font-mono">
-                <span className="text-xs text-muted-foreground">{spec.label}</span>
-                <span className="text-sm font-semibold text-foreground">{spec.value}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 flex gap-2 flex-wrap">
-            {mat.applications.map((app) => (
-              <span key={app} className="text-[9px] px-2 py-1 border border-primary/30 text-primary font-mono">
-                {app}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-    </TiltWrapper>
-    </OverlayReveal>
-  );
-};
-
-export const MaterialsSection = () => {
-  const isMobile = useIsMobile();
-  const prefersReduced = usePrefersReducedMotion();
-  const gridRef = useRef<HTMLDivElement>(null);
-  useStaggeredReveal(gridRef, 0.08);
-  const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
-  const tiltAnimate = { opacity: 1, rotateX: 0 };
-
-  return (
-    <motion.section
-      id="malzemeler"
-      className="py-24 md:py-32 lg:py-40 flex flex-col justify-center"
-      style={{ backgroundColor: "hsl(var(--forge-gunmetal))", perspective: 1000 }}
-      initial={tiltInitial}
-      whileInView={tiltAnimate}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-    >
-      <style>
-        {flipStyles}
-        {`.dark #malzemeler { background-color: hsl(var(--forge-gunmetal)) !important; }`}
-      </style>
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, hsl(var(--border) / 0.15) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
-        <div className="text-center mb-8 md:mb-12">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-10 h-px bg-primary" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.5em] text-primary font-mono">
-              {isMobile ? "Malzeme Kütüphanesi" : "İŞLENEN MALZEMELER"}
-            </span>
-            <div className="w-10 h-px bg-primary" />
-          </div>
-          <Reveal variant="word-stagger" duration={0.6}>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
-              {"Çalıştığımız Malzemeler"}
-            </h2>
-          </Reveal>
-          <p className="text-sm md:text-base max-w-lg mx-auto text-foreground/60">
-            {isMobile ? (
-              <>
-                {"50'den fazla malzeme seçeneği · "}
-                <span className="text-foreground/80">{"Dokunarak detayları görün"}</span>
-              </>
-            ) : (
-              "50'den fazla materyal seçeneği ile projelerinizin teknik gereksinimlerine ve sektör standartlarına yanıt veren geniş hammadde kütüphanesi"
-            )}
-          </p>
-        </div>
-
-        <div ref={gridRef} className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
-          {materials.map((mat, i) =>
-            isMobile ? (
-              <div key={mat.name} data-stagger><MobileMaterialCard mat={mat} /></div>
-            ) : (
-              <div key={mat.name} data-stagger><DesktopMaterialCard mat={mat} index={i} /></div>
-            ),
-          )}
-        </div>
-
-        <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 pt-6 border-t border-border/30">
-          {badges.map((badge, i) => (
-            <span key={badge} className="inline-flex items-center gap-2 text-xs md:text-sm text-foreground/70">
-              <Check className="w-3.5 md:w-4 h-3.5 md:h-4 text-primary flex-shrink-0" />
-              {badge}
-              {!isMobile && i < 2 && <span className="ml-4 text-foreground/15">{"·"}</span>}
-            </span>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {toleranceMaterials.map((material, index) => (
+            <ToleranceMaterialCard key={material.code} material={material} index={index} />
           ))}
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4 border-t border-surface-border pt-7 md:flex-row md:items-center md:justify-between">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">
+            Ölçüm periyodu · 2026 Q1 · CMM / profilometre kontrollü
+          </p>
           <a
             href="/malzemeler"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all duration-300 group md:ml-2"
+            className="inline-flex w-fit items-center gap-2 border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-transform duration-200 hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
           >
-            {isMobile ? "Tüm Malzeme Kütüphanesi" : "Malzeme Kütüphanesi"}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Malzeme kütüphanesi
+            <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
