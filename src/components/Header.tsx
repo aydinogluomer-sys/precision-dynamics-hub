@@ -279,6 +279,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const contrastClass = useDifferenceBlend
     ? "text-primary-foreground [&_.text-muted-foreground]:text-primary-foreground/80"
     : "text-foreground";
+  const solidHeader = isScrolled || activeDropdown !== null || isMenuOpen;
 
   return (
     <>
@@ -286,8 +287,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
         <motion.div
           className="border-b border-border transition-shadow"
           animate={{
-            backgroundColor: isScrolled || activeDropdown !== null ? "hsl(var(--background) / 0.94)" : "hsl(var(--background) / 0)",
-            backdropFilter: isScrolled || activeDropdown !== null ? "blur(16px)" : "blur(0px)",
+            backgroundColor: solidHeader ? "hsl(var(--background) / 0.96)" : "hsl(var(--background) / 0)",
+            backdropFilter: solidHeader ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
         >
@@ -322,7 +323,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   >
                     <Link
                       to={item.path}
-                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
+                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
                     >
                       {item.label}
                     </Link>
@@ -365,8 +366,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
 
               {/* Actions */}
               <div className="hidden lg:flex items-center gap-3">
-                <SoundToggle />
-                <ThemeToggle />
+                {isScrolled && <SoundToggle />}
+                {isScrolled && <ThemeToggle />}
                 <Link
                   to="/giris"
                   className="text-xs font-bold border border-primary px-4 py-2 hover:bg-primary hover:text-primary-foreground transition-all"
