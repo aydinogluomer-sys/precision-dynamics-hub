@@ -25,11 +25,11 @@ export default defineConfig({
   projects: [
     {
       name: "mobile-375",
-      use: { ...devices["iPhone SE"], viewport: { width: 375, height: 812 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true },
     },
     {
       name: "tablet-768",
-      use: { ...devices["iPad Mini"], viewport: { width: 768, height: 1024 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 }, isMobile: true, hasTouch: true },
     },
     {
       name: "desktop-1280",
