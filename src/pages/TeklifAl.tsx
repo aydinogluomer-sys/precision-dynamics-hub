@@ -509,11 +509,10 @@ export const TeklifAl = () => {
       if (uploadedCadMeta) {
         uploadedFilePaths = [uploadedCadMeta.path];
       } else if (uploadedFile) {
-        const storagePath = `${user?.id || "anonymous"}/${rfqId}/${Date.now()}-${uploadedFile.name}`;
         const uploaded = await uploadCadFile(uploadedFile, createCadStoragePath(uploadedFile, rfqId, user?.id), (nextProgress) => {
           setUploadProgress(nextProgress.percent);
         });
-        uploadedFilePaths = [storagePath];
+        uploadedFilePaths = [uploaded.path];
         setUploadedCadMeta(uploaded);
       }
 
