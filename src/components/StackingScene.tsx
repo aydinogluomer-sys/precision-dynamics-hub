@@ -16,18 +16,31 @@ const useInsetReveal = (ref: React.RefObject<HTMLDivElement>) => {
     if (prefersReduced || !ref.current) return;
     if (window.matchMedia("(max-width: 768px), (pointer: coarse)").matches) return;
     const el = ref.current;
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: "top 88%",
-      end: "top 32%",
-      onUpdate: (self) => {
-        window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
-          detail: { type: "inset", id: el.id || "scene", progress: self.progress },
-        }));
+    window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
+      detail: { type: "inset:init", id: el.dataset.sceneId || el.id || "scene", progress: 0 },
+    }));
+    const tween = gsap.fromTo(el,
+      { clipPath: "inset(3% 0% 3% 0%)" },
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        ease: "none",
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          end: "top 32%",
+          scrub: 0.8,
+          onUpdate: (self) => {
+            window.dispatchEvent(new CustomEvent("mas:scroll-debug", {
+              detail: { type: "inset", id: el.dataset.sceneId || el.id || "scene", progress: self.progress },
+            }));
+          },
+        },
       },
-    });
+    );
     return () => {
-      trigger.kill();
+      tween.scrollTrigger?.kill();
+      tween.kill();
       ScrollTrigger.refresh();
     };
   }, [prefersReduced, ref]);
@@ -51,7 +64,8 @@ export const Scene = forwardRef<HTMLDivElement, StackingSceneProps>(
         }}
         className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
         data-gsap-reveal="inset"
-        style={{ zIndex: z, ...style }}
+        data-scene-id={style?.zIndex ? undefined : undefined}
+        style={{ clipPath: "inset(0% 0% 0% 0%)", zIndex: z, ...style }}
       >
         {children}
       </div>
@@ -74,7 +88,7 @@ export const FlowScene = forwardRef<HTMLDivElement, StackingSceneProps>(
         }}
         className={`relative w-full ${className}`}
         data-gsap-reveal="inset"
-        style={{ zIndex: z, ...style }}
+        style={{ clipPath: "inset(0% 0% 0% 0%)", zIndex: z, ...style }}
       >
         {children}
       </div>
