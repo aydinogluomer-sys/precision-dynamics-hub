@@ -1,57 +1,165 @@
+MAS Technic için öncelik: daha fazla efekt eklemek değil, mevcut “portfolio demo” hissini “ölçülebilir CNC üretim sistemi”ne çevirmek. Yüklediğin Claude audit / Applied HTML / Lovable patches dosyalarıyla uyumlu şekilde aşağıdaki sırayla ilerleyeceğim.
 
-## Uygulanmamış / Eksik Kalan Fazlar — Envanter
+## Kapsam
 
-`.lovable/plan.md` ve `docs/changelog/` taranarak, planlanmış ama henüz uygulanmamış işler aşağıda listelenmiştir. (Read-only modda olduğum için sadece envanter çıkarıyorum; uygulama onayınızdan sonra default mode'da yapılacak.)
+Yalnızca public landing ve public sayfa UX katmanı:
+- `/` landing page
+- Header, Footer, Hero, Services, Materials, Capabilities/Final CTA, debug panel
+- Global token/motion yardımcıları
 
-### 1. Playwright E2E — Kurulum Tamam, Çalıştırma/Doğrulama Eksik
-**Status**: Kod yazıldı (`e2e/*.spec.ts`, `playwright.config.ts`, `.github/workflows/playwright.yml`), ama:
-- Browser binary (`npx playwright install chromium`) lokalde kurulmadı
-- `npm run test:e2e` bir kez bile yeşil geçtiği doğrulanmadı
-- CI workflow gerçek bir push/PR'da koşmadı → ilk run'da kırılma riski
-- Failure halinde `playwright-report/` artifact'ı incelenmedi
+Dokunulmayacak alanlar:
+- `/admin/*`
+- `/musteri-paneli/*`
+- `supabase/*`
+- RFQ wizard iç mantığı (`/teklif-al`) bu turda sadece CTA hedefi olarak kalacak
 
-### 2. Phase 11A/B/C/D — Bilinen Açık Issue'lar
-`docs/qa-responsive-v3.md` ve `docs/phase-11C-qa-and-issue2.md`'den:
-- **ISSUE-1 (HIGH)**: `/malzemeler/:slug` (örn. `/malzemeler/aluminyum`) kategori sayfalarında footer reveal CTA kartı hero text + footer link kolonlarını örtüyor. 375/768/1280 hepsinde reproduce ediliyor. Düzeltilmedi.
-- **ISSUE-2 (LOW)**: `TestimonialsSection` ve `CNCScrollStory` için `forwardRef` warning'leri (PageTransition `motion.div` ref propagation). Dev-only ama hâlâ açık.
+## 1. P0 stabilizasyon: görünürlük ve footer regresyonunu kesin kapatma
 
-### 3. Footer Smoke-Test — Manuel Kanıt Tamam, Otomatik Sürüm Eksik
-- `docs/footer-debug/issue1-snapshot-before.txt` ve `docs/known-issues/footer-reveal-bug.md` kapatılmadı
-- `/mnt/documents/footer-smoke-test/REPORT.md` üretildi ama proje repo'sunda referans yok (`docs/v3-changelog.md` linklemiyor)
+- `Footer` default davranışını zaten `static` görünüyor; bunu doğrulayıp homepage dışında reveal kullanımının kalmadığından emin olacağım.
+- Homepage’de `<Footer variant="reveal" />` opt-in olarak kalacak; statik sayfalarda fixed overlay olmayacak.
+- Stacking scene / footer z-index ilişkisini tekrar sadeleştireceğim: footer içerik üstüne çıkmayacak, section’lar başlangıçta görünür kalacak.
+- `ScrollDebugPanel` production görünümünde sürekli açık bir buton gibi durmayacak; sadece debug param/local flag ile görünür olacak.
 
-### 4. Phase 12 (Planlanan Ama Başlamayan)
-`.lovable/plan.md` içinde refere edilen ama dosyası açılmayan:
-- **Token System Collapse (Prompt #2)**: `mem://design/unified-color-system-v2` üç-eksenli token sistemi — kod tabanında hâlâ residual hardcoded color literals var (Phase 11A bunu kısmen temizlemişti)
-- **Bundle leak follow-up**: `docs/phase-11B-bundle-leak-scan.md` bulgularına göre xlsx static fallback uygulandı (11D), ama `docs/phase-11D-xlsx-static-fallback.md`'de "follow-up: dynamic import retry on next major" notu var → açık
+## 2. Sistem temeli: semantic token ve motion grammar
 
-### 5. Tooling / DX
-- **`bun.lockb` + `bun.lock` + `package-lock.json`** üçü birden mevcut — lockfile çakışması, CI'da non-deterministic install riski
-- **ESLint guardrail** (Phase 11'de eklendi) — yeni `e2e/` klasörü için lint scope'una dahil edilmedi
+Mevcut dosyada hâlâ iki renk sistemi var: `--forge-*` legacy ve v2 Heat/Precision/Material tokenları. Bunu tek seferde tüm projeden sökmek riskli, bu yüzden landing’de kullanılacak semantic katmanı ekleyip yeni bileşenleri buna bağlayacağım.
 
----
+Eklenecek semantic tokenlar:
+- `--action-primary`, `--action-primary-hover`, `--action-primary-ink`
+- `--data-accent`, `--data-accent-soft`
+- `--status-nominal`, `--status-warn`, `--status-fail`
+- `--rule`, `--rule-strong`, `--surface-interactive`, `--focus-ring`
+- `--ease-enter`, `--ease-exit`, `--ease-emphasis`, `--dur-fast/mid/slow`
 
-## Önerilen Sıra (P0 → P2)
+Böylece yeni UI “orange token = her şey” yerine anlam bazlı renk kullanacak.
 
-| # | İş | Öncelik | Tahmini scope |
-|---|---|---|---|
-| 1 | Playwright lokal smoke run + CI ilk yeşil | **P0** | 1 session |
-| 2 | ISSUE-1: `/malzemeler/:slug` footer overlap fix | **P0** | 1 session |
-| 3 | Lockfile çakışmasını çöz (bun vs npm seç) | **P1** | 30 dk |
-| 4 | ISSUE-2: forwardRef warning (PageTransition refactor) | **P1** | 1 session |
-| 5 | Token System Collapse (Phase 12) | **P2** | 2-3 session |
-| 6 | xlsx dynamic import retry | **P2** | 1 session |
+## 3. Hero redesign: rotasyonlu slogan yerine Engineering Ledger
 
----
+Mevcut hero şu an ekranda çalışıyor ama “Stabil Kalite & Güvenilir Teslimat” gibi jenerik slogan ve R3F/mask/450vh gösterisi hâlâ fazla baskın. Bunu Claude Applied HTML’deki konseptle değiştireceğim:
 
-## Bu Plan Onaylanırsa Ne Yapılacak
+- Rotating headline kaldırılacak.
+- Yeni hero ana fikri:
 
-Onaylarsanız şu **tek bir** atomik iş paketini default mode'da uygularım:
+```text
+Her iddia
+bir ölçümdür.
+± 0.005 mm
+```
 
-**Paket: P0 bloğu (1 + 2)**
-- `npx playwright install chromium` çalıştır, `npm run test:e2e` ilk yeşili al, fail varsa selector/timeout patch'le
-- `/malzemeler/:slug` (MalzemeKategori.tsx) min-height + footer spacer ResizeObserver hesabını fix et, 375/768/1280 manuel screenshot kanıtı ekle
-- `REPORT.md` ve `docs/qa-responsive-v3.md`'yi güncelle (ISSUE-1 → CLOSED)
+- Sağ kolona `LiveLedgerCard` eklenecek:
+  - Parça: AL-7075 valf gövdesi
+  - Operasyon: Op 30 · 5x finish
+  - Tolerans: ±0.008 mm
+  - Spindle bar: %74
+  - CMM: Zeiss Contura
+  - Sevkiyat: DHL planlı
+- Hero üstünde operasyon ticker row olacak: hat durumu, FAIR zamanı, açık teklif, SLA, ISO revizyonu.
+- Hero’da tek primary CTA olacak: `48 saatte teklif al`; ikincil CTA `Traveler örneği gör`.
+- Reduced-motion fallback: tüm içerik statik ve temiz render olacak; animation completion beklenmeyecek.
 
-P1/P2 işleri ayrı session'larda — daha temiz changelog ve daha küçük blast radius için.
+## 4. Landing akışını kısaltma: 16 sahneden 9 odaklı sahneye
 
-Farklı bir paket (sadece Playwright run, sadece ISSUE-1, ya da tüm P0+P1) isterseniz söyleyin.
+Audit’in ana bulgusu doğru: landing çok fazla dekoratif sahne taşıyor. İlk implementation’da en riskli ve en fazla dikkat dağıtan sahneleri kaldırıp akışı şu yapıya çekeceğim:
+
+```text
+Hero / Engineering Ledger
+Services / Traveler Sheet
+Materials / Tolerance Strip
+Industries
+Capabilities / Machine Park table
+Why Us / proof points
+Testimonials / measured outcomes
+FAQ / Blog
+Final CTA
+Footer
+```
+
+Kaldırılacak veya homepage’den çıkarılacak dekoratif sahneler:
+- `NexusPromoSection` landing odağını dağıtıyor
+- `CNCScrollStory` hero ile çakışan ikinci scrollytelling katmanı
+- `MaterialMorphScroll` fotoğrafik efekt, ölçüm fikrine hizmet etmiyor
+- Gereksiz bridge yoğunluğu azaltılacak
+
+Bu değişiklik LCP ve scroll karmaşasını da düşürür.
+
+## 5. Services redesign: kart değil Traveler Sheet
+
+`ServicesSection` mevcutta çok uzun, eski image/hover pattern’leri ve ledger denemesi birlikte duruyor. Bunu net bir Traveler Sheet’e çevireceğim.
+
+- Yeni `src/data/travelers.ts` oluşturulacak.
+- 5 servis olacak:
+  - 5 Eksen CNC Frezeleme
+  - CNC Torna · Mill-Turn
+  - Tel Erozyon · Dalma
+  - Isıl İşlem · Yüzey
+  - CMM Doğrulama
+- Tab arayüzüyle servis seçilecek.
+- Her tab’da üretim rotası tablo halinde gösterilecek:
+
+```text
+Op | Açıklama | Ekipman | Setup | Cycle | QC
+```
+
+- Alt kısımda mühendis onayı / kalite kontrol / durum stamp alanı olacak.
+- Mobilde tablo yatay kayacak, içerik gizlenmeyecek.
+- Fotoğraf kartları, blur image overlay ve gereksiz hover spektakülü kaldırılacak.
+
+## 6. Materials redesign: fotoğraf kartı yerine Tolerance Strip
+
+`MaterialsSection` şu an flip-card/fotoğraf/badge hissinde. Bunu gerçek ölçüm şeridine dönüştüreceğim.
+
+Her malzeme kartında:
+- Tip kodu: `AL·2024·T3`
+- Başlık ve endüstriyel bağlam
+- Tolerans rail’i: `-0.05 → +0.05 mm`
+- Band göstergesi
+- Ölçülen değer, dönem, örneklem sayısı
+- 4 satır teknik spec listesi
+
+Örnekler:
+- Alüminyum 2024-T3
+- Paslanmaz 316L
+- Titanyum Grade 5
+- Çelik 4140 QT
+- Pirinç CW614N
+- PEEK + CF30
+
+Bu bölümde decorative image importları kaldırılacak; daha hızlı ve daha B2B güven veren bir görünüm olacak.
+
+## 7. Header/navigation okunabilirlik ve mobil CTA
+
+- `mix-blend-mode: difference` sadece güvenli durumda kullanılacak: hero top ve dropdown kapalıyken.
+- Dropdown açıkken veya scroll sonrası header normal solid/glass yüzeye dönecek.
+- Mobile’da sticky CTA bar eklenecek:
+  - `48 saatte teklif al →`
+  - safe-area destekli
+  - Header menüsünün üstüne binmeyecek
+- Theme/sound gibi dikkat dağıtan kontrollerin header’daki görünürlüğü audit yönüne göre azaltılacak; gerekiyorsa daha ikincil alana taşınacak.
+
+## 8. Debug ve doğrulama
+
+- Debug panel yalnızca `?debug=gsap` veya localStorage flag ile görünür olacak.
+- Panel şunları gösterecek:
+  - ScrollTrigger count
+  - Text reveal eventleri
+  - Inset reveal eventleri
+  - Section id / progress
+- GSAP eventleri sadece development/debug modunda dispatch edilecek, normal kullanıcıya görünmeyecek.
+
+## 9. Teknik doğrulama
+
+Uygulama sonrası şu kontrolleri yapacağım:
+- TypeScript build kontrolü
+- Vite build kontrolü
+- `/` görsel smoke test: 763px mevcut viewport, 1280px desktop, 375px mobile
+- `/iletisim`, `/hakkimizda`, `/sss`, `/blog`, `/malzemeler` footer overlay smoke test
+- Console error kontrolü
+- Reduced-motion davranışı kontrolü: animasyonlar content’i gizlemeyecek
+
+## Beklenen sonuç
+
+- Landing “efekt kataloğu” yerine ölçüm odaklı Industrial-Luxe üretim deneyimi olacak.
+- Hero daha net, daha hızlı ve daha B2B güven verici olacak.
+- Services ve Materials bölümleri Awwwards seviyesinde ama CNC sektörüne özgü bir içerik fikri taşıyacak.
+- Footer ve scroll regresyonları tekrar etmeyecek.
+- Debug aracı kullanıcıya görünmeden doğrulama için kullanılabilecek.
