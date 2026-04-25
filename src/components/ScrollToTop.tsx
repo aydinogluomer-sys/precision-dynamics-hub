@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
     document.documentElement.style.scrollBehavior = "auto";
     document.body.style.overflow = "";
     if (window.__lenis) {
@@ -12,6 +15,7 @@ export const ScrollToTop = () => {
     } else {
       window.scrollTo(0, 0);
     }
+    requestAnimationFrame(() => window.scrollTo(0, 0));
   }, [pathname]);
 
   return null;
