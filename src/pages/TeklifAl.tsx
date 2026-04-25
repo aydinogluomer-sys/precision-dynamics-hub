@@ -851,6 +851,26 @@ export const TeklifAl = () => {
           <Cog size={16} className="text-primary" /> Üretim Spesifikasyonları
         </h2>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          {[
+            ["AD SOYAD", "name", "Satın alma / mühendislik yetkilisi"],
+            ["E-POSTA", "email", "ornek@firma.com"],
+            ["FİRMA", "company", "Firma unvanı"],
+            ["TELEFON", "phone", "+90 5xx xxx xx xx"],
+          ].map(([label, key, placeholder]) => (
+            <div key={key}>
+              <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">{label}</label>
+              <input
+                type={key === "email" ? "email" : "text"}
+                value={contactForm[key as keyof typeof contactForm]}
+                onChange={(e) => setContactForm((prev) => ({ ...prev, [key]: e.target.value }))}
+                placeholder={placeholder}
+                className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+          ))}
+        </div>
+
         {/* Hizmet & Malzeme */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
@@ -981,6 +1001,29 @@ export const TeklifAl = () => {
                 <p className="text-[9px] text-muted-foreground">3-5 Gün</p>
               </button>
             </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">TOLERANS</label>
+            <select
+              value={selectedTolerance}
+              onChange={(e) => setSelectedTolerance(e.target.value)}
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {["±0.005 mm", "±0.010 mm", "±0.020 mm", "Teknik resme göre"].map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">PARÇA / REV.</label>
+            <input value={drawingNumber} onChange={(e) => setDrawingNumber(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring" placeholder="MT-042 / Rev B" />
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold tracking-widest mb-1.5 text-muted-foreground">KRİTİK ÖLÇÜ</label>
+            <input value={criticalFeatures} onChange={(e) => setCriticalFeatures(e.target.value)} className="w-full border border-border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Delik ekseni, Ra, geçme" />
           </div>
         </div>
       </div>
