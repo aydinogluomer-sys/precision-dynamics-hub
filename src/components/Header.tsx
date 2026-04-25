@@ -290,6 +290,9 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   };
 
   const useDifferenceBlend = !isScrolled && !isMenuOpen && activeDropdown === null;
+  const contrastClass = useDifferenceBlend
+    ? "text-primary-foreground [&_.text-muted-foreground]:text-primary-foreground/75"
+    : "";
 
   return (
     <>
@@ -303,10 +306,9 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
           }}
         >
           <div
-            className="container-industrial px-4 mx-auto"
+            className={`container-industrial px-4 mx-auto ${contrastClass}`}
             style={{
               mixBlendMode: useDifferenceBlend ? "difference" : "normal",
-              color: useDifferenceBlend ? "hsl(var(--primary-foreground))" : undefined,
             }}
           >
             <div
@@ -346,6 +348,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           className="fixed left-0 right-0 bg-background border-b shadow-xl top-[inherit] mt-4"
+                          style={{ mixBlendMode: "normal" }}
                         >
                           <div className="container-industrial mx-auto p-8 grid grid-cols-5 gap-6">
                             {item.children?.map((col, cIdx) => (
