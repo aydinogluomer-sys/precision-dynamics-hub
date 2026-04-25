@@ -4,6 +4,7 @@ import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { materialsData, materialCategories, findMaterialCategory } from "@/data/materialsData";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 const getPriceLabel = (p: string) => {
   switch (p) {
@@ -18,6 +19,11 @@ export const MalzemeKategori = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = findMaterialCategory(slug || "");
 
+  usePageMeta({
+    title: category?.seoTitle ?? "Malzemeler",
+    description: category?.seoDescription,
+  });
+
   if (!category) return <Navigate to="/malzemeler" replace />;
 
   const materials = materialsData.filter(m => m.subcategory === category.subcategoryKey);
@@ -26,10 +32,6 @@ export const MalzemeKategori = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-
-      {/* SEO meta via title */}
-      <title>{category.seoTitle}</title>
-      <meta name="description" content={category.seoDescription} />
 
       {/* Hero */}
       <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, var(--surface-base) 100%)" }}>
