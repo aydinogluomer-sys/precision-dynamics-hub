@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
 import { LiveLedgerCard } from "./LiveLedgerCard";
+import { HeroCadDropzone } from "./HeroCadDropzone";
 
 interface HeroSectionProps {
   isFirstVisit?: boolean;
@@ -127,6 +128,8 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                 Traveler örneği gör
               </a>
             </motion.div>
+
+            <HeroCadDropzone />
           </div>
 
           <LiveLedgerCard />
