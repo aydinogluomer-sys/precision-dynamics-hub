@@ -220,6 +220,29 @@
     --sidebar-accent-foreground: 240 28% 14%;
     --sidebar-border: 210 14% 87%;
     --sidebar-ring: 186 87% 29%;
+
+    /* ── Semantic interaction layer ── */
+    --action-primary: var(--heat-molten);
+    --action-primary-hover: var(--heat-ember);
+    --action-primary-ink: #ffffff;
+    --action-secondary-border: var(--surface-border-hover);
+    --data-accent: var(--precision-blue);
+    --data-accent-soft: rgba(26, 77, 143, 0.22);
+    --status-active: var(--heat-molten);
+    --status-nominal: #58b85b;
+    --status-warn: #d4820a;
+    --status-fail: #c23838;
+    --surface-interactive: rgba(255, 255, 255, 0.04);
+    --surface-interactive-hover: rgba(255, 255, 255, 0.07);
+    --focus-ring: rgba(232, 97, 10, 0.55);
+    --rule: rgba(255, 255, 255, 0.12);
+    --rule-strong: rgba(255, 255, 255, 0.28);
+    --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-exit: cubic-bezier(0.64, 0, 0.78, 0);
+    --ease-emphasis: cubic-bezier(0.76, 0, 0.24, 1);
+    --dur-fast: 140ms;
+    --dur-mid: 260ms;
+    --dur-slow: 520ms;
   }
 }
 
@@ -311,7 +334,8 @@
 
   /* Focus visible — accessibility */
   :focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 
   .text-rendering-fix {
