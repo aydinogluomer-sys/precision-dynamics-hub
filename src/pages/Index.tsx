@@ -229,9 +229,31 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Glow: Nexus (dark) → HowWeWork (light) */}
+        {/* SVG wave: Nexus → WhyUs (dark → dark subtle transition) */}
+        <div
+          className="relative"
+          style={{
+            height: 80,
+            overflow: "hidden",
+            backgroundColor: "hsl(var(--forge-obsidian))",
+            zIndex: SECTION_Z.wave,
+          }}
+        >
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
+            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" style={{ fill: 'hsl(var(--forge-gunmetal))' }} />
+          </svg>
+        </div>
+
+        {/* WhyUs (sticky) — moved up after Nexus */}
+        <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+          <Suspense fallback={<SectionLoader />}>
+            <WhyUsSection />
+          </Suspense>
+        </Scene>
+
+        {/* Glow: WhyUs (dark) → HowWeWork (light) */}
         <Suspense fallback={null}>
-          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.nexusToHwwGlow} fromColor="hsl(var(--forge-obsidian))" />
+          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.nexusToHwwGlow} fromColor="hsl(var(--forge-gunmetal))" />
         </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
@@ -302,29 +324,7 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* SVG wave: Materials → WhyUs (dark → dark subtle transition) */}
-        <div
-          className="relative"
-          style={{
-            height: 80,
-            overflow: "hidden",
-            backgroundColor: "hsl(var(--forge-gunmetal))",
-            zIndex: SECTION_Z.wave,
-          }}
-        >
-          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
-            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" style={{ fill: 'hsl(var(--forge-gunmetal))' }} />
-          </svg>
-        </div>
-
-        {/* 13 — WhyUs (sticky) */}
-        <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <WhyUsSection />
-          </Suspense>
-        </Scene>
-
-        {/* Glow: WhyUs (dark) → Capabilities (light) */}
+        {/* Glow: Materials (dark) → Capabilities (light) */}
         <Suspense fallback={null}>
           <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.whyToCapGlow} fromColor="hsl(var(--forge-gunmetal))" />
         </Suspense>
