@@ -65,7 +65,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
   return (
     <section
       id="hizli-teklif"
-      className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
+      className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
     >
       {/* Subtle gradient */}
