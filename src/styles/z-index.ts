@@ -4,6 +4,8 @@ export const Z = {
   ambientGlow: 2,
   grain: 5,
   scrollVelocity: 8,
+  lavaTypography: 10,
+  moldCast: 11,
   cncStory: 12,
   marquee: 15,
   dotNav: 20,
@@ -12,36 +14,36 @@ export const Z = {
   cursor: 90,
   pageTransition: 95,
   preloader: 100,
-} satisfies Record<string, number>;
+} as const;
 
 export type ZLayer = keyof typeof Z;
 
-/** Section stacking order — ascending so each section covers the previous.
- *  NOTE: gaps are intentional (e.g. moldCast=2 removed in v3.0). Do NOT renumber. */
+/** Section stacking order — ascending so each section covers the previous */
 export const SECTION_Z = {
   hero:                    1,
-  // moldCast:             2,  ← removed v3.0
-  cncStory:                3,
-  nexus:                   4,
-  bridgeNexusHww:          5,
-  howWeWork:               6,
-  bridgeHwwCert:           7,
-  certifications:          8,
-  videoScroll:             9,
-  bridgeVideoCert:         10,
-  services:                11,
-  glowLine:                11,
-  industries:              12,
-  bridgeIndProject:        13,
-  projectShowcase:         14,
-  materialMorph:           15,
-  materials:               16,
-  bridgeMaterialsWhy:      17,
-  whyUs:                   18,
-  bridgeWhyCap:            19,
-  capabilities:            20,
-  testimonials:            21,
-  faqBlog:                 22,
-  bridgeFaqCta:            23,
-  finalCta:                24,
-} satisfies Record<string, number>;
+  lavaTypography:          2,
+  moldCast:                3,
+  cncStory:                4,
+  nexus:                   5,
+  nexusToHwwGlow:          6,
+  howWeWork:               7,
+  hwwToCertGlow:           8,
+  certifications:          9,
+  videoScroll:             10,
+  videoToServicesGlow:     11,
+  services:                12,
+  glowLine:                12,
+  industries:              13,
+  industriesToProjectGlow: 14,
+  projectShowcase:         15,
+  materialMorph:           16,
+  materials:               17,
+  wave:                    18,
+  whyUs:                   19,
+  whyToCapGlow:            20,
+  capabilities:            21,
+  testimonials:            22,
+  faqBlog:                 23,
+  faqToCtaGlow:            24,
+  finalCta:                25,
+} as const;

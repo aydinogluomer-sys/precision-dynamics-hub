@@ -98,8 +98,8 @@ export const Malzemeler = () => {
       <JsonLdSchema type="productCatalog" name="Malzeme Kütüphanesi" description="CNC işleme için alüminyum, çelik, titanyum, pirinç, bakır ve mühendislik plastikleri. Teknik özellikler ve karşılaştırma." />
 
       {/* Hero */}
-      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, hsl(var(--forge-navy)) 100%)" }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--text-primary-rgb) / 0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <section className="relative pt-28 pb-16 overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.95) 0%, #0f172a 100%)" }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         {/* Ghost machine-loop video */}
         <video
           src="/machine-loop.mp4"
@@ -114,13 +114,13 @@ export const Malzemeler = () => {
         />
         <div className="container-industrial relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="text-xs font-semibold uppercase tracking-[0.4em] text-[rgb(var(--text-primary-rgb)/0.6)] mb-3 block">Malzeme Kütüphanesi</span>
-            <h1 className="text-3xl md:text-5xl font-bold text-[var(--text-primary)] mb-4">CNC İşleme Malzemeleri</h1>
-            <p className="text-lg text-[rgb(var(--text-primary-rgb)/0.7)] max-w-2xl mx-auto mb-8">{materialsData.length}+ malzeme ve alaşım ile endüstriyel ihtiyaçlarınıza çözüm. Karşılaştırın, seçin, üretin.</p>
+            <span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60 mb-3 block">Malzeme Kütüphanesi</span>
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">CNC İşleme Malzemeleri</h1>
+            <p className="text-lg text-white/70 max-w-2xl mx-auto mb-8">{materialsData.length}+ malzeme ve alaşım ile endüstriyel ihtiyaçlarınıza çözüm. Karşılaştırın, seçin, üretin.</p>
             <div className="max-w-xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgb(var(--text-primary-rgb)/0.4)]" />
-              <input type="text" placeholder="Malzeme ara... (ör: 7075, PEEK, titanyum)" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-[rgb(var(--text-primary-rgb)/0.1)] border border-[rgb(var(--text-primary-rgb)/0.2)] text-[var(--text-primary)] placeholder:text-[rgb(var(--text-primary-rgb)/0.4)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm" />
-              {searchQuery && <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-[rgb(var(--text-primary-rgb)/0.4)] hover:text-[var(--text-primary)]"><X className="w-4 h-4" /></button>}
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+              <input type="text" placeholder="Malzeme ara... (ör: 7075, PEEK, titanyum)" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent backdrop-blur-sm" />
+              {searchQuery && <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"><X className="w-4 h-4" /></button>}
             </div>
           </motion.div>
         </div>
@@ -321,7 +321,7 @@ export const Malzemeler = () => {
                   { label: "Isı İletkenliği (W/m·K)", key: "thermalConductivity" },
                   { label: "Maks. Sıcaklık (°C)", key: "maxTemperature" },
                 ].map(row => (
-                  <TableRow key={row.key}><TableCell className="font-medium">{row.label}</TableCell>{compareList.map(m => <TableCell key={m.id} className="text-center font-semibold">{String((m as unknown as Record<string, unknown>)[row.key])}{row.suffix || ""}</TableCell>)}</TableRow>
+                  <TableRow key={row.key}><TableCell className="font-medium">{row.label}</TableCell>{compareList.map(m => <TableCell key={m.id} className="text-center font-semibold">{String((m as any)[row.key])}{row.suffix || ""}</TableCell>)}</TableRow>
                 ))}
               </TableBody>
             </Table>
@@ -334,15 +334,15 @@ export const Malzemeler = () => {
       </Dialog>
 
       {/* CTA */}
-      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--forge-navy)) 100%)" }}>
+      <section className="py-16" style={{ background: "linear-gradient(135deg, hsl(var(--primary)) 0%, #0f172a 100%)" }}>
         <div className="container-industrial text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] mb-4">Malzeme Seçiminde Yardıma mı İhtiyacınız Var?</h2>
-          <p className="text-[rgb(var(--text-primary-rgb)/0.7)] mb-8 max-w-lg mx-auto">Mühendislik ekibimiz projeniz için en uygun malzemeyi seçmenizde size yardımcı olabilir.</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Malzeme Seçiminde Yardıma mı İhtiyacınız Var?</h2>
+          <p className="text-white/70 mb-8 max-w-lg mx-auto">Mühendislik ekibimiz projeniz için en uygun malzemeyi seçmenizde size yardımcı olabilir.</p>
           <Link to="/iletisim" className="btn-industrial-primary inline-block px-8 py-3">Uzmanlarımızla Görüşün</Link>
         </div>
       </section>
 
-      <Footer variant="static" />
+      <Footer />
     </div>
   );
 };

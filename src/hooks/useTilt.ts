@@ -15,7 +15,7 @@ export function useTilt(maxAngle = 5) {
       if (spotRef.current) {
         const px = ((e.clientX - rect.left) / rect.width) * 100;
         const py = ((e.clientY - rect.top) / rect.height) * 100;
-        spotRef.current.style.background = `radial-gradient(280px circle at ${px}% ${py}%, rgb(var(--text-primary-rgb) / 0.07), transparent 70%)`;
+        spotRef.current.style.background = `radial-gradient(280px circle at ${px}% ${py}%, rgba(255,255,255,0.07), transparent 70%)`;
       }
     },
     [maxAngle],

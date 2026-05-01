@@ -128,7 +128,7 @@ export const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex dark:bg-[var(--surface-base)] bg-slate-50 dark:text-[var(--text-primary)] text-slate-800">
+    <div className="min-h-screen flex dark:bg-[#0F172A] bg-slate-50 dark:text-white text-slate-800">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <AdminSidebar
@@ -163,13 +163,13 @@ export const AdminDashboard = () => {
           <div className="px-3 sm:px-6 pt-3 pb-0 flex items-center gap-1.5 text-[11px]">
             <button
               onClick={() => setActiveTab("dashboard")}
-              className="flex items-center gap-1 dark:text-slate-500 text-slate-400 hover:text-[var(--precision-ice)] transition-colors"
+              className="flex items-center gap-1 dark:text-slate-500 text-slate-400 hover:text-[#0AA2CD] transition-colors"
             >
               <LayoutDashboard className="w-3 h-3" />
               <span>Kontrol Paneli</span>
             </button>
             <ChevronRight className="w-3 h-3 dark:text-slate-600 text-slate-300" />
-            <span className="font-bold dark:text-[var(--text-primary)] text-slate-700 truncate">
+            <span className="font-bold dark:text-white text-slate-700 truncate">
               {TAB_LABELS[activeTab] ?? "Dashboard"}
             </span>
           </div>

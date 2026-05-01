@@ -10,9 +10,9 @@ interface IndustrialSkeletonProps {
 const shimmerClass = "industrial-shimmer rounded";
 
 const TableSkeleton = ({ rows = 5, columns = 4 }: { rows: number; columns: number }) => (
-  <div className="w-full overflow-hidden rounded-xl border border-border">
+  <div className="w-full overflow-hidden rounded-xl border dark:border-[#334155] border-slate-200">
     {/* Header */}
-    <div className="flex gap-px bg-muted p-3">
+    <div className="flex gap-px dark:bg-[#0F172A] bg-slate-100 p-3">
       {Array.from({ length: columns }).map((_, i) => (
         <div
           key={`h-${i}`}
@@ -23,7 +23,7 @@ const TableSkeleton = ({ rows = 5, columns = 4 }: { rows: number; columns: numbe
     </div>
     {/* Rows */}
     {Array.from({ length: rows }).map((_, r) => (
-      <div key={`r-${r}`} className="flex gap-px p-3 border-t border-border">
+      <div key={`r-${r}`} className="flex gap-px p-3 dark:border-t dark:border-[#334155] border-t border-slate-100">
         {Array.from({ length: columns }).map((_, c) => (
           <div
             key={`c-${r}-${c}`}
@@ -41,7 +41,7 @@ const CardSkeleton = ({ rows = 3 }: { rows: number }) => (
     {Array.from({ length: rows }).map((_, i) => (
       <div
         key={`card-${i}`}
-        className="rounded-xl bg-card border border-border p-5 space-y-4"
+        className="rounded-xl dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200 p-5 space-y-4"
       >
         <div className={cn(shimmerClass, "h-28 w-full rounded-lg")} />
         <div className={cn(shimmerClass, "h-4 w-3/4")} />
@@ -57,7 +57,7 @@ const ListSkeleton = ({ rows = 5 }: { rows: number }) => (
     {Array.from({ length: rows }).map((_, i) => (
       <div
         key={`list-${i}`}
-        className="flex items-center gap-4 p-3 rounded-lg bg-card border border-border"
+        className="flex items-center gap-4 p-3 rounded-lg dark:bg-[#1E293B] bg-white border dark:border-[#334155] border-slate-200"
       >
         <div className={cn(shimmerClass, "h-10 w-10 rounded-full shrink-0")} />
         <div className="flex-1 space-y-2">

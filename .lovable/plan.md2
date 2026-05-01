@@ -1,45 +1,7 @@
 # Mas Technic — Awwwards Seviye Yükseltme Planı
 
-> **HISTORICAL DOCUMENT.** Bu plan v1.0 (Awwwards yükseltme) için hazırlandı ve büyük oranda tamamlandı.
-> v3.0 architecture cleanup + token migration için bkz: `docs/v3-changelog.md`.
-
-## Final Faz Durumu (2026-04-17 — v3.0 release sonrası)
-
-| Faz | Açıklama | Durum |
-|---|---|---|
-| Faz 0 | Asset üretimi (CNC + Material sequences + machine loop) | ✅ Tamamlandı |
-| Faz 1.1 | Lenis Smooth Scroll + GSAP ticker sync | ✅ Tamamlandı |
-| Faz 1.2 | Industrial Cursor (CustomCursor) | ✅ Tamamlandı |
-| Faz 1.3 | Page Transition Upgrade (clip-path morph) | ✅ Tamamlandı |
-| Faz 2 | CNCScrollStory + useImagePreloader | ✅ Tamamlandı |
-| Faz 3.1 | Reveal component + SectionHeader entegrasyonu | ✅ Tamamlandı |
-| Faz 3.2 | MaterialMorphScroll | ✅ Tamamlandı |
-| Faz 3.3 | Machine Loop Background (ghost video) | ✅ Tamamlandı |
-| Faz 4.1 | HexWipe transition | ✅ Tamamlandı |
-| Faz 4.2 | ParallaxSection depth-3d | ❌ **Silindi (orphan)** — v3.0'da kaldırıldı |
-| Faz 4.3 | Stagger word reveal | ✅ Tamamlandı |
-| Faz 5 | Mikro-interaksiyonlar | ✅ Tamamlandı |
-| Faz 6 | Tipografi & spacing standardizasyonu | ✅ Tamamlandı |
-| Faz 7 | Performans optimizasyonu | ✅ Baseline → `docs/perf-baseline-v3.md` |
-| Faz 8 | Skeleton + Export Progress | ✅ Tamamlandı |
-| Faz 9 | SEO & A11y | ⚠️ Kısmen — sayfa-bazlı OG image eksik |
-| Faz 10 | Final QA | ⏳ v3.0 sonrası açık — mobile + theme switch smoke kalıyor |
-
-### v3.0 Ek İşler (planın dışında)
-
-| Görev | Durum |
-|---|---|
-| MoldCast (Ergitme/Döküm) sahnesi kaldırma | ✅ |
-| 6 orphan component silme | ✅ |
-| Unified Color System v2.0 + RGB triplet migration (14 dosya) | ✅ |
-| Type-safe `T` + `alpha()` accessor (`src/lib/tokens.ts`) | ✅ |
-| ESLint hardcoded color + numeric zIndex guardrail | ✅ |
-| README v2.0 mimari ile yeniden yazıldı | ✅ |
-
----
-
-**Kapsam dışı:** Admin paneli (`/admin/*`) ve Müşteri paneli (`/musteri-paneli/*`) — dokunulmaz.
-**Tek ek paket:** `lenis` (npm: `lenis`, v1.x — `@studio-freight/react-lenis` değil)
+**Kapsam dışı:** Admin paneli (`/admin/*`) ve Müşteri paneli (`/musteri-paneli/*`) — dokunulmaz.  
+**Tek ek paket:** `lenis` (npm: `lenis`, v1.x — `@studio-freight/react-lenis` değil)  
 **Asset bağımlı fazlar:** Faz 2 ve Faz 3.2, Faz 3.3 — `assets.md` dosyasındaki görseller hazır olmadan başlatma.
 
 ---

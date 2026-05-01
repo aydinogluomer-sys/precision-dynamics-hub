@@ -110,32 +110,32 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(to top, var(--overlay-dark-heavy) 0%, var(--overlay-vignette-light) 50%, var(--overlay-vignette-light) 100%)",
+            background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)",
           }}
         />
       </div>
 
       <div className="absolute top-3 left-3 z-20">
         <span
-          className="px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] font-mono"
-          style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
+          className="px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.15em] text-white/90 font-mono"
+          style={{ background: mat.color, opacity: 0.9 }}
         >
           {mat.tag}
         </span>
       </div>
 
       <div className="absolute top-3 right-3 z-20">
-        <Layers className="w-3.5 h-3.5" style={{ color: "var(--text-muted)" }} />
+        <Layers className="w-3.5 h-3.5 text-white/40" />
       </div>
 
       <div className="absolute inset-0 p-4 flex flex-col justify-end z-20">
         <div className={`transition-opacity duration-200 ${flipped ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
           <div className="w-8 h-1 mb-3" style={{ background: mat.color }} />
-          <h3 className="text-lg font-bold mb-1" style={{ color: "var(--text-primary)" }}>{mat.name}</h3>
-          <div className="text-[9px] tracking-[0.2em] mb-2 font-mono" style={{ color: "var(--text-technical)" }}>{mat.typeCode}</div>
+          <h3 className="text-lg font-bold text-white mb-1">{mat.name}</h3>
+          <div className="text-[9px] tracking-[0.2em] mb-2 font-mono text-white/50">{mat.typeCode}</div>
           <div className="flex gap-1.5 flex-wrap">
             {mat.applications.map((app) => (
-              <span key={app} className="text-[8px] px-1.5 py-0.5 font-mono" style={{ border: "1px solid var(--surface-border)", color: "var(--text-secondary)" }}>
+              <span key={app} className="text-[8px] px-1.5 py-0.5 border border-white/15 text-white/60 font-mono">
                 {app}
               </span>
             ))}
@@ -148,8 +148,8 @@ const MobileMaterialCard = ({ mat }: { mat: (typeof materials)[number] }) => {
           <div className="pt-2">
             {mat.specs.map((spec) => (
               <div key={spec.label} className="flex justify-between mb-2 font-mono" style={{ fontSize: "10px" }}>
-                <span style={{ color: "var(--text-secondary)" }}>{spec.label}</span>
-                <span style={{ color: "var(--text-primary)" }} className="font-semibold">{spec.value}</span>
+                <span className="text-white/60">{spec.label}</span>
+                <span className="text-white font-semibold">{spec.value}</span>
               </div>
             ))}
           </div>
@@ -189,7 +189,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
         className="flip-card-inner w-full h-full"
         style={{ filter: "drop-shadow(0 0 0px transparent)" }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgb(var(--heat-molten-rgb) / 0.25))";
+          e.currentTarget.style.filter = "drop-shadow(0 0 12px rgba(232,97,10,0.25))";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.filter = "drop-shadow(0 0 0px transparent)";
@@ -207,7 +207,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
             <div
               className="absolute inset-0 transition-all duration-500"
               style={{
-                background: "linear-gradient(to top, var(--overlay-dark-heavy) 0%, var(--overlay-dark-mid) 50%, var(--overlay-vignette-light) 100%)",
+                background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%)",
               }}
             />
           </div>
@@ -216,8 +216,8 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
 
           <div className="absolute top-4 left-4 z-20">
             <span
-              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] font-mono"
-              style={{ background: mat.color, opacity: 0.9, color: "var(--text-primary)" }}
+              className="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/90 font-mono"
+              style={{ background: mat.color, opacity: 0.9 }}
             >
               {mat.tag}
             </span>
@@ -229,12 +229,12 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
 
           <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end z-20">
             <div className="w-12 h-1 mb-5 transition-all duration-300" style={{ background: mat.color }} />
-            <h3 className="text-2xl font-bold mb-2 leading-tight" style={{ color: "var(--text-primary)" }}>{mat.name}</h3>
-            <div className="text-[10px] tracking-[0.2em] mb-4 font-mono" style={{ color: "var(--text-technical)" }}>{mat.typeCode}</div>
+            <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{mat.name}</h3>
+            <div className="text-[10px] tracking-[0.2em] mb-4 font-mono text-white/50">{mat.typeCode}</div>
 
             <div className="flex gap-2 mb-5 flex-wrap">
               {mat.applications.map((app) => (
-                <span key={app} className="text-[9px] px-2 py-0.5 font-mono" style={{ border: "1px solid var(--surface-border)", color: "var(--text-technical)" }}>
+                <span key={app} className="text-[9px] px-2 py-0.5 border border-white/15 text-white/50 font-mono">
                   {app}
                 </span>
               ))}
@@ -283,7 +283,7 @@ export const MaterialsSection = () => {
   return (
     <motion.section
       id="malzemeler"
-      className="py-24 md:py-32 lg:py-40 flex flex-col justify-center"
+      className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))", perspective: 1000 }}
       initial={tiltInitial}
       whileInView={tiltAnimate}

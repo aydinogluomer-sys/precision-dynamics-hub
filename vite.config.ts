@@ -25,9 +25,7 @@ export default defineConfig(({ mode }) => ({
           'vendor-gsap': ['gsap'],
           'vendor-framer': ['framer-motion'],
           'vendor-recharts': ['recharts'],
-          // xlsx-js-style intentionally NOT chunked here — loaded via dynamic
-          // import() inside src/utils/excelExport.ts so it splits into its
-          // own async chunk and stays out of the landing initial load.
+          'vendor-xlsx': ['xlsx-js-style'],
         },
       },
     },

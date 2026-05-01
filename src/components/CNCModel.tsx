@@ -1,19 +1,10 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, useEffect, Suspense } from "react";
+import { useRef, Suspense } from "react";
 import * as THREE from "three";
-import { getCSSVar } from "@/utils/cssVar";
-import { useTheme } from "@/hooks/use-theme";
 
-// Procedural CNC gear/part geometry — tema değişiminde renkler runtime token'larından güncellenir
+// Procedural CNC gear/part geometry
 const CNCGear = () => {
   const meshRef = useRef<THREE.Group>(null);
-  const { theme } = useTheme();
-
-  // Material ref'leri: tema değişiminde her birini token'dan güncelle
-  const tealMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const darkMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const metalMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const tealEmissiveRef = useRef<THREE.MeshStandardMaterial | null>(null);
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -22,50 +13,22 @@ const CNCGear = () => {
     }
   });
 
-  // Phase 11A-extended: tema değiştiğinde tüm material renklerini CSS token'larından oku
-  useEffect(() => {
-    const teal = getCSSVar("--precision-steel", "#0688AD");
-    const dark = getCSSVar("--surface-base", "#1e293b");
-    const metal = getCSSVar("--material-chrome", "#94a3b8");
-
-    if (tealMaterialRef.current) {
-      tealMaterialRef.current.color.set(teal);
-      tealMaterialRef.current.emissive.set(teal);
-      tealMaterialRef.current.needsUpdate = true;
-    }
-    if (tealEmissiveRef.current) {
-      tealEmissiveRef.current.color.set(teal);
-      tealEmissiveRef.current.emissive.set(teal);
-      tealEmissiveRef.current.needsUpdate = true;
-    }
-    if (darkMaterialRef.current) {
-      darkMaterialRef.current.color.set(dark);
-      darkMaterialRef.current.needsUpdate = true;
-    }
-    if (metalMaterialRef.current) {
-      metalMaterialRef.current.color.set(metal);
-      metalMaterialRef.current.needsUpdate = true;
-    }
-  }, [theme]);
-
-  // İlk render için fallback değerler — useEffect tema güncellemesinden önce kullanılır
-  const tealColor = new THREE.Color(getCSSVar("--precision-steel", "#0688AD"));
-  const darkColor = new THREE.Color(getCSSVar("--surface-base", "#1e293b"));
-  const metalColor = new THREE.Color(getCSSVar("--material-chrome", "#94a3b8"));
+  const tealColor = new THREE.Color("#0688AD");
+  const darkColor = new THREE.Color("#1e293b");
+  const metalColor = new THREE.Color("#94a3b8");
 
   return (
     <group ref={meshRef}>
       {/* Main gear body */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[1.8, 1.8, 0.5, 32]} />
-        <meshStandardMaterial ref={metalMaterialRef} color={metalColor} metalness={0.85} roughness={0.2} />
+        <meshStandardMaterial color={metalColor} metalness={0.85} roughness={0.2} />
       </mesh>
 
       {/* Inner ring */}
       <mesh position={[0, 0, 0]}>
         <torusGeometry args={[1.2, 0.12, 16, 32]} />
         <meshStandardMaterial
-          ref={tealMaterialRef}
           color={tealColor}
           metalness={0.9}
           roughness={0.15}
@@ -77,7 +40,7 @@ const CNCGear = () => {
       {/* Center hole */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[0.5, 0.5, 0.7, 24]} />
-        <meshStandardMaterial ref={darkMaterialRef} color={darkColor} metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.1} />
       </mesh>
 
       {/* Gear teeth */}
@@ -111,7 +74,6 @@ const CNCGear = () => {
         <mesh>
           <torusGeometry args={[0.65, 0.08, 12, 24]} />
           <meshStandardMaterial
-            ref={tealEmissiveRef}
             color={tealColor}
             metalness={0.9}
             roughness={0.15}
@@ -142,12 +104,9 @@ export const CNCModel = () => (
     >
       <Suspense fallback={null}>
         <ambientLight intensity={0.3} />
-        {/* eslint-disable-next-line no-restricted-syntax */}
-        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" /* OK: R3F runtime */ />
-        {/* eslint-disable-next-line no-restricted-syntax */}
-        <directionalLight position={[-3, 2, -3]} intensity={0.4} color="#0688AD" /* OK: R3F runtime */ />
-        {/* eslint-disable-next-line no-restricted-syntax */}
-        <pointLight position={[0, -2, 3]} intensity={0.5} color="#0688AD" /* OK: R3F runtime */ />
+        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#ffffff" />
+        <directionalLight position={[-3, 2, -3]} intensity={0.4} color="#0688AD" />
+        <pointLight position={[0, -2, 3]} intensity={0.5} color="#0688AD" />
         <CNCGear />
       </Suspense>
     </Canvas>

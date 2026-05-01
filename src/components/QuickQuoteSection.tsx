@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const ACCEPTED_EXTENSIONS = [".step", ".stp", ".stl", ".obj", ".iges", ".igs", ".3mf"];
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => {
+export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) => {
   const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [uploadState, setUploadState] = useState<"idle" | "success" | "error">("idle");
@@ -64,7 +64,6 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
 
   return (
     <section
-      ref={ref as React.Ref<HTMLElement>}
       id="hizli-teklif"
       className="relative section-industrial min-h-screen flex flex-col justify-center overflow-hidden py-24"
       style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
@@ -73,7 +72,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 50%, rgb(var(--precision-steel-rgb) / 0.08) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(0,113,144,0.08) 0%, transparent 60%)",
         }}
       />
 
@@ -88,21 +87,21 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
           >
             <h2
               className="text-2xl md:text-3xl font-bold mb-2 font-mono uppercase tracking-[0.3em]"
-              style={{ color: "var(--text-primary)" }}
+              style={{ color: "white" }}
             >
               {"CAD DOSYANIZI YÜKLEYİN"}
             </h2>
-            <p className="text-sm" style={{ color: "var(--text-technical)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
+            <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>{"3D modelinizi sürükleyin, 48 saat içinde detaylı teklif alın."}</p>
           </motion.div>
 
           {/* Upload Card */}
           <motion.div
             className="relative overflow-hidden"
             style={{
-              background: "var(--surface-glass)",
+              background: "rgba(255,255,255,0.08)",
               backdropFilter: "blur(20px)",
-              border: `1px solid ${isDragging ? "rgb(var(--precision-steel-rgb) / 0.4)" : "rgb(var(--precision-steel-rgb) / 0.25)"}`,
-              boxShadow: "0 0 60px rgb(var(--precision-steel-rgb) / 0.08)",
+              border: `1px solid ${isDragging ? "rgba(0,113,144,0.4)" : "rgba(0,113,144,0.25)"}`,
+              boxShadow: "0 0 60px rgba(0,113,144,0.08)",
               transition: "border-color 0.3s",
             }}
             initial={{ opacity: 0, y: 20 }}
@@ -116,13 +115,13 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
             <div
               className="flex items-center justify-between px-5 py-3 border-b"
               style={{
-                borderColor: "rgb(var(--precision-steel-rgb) / 0.15)",
-                background: "rgb(var(--precision-steel-rgb) / 0.06)",
+                borderColor: "rgba(0,113,144,0.15)",
+                background: "rgba(0,113,144,0.06)",
               }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.2em] font-mono"
-                style={{ color: "var(--text-muted)" }}
+                style={{ color: "rgba(255,255,255,0.35)" }}
               >
                 {"YÜKLEME ARAYÜZÜ V2.4.0"}
               </span>
@@ -165,10 +164,10 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
               <motion.div
                 className="absolute inset-6 md:inset-8 pointer-events-none"
                 style={{
-                  border: `2px dashed ${isDragging ? "var(--precision-steel)" : "rgb(var(--precision-steel-rgb) / 0.3)"}`,
+                  border: `2px dashed ${isDragging ? "#007190" : "rgba(0,113,144,0.3)"}`,
                   transition: "border-color 0.3s",
                 }}
-                animate={isDragging ? { scale: [1, 1.02, 1], borderColor: ["var(--precision-steel)", "var(--precision-ice)", "var(--precision-steel)"] } : {}}
+                animate={isDragging ? { scale: [1, 1.02, 1], borderColor: ["#007190", "#0a9bb8", "#007190"] } : {}}
                 transition={{ repeat: Infinity, duration: 1.2 }}
               />
 
@@ -176,7 +175,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
               <motion.div
                 className="absolute left-6 right-6 md:left-8 md:right-8 h-px pointer-events-none"
                 style={{
-                  background: "linear-gradient(90deg, transparent, var(--precision-ice), transparent)",
+                  background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)",
                   opacity: 0.4,
                 }}
                 animate={{ top: ["15%", "85%", "15%"] }}
@@ -189,7 +188,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
                     <motion.div
                       key="check"
                       className="w-14 h-14 rounded-full flex items-center justify-center bg-green-500/20"
-                      style={{ border: "1px solid rgb(var(--success-rgb, 34 197 94) / 0.4)" }}
+                      style={{ border: "1px solid rgba(34,197,94,0.4)" }}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
@@ -201,7 +200,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
                     <motion.div
                       key="upload"
                      className={`w-14 h-14 rounded-full flex items-center justify-center ${isDragging ? "bg-primary/20" : "bg-primary/10"}`}
-                      style={{ border: `1px solid ${isDragging ? "var(--precision-steel)" : "rgb(var(--precision-steel-rgb) / 0.3)"}` }}
+                      style={{ border: `1px solid ${isDragging ? "#007190" : "rgba(0,113,144,0.3)"}` }}
                       animate={{
                         y: [0, -6, 0],
                         scale: isDragging ? 1.15 : 1,
@@ -214,10 +213,10 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
                 </AnimatePresence>
 
                 <div>
-                  <p className="text-base font-bold uppercase tracking-wider font-mono mb-1" style={{ color: "var(--text-primary)" }}>
+                  <p className="text-base font-bold uppercase tracking-wider font-mono mb-1" style={{ color: "white" }}>
                     {"DOSYAYI BURAYA SÜRÜKLE"}
                   </p>
-                  <p className="text-xs" style={{ color: "rgb(var(--text-primary-rgb) / 0.5)" }}>{"veya tıklayarak dosya seçin"}</p>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>{"veya tıklayarak dosya seçin"}</p>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2">
@@ -226,9 +225,9 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
                       key={fmt}
                       className="text-[10px] uppercase tracking-wider px-2 py-1 font-mono"
                       style={{
-                        color: "rgb(var(--text-primary-rgb) / 0.6)",
-                        border: "1px solid rgb(var(--text-primary-rgb) / 0.12)",
-                        background: "rgb(var(--text-primary-rgb) / 0.06)",
+                        color: "rgba(255,255,255,0.6)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(255,255,255,0.06)",
                       }}
                     >
                       {fmt}
@@ -242,13 +241,13 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
             <div
               className="flex items-center justify-between px-5 py-3 border-t"
               style={{
-                borderColor: "rgb(var(--precision-steel-rgb) / 0.15)",
-                background: "rgb(var(--precision-steel-rgb) / 0.06)",
+                borderColor: "rgba(0,113,144,0.15)",
+                background: "rgba(0,113,144,0.06)",
               }}
             >
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono flex items-center gap-2"
-                style={{ color: "rgb(var(--text-primary-rgb) / 0.35)" }}
+                style={{ color: "rgba(255,255,255,0.35)" }}
               >
                 {"UÇTAN UCA ŞİFRELEME AKTİF"}
                 <motion.span
@@ -259,7 +258,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
               </span>
               <span
                 className="text-[10px] uppercase tracking-[0.15em] font-mono"
-                style={{ color: "rgb(var(--text-primary-rgb) / 0.35)" }}
+                style={{ color: "rgba(255,255,255,0.35)" }}
               >
                 {"100% IP KORUMASI"}
               </span>
@@ -277,18 +276,18 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, ref) => 
                 key={stat.label}
                 className="text-center py-3"
                 style={{
-                  background: "rgb(var(--text-primary-rgb) / 0.06)",
+                  background: "rgba(255,255,255,0.06)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgb(var(--text-primary-rgb) / 0.12)",
+                  border: "1px solid rgba(255,255,255,0.12)",
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <div className="text-lg font-bold font-mono" style={{ color: "var(--heat-molten)" }}>
+                <div className="text-lg font-bold font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
                   {stat.value}
                 </div>
-                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgb(var(--text-primary-rgb) / 0.5)" }}>
+                <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                   {stat.label}
                 </div>
               </motion.div>

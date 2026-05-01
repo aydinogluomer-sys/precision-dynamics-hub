@@ -221,7 +221,7 @@ export const Login = () => {
                 />
               </div>
 
-              <Button type="submit" disabled={loading || !captchaToken} className="w-full h-12 font-semibold tracking-wider text-sm text-[var(--text-primary)]">
+              <Button type="submit" disabled={loading || !captchaToken} className="w-full h-12 font-semibold tracking-wider text-sm text-white">
                 {loading ? (
                   <Loader2 size={16} className="animate-spin" />
                 ) : (

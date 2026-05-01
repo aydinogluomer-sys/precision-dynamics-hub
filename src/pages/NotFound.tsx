@@ -66,13 +66,11 @@ export const NotFound = () => {
         ctx.save();
         ctx.translate(r.x, r.y);
         ctx.rotate((r.angle * Math.PI) / 180);
-        // eslint-disable-next-line no-restricted-syntax
-        ctx.fillStyle = `hsla(${r.hue}, 80%, 45%, ${r.opacity})`; // OK: dynamic hue — runtime hesaplamalı
+        ctx.fillStyle = `hsla(${r.hue}, 80%, 45%, ${r.opacity})`;
         ctx.fillRect(-r.w / 2, -r.h / 2, r.w, r.h);
 
         // Glow
-        // eslint-disable-next-line no-restricted-syntax
-        ctx.shadowColor = `hsla(${r.hue}, 80%, 50%, ${r.opacity * 2})`; // OK: dynamic hue
+        ctx.shadowColor = `hsla(${r.hue}, 80%, 50%, ${r.opacity * 2})`;
         ctx.shadowBlur = 30;
         ctx.fillRect(-r.w / 2, -r.h / 2, r.w, r.h);
         ctx.restore();
@@ -120,7 +118,7 @@ export const NotFound = () => {
         className="fixed inset-0 z-[3] pointer-events-none"
         style={{
           background:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgb(var(--surface-base-rgb) / 0.03) 2px, rgb(var(--surface-base-rgb) / 0.03) 4px)",
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)",
         }}
       />
 
@@ -128,7 +126,7 @@ export const NotFound = () => {
       <div
         className="fixed inset-0 z-[4] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, transparent 40%, rgb(var(--surface-base-rgb) / 0.6) 100%)",
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)",
         }}
       />
 

@@ -1,12 +1,5 @@
-// xlsx-js-style is dynamically imported inside exportExcelReport() to keep
-// the ~322KB (gzipped) library out of the landing-page bundle.
-// Types are pulled in at compile time only — the runtime module is loaded lazily.
-import type * as XLSXNS from "xlsx-js-style";
+import XLSX from "xlsx-js-style";
 import { supabase } from "@/integrations/supabase/client";
-
-// Runtime namespace — populated lazily on first export call.
-// Typed as the same shape as the static import so existing `XLSX.utils.*` calls type-check.
-let XLSX: typeof XLSXNS;
 
 /* ── Brand Colors ── */
 const BRAND = {
@@ -28,19 +21,19 @@ const FONT_MAIN = "Space Grotesk";
 const FONT_MONO = "IBM Plex Mono";
 
 /* ── Style presets ── */
-const sTitle: XLSXNS.CellStyle = {
+const sTitle: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 16, bold: true, color: { rgb: BRAND.white } },
   fill: { fgColor: { rgb: BRAND.primaryDark } },
   alignment: { horizontal: "center", vertical: "center" },
 };
 
-const sSubtitle: XLSXNS.CellStyle = {
+const sSubtitle: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 10, color: { rgb: BRAND.primaryDark } },
   fill: { fgColor: { rgb: BRAND.accentLight } },
   alignment: { horizontal: "center", vertical: "center" },
 };
 
-const sHeader: XLSXNS.CellStyle = {
+const sHeader: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 11, bold: true, color: { rgb: BRAND.white } },
   fill: { fgColor: { rgb: BRAND.primary } },
   alignment: { horizontal: "center", vertical: "center", wrapText: true },
@@ -50,7 +43,7 @@ const sHeader: XLSXNS.CellStyle = {
   },
 };
 
-const sCell = (row: number): XLSXNS.CellStyle => ({
+const sCell = (row: number): XLSX.CellStyle => ({
   font: { name: FONT_MONO, sz: 10, color: { rgb: BRAND.textDark } },
   fill: { fgColor: { rgb: row % 2 === 0 ? BRAND.white : BRAND.primaryLight } },
   border: {
@@ -60,19 +53,19 @@ const sCell = (row: number): XLSXNS.CellStyle => ({
   alignment: { vertical: "center" },
 });
 
-const sCellNum = (row: number): XLSXNS.CellStyle => ({
+const sCellNum = (row: number): XLSX.CellStyle => ({
   ...sCell(row),
   alignment: { horizontal: "right", vertical: "center" },
   numFmt: '#,##0',
 });
 
-const sCellDec = (row: number): XLSXNS.CellStyle => ({
+const sCellDec = (row: number): XLSX.CellStyle => ({
   ...sCell(row),
   alignment: { horizontal: "right", vertical: "center" },
   numFmt: '#,##0.00',
 });
 
-const sTotalRow: XLSXNS.CellStyle = {
+const sTotalRow: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 11, bold: true, color: { rgb: BRAND.white } },
   fill: { fgColor: { rgb: BRAND.primaryDark } },
   alignment: { horizontal: "right", vertical: "center" },
@@ -80,38 +73,38 @@ const sTotalRow: XLSXNS.CellStyle = {
   numFmt: '#,##0',
 };
 
-const sTotalLabel: XLSXNS.CellStyle = {
+const sTotalLabel: XLSX.CellStyle = {
   ...sTotalRow,
   alignment: { horizontal: "left", vertical: "center" },
 };
 
-const sKpiCategory: XLSXNS.CellStyle = {
+const sKpiCategory: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 10, bold: true, color: { rgb: BRAND.primary } },
   fill: { fgColor: { rgb: BRAND.accentLight } },
   alignment: { vertical: "center" },
   border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
 };
 
-const sKpiMetric: XLSXNS.CellStyle = {
+const sKpiMetric: XLSX.CellStyle = {
   font: { name: FONT_MAIN, sz: 10, color: { rgb: BRAND.textDark } },
   alignment: { vertical: "center" },
   border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
 };
 
-const sKpiValue: XLSXNS.CellStyle = {
+const sKpiValue: XLSX.CellStyle = {
   font: { name: FONT_MONO, sz: 11, bold: true, color: { rgb: BRAND.primaryDark } },
   alignment: { horizontal: "right", vertical: "center" },
   border: { bottom: { style: "thin", color: { rgb: BRAND.border } } },
   numFmt: '#,##0',
 };
 
-const sCritical: XLSXNS.CellStyle = {
+const sCritical: XLSX.CellStyle = {
   font: { name: FONT_MONO, sz: 10, bold: true, color: { rgb: BRAND.red } },
   fill: { fgColor: { rgb: "FEE2E2" } },
   alignment: { vertical: "center" },
 };
 
-const sNormal: XLSXNS.CellStyle = {
+const sNormal: XLSX.CellStyle = {
   font: { name: FONT_MONO, sz: 10, color: { rgb: BRAND.green } },
   fill: { fgColor: { rgb: "DCFCE7" } },
   alignment: { vertical: "center" },
@@ -133,7 +126,7 @@ function pivot(rows: Record<string, any>[], groupKey: string, valueKey?: string)
   return Object.entries(map).map(([label, v]) => ({ label, ...v }));
 }
 
-function applyStyles(ws: XLSXNS.WorkSheet, range: XLSXNS.Range, styleFn: (r: number, c: number) => XLSXNS.CellStyle) {
+function applyStyles(ws: XLSX.WorkSheet, range: XLSX.Range, styleFn: (r: number, c: number) => XLSX.CellStyle) {
   for (let R = range.s.r; R <= range.e.r; R++) {
     for (let C = range.s.c; C <= range.e.c; C++) {
       const addr = XLSX.utils.encode_cell({ r: R, c: C });
@@ -143,7 +136,7 @@ function applyStyles(ws: XLSXNS.WorkSheet, range: XLSXNS.Range, styleFn: (r: num
   }
 }
 
-function buildSheet(rows: Record<string, any>[], cols: ColDef[]): XLSXNS.WorkSheet {
+function buildSheet(rows: Record<string, any>[], cols: ColDef[]): XLSX.WorkSheet {
   const header = cols.map((c) => c.label);
   const data = rows.map((r) =>
     cols.map((c) => {
@@ -177,7 +170,7 @@ function buildSheet(rows: Record<string, any>[], cols: ColDef[]): XLSXNS.WorkShe
   return ws;
 }
 
-function buildPivotSheet(title: string, data: { label: string; count: number; total: number }[], showTotal: boolean, totalLabel: string): XLSXNS.WorkSheet {
+function buildPivotSheet(title: string, data: { label: string; count: number; total: number }[], showTotal: boolean, totalLabel: string): XLSX.WorkSheet {
   const headers = showTotal ? [title, "", ""] : [title, ""];
   const colHeaders = showTotal ? ["Durum / Tür", "Adet", totalLabel] : ["Durum / Tür", "Adet"];
   const rows = data.map((d) => showTotal ? [d.label, d.count, d.total] : [d.label, d.count]);
@@ -236,12 +229,6 @@ function kpiRow(category: string, metric: string, value: number | string) {
 export type ExportProgressCallback = (progress: number) => void;
 
 export async function exportExcelReport(activeTab: string, onProgress?: ExportProgressCallback) {
-  // Dynamically load xlsx-js-style only when the user actually exports a report.
-  if (!XLSX) {
-    const mod = await import("xlsx-js-style");
-    XLSX = (mod as unknown as { default: typeof XLSXNS }).default ?? (mod as unknown as typeof XLSXNS);
-  }
-
   const now = new Date().toISOString().split("T")[0];
   const wb = XLSX.utils.book_new();
 

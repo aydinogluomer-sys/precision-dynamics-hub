@@ -111,8 +111,8 @@ export const TestimonialsSection = () => {
     <section
       ref={sectionRef}
       id="referanslar"
-      className="relative py-24 md:py-32 lg:py-40 flex flex-col justify-center"
-      style={{ backgroundColor: "var(--bg-light-testimonial)" }}
+      className="relative py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
+      style={{ backgroundColor: "rgba(235, 231, 225, 0.92)" }}
     >
       {/* Subtle grain texture for depth separation from Capabilities */}
       <div
@@ -123,7 +123,7 @@ export const TestimonialsSection = () => {
         }}
       />
       <style>{`
-        .dark #referanslar { background-color: var(--bg-dark-obsidian) !important; }
+        .dark #referanslar { background-color: rgba(18,18,22,0.92) !important; }
         .dark .testimonial-stat-card { background-color: hsl(var(--card)) !important; border-color: hsl(var(--border)) !important; }
         .dark .testimonial-stat-value { color: hsl(var(--forge-teal)) !important; }
         .dark .testimonial-stat-label { color: hsl(var(--muted-foreground)) !important; }
@@ -139,25 +139,25 @@ export const TestimonialsSection = () => {
       {/* Decorative corner accents */}
       <div
         className="testimonial-corner absolute top-0 left-0 w-24 h-24 border-l-2 border-t-2 pointer-events-none"
-        style={{ borderColor: "var(--precision-glow-subtle)" }}
+        style={{ borderColor: "rgba(0,113,144,0.1)" }}
       />
       <div
         className="testimonial-corner absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 pointer-events-none"
-        style={{ borderColor: "var(--precision-glow-subtle)" }}
+        style={{ borderColor: "rgba(0,113,144,0.1)" }}
       />
 
       <div className="container-industrial relative z-10">
         {/* Header */}
         <TextReveal className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-3 mb-5">
-            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "var(--accent-teal)" }} />
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
             <span
               className="testimonial-accent-text text-[10px] font-semibold uppercase tracking-[0.5em] font-mono"
-              style={{ color: "var(--accent-teal)" }}
+              style={{ color: "#007190" }}
             >
               Güvenilir Partnerler
             </span>
-            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "var(--accent-teal)" }} />
+            <div className="testimonial-accent-line w-10 h-px" style={{ backgroundColor: "#007190" }} />
           </div>
           <h2
             className="testimonial-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-5"
@@ -167,7 +167,7 @@ export const TestimonialsSection = () => {
           </h2>
           <p
             className="testimonial-subtext text-sm md:text-base max-w-xl mx-auto leading-relaxed"
-            style={{ color: "var(--text-inverse-secondary)" }}
+            style={{ color: "rgba(26,26,46,0.6)" }}
           >
             Türkiye'nin önde gelen sanayi kuruluşlarının hassas CNC üretim partneri olarak
             <span className="font-semibold" style={{ color: "hsl(var(--forge-molten))" }}>
@@ -184,8 +184,8 @@ export const TestimonialsSection = () => {
               key={stat.label}
               className="testimonial-stat-card relative text-center py-6 md:py-8 px-4 group overflow-hidden border"
               style={{
-                backgroundColor: "var(--surface-glass-hover)",
-                borderColor: "var(--precision-glow-subtle)",
+                backgroundColor: "rgba(255,255,255,0.6)",
+                borderColor: "rgba(0,113,144,0.15)",
               }}
             >
               <div
@@ -200,7 +200,7 @@ export const TestimonialsSection = () => {
               </div>
               <div
                 className="testimonial-stat-label text-[10px] md:text-xs uppercase tracking-[0.15em] font-medium"
-                style={{ color: "var(--text-inverse-muted)" }}
+                style={{ color: "rgba(26,26,46,0.4)" }}
               >
                 {stat.label}
               </div>
@@ -222,14 +222,14 @@ export const TestimonialsSection = () => {
             renderItem={(item) => (
               <div
                 className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110"
-                style={{ color: "var(--text-inverse-muted)" }}
+                style={{ color: "rgba(22,32,56,0.15)" }}
               >
                 {item.node}
               </div>
             )}
           />
         </div>
-        <div className="w-full h-px mb-3" style={{ backgroundColor: "var(--precision-glow-subtle)" }} />
+        <div className="w-full h-px mb-3" style={{ backgroundColor: "rgba(0,113,144,0.1)" }} />
         <div className="mb-16 md:mb-20">
           <LogoLoop
             logos={logoItems}
@@ -243,7 +243,7 @@ export const TestimonialsSection = () => {
             renderItem={(item) => (
               <div
                 className="testimonial-logo-item transition-all duration-300 cursor-default hover:scale-110"
-                style={{ color: "var(--text-inverse-muted)" }}
+                style={{ color: "rgba(22,32,56,0.1)" }}
               >
                 {item.node}
               </div>
@@ -285,8 +285,8 @@ export const TestimonialsSection = () => {
                 className="testimonial-stack-card testimonial-card-bg sticky border p-8 md:p-10"
                 style={{
                   top: `${120 + i * 20}px`,
-                  backgroundColor: "var(--bg-light-testimonial)",
-                  borderColor: "var(--precision-glow-subtle)",
+                  backgroundColor: "rgba(255,255,255,0.95)",
+                  borderColor: "rgba(0,113,144,0.12)",
                   zIndex: i + 1,
                 }}
               >
@@ -325,7 +325,7 @@ export const TestimonialsSection = () => {
           <a
             href="/iletisim"
             className="inline-flex items-center gap-2 text-sm font-semibold hover:gap-3 transition-all duration-300 group"
-            style={{ color: "var(--accent-teal)" }}
+            style={{ color: "#007190" }}
           >
             Siz de partnerimiz olun
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

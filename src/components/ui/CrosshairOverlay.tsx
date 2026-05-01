@@ -21,7 +21,7 @@ export const CrosshairOverlay = ({ opacity, className = "" }: CrosshairOverlayPr
             width: 60,
             height: 1,
             left: -30,
-            background: `linear-gradient(90deg, transparent, var(--text-hint), transparent)`,
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
           }}
         />
         {/* Vertical line */}
@@ -31,7 +31,7 @@ export const CrosshairOverlay = ({ opacity, className = "" }: CrosshairOverlayPr
             width: 1,
             height: 60,
             top: -30,
-            background: `linear-gradient(180deg, transparent, var(--text-hint), transparent)`,
+            background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.2), transparent)",
           }}
         />
         {/* Corner brackets */}
@@ -47,7 +47,7 @@ export const CrosshairOverlay = ({ opacity, className = "" }: CrosshairOverlayPr
             style={{
               width: 12,
               height: 12,
-              borderColor: "var(--text-vignette)",
+              borderColor: "rgba(255,255,255,0.15)",
               ...s,
             } as React.CSSProperties}
             animate={{ scale: [1, 1.1, 1] }}
@@ -59,13 +59,13 @@ export const CrosshairOverlay = ({ opacity, className = "" }: CrosshairOverlayPr
       {/* Corner coordinate labels */}
       <span
         className="absolute bottom-4 left-4 font-mono text-[9px] tracking-[0.2em]"
-        style={{ color: "var(--text-vignette)" }}
+        style={{ color: "rgba(255,255,255,0.15)" }}
       >
         X:0.000 Y:0.000 Z:0.000
       </span>
       <span
         className="absolute top-4 right-4 font-mono text-[9px] tracking-[0.2em]"
-        style={{ color: "var(--text-vignette)" }}
+        style={{ color: "rgba(255,255,255,0.15)" }}
       >
         ±0.005mm
       </span>

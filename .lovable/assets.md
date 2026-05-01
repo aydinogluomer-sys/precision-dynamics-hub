@@ -147,21 +147,21 @@ du -sh public/machine-loop.mp4   # <2MB olmalı
 
 ---
 
-## Asset Hazırlık Kontrol Listesi (DURUM: ✅ TAMAMLANDI — 2026-04-17)
+## Asset Hazırlık Kontrol Listesi
 
 ```
-[x] public/sequence-cnc/frame_0001.webp ... frame_0120.webp (120 dosya) ✅
-[x] public/sequence-material/frame_0001.webp ... frame_0080.webp (80 dosya) ✅
-[x] public/machine-loop.mp4 (418 KB, loop-ready) ✅
+[ ] public/sequence-cnc/frame_0001.webp ... frame_0120.webp (120 dosya)
+[ ] public/sequence-material/frame_0001.webp ... frame_0080.webp (80 dosya)
+[ ] public/machine-loop.mp4 (<2MB, loop-ready)
 
-[x] Toplam sequence boyutu hedef <14MB ✅
-[x] machine-loop.mp4 = 418 KB (<2MB hedefin altında) ✅
-[x] Tüm WebP dosyaları doğru çözünürlükte ✅
-[x] machine-loop.mp4 sesiz ✅
-[x] machine-loop.mp4 faststart flag'i ✅
+[ ] Toplam sequence boyutu <14MB (0.1 + 0.2 toplamı)
+[ ] machine-loop.mp4 <2MB
+[ ] Tüm WebP dosyaları 1920×1080 veya 1280×720
+[ ] machine-loop.mp4 sesiz (-an flag)
+[ ] machine-loop.mp4 faststart flag'i var
 ```
 
-Tüm asset'ler v3.0 release ile production'da aktif.
+Tüm kutular işaretlenmeden **Prompt 5, Prompt 6, Prompt 12** başlatılmamalıdır.
 
 ---
 

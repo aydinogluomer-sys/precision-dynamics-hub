@@ -5,7 +5,6 @@ import { HeroSection } from "@/components/HeroSection";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
 import { PageLoader } from "@/components/PageLoader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { SectionDotNav } from "@/components/SectionDotNav";
 import { useGPUCapability } from "@/hooks/useGPUCapability";
 import { Z, SECTION_Z } from "@/styles/z-index";
 
@@ -22,11 +21,20 @@ const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: 
 const GlowLineDivider = lazy(() =>
   import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
 );
-const TransitionBridge = lazy(() =>
-  import("@/components/ui/TransitionBridge").then((m) => ({ default: m.TransitionBridge })),
+const SectionDotNav = lazy(() =>
+  import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
+);
+const SectionTransitionGlow = lazy(() =>
+  import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
 );
 const CNCScrollStory = lazy(() =>
   import("@/components/CNCScrollStory").then((m) => ({ default: m.CNCScrollStory })),
+);
+const LavaTypographyScene = lazy(() =>
+  import("@/components/LavaTypographyScene").then((m) => ({ default: m.LavaTypographyScene })),
+);
+const MoldCastScene = lazy(() =>
+  import("@/components/MoldCastScene").then((m) => ({ default: m.MoldCastScene })),
 );
 
 const VideoScrollSection = lazy(() =>
@@ -64,7 +72,7 @@ const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
   <div
     ref={ref}
     className="min-h-screen flex items-center justify-center"
-    style={{ backgroundColor: "var(--bg-dark-obsidian)" }}
+    style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
   >
     <div className="w-8 h-8 border-2 border-primary border-t-transparent animate-spin" />
   </div>
@@ -74,6 +82,8 @@ SectionLoader.displayName = "SectionLoader";
 /* ── Dot-nav labels ── */
 const SECTIONS = [
   { id: "hero", label: "Ana Sayfa" },
+  { id: "lav-sahne", label: "Ergitme" },
+  { id: "dokum-sahne", label: "Döküm" },
   { id: "cnc-story", label: "CNC Story" },
   { id: "nexus", label: "Nexus" },
   { id: "nasil-calisiyoruz", label: "Nasıl Çalışıyoruz" },
@@ -94,40 +104,41 @@ const SECTIONS = [
 /* ── Scene wrappers ── */
 
 /** Sticky scene — pins at top, next section scrolls over it */
-const Scene = forwardRef<
-  HTMLDivElement,
-  {
-    children: ReactNode;
-    z: number;
-    className?: string;
-    style?: React.CSSProperties;
-  }
->(({ children, z, className = "", style }, ref) => (
+const Scene = ({
+  children,
+  z,
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  z: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
   <div
-    ref={ref}
-    className={`sticky top-0 min-h-[100dvh] w-full ${className}`}
+    className={`sticky top-0 min-h-screen w-full overflow-hidden ${className}`}
     style={{ zIndex: z, ...style }}
   >
     {children}
   </div>
-));
-Scene.displayName = "Scene";
+);
 
 /** Flow scene — for sections with internal scroll/pin logic */
-const FlowScene = forwardRef<
-  HTMLDivElement,
-  {
-    children: ReactNode;
-    z: number;
-    className?: string;
-    style?: React.CSSProperties;
-  }
->(({ children, z, className = "", style }, ref) => (
-  <div ref={ref} className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
+const FlowScene = ({
+  children,
+  z,
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  z: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
+  <div className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
     {children}
   </div>
-));
-FlowScene.displayName = "FlowScene";
+);
 
 export const Index = () => {
   const [isFirstVisit] = useState(() => {
@@ -173,7 +184,9 @@ export const Index = () => {
       <PageLoader isFirstVisit={isFirstVisit} />
       <Header isFirstVisit={isFirstVisit} />
       <JsonLdSchema type="organization" />
-      <SectionDotNav sections={SECTIONS} />
+      <Suspense fallback={null}>
+        <SectionDotNav sections={SECTIONS} />
+      </Suspense>
 
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
@@ -181,7 +194,27 @@ export const Index = () => {
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
+        {/* Lava Typography Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={SECTION_Z.lavaTypography}>
+            <ErrorBoundary>
+              <Suspense fallback={<SectionLoader />}>
+                <LavaTypographyScene />
+              </Suspense>
+            </ErrorBoundary>
+          </FlowScene>
+        )}
 
+        {/* Mold Cast Scene */}
+        {gpu !== 'none' && (
+          <FlowScene z={SECTION_Z.moldCast}>
+            <ErrorBoundary>
+              <Suspense fallback={<SectionLoader />}>
+                <MoldCastScene />
+              </Suspense>
+            </ErrorBoundary>
+          </FlowScene>
+        )}
 
         {/* CNCScrollStory */}
         <FlowScene z={SECTION_Z.cncStory}>
@@ -193,31 +226,31 @@ export const Index = () => {
         </FlowScene>
 
         {/* 4 — NexusPromo (sticky) */}
-        <Scene z={SECTION_Z.nexus} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
+        <Scene z={SECTION_Z.nexus} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <NexusPromoSection />
           </Suspense>
         </Scene>
 
-        {/* Bridge: Nexus (dark) → HowWeWork (light) */}
+        {/* Glow: Nexus (dark) → HowWeWork (light) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeNexusHww} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
+          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.nexusToHwwGlow} fromColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
-        <FlowScene z={SECTION_Z.howWeWork} style={{ backgroundColor: "var(--bg-light-workshop)" }}>
+        <FlowScene z={SECTION_Z.howWeWork} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <HowWeWorkSection />
           </Suspense>
         </FlowScene>
 
-        {/* Bridge: HowWeWork (light) → Certifications (dark) */}
+        {/* Glow: HowWeWork (light) → Certifications (dark) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeHwwCert} fromColor="var(--bg-light-workshop)" toColor="var(--bg-dark-obsidian)" />
+          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.hwwToCertGlow} toColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
         {/* 6 — Certifications (sticky) */}
-        <Scene z={SECTION_Z.certifications} style={{ backgroundColor: "var(--bg-dark-obsidian)" }}>
+        <Scene z={SECTION_Z.certifications} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <CertificationsSection />
           </Suspense>
@@ -230,20 +263,20 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* Bridge: VideoScroll (dark) → Services (light) */}
+        {/* Glow: VideoScroll (dark) → Services (light) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeVideoCert} fromColor="var(--bg-dark-obsidian)" toColor="var(--bg-light-concrete)" />
+          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.videoToServicesGlow} fromColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
-        {/* 8 — Services (flow — content exceeds viewport) */}
-        <FlowScene z={SECTION_Z.services} style={{ backgroundColor: "var(--bg-light-concrete)" }}>
+        {/* 8 — Services (sticky) */}
+        <Scene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <ServicesSection />
           </Suspense>
-        </FlowScene>
+        </Scene>
 
         {/* GlowLine: Services → Industries (Açık → Açık) */}
-        <div className="relative" style={{ zIndex: SECTION_Z.glowLine, backgroundColor: "var(--bg-light-concrete)" }}>
+        <div className="relative" style={{ zIndex: SECTION_Z.glowLine, backgroundColor: "hsl(var(--forge-concrete))" }}>
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <Suspense fallback={null}>
               <GlowLineDivider />
@@ -251,16 +284,16 @@ export const Index = () => {
           </div>
         </div>
 
-        {/* 9 — Industries (flow — content exceeds viewport) */}
-        <FlowScene z={SECTION_Z.industries} style={{ backgroundColor: "var(--bg-light-concrete)" }}>
+        {/* 9 — Industries (sticky) */}
+        <Scene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <IndustriesSection />
           </Suspense>
-        </FlowScene>
+        </Scene>
 
-        {/* Bridge: Industries (light) → ProjectShowcase (dark) */}
+        {/* Glow: Industries (light) → ProjectShowcase (dark) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeIndProject} fromColor="var(--bg-light-concrete)" toColor="var(--bg-dark-obsidian)" />
+          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.industriesToProjectGlow} toColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
@@ -277,58 +310,68 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* 12 — Materials (flow — content exceeds viewport) */}
-        <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
+        {/* 12 — Materials (sticky) */}
+        <Scene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
           </Suspense>
-        </FlowScene>
+        </Scene>
 
-        {/* Bridge: Materials → WhyUs (dark → dark) */}
-        <Suspense fallback={null}>
-          <TransitionBridge variant="dark-to-dark" z={SECTION_Z.bridgeMaterialsWhy} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-dark-gunmetal)" />
-        </Suspense>
+        {/* SVG wave: Materials → WhyUs (dark → dark subtle transition) */}
+        <div
+          className="relative"
+          style={{
+            height: 80,
+            overflow: "hidden",
+            backgroundColor: "hsl(var(--forge-gunmetal))",
+            zIndex: SECTION_Z.wave,
+          }}
+        >
+          <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
+            <path d="M0 40C240 10 480 0 720 10C960 20 1200 50 1440 40V80H0Z" style={{ fill: 'hsl(var(--forge-gunmetal))' }} />
+          </svg>
+        </div>
 
         {/* 13 — WhyUs (sticky) */}
-        <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "var(--bg-dark-gunmetal)" }}>
+        <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <WhyUsSection />
           </Suspense>
         </Scene>
 
-        {/* Bridge: WhyUs (dark) → Capabilities (light) */}
+        {/* Glow: WhyUs (dark) → Capabilities (light) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="dark-to-light" z={SECTION_Z.bridgeWhyCap} fromColor="var(--bg-dark-gunmetal)" toColor="var(--bg-light-workshop)" />
+          <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.whyToCapGlow} fromColor="hsl(var(--forge-gunmetal))" />
         </Suspense>
 
         {/* 14 — Capabilities (sticky) */}
-        <Scene z={SECTION_Z.capabilities} style={{ backgroundColor: "var(--bg-light-workshop)" }}>
+        <Scene z={SECTION_Z.capabilities} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
         </Scene>
 
-        {/* 15 — Testimonials (flow — content exceeds viewport) */}
-        <FlowScene z={SECTION_Z.testimonials} style={{ backgroundColor: "var(--bg-light-testimonial)" }}>
+        {/* 15 — Testimonials (sticky) */}
+        <Scene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
-        </FlowScene>
+        </Scene>
 
-        {/* 16 — FAQ/Blog (flow — content exceeds viewport) */}
-        <FlowScene z={SECTION_Z.faqBlog} style={{ backgroundColor: "var(--bg-light-mist)" }}>
+        {/* 16 — FAQ/Blog (sticky) */}
+        <Scene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
-        </FlowScene>
+        </Scene>
 
-        {/* Bridge: FAQ/Blog (light) → FinalCTA (dark) */}
+        {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
         <Suspense fallback={null}>
-          <TransitionBridge variant="light-to-dark" z={SECTION_Z.bridgeFaqCta} fromColor="var(--bg-light-mist)" toColor="var(--bg-dark-obsidian)" />
+          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.faqToCtaGlow} toColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
         {/* 17 — FinalCTA (sticky, last) */}
-        <Scene z={SECTION_Z.finalCta} style={{ backgroundColor: "var(--bg-dark-obsidian)" }}>
+        <Scene z={SECTION_Z.finalCta} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>

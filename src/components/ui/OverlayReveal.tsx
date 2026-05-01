@@ -33,7 +33,7 @@ const scaleProperty = (dir: "top" | "bottom" | "left" | "right") =>
 export const OverlayReveal = ({
   children,
   className = "",
-  overlayColor = "var(--surface-base)",
+  overlayColor = "hsl(var(--forge-obsidian))",
   staggerDelay = 0,
   direction = "top",
 }: OverlayRevealProps) => {

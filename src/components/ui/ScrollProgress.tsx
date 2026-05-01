@@ -23,7 +23,7 @@ const ScrollProgress = () => {
   const barColor =
     direction === "down"
       ? "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))"
-      : "linear-gradient(90deg, hsl(var(--forge-amber)), hsl(var(--heat-amber-rgb) / 0.85))";
+      : "linear-gradient(90deg, hsl(var(--forge-amber)), #D4A853)";
 
   return (
     <motion.div

@@ -28,7 +28,7 @@ const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
       .map((w) => {
         const chars = w.text.split("").map((c) => {
           const style = w.gradient
-            ? `display:inline-block;opacity:0;transform:translateY(100%);background:var(--gradient-heat-word);-webkit-background-clip:text;-webkit-text-fill-color:transparent`
+            ? `display:inline-block;opacity:0;transform:translateY(100%);background:linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)));-webkit-background-clip:text;-webkit-text-fill-color:transparent`
             : `display:inline-block;opacity:0;transform:translateY(100%)`;
           return c === " "
             ? " "
@@ -65,12 +65,13 @@ const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
       style={{ lineHeight: 0.95 }}
       aria-label="Birlikte Üretelim."
     />
+
   );
 });
 
 GsapCtaHeadline.displayName = "GsapCtaHeadline";
 
-export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef) => {
+export const FinalCTASection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const [sweepState, setSweepState] = useState<"idle" | "animating">("idle");
@@ -106,7 +107,7 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
       ref={sectionRef}
       id="iletisim"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex items-center justify-center text-center relative overflow-hidden"
-      style={{ backgroundColor: "var(--bg-precision-deep)" }}
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -115,7 +116,7 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
       {!prefersReduced && (
         <motion.div
           className="absolute inset-0 z-[30] pointer-events-none"
-          style={{ backgroundColor: "var(--text-primary)" }}
+          style={{ backgroundColor: "white" }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: [0, 0.6, 0] }}
           viewport={{ once: true, amount: 0.2 }}
@@ -132,8 +133,8 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
         onAnimationComplete={() => setSweepState("idle")}
         style={{
           background: sweepDirection === "right"
-            ? `linear-gradient(135deg, var(--mat-steel-blue) 0%, var(--bg-cinematic-deep) 100%)`
-            : `linear-gradient(135deg, var(--bg-cinematic-deep) 0%, var(--mat-steel-blue) 100%)`,
+            ? "linear-gradient(135deg, #3a4a5c 0%, #0f0f0f 100%)"
+            : "linear-gradient(135deg, #0f0f0f 0%, #3a4a5c 100%)",
         }}
       />
 
@@ -142,7 +143,7 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            `linear-gradient(to right, var(--surface-scanline) 1px, transparent 1px), linear-gradient(to bottom, var(--surface-scanline) 1px, transparent 1px)`,
+            "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
@@ -180,7 +181,7 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
           >
             <MagneticButton
               href="/teklif-al"
-              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all hover:brightness-110 border-2 bg-heat-molten border-heat-molten text-t-primary"
+              className="px-10 py-4 font-semibold text-sm uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all text-white hover:brightness-110 border-2 bg-forge-molten border-forge-molten"
               strength={0.25}
             >
               {"Teklif Al"}
@@ -198,5 +199,4 @@ export const FinalCTASection = forwardRef<HTMLDivElement>((_props, _forwardedRef
       </div>
     </section>
   );
-});
-FinalCTASection.displayName = "FinalCTASection";
+};

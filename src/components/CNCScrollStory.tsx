@@ -130,7 +130,7 @@ export const CNCScrollStory = () => {
     return (
       <section
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: "var(--bg-precision-deep)" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         <motion.div
           className="absolute inset-0"
@@ -153,16 +153,16 @@ export const CNCScrollStory = () => {
           >
             {"CNC İşleme Süreci"}
           </span>
-          <h2 className="text-3xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
+          <h2 className="text-3xl font-bold text-white mb-4">
             {"Ham Metalden Hassas Parçaya"}
           </h2>
-          <p className="text-sm mb-8" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.6)" }}>
             {"Alüminyum billet'ten nihai havacılık parçasına dönüşüm sürecini keşfedin."}
           </p>
           <Link
             to="/teklif-al"
-            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold"
-            style={{ backgroundColor: "var(--heat-molten)", color: "var(--text-primary)" }}
+            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white"
+            style={{ backgroundColor: "hsl(var(--forge-molten))" }}
           >
             <span>{"Teklif Al"}</span>
             <ArrowRight className="w-4 h-4" />
@@ -174,13 +174,13 @@ export const CNCScrollStory = () => {
 
   /* ── Desktop: scroll-driven canvas ── */
   return (
-    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "var(--bg-precision-deep)" }}>
+    <div ref={containerRef} className="relative" style={{ height: "350vh", backgroundColor: "#0f0f0f" }}>
       <motion.div className="sticky top-0 h-screen overflow-hidden" style={{ opacity: exitOpacity, scale: exitScale, transformOrigin: "center center" }}>
         <AmbientGlowOverlay />
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ backgroundColor: "var(--bg-precision-deep)" }}
+          style={{ backgroundColor: "#0f0f0f" }}
           aria-label="CNC işleme süreci animasyonu"
           role="img"
         />
@@ -197,14 +197,14 @@ export const CNCScrollStory = () => {
         <div
           className="absolute inset-0 pointer-events-none z-[5]"
           style={{
-            backgroundImage: `repeating-linear-gradient(0deg, var(--surface-scanline) 0px, var(--surface-scanline) 1px, transparent 1px, transparent 3px)`,
+            backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px)",
             mixBlendMode: "screen",
             opacity: 0.5,
           }}
         />
 
         {/* Dark overlay */}
-        <div className="absolute inset-0" style={{ background: "var(--overlay-dark-mid)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.5)" }} />
 
         {/* Crosshair overlay */}
         {!prefersReduced && <CrosshairOverlay opacity={crosshairOpacity} />}
@@ -221,22 +221,22 @@ export const CNCScrollStory = () => {
         {/* Phase label */}
         <motion.div
           className="absolute top-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
-          style={{ color: "var(--text-vignette)", opacity: hudOpacity }}
+          style={{ color: 'rgba(255,255,255,0.15)', opacity: hudOpacity }}
         >
           FAZE 03 — CNC İŞLEME
         </motion.div>
 
         {/* Loading state */}
         {!ready && !showFallback && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "var(--bg-precision-deep)" }}>
-            <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "var(--heat-molten)" }} />
-            <span className="text-sm font-mono" style={{ color: "var(--heat-molten)" }}>
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "#0f0f0f" }}>
+            <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
+            <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
               {`%${Math.round((loadedCount / TOTAL_FRAMES) * 100)} yükleniyor...`}
             </span>
           </div>
         )}
 
-        {/* Story overlays */}
+        {/* Story overlays — with scramble text for mono items */}
         <div className="absolute inset-0 z-10">
           {stories.map((story, i) => (
             <motion.div
@@ -258,17 +258,16 @@ export const CNCScrollStory = () => {
                     className={`${story.size} font-bold tracking-tight block`}
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
-                      textShadow: `0 2px 20px var(--overlay-dark-mid)`,
-                      color: "var(--text-primary)",
+                      textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                      color: "rgba(255,255,255,0.9)",
                     }}
                   />
                 ) : (
                   <h2
-                    className={`${story.size} font-bold whitespace-pre-line tracking-tight`}
+                    className={`${story.size} font-bold text-white/90 whitespace-pre-line tracking-tight`}
                     style={{
                       fontFamily: "'Space Grotesk', sans-serif",
-                      textShadow: `0 2px 20px var(--overlay-dark-mid)`,
-                      color: "var(--text-primary)",
+                      textShadow: "0 2px 20px rgba(0,0,0,0.5)",
                     }}
                   >
                     {story.text}
@@ -285,8 +284,8 @@ export const CNCScrollStory = () => {
           >
             <Link
               to="/teklif-al"
-              className="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              style={{ backgroundColor: "var(--heat-molten)", color: "var(--text-primary)" }}
+              className="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              style={{ backgroundColor: "hsl(var(--forge-molten))" }}
             >
               <span>{"Teklif Al"}</span>
               <ArrowRight className="w-5 h-5" />

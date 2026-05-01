@@ -70,14 +70,14 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
     <motion.section
       ref={forwardedRef}
       id="kabiliyetler"
-      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-[100dvh] flex flex-col justify-center"
-      style={{ backgroundColor: "var(--bg-light-workshop)" }}
+      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center"
+      style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
       initial={rackInitial}
       whileInView={rackAnimate}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <style>{`.dark #kabiliyetler { background-color: var(--bg-dark-gunmetal) !important; }`}</style>
+      <style>{`.dark #kabiliyetler { background-color: rgba(15,15,15,0.88) !important; }`}</style>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="grid lg:grid-cols-2 gap-10">
@@ -139,13 +139,13 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
               {/* Table Header */}
               <div
                 className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]"
-                style={{ backgroundColor: "var(--mat-steel-blue)" }}
+                style={{ backgroundColor: "hsl(var(--forge-steel))" }}
               >
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-primary)" }}>{"Kategori"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-primary)" }}>{"Ekipman"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-primary)" }}>{"Boyut"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-primary)" }}>{"Tolerans"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-primary)" }}>{"Hız"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Kategori"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Ekipman"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Boyut"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Tolerans"}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">{"Hız"}</span>
               </div>
 
               {/* Table Rows with stagger */}

@@ -1,4 +1,9 @@
-/** GlowLineDivider — scroll-triggered glow sweep divider */
+/**
+ * GlowLineDivider.tsx — CLEAN SEPARATED
+ *
+ * FIX: Lovable concatenated eslint.config.js, postcss.config.js, and
+ * SectionHeader.tsx into this file. Now clean standalone.
+ */
 import { useRef, useEffect } from "react";
 import { gsap } from "@/hooks/use-gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,7 +16,7 @@ interface GlowLineDividerProps {
   className?: string;
 }
 
-export const GlowLineDivider = ({ glowColor = "var(--precision-ice)", className = "" }: GlowLineDividerProps) => {
+export const GlowLineDivider = ({ glowColor = "hsl(var(--primary))", className = "" }: GlowLineDividerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();

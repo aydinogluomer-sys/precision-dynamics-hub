@@ -58,8 +58,8 @@ export const MusteriPaneli = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center dark:bg-[var(--surface-base)] bg-slate-50">
-        <Loader2 size={32} className="animate-spin text-[var(--precision-ice)]" />
+      <div className="min-h-screen flex items-center justify-center dark:bg-[#0F172A] bg-slate-50">
+        <Loader2 size={32} className="animate-spin text-[#0AA2CD]" />
       </div>
     );
   }
@@ -84,7 +84,7 @@ export const MusteriPaneli = () => {
   };
 
   return (
-    <div className="min-h-screen flex dark:bg-[var(--surface-base)] bg-slate-50 dark:text-[var(--text-primary)] text-slate-800">
+    <div className="min-h-screen flex dark:bg-[#0F172A] bg-slate-50 dark:text-white text-slate-800">
       {/* Desktop Sidebar */}
       <div className={`hidden lg:block transition-all duration-300 ${sidebarCollapsed ? "w-0 overflow-hidden" : ""}`}>
         <MusteriSidebar

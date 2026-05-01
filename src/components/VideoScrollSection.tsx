@@ -83,7 +83,7 @@ export const VideoScrollSection = () => {
     <div
       ref={containerRef}
       className="relative h-[300vh]"
-      style={{ background: "var(--bg-precision-deep)" }}
+      style={{ background: "#0f0f0f" }}
     >
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
         {/* Video */}
@@ -102,7 +102,7 @@ export const VideoScrollSection = () => {
         </motion.div>
 
         {/* Dark overlay */}
-        <div className="absolute inset-0" style={{ background: "var(--overlay-dark-heavy)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(15, 15, 15, 0.6)" }} />
 
         {/* Blueprint grid overlay */}
         {!prefersReduced && (
@@ -111,8 +111,8 @@ export const VideoScrollSection = () => {
             style={{
               opacity: gridOpacity,
               backgroundImage: `
-                linear-gradient(var(--precision-grid) 1px, transparent 1px),
-                linear-gradient(90deg, var(--precision-grid) 1px, transparent 1px)
+                linear-gradient(rgba(0,113,144,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,113,144,0.3) 1px, transparent 1px)
               `,
               backgroundSize: '60px 60px',
             }}
@@ -134,15 +134,15 @@ export const VideoScrollSection = () => {
           </motion.span>
 
           <motion.h2
-            className="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight mb-4"
-            style={{ lineHeight: 1, opacity: titleOpacity, y: titleY, color: "var(--text-primary)" }}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white mb-4"
+            style={{ lineHeight: 1, opacity: titleOpacity, y: titleY }}
           >
             Hassas İşleme
           </motion.h2>
 
           <motion.p
             className="text-base md:text-lg max-w-xl mb-12"
-            style={{ color: "var(--text-secondary)", opacity: descOpacity }}
+            style={{ color: "rgba(255,255,255,0.6)", opacity: descOpacity }}
           >
             Gelişmiş çok eksenli CNC tezgâhlarımızla mikron düzeyinde hassasiyetle en karmaşık parça geometrilerini
             üretiyoruz.
@@ -157,8 +157,8 @@ export const VideoScrollSection = () => {
                 key={f.title}
                 className="group p-4 md:p-5 transition-all duration-300"
                 style={{
-                  border: `1px solid var(--surface-border)`,
-                  background: "var(--surface-glass)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(255,255,255,0.03)",
                   backdropFilter: "blur(8px)",
                   transformStyle: "preserve-3d",
                 }}
@@ -166,8 +166,8 @@ export const VideoScrollSection = () => {
                   rotateX: -3,
                   rotateY: 3,
                   scale: 1.02,
-                  boxShadow: `0 10px 40px var(--precision-hover-shadow)`,
-                  borderColor: "var(--precision-hover-border)",
+                  boxShadow: "0 10px 40px rgba(0,113,144,0.15)",
+                  borderColor: "rgba(0,113,144,0.3)",
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -175,8 +175,8 @@ export const VideoScrollSection = () => {
                 transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <f.icon className="w-6 h-6 mb-3 transition-transform duration-300 group-hover:scale-110" style={{ color: "hsl(var(--primary))" }} strokeWidth={1.5} />
-                <h3 className="text-sm font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{f.title}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                <h3 className="text-sm font-semibold text-white mb-1">{f.title}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
                   {f.desc}
                 </p>
               </motion.div>
@@ -187,7 +187,7 @@ export const VideoScrollSection = () => {
         {/* Phase label */}
         <div
           className="absolute top-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase pointer-events-none z-10"
-          style={{ color: "var(--text-vignette)" }}
+          style={{ color: 'rgba(255,255,255,0.15)' }}
         >
           FAZE 04 — HASSAS İŞLEME
         </div>
@@ -197,7 +197,7 @@ export const VideoScrollSection = () => {
           className="absolute inset-0 z-20 pointer-events-none"
           style={{
             opacity: exitOpacity,
-            background: "var(--bg-precision-deep)",
+            background: "#0f0f0f",
           }}
         />
       </div>

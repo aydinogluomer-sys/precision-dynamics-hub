@@ -63,9 +63,9 @@ export const ElegantShape = forwardRef<HTMLDivElement, ElegantShapeProps>(functi
             gradient,
             "backdrop-blur-[1px]",
             "ring-1 ring-white/[0.03]",
-            "shadow-[0_2px_16px_-2px_rgb(var(--text-primary-rgb)/0.04)]",
+            "shadow-[0_2px_16px_-2px_rgba(255,255,255,0.04)]",
             "after:absolute after:inset-0",
-            "after:bg-[radial-gradient(circle_at_50%_50%,rgb(var(--text-primary-rgb)/0.12),transparent_70%)]",
+            "after:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.12),transparent_70%)]",
             "after:rounded-[inherit]"
           )}
           style={{ borderRadius }}

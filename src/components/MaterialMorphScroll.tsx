@@ -28,6 +28,7 @@ export const MaterialMorphScroll = () => {
     eagerCount: 8,
   });
 
+  // Timeout fallback
   useEffect(() => {
     if (ready) return;
     const timer = setTimeout(() => {
@@ -42,12 +43,17 @@ export const MaterialMorphScroll = () => {
   });
 
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_FRAMES - 1]);
+
+  // Floating card — wider visibility range
   const cardOpacity = useTransform(scrollYProgress, [0.25, 0.32, 0.82, 0.88], [0, 1, 1, 0]);
   const cardX = useTransform(scrollYProgress, [0.25, 0.35], [60, 0]);
+
   const ringProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const circumference = 2 * Math.PI * 45;
   const ringOffset = useTransform(ringProgress, (v: number) => circumference * (1 - v));
   const titleOpacity = useTransform(scrollYProgress, [0, 0.05, 0.25, 0.32], [0, 1, 1, 0]);
+
+  // Exit animation — fade + shrink as user scrolls past
   const exitOpacity = useTransform(scrollYProgress, [0.85, 1], prefersReduced ? [1, 1] : [1, 0.15]);
   const exitScale = useTransform(scrollYProgress, [0.85, 1], prefersReduced ? [1, 1] : [1, 0.88]);
 
@@ -106,12 +112,12 @@ export const MaterialMorphScroll = () => {
     if (ready) drawFrame(0);
   }, [ready, drawFrame]);
 
-  /* ── Mobile fallback ── */
+  /* ── Mobile fallback with material properties ── */
   if (isMobile) {
     return (
       <section
         className="relative min-h-[70vh] flex items-center justify-center overflow-hidden"
-        style={{ backgroundColor: "var(--bg-precision-deep)" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         <motion.div
           className="absolute inset-0"
@@ -134,25 +140,25 @@ export const MaterialMorphScroll = () => {
           >
             {"Malzeme Dönüşümü"}
           </span>
-          <h2 className="text-3xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
+          <h2 className="text-3xl font-bold text-white mb-4">
             {"Yüzey Mükemmelliği"}
           </h2>
-          <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
+          <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.6)" }}>
             {"Ham titanyumdan cilalı anodize yüzeye dönüşüm."}
           </p>
 
-          {/* Mobile material properties — mediator: mat-silver bars */}
+          {/* Mobile material properties */}
           <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
             {materialProps.map((prop) => (
-              <div key={prop.label} className="text-left p-3" style={{ backgroundColor: "var(--surface-glass)", border: `1px solid var(--surface-border)` }}>
-                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--text-technical)" }}>{prop.label}</span>
+              <div key={prop.label} className="text-left p-3" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <span className="text-[10px] text-white/50 font-mono uppercase tracking-wider block mb-1">{prop.label}</span>
                 <div className="flex gap-0.5">
                   {Array.from({ length: prop.max }).map((_, i) => (
                     <div
                       key={i}
                       className="h-1.5 flex-1 rounded-full"
                       style={{
-                        backgroundColor: i < prop.value ? "var(--heat-molten)" : "var(--surface-border)",
+                        backgroundColor: i < prop.value ? "hsl(var(--forge-molten))" : "rgba(255,255,255,0.1)",
                       }}
                     />
                   ))}
@@ -165,6 +171,7 @@ export const MaterialMorphScroll = () => {
     );
   }
 
+
   const burnInitial = prefersReduced ? { filter: "brightness(1)" } : { filter: "brightness(0)" };
   const burnAnimate = { filter: "brightness(1)" };
 
@@ -172,7 +179,7 @@ export const MaterialMorphScroll = () => {
     <motion.div
       ref={containerRef}
       className="relative"
-      style={{ height: "300vh", backgroundColor: "var(--bg-precision-deep)" }}
+      style={{ height: "300vh", backgroundColor: "#0f0f0f" }}
       initial={burnInitial}
       whileInView={burnAnimate}
       viewport={{ once: true, amount: 0.1 }}
@@ -182,11 +189,12 @@ export const MaterialMorphScroll = () => {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ backgroundColor: "var(--bg-precision-deep)" }}
+          style={{ backgroundColor: "#0f0f0f" }}
           aria-label="Malzeme dönüşüm animasyonu"
           role="img"
         />
 
+        {/* Fallback poster */}
         {showFallback && !ready && (
           <img
             src="/sequence-material/frame_0001.webp"
@@ -195,13 +203,13 @@ export const MaterialMorphScroll = () => {
           />
         )}
 
-        <div className="absolute inset-0" style={{ background: "var(--overlay-vignette-light)" }} />
+        <div className="absolute inset-0" style={{ background: "rgba(15,15,15,0.4)" }} />
 
         {/* Loading state */}
         {!ready && !showFallback && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "var(--bg-precision-deep)" }}>
-            <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "var(--heat-molten)" }} />
-            <span className="text-sm font-mono" style={{ color: "var(--heat-molten)" }}>
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center" style={{ backgroundColor: "#0f0f0f" }}>
+            <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "hsl(var(--forge-molten))" }} />
+            <span className="text-sm font-mono" style={{ color: "hsl(var(--forge-molten))" }}>
               {`%${Math.round((loadedCount / TOTAL_FRAMES) * 100)} yükleniyor...`}
             </span>
           </div>
@@ -219,13 +227,13 @@ export const MaterialMorphScroll = () => {
             >
               {"Malzeme Dönüşümü"}
             </span>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
               {"Yüzey Mükemmelliği"}
             </h2>
           </div>
         </motion.div>
 
-        {/* Floating material properties card — mediator rule: mat-silver ring + precision-indigo */}
+        {/* Floating material properties card */}
         <motion.div
           className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 z-10 w-72"
           style={{ opacity: cardOpacity, x: cardX }}
@@ -233,17 +241,17 @@ export const MaterialMorphScroll = () => {
           <div
             className="p-6 border backdrop-blur-md"
             style={{
-              backgroundColor: "var(--overlay-dark)",
-              borderColor: "var(--surface-border)",
+              backgroundColor: "rgba(15,15,15,0.8)",
+              borderColor: "rgba(255,255,255,0.1)",
             }}
           >
             <div className="flex items-center gap-4 mb-5">
               <svg width="56" height="56" viewBox="0 0 100 100" className="shrink-0 -rotate-90">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--surface-border)" strokeWidth="4" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
                 <motion.circle
                   cx="50" cy="50" r="45"
                   fill="none"
-                  stroke="var(--precision-indigo)"
+                  stroke="hsl(var(--forge-molten))"
                   strokeWidth="4"
                   strokeLinecap="round"
                   strokeDasharray={circumference}
@@ -251,10 +259,10 @@ export const MaterialMorphScroll = () => {
                 />
               </svg>
               <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] font-mono block" style={{ color: "var(--text-technical)" }}>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono block">
                   {"Dönüşüm"}
                 </span>
-                <span className="text-xl font-bold font-mono" style={{ color: "var(--text-primary)" }}>
+                <span className="text-xl font-bold text-white font-mono">
                   {"Ti-6Al-4V"}
                 </span>
               </div>
@@ -264,15 +272,15 @@ export const MaterialMorphScroll = () => {
               {materialProps.map((prop) => (
                 <div key={prop.label}>
                   <div className="flex justify-between text-[10px] mb-1">
-                    <span className="font-mono uppercase tracking-wider" style={{ color: "var(--text-technical)" }}>{prop.label}</span>
-                    <span className="font-mono font-bold" style={{ color: "var(--text-secondary)" }}>{prop.value}/{prop.max}</span>
+                    <span className="text-white/50 font-mono uppercase tracking-wider">{prop.label}</span>
+                    <span className="text-white/80 font-mono font-bold">{prop.value}/{prop.max}</span>
                   </div>
-                  <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "var(--surface-border)" }}>
+                  <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{
                         width: `${(prop.value / prop.max) * 100}%`,
-                        background: `linear-gradient(90deg, var(--heat-molten), var(--mat-silver), var(--precision-indigo))`,
+                        background: "linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)))",
                       }}
                     />
                   </div>

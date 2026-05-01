@@ -2,25 +2,18 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useRef, Suspense, useMemo } from "react";
 import * as THREE from "three";
-import { getCSSVar } from "@/utils/cssVar";
-import { useTheme } from "@/hooks/use-theme";
 
-/* ──────── Shared colors — runtime token sync (phase-11A-extended) ────────
- * useTheme dependency: tema değişiminde palette yeniden hesaplanır ve
- * material'lar useMemo referans değişikliği ile güncellenmiş yeni Color
- * instance'larını kullanır. Fallback hex'ler EXEMPT (SSR/hydration güvenli). */
-const usePalette = () => {
-  const { theme } = useTheme();
-  return useMemo(
+/* ──────── Shared colors ──────── */
+const usePalette = () =>
+  useMemo(
     () => ({
-      teal: new THREE.Color(getCSSVar("--precision-steel", "#0688AD")),
-      metal: new THREE.Color(getCSSVar("--material-chrome", "#94a3b8")),
-      dark: new THREE.Color(getCSSVar("--surface-base", "#1e293b")),
-      white: new THREE.Color(getCSSVar("--text-primary", "#e2e8f0")),
+      teal: new THREE.Color("#0688AD"),
+      metal: new THREE.Color("#94a3b8"),
+      dark: new THREE.Color("#1e293b"),
+      white: new THREE.Color("#e2e8f0"),
     }),
-    [theme]
+    []
   );
-};
 
 /* 1 — Havacılık & Uzay: Jet Engine Nacelle */
 const TurbineModel = () => {
@@ -352,14 +345,10 @@ export const IndustryCanvas = ({ type }: { type: IndustryType }) => {
         <Suspense fallback={null}>
           <ambientLight intensity={0.35} />
           <directionalLight position={[5, 5, 5]} intensity={1.4} castShadow />
-          {/* eslint-disable-next-line no-restricted-syntax */}
-          <directionalLight position={[-4, 3, -3]} intensity={0.5} color="#0688AD" /* OK: R3F runtime */ />
-          {/* eslint-disable-next-line no-restricted-syntax */}
-          <pointLight position={[0, -2, 4]} intensity={0.6} color="#0688AD" /* OK: R3F runtime */ />
-          {/* eslint-disable-next-line no-restricted-syntax */}
-          <pointLight position={[2, 3, -2]} intensity={0.3} color="#e2e8f0" /* OK: R3F runtime */ />
-          {/* eslint-disable-next-line no-restricted-syntax */}
-          <spotLight position={[-3, 4, -4]} intensity={0.4} angle={0.5} penumbra={1} color="#0688AD" /* OK: R3F runtime */ />
+          <directionalLight position={[-4, 3, -3]} intensity={0.5} color="#0688AD" />
+          <pointLight position={[0, -2, 4]} intensity={0.6} color="#0688AD" />
+          <pointLight position={[2, 3, -2]} intensity={0.3} color="#e2e8f0" />
+          <spotLight position={[-3, 4, -4]} intensity={0.4} angle={0.5} penumbra={1} color="#0688AD" />
           <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} dampingFactor={0.1} />
           <ModelComponent />
         </Suspense>

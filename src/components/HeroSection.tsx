@@ -6,7 +6,7 @@
  * Phase 3 (60–88%): Horizontal slide — Hero slides left, QuickQuote slides in
  * Phase 4 (88–100%): Lava pour + heat distortion
  */
-import { useRef, useEffect, useCallback, useState, lazy, Suspense, forwardRef } from "react";
+import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap } from "@/hooks/use-gsap";
@@ -32,7 +32,7 @@ interface HeroSectionProps {
   isFirstVisit?: boolean;
 }
 
-export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFirstVisit = false }, _forwardedRef) => {
+export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -94,6 +94,9 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
         },
       );
 
+
+
+
       // Content fade out
       gsap.to(content, {
         y: -140,
@@ -136,6 +139,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
       );
 
       // Phase 3: Lava pour (85% – 100%)
+      // Lava flow scaleY
       gsap.fromTo(
         lavaFlow,
         { scaleY: 0 },
@@ -151,7 +155,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
         },
       );
 
-      // Heat distortion
+      // Heat distortion — animate displacement scale
       const displacementEl = document.getElementById("heat-displacement");
       if (displacementEl) {
         gsap.fromTo(
@@ -172,7 +176,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
 
       // Background color shift on quote panel
       gsap.to(quotePanel, {
-        background: `linear-gradient(135deg, var(--heat-ember) 0%, var(--heat-lava-end) 50%, var(--heat-char) 100%)`,
+        background: "linear-gradient(135deg, #ff4500 0%, #e25822 50%, #b8451a 100%)",
         ease: "none",
         scrollTrigger: {
           trigger: scroller,
@@ -223,7 +227,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
       <section
         ref={stickyRef}
         className="sticky top-0 h-screen overflow-hidden"
-        style={{ backgroundColor: "var(--bg-cinematic-deep)" }}
+        style={{ backgroundColor: "#0f0f0f" }}
       >
         {/* Hidden SVG filter for heat distortion */}
         <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
@@ -247,7 +251,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
           </defs>
         </svg>
 
-        {/* Horizontal sliding container */}
+        {/* Horizontal sliding container: 200vw wide, two panels side by side */}
         <div
           ref={horizontalWrapRef}
           className="flex h-full"
@@ -273,7 +277,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                 initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
                 animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
-                style={{ backgroundColor: "var(--text-primary)" }}
+                style={{ backgroundColor: "white" }}
               />
             )}
 
@@ -333,13 +337,14 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
               />
             </div>
 
+
             {/* Layer 4: Grid overlay */}
             <div
               ref={gridRef}
               className="absolute inset-0 pointer-events-none z-[3]"
               style={{
                 backgroundImage:
-                  `linear-gradient(to right, var(--precision-scanline) 1px, transparent 1px), linear-gradient(to bottom, var(--precision-scanline) 1px, transparent 1px)`,
+                  "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
                 backgroundSize: "40px 40px",
               }}
             />
@@ -349,7 +354,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
               className="absolute inset-0 pointer-events-none z-[4]"
               style={{
                 background:
-                  `radial-gradient(ellipse at center, var(--overlay-vignette-light) 0%, var(--overlay-dark-mid) 60%, var(--overlay-vignette-heavy) 100%)`,
+                  "radial-gradient(ellipse at center, rgba(15,15,15,0.25) 0%, rgba(15,15,15,0.55) 60%, rgba(15,15,15,0.75) 100%)",
               }}
             />
 
@@ -389,7 +394,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                     className="text-xs uppercase tracking-widest"
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
-                      color: "var(--text-technical)",
+                      color: "rgba(255,255,255,0.5)",
                     }}
                   >
                     CNC Hassas İşleme
@@ -409,6 +414,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                   </AnimatePresence>
                 </div>
 
+
                 {/* Scroll indicator */}
                 <motion.div
                   className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
@@ -416,13 +422,12 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                   animate={{ opacity: 0.4 }}
                   transition={{ delay: 1.5 + heroDelay }}
                 >
-                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono" style={{ color: "var(--text-muted)" }}>Scroll</span>
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">Scroll</span>
                   <motion.div
-                    className="w-px h-8"
-                    style={{ backgroundColor: "var(--text-hint)" }}
+                    className="w-px h-8 bg-white/20"
                     animate={{ scaleY: [0, 1, 0] }}
                     transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                    /* transformOrigin handled by style */
+                    style={{ transformOrigin: "top" }}
                   />
                 </motion.div>
               </motion.div>
@@ -436,7 +441,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
             style={{
               width: "100vw",
               flexShrink: 0,
-              backgroundColor: "var(--bg-cinematic-deep)",
+              backgroundColor: "#0f0f0f",
             }}
           >
             {/* QuickQuote content */}
@@ -456,7 +461,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
                 style={{
                   background: `
                     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
-                    linear-gradient(to bottom, var(--heat-lava-start) 0%, var(--heat-lava-mid) 40%, var(--heat-lava-end) 70%, var(--heat-char) 100%)
+                    linear-gradient(to bottom, #ff6a00 0%, #ee0979 40%, #e25822 70%, #b8451a 100%)
                   `,
                   backgroundBlendMode: "overlay",
                   clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
@@ -466,7 +471,7 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
               />
             </div>
 
-            {/* Bottom gradient */}
+            {/* Bottom white gradient */}
             <div
               className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
               style={{
@@ -479,5 +484,4 @@ export const HeroSection = forwardRef<HTMLDivElement, HeroSectionProps>(({ isFir
       </section>
     </div>
   );
-});
-HeroSection.displayName = "HeroSection";
+};
