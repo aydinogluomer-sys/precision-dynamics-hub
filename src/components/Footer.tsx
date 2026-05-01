@@ -1,9 +1,7 @@
 import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { LiveClock } from "./LiveClock";
-import { MarqueeBand } from "./MarqueeBand";
 
 const footerLinks = [
   {
@@ -103,16 +101,6 @@ export const Footer = () => {
     return () => ro.disconnect();
   }, []);
 
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.08 } },
-  };
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
-  };
-
   return (
     <>
       {/* Spacer for fixed footer */}
@@ -123,9 +111,6 @@ export const Footer = () => {
         className="footer-reveal fixed bottom-0 left-0 w-full overflow-hidden font-mono"
         style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
       >
-      {/* Marquee band at top of footer */}
-      <MarqueeBand reverse />
-
       {/* Big signature watermark */}
       <div
         className="pointer-events-none select-none overflow-hidden relative"
@@ -167,11 +152,7 @@ export const Footer = () => {
 
       <div className="relative z-10 container-industrial pt-20 pb-10">
         {/* Newsletter Glass Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+        <div
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-16"
           style={{
             background: "rgba(22, 32, 56, 0.4)",
@@ -233,7 +214,7 @@ export const Footer = () => {
               <div key={i} className="w-1 h-1 rounded-full bg-primary" />
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Mobile: Accordion links */}
         <div className="md:hidden mb-12">
@@ -290,15 +271,9 @@ export const Footer = () => {
         </div>
 
         {/* Desktop: Grid links */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16"
-        >
+        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-10 mb-16">
           {/* Brand & Contact */}
-          <motion.div variants={fadeUp} className="md:col-span-3 lg:col-span-1">
+          <div className="md:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">MT</span>
@@ -341,11 +316,11 @@ export const Footer = () => {
                 </a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Link groups */}
           {footerLinks.map((group) => (
-            <motion.div key={group.title} variants={fadeUp}>
+            <div key={group.title}>
               <h4 className="font-semibold mb-4 uppercase tracking-wider text-xs text-white">{group.title}</h4>
               <ul className="space-y-2.5">
                 {group.items.map((l) => (
@@ -356,16 +331,12 @@ export const Footer = () => {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* CTA Glass Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+        <div
           className="relative overflow-hidden rounded-2xl p-8 md:p-12 mb-12"
           style={{
             background: "rgba(22, 32, 56, 0.4)",
