@@ -70,7 +70,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
     <motion.section
       ref={forwardedRef}
       id="kabiliyetler"
-      className="relative py-24 md:py-32 lg:py-40 px-4 min-h-screen flex flex-col justify-center"
+      className="relative py-24 md:py-32 lg:py-40 px-6 lg:px-8 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "rgba(240, 237, 232, 0.88)" }}
       initial={rackInitial}
       whileInView={rackAnimate}
