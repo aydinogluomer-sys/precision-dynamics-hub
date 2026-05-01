@@ -64,14 +64,14 @@ const primaryIndustries: Industry[] = [
 ];
 
 const secondaryIndustries: Industry[] = [
-  { name: "Yelken & Yat", description: "", highlight: "Korozyon direnci", image: imgMarine },
-  { name: "Hidrolik & Pnömatik", description: "", highlight: "350+ bar dayanım", image: imgHydraulic },
-  { name: "Boru & Bağlantı", description: "", highlight: "Sızdırmazlık garantisi", image: imgPiping },
-  { name: "İklim Teknolojileri", description: "", highlight: "Enerji verimli tasarım", image: imgHvac },
-  { name: "Yenilenebilir Enerji", description: "", highlight: "Sürdürülebilir üretim", image: imgRenewable },
-  { name: "Petrol & Gaz", description: "", highlight: "API standartları", image: imgOilgas },
-  { name: "Güç Dağıtım", description: "", highlight: "Yüksek iletkenlik", image: imgPower },
-  { name: "Madencilik", description: "", highlight: "Aşınma direnci", image: imgMining },
+  { name: "Yelken & Yat", description: "Tuzlu su koşullarına dayanıklı paslanmaz ve bronz alaşımlarla yat donanımı.", highlight: "Korozyon direnci", image: imgMarine },
+  { name: "Hidrolik & Pnömatik", description: "Yüksek basınç altında çalışan valf, silindir ve manifold parçaları.", highlight: "350+ bar dayanım", image: imgHydraulic },
+  { name: "Boru & Bağlantı", description: "Endüstriyel tesislerde sızdırmazlığı kritik flanş ve fitting üretimi.", highlight: "Sızdırmazlık garantisi", image: imgPiping },
+  { name: "İklim Teknolojileri", description: "HVAC sistemleri için yüksek verimli ısı eşanjörü bileşenleri.", highlight: "Enerji verimli tasarım", image: imgHvac },
+  { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistemleri için hassas mekanik parçalar.", highlight: "Sürdürülebilir üretim", image: imgRenewable },
+  { name: "Petrol & Gaz", description: "API 6A/6D standartlarına uygun vana, flanş ve kuyu başı bileşenleri.", highlight: "API standartları", image: imgOilgas },
+  { name: "Güç Dağıtım", description: "Trafo, şalter ve kesici sistemleri için iletken metal bileşenler.", highlight: "Yüksek iletkenlik", image: imgPower },
+  { name: "Madencilik", description: "Aşırı yük ve aşındırıcı koşullara dayanıklı sertleştirilmiş parçalar.", highlight: "Aşınma direnci", image: imgMining },
 ];
 
 const EASE = [0.16, 1, 0.3, 1] as const;
