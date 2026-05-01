@@ -351,12 +351,12 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* 15 — Testimonials (sticky) */}
-        <Scene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 15 — Testimonials */}
+        <FlowScene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* 16 — FAQ/Blog (sticky) */}
         <FlowScene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
