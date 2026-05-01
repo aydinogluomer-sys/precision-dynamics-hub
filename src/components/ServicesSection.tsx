@@ -247,7 +247,7 @@ export const ServicesSection = () => {
     <section
       ref={sectionRef}
       id="hizmetler"
-      className="section-industrial min-h-screen flex flex-col justify-center"
+      className="section-industrial py-20 md:py-28"
       style={{ backgroundColor: "hsl(var(--forge-concrete))" }}
     >
       <style>{`.dark #hizmetler { background-color: hsl(var(--forge-concrete)) !important; }`}</style>

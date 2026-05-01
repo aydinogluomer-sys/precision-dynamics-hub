@@ -253,12 +253,12 @@ export const Index = () => {
           <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.videoToServicesGlow} fromColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
-        {/* 8 — Services (sticky) */}
-        <Scene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 8 — Services (flow) */}
+        <FlowScene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <ServicesSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* GlowLine: Services → Industries (Açık → Açık) */}
         <div className="relative" style={{ zIndex: SECTION_Z.glowLine, backgroundColor: "hsl(var(--forge-concrete))" }}>
