@@ -1,5 +1,5 @@
-import { ChevronDown, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ArrowRight, Search } from "lucide-react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
@@ -74,7 +74,9 @@ const blogPosts = [
 ];
 
 export const FAQBlogSection = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
+  const [visibleBlogs, setVisibleBlogs] = useState(2);
   const prefersReduced = usePrefersReducedMotion();
 
   const faqCardVariants = {
@@ -85,6 +87,14 @@ export const FAQBlogSection = () => {
       transition: { duration: 0.5, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
     }),
   };
+
+  const filteredFaqs = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return faqs;
+    return faqs.filter(
+      (f) => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q),
+    );
+  }, [query]);
 
   return (
     <section
@@ -101,19 +111,41 @@ export const FAQBlogSection = () => {
               <SectionHeader tag="SSS" title="Sıkça Sorulan Sorular" sectionNumber={6} />
             </div>
 
+            {/* Search */}
+            <div className="relative mb-5">
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setOpenIndex(null);
+                }}
+                placeholder="Sorularda ara..."
+                aria-label="SSS içinde ara"
+                className="w-full pl-10 pr-3 py-2.5 text-sm bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
             <motion.div
               className="space-y-2"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
             >
-              {faqs.map((faq, index) => (
-                <motion.div key={index} className="border border-border bg-background" custom={index} variants={faqCardVariants}>
+              {filteredFaqs.length === 0 && (
+                <p className="text-sm text-muted-foreground py-6 text-center">
+                  "{query}" için sonuç bulunamadı.
+                </p>
+              )}
+              {filteredFaqs.map((faq, index) => (
+                <motion.div key={faq.question} className="border border-border bg-background" custom={index} variants={faqCardVariants}>
                   <button
                     onClick={() =>
                       setOpenIndex(openIndex === index ? null : index)
                     }
                     className="w-full flex items-center justify-between p-4 text-center md:text-left hover:bg-muted/50 transition-colors"
+                    aria-expanded={openIndex === index}
                   >
                     <span className="font-medium pr-4 text-center md:text-left w-full">
                       {faq.question}
@@ -163,7 +195,7 @@ export const FAQBlogSection = () => {
             </div>
 
             <div className="space-y-4">
-              {blogPosts.map((post, index) => (
+              {blogPosts.slice(0, visibleBlogs).map((post, index) => (
                 <a
                   key={index}
                   href="#"
@@ -202,16 +234,46 @@ export const FAQBlogSection = () => {
               ))}
             </div>
 
-            <div className="text-center md:text-left mt-6">
-              <a
-                href="#blog"
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
+              {visibleBlogs < blogPosts.length ? (
+                <button
+                  onClick={() => setVisibleBlogs((v) => Math.min(v + 2, blogPosts.length))}
+                  className="px-5 py-2 text-sm font-medium border border-border bg-background hover:border-primary hover:text-primary transition-colors"
+                >
+                  Daha Fazla Yükle ({blogPosts.length - visibleBlogs})
+                </button>
+              ) : (
+                <span className="text-xs text-muted-foreground">Tüm yazılar gösteriliyor</span>
+              )}
+              <Link
+                to="/blog"
                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
               >
                 {"Tüm Yazılar"}
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
           </div>
+        </div>
+
+        {/* CTA Bar — kapanış */}
+        <div className="mt-16 md:mt-20 border border-primary/30 bg-background/60 backdrop-blur-sm p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="text-center md:text-left">
+            <h3 className="text-lg md:text-xl font-bold text-foreground mb-1">
+              Cevabınızı bulamadınız mı?
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Projenizi paylaşın, 24-48 saat içinde detaylı teklif gönderelim.
+            </p>
+          </div>
+          <Link
+            to="/teklif-al"
+            className="inline-flex items-center gap-2 px-7 py-3.5 font-semibold uppercase tracking-wider text-sm text-white whitespace-nowrap transition-all hover:brightness-110"
+            style={{ backgroundColor: "hsl(var(--forge-molten))" }}
+          >
+            Teklif Al
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>
