@@ -359,11 +359,11 @@ export const Index = () => {
         </Scene>
 
         {/* 16 — FAQ/Blog (sticky) */}
-        <Scene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+        <FlowScene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: FAQ/Blog (light) → FinalCTA (dark) */}
         <Suspense fallback={null}>
