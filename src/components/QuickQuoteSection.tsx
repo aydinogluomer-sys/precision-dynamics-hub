@@ -76,7 +76,7 @@ export const QuickQuoteSection = forwardRef<HTMLDivElement, object>((_, _ref) =>
         }}
       />
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 lg:px-8">
         <div className="w-full">
           {/* Header */}
           <motion.div

@@ -133,7 +133,7 @@ export const HowWeWorkSection = () => {
     return (
       <section
         id="nasil-calisiyoruz"
-        className="relative border-y border-border py-12"
+        className="relative border-y border-border py-24 md:py-32 lg:py-40"
         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       >
         <div className="container-industrial mb-8">
@@ -144,7 +144,7 @@ export const HowWeWorkSection = () => {
             description="Teknik veriden son kalite onayına kadar uçtan uca endüstriyel sürecimiz"
           />
         </div>
-        <div className="flex flex-col gap-5 px-4">
+        <div className="flex flex-col gap-5 container-industrial">
           {steps.map((step, i) => (
             <StepCard key={step.number} step={step} index={i} />
           ))}
