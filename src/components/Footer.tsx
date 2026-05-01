@@ -388,7 +388,7 @@ export const Footer = () => {
               <div key={i} className="w-1 h-1 rounded-full bg-primary" />
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Bottom Bar */}
         <div className="pt-6" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
