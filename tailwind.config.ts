@@ -74,6 +74,15 @@ export default {
           workshop: "hsl(var(--forge-workshop))",
           mist: "hsl(var(--forge-mist))",
         },
+        neutral: {
+          50: "hsl(var(--neutral-50))",
+          100: "hsl(var(--neutral-100))",
+          200: "hsl(var(--neutral-200))",
+        },
+        "accent-blue": "hsl(var(--accent-blue))",
+        "accent-indigo": "hsl(var(--accent-indigo))",
+        "accent-deep": "hsl(var(--accent-deep))",
+        "accent-abyss": "hsl(var(--accent-abyss))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
