@@ -106,13 +106,16 @@ const Scene = ({
   z,
   className = "",
   style,
+  id,
 }: {
   children: ReactNode;
   z: number;
   className?: string;
   style?: React.CSSProperties;
+  id?: string;
 }) => (
   <div
+    id={id}
     className={`sticky top-0 min-h-screen w-full overflow-hidden ${className}`}
     style={{ zIndex: z, ...style }}
   >
@@ -126,13 +129,15 @@ const FlowScene = ({
   z,
   className = "",
   style,
+  id,
 }: {
   children: ReactNode;
   z: number;
   className?: string;
   style?: React.CSSProperties;
+  id?: string;
 }) => (
-  <div className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
+  <div id={id} className={`relative w-full ${className}`} style={{ zIndex: z, ...style }}>
     {children}
   </div>
 );
@@ -187,13 +192,13 @@ export const Index = () => {
 
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
-        <FlowScene z={SECTION_Z.hero}>
+        <FlowScene z={SECTION_Z.hero} id="hero">
           <HeroSection isFirstVisit={isFirstVisit} />
         </FlowScene>
 
         {/* Lava Typography Scene */}
         {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.lavaTypography}>
+          <FlowScene z={SECTION_Z.lavaTypography} id="lav-sahne">
             <ErrorBoundary>
               <Suspense fallback={<SectionLoader />}>
                 <LavaTypographyScene />
@@ -204,7 +209,7 @@ export const Index = () => {
 
         {/* Mold Cast Scene */}
         {gpu !== 'none' && (
-          <FlowScene z={SECTION_Z.moldCast}>
+          <FlowScene z={SECTION_Z.moldCast} id="dokum-sahne">
             <ErrorBoundary>
               <Suspense fallback={<SectionLoader />}>
                 <MoldCastScene />
@@ -214,7 +219,7 @@ export const Index = () => {
         )}
 
         {/* CNCScrollStory */}
-        <FlowScene z={SECTION_Z.cncStory}>
+        <FlowScene z={SECTION_Z.cncStory} id="cnc-story">
           <ErrorBoundary>
             <Suspense fallback={<SectionLoader />}>
               <CNCScrollStory />
@@ -223,7 +228,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 4 — NexusPromo */}
-        <FlowScene z={SECTION_Z.nexus} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+        <FlowScene z={SECTION_Z.nexus} id="nexus" style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <NexusPromoSection />
           </Suspense>
@@ -264,7 +269,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 7 — VideoScroll (flow, scroll-linked video) */}
-        <FlowScene z={SECTION_Z.videoScroll}>
+        <FlowScene z={SECTION_Z.videoScroll} id="video">
           <Suspense fallback={<SectionLoader />}>
             <VideoScrollSection />
           </Suspense>
@@ -304,14 +309,14 @@ export const Index = () => {
         </Suspense>
 
         {/* 10 — ProjectShowcase (flow, internal pin) */}
-        <FlowScene z={SECTION_Z.projectShowcase}>
+        <FlowScene z={SECTION_Z.projectShowcase} id="projeler">
           <Suspense fallback={<SectionLoader />}>
             <ProjectShowcase />
           </Suspense>
         </FlowScene>
 
         {/* 11 — MaterialMorphScroll (flow, scroll-linked) */}
-        <FlowScene z={SECTION_Z.materialMorph}>
+        <FlowScene z={SECTION_Z.materialMorph} id="malzeme-morph">
           <Suspense fallback={<SectionLoader />}>
             <MaterialMorphScroll />
           </Suspense>
@@ -344,7 +349,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 16 — FAQ/Blog (sticky) */}
-        <FlowScene z={SECTION_Z.faqBlog} style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
+        <FlowScene z={SECTION_Z.faqBlog} id="sss-blog" style={{ backgroundColor: "hsl(var(--forge-mist))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FAQBlogSection />
           </Suspense>
