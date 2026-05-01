@@ -50,29 +50,31 @@ export const NexusPromoSection = () => {
       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
       <AmbientGlowOverlay />
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-24 md:py-32 lg:py-40">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 lg:py-36 overflow-hidden">
         {/* Standardized SectionHeader */}
-        <div className="mb-12">
+        <div className="mb-10 md:mb-12">
          <SectionHeader
             tag="Dijital Platform"
             title="Nexus Endüstriyel Yönetim Paneli"
             sectionNumber={3}
             description="Üretim süreçlerinizi, tekliflerinizi ve sipariş durumlarınızı tek bir noktadan yönetin. Hassas mühendislik için optimize edilmiş dijital tedarik zinciri entegrasyonu."
+            titleClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter mb-4 leading-[1.05] text-foreground break-words"
           />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-16 items-start min-w-0">
           <motion.div
+            className="min-w-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <div className="space-y-5 mb-10">
+            <div className="space-y-5 mb-8 md:mb-10">
               {features.map((f, i) => (
                 <motion.div
                   key={f.label}
-                  className="flex items-start gap-4 group cursor-default"
+                  className="flex items-start gap-3 sm:gap-4 group cursor-default min-w-0"
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -81,9 +83,9 @@ export const NexusPromoSection = () => {
                   <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
                     <f.icon className="w-5 h-5 text-primary" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-base text-foreground mb-0.5">{f.label}</h4>
-                    <p className="text-sm text-muted-foreground">{f.desc}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-semibold text-sm sm:text-base text-foreground mb-0.5 break-words">{f.label}</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground break-words">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}
