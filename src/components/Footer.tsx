@@ -81,36 +81,12 @@ const FooterAccordion = ({ group }: { group: typeof footerLinks[number] }) => {
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const footerRef = useRef<HTMLElement>(null);
-  const [footerHeight, setFooterHeight] = useState(0);
-
-  useEffect(() => {
-    const el = footerRef.current;
-    if (!el) return;
-
-    const updateHeight = () => {
-      const h = el.offsetHeight;
-      setFooterHeight(h);
-      document.documentElement.style.setProperty("--footer-height", h + "px");
-    };
-
-    updateHeight();
-
-    const ro = new ResizeObserver(() => updateHeight());
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   return (
-    <>
-      {/* Spacer for fixed footer */}
-      <div style={{ height: footerHeight }} />
-
-      <footer
-        ref={footerRef}
-        className="footer-reveal fixed bottom-0 left-0 w-full overflow-hidden font-mono"
-        style={{ backgroundColor: "hsl(var(--forge-obsidian))", zIndex: 0 }}
-      >
+    <footer
+      className="relative w-full overflow-hidden font-mono"
+      style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}
+    >
       {/* Big signature watermark */}
       <div
         className="pointer-events-none select-none overflow-hidden relative"
