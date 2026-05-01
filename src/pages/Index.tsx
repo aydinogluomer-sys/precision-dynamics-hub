@@ -14,9 +14,6 @@ const NexusPromoSection = lazy(() =>
 const HowWeWorkSection = lazy(() =>
   import("@/components/HowWeWorkSection").then((m) => ({ default: m.HowWeWorkSection })),
 );
-const CertificationsSection = lazy(() =>
-  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
-);
 const Footer = lazy(() => import("@/components/Footer").then((m) => ({ default: m.Footer })));
 const GlowLineDivider = lazy(() =>
   import("@/components/ui/GlowLineDivider").then((m) => ({ default: m.GlowLineDivider })),
@@ -243,18 +240,6 @@ export const Index = () => {
             <HowWeWorkSection />
           </Suspense>
         </FlowScene>
-
-        {/* Glow: HowWeWork (light) → Certifications (dark) */}
-        <Suspense fallback={null}>
-          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.hwwToCertGlow} toColor="hsl(var(--forge-obsidian))" />
-        </Suspense>
-
-        {/* 6 — Certifications (sticky) */}
-        <Scene z={SECTION_Z.certifications} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <CertificationsSection />
-          </Suspense>
-        </Scene>
 
         {/* 7 — VideoScroll (flow, scroll-linked video) */}
         <FlowScene z={SECTION_Z.videoScroll}>
