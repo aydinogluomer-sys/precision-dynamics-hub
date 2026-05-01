@@ -1,6 +1,6 @@
 import { Linkedin, Instagram, ArrowRight, Mail, MapPin, Phone, MessageCircle, ArrowLeft, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { LiveClock } from "./LiveClock";
 
 const footerLinks = [
