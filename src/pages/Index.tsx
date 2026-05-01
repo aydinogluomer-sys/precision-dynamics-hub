@@ -225,12 +225,12 @@ export const Index = () => {
           </ErrorBoundary>
         </FlowScene>
 
-        {/* 4 — NexusPromo (sticky) */}
-        <Scene z={SECTION_Z.nexus} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+        {/* 4 — NexusPromo */}
+        <FlowScene z={SECTION_Z.nexus} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <NexusPromoSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: Nexus (dark) → HowWeWork (light) */}
         <Suspense fallback={null}>
@@ -284,12 +284,12 @@ export const Index = () => {
           </div>
         </div>
 
-        {/* 9 — Industries (sticky) */}
-        <Scene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        {/* 9 — Industries */}
+        <FlowScene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <IndustriesSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: Industries (light) → ProjectShowcase (dark) */}
         <Suspense fallback={null}>
@@ -310,12 +310,12 @@ export const Index = () => {
           </Suspense>
         </FlowScene>
 
-        {/* 12 — Materials (sticky) */}
-        <Scene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        {/* 12 — Materials */}
+        <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* SVG wave: Materials → WhyUs (dark → dark subtle transition) */}
         <div
@@ -344,12 +344,12 @@ export const Index = () => {
           <SectionTransitionGlow variant="dark-to-light" z={SECTION_Z.whyToCapGlow} fromColor="hsl(var(--forge-gunmetal))" />
         </Suspense>
 
-        {/* 14 — Capabilities (sticky) */}
-        <Scene z={SECTION_Z.capabilities} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+        {/* 14 — Capabilities */}
+        <FlowScene z={SECTION_Z.capabilities} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* 15 — Testimonials (sticky) */}
         <Scene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
@@ -370,12 +370,12 @@ export const Index = () => {
           <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.faqToCtaGlow} toColor="hsl(var(--forge-obsidian))" />
         </Suspense>
 
-        {/* 17 — FinalCTA (sticky, last) */}
-        <Scene z={SECTION_Z.finalCta} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
+        {/* 17 — FinalCTA */}
+        <FlowScene z={SECTION_Z.finalCta} style={{ backgroundColor: "hsl(var(--forge-obsidian))" }}>
           <Suspense fallback={<SectionLoader />}>
             <FinalCTASection />
           </Suspense>
-        </Scene>
+        </FlowScene>
       </main>
 
       <Suspense fallback={null}>
