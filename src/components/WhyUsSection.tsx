@@ -90,7 +90,7 @@ export const WhyUsSection = () => {
       </div>
 
       {/* Highlight Section — scroll-linked */}
-      <div className="border-t border-border/20 py-20 md:py-28 overflow-hidden">
+      <div className="border-t border-border/20 py-24 md:py-32 lg:py-40 overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <p
             className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-white"
