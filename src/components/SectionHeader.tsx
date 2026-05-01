@@ -68,7 +68,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
 
         {description && (
           <Reveal direction="up" delay={0.3} duration={0.5}>
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">{description}</p>
+            <p className="text-base md:text-lg max-w-xl leading-relaxed text-neutral-300">{description}</p>
           </Reveal>
         )}
       </div>

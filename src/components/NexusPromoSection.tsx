@@ -85,7 +85,7 @@ export const NexusPromoSection = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <h4 className="font-semibold text-sm sm:text-base text-foreground mb-0.5 break-words">{f.label}</h4>
-                    <p className="text-xs sm:text-sm text-muted-foreground break-words">{f.desc}</p>
+                    <p className="text-xs sm:text-sm break-words text-neutral-400">{f.desc}</p>
                   </div>
                 </motion.div>
               ))}
