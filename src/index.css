@@ -55,6 +55,15 @@
     --forge-workshop: 38 25% 92%; /* #f0ede8 */
     --forge-mist: 207 20% 89%; /* #dde3e8 */
 
+    /* Neutral & Blue Accent Palette (UI tokens) */
+    --neutral-50: 0 0% 92%;   /* #EAEAEA */
+    --neutral-100: 0 0% 79%;  /* #CACACA */
+    --neutral-200: 0 0% 65%;  /* #A6A6A6 */
+    --accent-blue: 217 100% 48%;   /* #0061F4 */
+    --accent-indigo: 239 91% 66%;  /* #5859F7 */
+    --accent-deep: 239 70% 51%;    /* #2628DD */
+    --accent-abyss: 239 86% 36%;   /* #0D0FAC */
+
     /* Lava/Forge colors */
     --forge-lava: 24 100% 50%; /* #ff6a00 */
     --forge-magma: 14 73% 52%; /* #e25822 */
@@ -105,6 +114,13 @@
     --forge-concrete: 36 12% 12%;
     --forge-workshop: 38 12% 10%;
     --forge-mist: 207 10% 12%;
+    --neutral-50: 0 0% 14%;
+    --neutral-100: 0 0% 22%;
+    --neutral-200: 0 0% 55%;
+    --accent-blue: 217 90% 58%;
+    --accent-indigo: 239 80% 70%;
+    --accent-deep: 239 65% 55%;
+    --accent-abyss: 239 75% 42%;
     --sidebar-background: 240 28% 10%;
     --sidebar-foreground: 36 22% 96%;
     --sidebar-primary: 186 80% 35%;
