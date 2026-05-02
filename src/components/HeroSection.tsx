@@ -265,7 +265,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
           />
           <span
-            className="text-xs uppercase tracking-widest text-foreground/50"
+            className="text-xs uppercase tracking-widest text-[#0a7d8a]"
             style={{ fontFamily: "'IBM Plex Mono', monospace" }}
           >
             CNC Hassas İşleme
