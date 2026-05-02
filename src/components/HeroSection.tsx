@@ -251,6 +251,33 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           </defs>
         </svg>
 
+        {/* Header-aligned eyebrow */}
+        <motion.div
+          className="absolute top-0 left-1/2 z-[55] flex h-20 -translate-x-1/2 flex-row items-center justify-center gap-4 px-0 py-0 my-0 pointer-events-none"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
+        >
+          <motion.div
+            className="h-1 bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: 64 }}
+            transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+          />
+          <span
+            className="text-xs uppercase tracking-widest text-foreground/50"
+            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
+          >
+            CNC Hassas İşleme
+          </span>
+          <motion.div
+            className="h-1 bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: 64 }}
+            transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
+          />
+        </motion.div>
+
         {/* Horizontal sliding container: 200vw wide, two panels side by side */}
         <div
           ref={horizontalWrapRef}
@@ -377,36 +404,6 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: heroDelay, duration: 0.6 }}
               >
-                {/* Eyebrow */}
-                <motion.div
-                  className="fixed top-0 left-1/2 -translate-x-1/2 h-20 items-center justify-center gap-4 flex flex-row px-0 py-0 my-0 z-[60]"
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
-                >
-                  <motion.div
-                    className="h-1 bg-primary"
-                    initial={{ width: 0 }}
-                    animate={{ width: 64 }}
-                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-                  />
-                  <span
-                    className="text-xs uppercase tracking-widest"
-                    style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      color: "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    CNC Hassas İşleme
-                  </span>
-                  <motion.div
-                    className="h-1 bg-primary"
-                    initial={{ width: 0 }}
-                    animate={{ width: 64 }}
-                    transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-                  />
-                </motion.div>
-
                 {/* Headlines */}
                 <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
                   <AnimatePresence mode="wait">
