@@ -30,7 +30,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "8 dk okuma",
     category: "Teknik",
     image: blog5eksen,
-    featured: true,
+    featured: false,
     views: 3420,
     fullContent: [
       "5 eksenli CNC işleme, geleneksel 3 eksenli işlemeye kıyasla önemli avantajlar sunar. X, Y, Z doğrusal eksenlerin yanı sıra A ve B (veya C) döner eksenler sayesinde karmaşık geometrilere sahip parçalar tek kurulumda tamamlanabilir.",
@@ -50,7 +50,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "6 dk okuma",
     category: "Malzeme",
     image: blogMalzeme,
-    featured: true,
+    featured: false,
     views: 2890,
     fullContent: [
       "Havacılık sektöründe malzeme seçimi, parçanın performansını doğrudan etkileyen kritik bir karardır. En yaygın kullanılan iki malzeme olan Alüminyum 7075-T6 ve Titanyum Ti6Al4V (Grade 5) arasında doğru seçim yapmak, ağırlık, mukavemet ve maliyet dengesi açısından büyük önem taşır.",
