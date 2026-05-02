@@ -7,7 +7,6 @@ import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
 import { Badge } from "./ui/badge";
 import { useTilt } from "@/hooks/useTilt";
-import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 
 import imgAerospace from "@/assets/industry-aerospace.jpg";
 import imgDefense from "@/assets/industry-defense.jpg";
@@ -102,10 +101,7 @@ const isTouchDevice =
 export const IndustriesSection = () => {
   const track1Ref = useRef<HTMLDivElement>(null);
   const track2Ref = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
-
-  useStaggeredReveal(gridRef, 0.06);
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -205,14 +201,19 @@ export const IndustriesSection = () => {
         </TextReveal>
 
         {/* Primary Industries — Large Cards */}
-        <div
-          ref={gridRef}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-12 md:mb-16"
         >
           {primaryIndustries.map((industry, i) => (
-            <PrimaryIndustryCard key={industry.name} industry={industry} index={i} isWide={i >= 3} />
+            <motion.div key={industry.name} custom={i} variants={cardVariants}>
+              <PrimaryIndustryCard industry={industry} index={i} isWide={i >= 3} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Secondary Industries — Chip/Badge Grid */}
         <motion.div
