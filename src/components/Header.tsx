@@ -313,7 +313,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 </div>
                 <div className="flex flex-col pt-1.5">
                    <span className="font-bold text-base tracking-tight leading-tight mt-1 text-[#0a7d8a]">MAS TECHNIC</span>
-                  <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Precision CNC</span>
+                   <span className="text-[10px] tracking-widest uppercase text-[#0a7d8a]">Precision CNC</span>
                 </div>
               </Link>
 
@@ -335,7 +335,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   className="relative z-[9991] ml-2 inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-all"
                 >
-                  {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                   {isMenuOpen ? <X size={16} /> : <Menu size={16} className="text-[#0a7d8a]" />}
                   <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
                 </button>
               </div>
@@ -346,7 +346,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 className="lg:hidden relative z-[9991] inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                 {isMenuOpen ? <X size={16} /> : <Menu size={16} className="text-[#0a7d8a]" />}
                 <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
               </button>
             </div>
