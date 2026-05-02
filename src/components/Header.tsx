@@ -18,6 +18,8 @@ import {
   Target,
   Cog,
   Flame,
+  Menu,
+  X,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
