@@ -6,6 +6,8 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
 import blogDfm from "@/assets/blog-dfm.jpg";
+import serviceCncTorna from "@/assets/service-cnc-torna.jpg";
+import serviceImalat from "@/assets/service-imalat.jpg";
 import { SectionHeader } from "./SectionHeader";
 
 const faqs = [
@@ -70,6 +72,22 @@ const blogPosts = [
     date: "2 Ocak 2024",
     category: "Mühendislik",
     image: blogDfm,
+  },
+  {
+    title: "GD&T: Geometrik Toleranslama ve Boyutlandırma",
+    excerpt:
+      "ASME Y14.5 standardına göre GD&T sembolleri, datum referansları ve fonksiyonel toleranslama prensipleri...",
+    date: "5 Aralık 2023",
+    category: "Mühendislik",
+    image: serviceImalat,
+  },
+  {
+    title: "CNC İşlemede Takım Ömrü Optimizasyonu",
+    excerpt:
+      "Kesme parametreleri, soğutma stratejileri ve kaplama teknolojileri ile takım ömrünü 3 katına çıkarın...",
+    date: "28 Kasım 2023",
+    category: "Teknik",
+    image: serviceCncTorna,
   },
 ];
 
