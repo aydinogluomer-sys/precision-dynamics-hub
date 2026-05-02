@@ -60,6 +60,12 @@ const primaryIndustries: Industry[] = [
     highlight: "Yüksek tekrarlanabilirlik",
     image: imgRobotics,
   },
+  {
+    name: "Madencilik",
+    description: "Aşırı yük ve aşındırıcı koşullara dayanıklı sertleştirilmiş parçalar; uzun servis ömrü.",
+    highlight: "Aşınma direnci",
+    image: imgMining,
+  },
 ];
 
 const secondaryIndustries: Industry[] = [
@@ -70,7 +76,6 @@ const secondaryIndustries: Industry[] = [
   { name: "Yenilenebilir Enerji", description: "Rüzgar ve güneş enerjisi sistemleri için hassas mekanik parçalar.", highlight: "Sürdürülebilir üretim", image: imgRenewable },
   { name: "Petrol & Gaz", description: "API 6A/6D standartlarına uygun vana, flanş ve kuyu başı bileşenleri.", highlight: "API standartları", image: imgOilgas },
   { name: "Güç Dağıtım", description: "Trafo, şalter ve kesici sistemleri için iletken metal bileşenler.", highlight: "Yüksek iletkenlik", image: imgPower },
-  { name: "Madencilik", description: "Aşırı yük ve aşındırıcı koşullara dayanıklı sertleştirilmiş parçalar.", highlight: "Aşınma direnci", image: imgMining },
 ];
 
 const EASE = [0.16, 1, 0.3, 1] as const;
