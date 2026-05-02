@@ -317,57 +317,6 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 </div>
               </Link>
 
-              {/* Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-2">
-                {navItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative"
-                    onMouseEnter={() => item.hasDropdown && handleDropdownEnter(index)}
-                    onMouseLeave={handleDropdownLeave}
-                  >
-                    <Link
-                      to={item.path}
-                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
-                    >
-                      {item.label}
-                    </Link>
-                    {/* Mega Menu Render (Desktop) */}
-                    <AnimatePresence>
-                      {item.hasDropdown && activeDropdown === index && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="fixed left-0 right-0 bg-background border-b shadow-xl top-[inherit] mt-4"
-                        >
-                          <div className="container-industrial mx-auto p-8 grid grid-cols-5 gap-6">
-                            {item.children?.map((col, cIdx) => (
-                              <div key={cIdx}>
-                                <div className="flex items-center gap-2 font-bold text-primary mb-4">
-                                  {col.icon} {col.label}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                  {col.links.map((link, lIdx) => (
-                                    <Link
-                                      key={lIdx}
-                                      to={link.path}
-                                      className="nav-link-animated text-sm text-muted-foreground hover:text-primary transition-all"
-                                    >
-                                      {link.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </nav>
-
               {/* Actions */}
               <div className="hidden lg:flex items-center gap-3">
                 <SoundToggle />
@@ -381,11 +330,24 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 <Link to="/teklif-al" className="bg-primary text-white text-xs font-bold px-4 py-2">
                   Teklif Al
                 </Link>
+                <button
+                  aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="relative z-[9991] ml-2 inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-all"
+                >
+                  {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                  <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
+                </button>
               </div>
 
               {/* Mobile Trigger */}
-              <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? "Kapat" : "Menü"}
+              <button
+                aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+                className="lg:hidden relative z-[9991] inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
               </button>
             </div>
           </div>
