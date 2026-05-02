@@ -293,9 +293,9 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     <>
       <header id="main-header" className="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
         <motion.div
-          className="border-b border-border transition-shadow"
+          className="transition-shadow"
           animate={{
-            backgroundColor: isScrolled ? "hsl(var(--background) / 0.92)" : "hsl(var(--background))",
+            backgroundColor: isScrolled ? "hsl(var(--background) / 0.6)" : "hsl(var(--background) / 0)",
             backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
