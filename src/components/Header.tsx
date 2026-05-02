@@ -18,6 +18,8 @@ import {
   Target,
   Cog,
   Flame,
+  Menu,
+  X,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
@@ -315,57 +317,6 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 </div>
               </Link>
 
-              {/* Desktop Nav */}
-              <nav className="hidden lg:flex items-center gap-2">
-                {navItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative"
-                    onMouseEnter={() => item.hasDropdown && handleDropdownEnter(index)}
-                    onMouseLeave={handleDropdownLeave}
-                  >
-                    <Link
-                      to={item.path}
-                      className={`nav-link-animated px-3 py-2 text-xs font-semibold ${item.isFire ? "text-orange-500" : "text-muted-foreground hover:text-primary"}`}
-                    >
-                      {item.label}
-                    </Link>
-                    {/* Mega Menu Render (Desktop) */}
-                    <AnimatePresence>
-                      {item.hasDropdown && activeDropdown === index && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="fixed left-0 right-0 bg-background border-b shadow-xl top-[inherit] mt-4"
-                        >
-                          <div className="container-industrial mx-auto p-8 grid grid-cols-5 gap-6">
-                            {item.children?.map((col, cIdx) => (
-                              <div key={cIdx}>
-                                <div className="flex items-center gap-2 font-bold text-primary mb-4">
-                                  {col.icon} {col.label}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                  {col.links.map((link, lIdx) => (
-                                    <Link
-                                      key={lIdx}
-                                      to={link.path}
-                                      className="nav-link-animated text-sm text-muted-foreground hover:text-primary transition-all"
-                                    >
-                                      {link.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </nav>
-
               {/* Actions */}
               <div className="hidden lg:flex items-center gap-3">
                 <SoundToggle />
@@ -379,62 +330,147 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 <Link to="/teklif-al" className="bg-primary text-white text-xs font-bold px-4 py-2">
                   Teklif Al
                 </Link>
+                <button
+                  aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="relative z-[9991] ml-2 inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-all"
+                >
+                  {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                  <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
+                </button>
               </div>
 
               {/* Mobile Trigger */}
-              <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? "Kapat" : "Menü"}
+              <button
+                aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+                className="lg:hidden relative z-[9991] inline-flex items-center gap-2 border border-border px-3 py-2 text-xs font-bold uppercase tracking-widest"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                <span>{isMenuOpen ? "Kapat" : "Menü"}</span>
               </button>
             </div>
           </div>
         </motion.div>
 
-        {/* Mobile Menu — Fullscreen Takeover */}
+        {/* Fullscreen Menu — Awwwards-style (Desktop + Mobile) */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial={{ clipPath: "inset(0 0 100% 0)" }}
               animate={{ clipPath: "inset(0 0 0% 0)" }}
               exit={{ clipPath: "inset(0 0 100% 0)" }}
-              transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
-              className="lg:hidden fixed inset-0 z-[9990] flex flex-col justify-center px-8"
-              style={{ backgroundColor: "hsl(var(--background) / 0.97)" }}
+              transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+              className="fixed inset-0 z-[9990] overflow-y-auto"
+              style={{ backgroundColor: "hsl(var(--background) / 0.98)", backdropFilter: "blur(20px)" }}
             >
-              <nav className="flex flex-col gap-2">
-                {navItems.map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 + idx * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block py-3 font-bold tracking-tight text-foreground"
-                      style={{
-                        fontSize: "clamp(32px, 8vw, 64px)",
-                        fontFamily: "IBM Plex Mono, monospace",
-                        letterSpacing: "-0.02em",
-                      }}
+              <div className="min-h-screen container-industrial mx-auto px-6 lg:px-12 pt-28 pb-16 grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Primary nav */}
+                <nav className="lg:col-span-7 flex flex-col gap-1">
+                  {navItems.map((item, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ delay: 0.15 + idx * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      onMouseEnter={() => item.hasDropdown && setActiveDropdown(idx)}
                     >
-                      {item.label}
+                      <Link
+                        to={item.path}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`group flex items-baseline gap-4 py-2 lg:py-3 tracking-tight transition-colors ${item.isFire ? "text-orange-500" : "text-foreground hover:text-primary"}`}
+                        style={{
+                          fontSize: "clamp(36px, 7vw, 88px)",
+                          fontFamily: "IBM Plex Mono, monospace",
+                          letterSpacing: "-0.03em",
+                          lineHeight: 1,
+                        }}
+                      >
+                        <span className="text-[10px] text-muted-foreground font-mono mt-2 hidden sm:inline">
+                          0{idx + 1}
+                        </span>
+                        <span>{item.label}</span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
+
+                {/* Sub-links panel */}
+                <aside className="lg:col-span-5 lg:border-l lg:border-border lg:pl-10">
+                  <AnimatePresence mode="wait">
+                    {activeDropdown !== null && navItems[activeDropdown]?.hasDropdown ? (
+                      <motion.div
+                        key={navItems[activeDropdown].label}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+                      >
+                        {navItems[activeDropdown].children?.map((col, cIdx) => (
+                          <div key={cIdx}>
+                            <div className="flex items-center gap-2 text-primary mb-3 text-xs font-bold uppercase tracking-widest">
+                              {col.icon}
+                              <span>{col.label}</span>
+                            </div>
+                            <ul className="flex flex-col gap-1.5">
+                              {col.links.map((link, lIdx) => (
+                                <li key={lIdx}>
+                                  <Link
+                                    to={link.path}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="meta"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex flex-col gap-6 text-xs uppercase tracking-widest text-muted-foreground"
+                      >
+                        <div>
+                          <div className="text-[10px] mb-2 opacity-60">İletişim</div>
+                          <a href="mailto:info@mastechnic.com" className="text-foreground hover:text-primary block">
+                            info@mastechnic.com
+                          </a>
+                          <a href="tel:+902121234567" className="text-foreground hover:text-primary block mt-1">
+                            +90 212 123 45 67
+                          </a>
+                        </div>
+                        <div>
+                          <div className="text-[10px] mb-2 opacity-60">İpucu</div>
+                          <p className="text-foreground/70 normal-case tracking-normal text-sm">
+                            Bir kategori başlığının üzerine gelerek alt bağlantıları görüntüleyin.
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </aside>
+
+                {/* Bottom details */}
+                <div className="lg:col-span-12 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pt-10 border-t border-border mt-4">
+                  <LiveClock />
+                  <div className="flex items-center gap-4 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                    <Link to="/giris" onClick={() => setIsMenuOpen(false)} className="hover:text-primary">
+                      Giriş Yap
                     </Link>
-                  </motion.div>
-                ))}
-              </nav>
-              {/* Bottom details */}
-              <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                <LiveClock />
-                <span
-                  style={{
-                    fontFamily: "IBM Plex Mono, monospace",
-                    fontSize: "10px",
-                    color: "rgba(255,255,255,0.25)",
-                  }}
-                >
-                  MAS TECHNIC © {new Date().getFullYear()}
-                </span>
+                    <Link to="/teklif-al" onClick={() => setIsMenuOpen(false)} className="hover:text-primary">
+                      Teklif Al
+                    </Link>
+                    <span>MAS TECHNIC © {new Date().getFullYear()}</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
