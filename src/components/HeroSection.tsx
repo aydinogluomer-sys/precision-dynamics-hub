@@ -379,7 +379,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               >
                 {/* Eyebrow */}
                 <motion.div
-                  className="flex items-center justify-center gap-4 mb-8"
+                  className="items-center justify-center gap-4 mb-8 flex flex-row px-0 py-0 my-0"
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
