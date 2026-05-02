@@ -309,8 +309,8 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                 <div className="bg-primary w-8 h-8 flex items-center justify-center font-bold text-primary-foreground">
                   MT
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-base tracking-tight leading-tight">MAS TECHNIC</span>
+                <div className="flex flex-col pt-1.5">
+                  <span className="font-bold text-base tracking-tight leading-tight mt-1">MAS TECHNIC</span>
                   <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Precision CNC</span>
                 </div>
               </Link>
