@@ -4,6 +4,8 @@ import blogDfm from "@/assets/blog-dfm.jpg";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import serviceCncFreze from "@/assets/service-cnc-freze.jpg";
+import serviceCncTorna from "@/assets/service-cnc-torna.jpg";
+import serviceImalat from "@/assets/service-imalat.jpg";
 
 export interface BlogPost {
   slug: string;
@@ -133,6 +135,46 @@ export const blogPosts: BlogPost[] = [
       "Toz boya, geniş renk yelpazesi ve dayanıklılık sunan çevre dostu bir kaplama yöntemidir. 60-120µm kalınlıkta uygulanan toz boya, 1000+ saat tuz testi dayanımı sağlar. RAL kataloğundaki tüm renkler mevcuttur.",
       "Elektropolish, paslanmaz çelik yüzeylerin kimyasal olarak parlatılmasıdır. Ra 0.2µm altı yüzey pürüzlülüğü elde edilebilir. Medikal ve gıda sektörlerinde hijyenik yüzey gereksinimleri için idealdir.",
       "Mas Technic olarak tüm yüzey işlemlerini tek çatı altında sunuyor, projenize en uygun çözümü mühendislik ekibimizle belirliyoruz.",
+    ],
+  },
+  {
+    slug: "gdt-geometrik-toleranslama-rehberi",
+    title: "GD&T: Geometrik Toleranslama ve Boyutlandırma",
+    excerpt:
+      "ASME Y14.5 standardına göre GD&T sembolleri, datum referansları ve fonksiyonel toleranslama prensipleri.",
+    date: "5 Aralık 2023",
+    readTime: "11 dk okuma",
+    category: "Mühendislik",
+    image: serviceImalat,
+    featured: false,
+    views: 1980,
+    fullContent: [
+      "Geometric Dimensioning and Tolerancing (GD&T), parça geometrisinin fonksiyonel olarak tanımlanmasını sağlayan uluslararası bir mühendislik dilidir. ASME Y14.5 ve ISO 1101 standartları çerçevesinde uygulanır ve modern üretimde tasarım ile imalat arasındaki köprüyü oluşturur.",
+      "GD&T'nin en büyük avantajı, geleneksel ±tolerans yaklaşımına göre %30-50 daha geniş tolerans havuzu sunmasıdır. Bonus tolerance ve maximum material condition (MMC) gibi modifierler sayesinde fonksiyonel kabul edilebilir parçalar reddedilmez. Bu doğrudan fire oranını düşürür.",
+      "Datum referans sistemi, GD&T'nin temelidir. Birincil (A), ikincil (B) ve üçüncül (C) datumlar parçanın 6 serbestlik derecesini kısıtlar: 3 öteleme + 3 dönme. Doğru datum seçimi, parçanın montaj fonksiyonunu yansıtmalı ve ölçüm tekrarlanabilirliğini sağlamalıdır.",
+      "En sık kullanılan kontroller: düzlemlik (flatness), paralellik (parallelism), diklik (perpendicularity), pozisyon (position), eşmerkezlilik (concentricity) ve toplam salgı (total runout). Pozisyon toleransı özellikle delik kalıplarında MMC modifier ile birlikte kullanıldığında üretim verimliliğini ciddi şekilde artırır.",
+      "CMM ölçümlerinde GD&T raporları, datum yapısına uygun olarak hizalama (alignment) yapıldıktan sonra üretilir. Zeiss CALYPSO veya PC-DMIS gibi yazılımlar, FCF (Feature Control Frame) kurallarına göre otomatik değerlendirme yapar.",
+      "Mas Technic mühendislik ekibi, müşteri teknik resimlerindeki GD&T sembollerini DFM aşamasında inceler; gerektiğinde fonksiyonel olarak eşdeğer ancak daha üretilebilir alternatifler önerir. Bu yaklaşım hem maliyet hem de teslim süresinde optimizasyon sağlar.",
+    ],
+  },
+  {
+    slug: "takim-omru-optimizasyonu-cnc",
+    title: "CNC İşlemede Takım Ömrü Optimizasyonu",
+    excerpt:
+      "Kesme parametreleri, soğutma stratejileri ve takım kaplama teknolojileri ile takım ömrünü 3 katına çıkarmanın yolları.",
+    date: "28 Kasım 2023",
+    readTime: "9 dk okuma",
+    category: "Teknik",
+    image: serviceCncTorna,
+    featured: false,
+    views: 1720,
+    fullContent: [
+      "CNC işlemede takım maliyeti, toplam üretim maliyetinin %3-12'sini oluşturur ancak yanlış parametre seçimi bu oranı kolayca iki katına çıkarabilir. Doğru optimizasyon ile hem takım ömrü uzatılır hem de yüzey kalitesi ve verimlilik artırılır.",
+      "Kesme hızı (Vc), takım ömrünü en çok etkileyen parametredir. Taylor denklemine göre kesme hızının %20 artırılması takım ömrünü yaklaşık %50 kısaltır. Üretici katalog değerlerinin %80-90'ında çalışmak, ömür ve verimlilik arasında en iyi dengeyi sağlar.",
+      "Talaş başına ilerleme (fz), titreşim ve takım kırılması açısından kritiktir. Çok düşük fz değerleri 'rubbing' (sürtme) etkisi yaratarak takım ucunu hızla aşındırır. Karbür uçlu freze takımlarında minimum fz, takım çapının %0.5-1'i olarak alınmalıdır.",
+      "Kaplama teknolojileri takım ömründe devrim yaratmıştır. TiAlN kaplama 800°C'ye kadar oksidasyon direnci sunar ve paslanmaz çelik işlemede 2-3 kat ömür artışı sağlar. AlCrN kaplama ise sertleştirilmiş çelik (50+ HRC) işlemede ideal çözümdür. DLC kaplama alüminyum işlemede yapışmayı önler.",
+      "Soğutma stratejisi de kritik öneme sahiptir. Yüksek basınçlı soğutma (70+ bar), talaş tahliyesini iyileştirerek özellikle derin cep işleme ve titanyum işlemede takım ömrünü %40-60 artırır. MQL (Minimum Quantity Lubrication) sistemleri ise alüminyum işlemede çevre dostu ve verimli bir alternatiftir.",
+      "Mas Technic atölyesinde her takım için dijital ömür takip sistemi kullanılmakta; gerçek kesme süresi, parça sayısı ve aşınma durumu kayıt altına alınarak proses sürekli optimize edilmektedir. Bu yaklaşım sayesinde takım maliyetlerimiz sektör ortalamasının %25 altındadır.",
     ],
   },
 ];
