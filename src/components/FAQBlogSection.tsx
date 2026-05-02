@@ -76,6 +76,7 @@ const blogPosts = [
 export const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [query, setQuery] = useState("");
+  const [blogQuery, setBlogQuery] = useState("");
   const [visibleBlogs, setVisibleBlogs] = useState(2);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -95,6 +96,17 @@ export const FAQBlogSection = () => {
       (f) => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q),
     );
   }, [query]);
+
+  const filteredBlogs = useMemo(() => {
+    const q = blogQuery.trim().toLowerCase();
+    if (!q) return blogPosts;
+    return blogPosts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.excerpt.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q),
+    );
+  }, [blogQuery]);
 
   return (
     <section
@@ -194,8 +206,29 @@ export const FAQBlogSection = () => {
               <SectionHeader tag="Blog" title="Teknik İçerikler" sectionNumber={7} />
             </div>
 
+            {/* Search */}
+            <div className="relative mb-5">
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={blogQuery}
+                onChange={(e) => {
+                  setBlogQuery(e.target.value);
+                  setVisibleBlogs(2);
+                }}
+                placeholder="Yazılarda ara..."
+                aria-label="Blog yazılarında ara"
+                className="w-full pl-10 pr-3 py-2.5 text-sm bg-background border border-border focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
             <div className="space-y-4">
-              {blogPosts.slice(0, visibleBlogs).map((post, index) => (
+              {filteredBlogs.length === 0 && (
+                <p className="text-sm text-muted-foreground py-6 text-center">
+                  "{blogQuery}" için sonuç bulunamadı.
+                </p>
+              )}
+              {filteredBlogs.slice(0, visibleBlogs).map((post, index) => (
                 <a
                   key={index}
                   href="#"
@@ -235,16 +268,16 @@ export const FAQBlogSection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
-              {visibleBlogs < blogPosts.length ? (
+              {visibleBlogs < filteredBlogs.length ? (
                 <button
-                  onClick={() => setVisibleBlogs((v) => Math.min(v + 2, blogPosts.length))}
+                  onClick={() => setVisibleBlogs((v) => Math.min(v + 2, filteredBlogs.length))}
                   className="px-5 py-2 text-sm font-medium border border-border bg-background hover:border-primary hover:text-primary transition-colors"
                 >
-                  Daha Fazla Yükle ({blogPosts.length - visibleBlogs})
+                  Daha Fazla Yükle ({filteredBlogs.length - visibleBlogs})
                 </button>
-              ) : (
+              ) : filteredBlogs.length > 0 ? (
                 <span className="text-xs text-muted-foreground">Tüm yazılar gösteriliyor</span>
-              )}
+              ) : null}
               <Link
                 to="/blog"
                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
