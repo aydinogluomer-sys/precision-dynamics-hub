@@ -1,18 +1,15 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Check, ArrowRight, Layers } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
 import { useTilt } from "@/hooks/useTilt";
 import materialAluminium from "@/assets/material-aluminium.jpg";
 import materialSteel from "@/assets/material-steel.jpg";
 import materialStainless from "@/assets/material-stainless.jpg";
 import materialBrass from "@/assets/material-brass.jpg";
 import { BlurImage } from "./BlurImage";
-import { OverlayReveal } from "./ui/OverlayReveal";
 
 const isTouchDevice =
   typeof window !== 'undefined' &&
@@ -182,7 +179,7 @@ const TiltWrapper = ({ children }: { children: React.ReactNode }) => {
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
-    <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
+    <div className="h-[400px] md:h-[440px]">
     <TiltWrapper>
     <div className="flip-card material-card h-full cursor-pointer group/card">
       <div
@@ -268,27 +265,18 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
       </div>
     </div>
     </TiltWrapper>
-    </OverlayReveal>
+    </div>
   );
 };
 
 export const MaterialsSection = () => {
   const isMobile = useIsMobile();
-  const prefersReduced = usePrefersReducedMotion();
-  const gridRef = useRef<HTMLDivElement>(null);
-  useStaggeredReveal(gridRef, 0.08);
-  const tiltInitial = prefersReduced ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 12 };
-  const tiltAnimate = { opacity: 1, rotateX: 0 };
 
   return (
-    <motion.section
+    <section
       id="malzemeler"
       className="py-24 md:py-32 lg:py-40 min-h-screen flex flex-col justify-center"
       style={{ backgroundColor: "hsl(var(--forge-gunmetal))", perspective: 1000 }}
-      initial={tiltInitial}
-      whileInView={tiltAnimate}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
       <style>
         {flipStyles}
@@ -330,15 +318,21 @@ export const MaterialsSection = () => {
           </p>
         </div>
 
-        <div ref={gridRef} className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          className={`grid ${isMobile ? "grid-cols-2 gap-3" : "sm:grid-cols-2 lg:grid-cols-4 gap-4"} mb-8 md:mb-12`}
+        >
           {materials.map((mat, i) =>
             isMobile ? (
-              <div key={mat.name} data-stagger><MobileMaterialCard mat={mat} /></div>
+              <motion.div key={mat.name} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } } }}><MobileMaterialCard mat={mat} /></motion.div>
             ) : (
-              <div key={mat.name} data-stagger><DesktopMaterialCard mat={mat} index={i} /></div>
+              <motion.div key={mat.name} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } } }}><DesktopMaterialCard mat={mat} index={i} /></motion.div>
             ),
           )}
-        </div>
+        </motion.div>
 
         <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 md:gap-6 pt-6 border-t border-border/30">
           {badges.map((badge, i) => (
@@ -357,6 +351,6 @@ export const MaterialsSection = () => {
           </a>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
