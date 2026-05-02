@@ -180,7 +180,7 @@ const TiltWrapper = ({ children }: { children: React.ReactNode }) => {
 /* ── Desktop Material Card — 3D CSS Flip ── */
 const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; index: number }) => {
   return (
-    <OverlayReveal className="h-[400px] md:h-[440px]" staggerDelay={index * 0.1} direction={index % 2 === 0 ? "bottom" : "right"}>
+    <div className="h-[400px] md:h-[440px]">
     <TiltWrapper>
     <div className="flip-card material-card h-full cursor-pointer group/card">
       <div
@@ -266,7 +266,7 @@ const DesktopMaterialCard = ({ mat, index }: { mat: (typeof materials)[number]; 
       </div>
     </div>
     </TiltWrapper>
-    </OverlayReveal>
+    </div>
   );
 };
 
