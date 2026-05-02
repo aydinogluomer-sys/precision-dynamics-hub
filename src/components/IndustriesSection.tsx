@@ -237,7 +237,7 @@ export const IndustriesSection = () => {
               <motion.div key={industry.name} custom={i} variants={chipVariants}>
                 <a
                   href="#teklif"
-                  className="group inline-flex items-center gap-2.5 px-4 py-2.5 border border-border bg-card hover:border-primary/50 hover:bg-accent/50 rounded-sm transition-all duration-300"
+                  className="group inline-flex items-center gap-2.5 py-2.5 border border-border bg-card hover:border-primary/50 hover:bg-accent/50 rounded-sm transition-all duration-300 mx-0 px-[62px]"
                 >
                   <div className="w-8 h-8 rounded-sm overflow-hidden flex-shrink-0">
                     <BlurImage src={industry.image} alt={industry.name} className="w-full h-full object-cover" />
