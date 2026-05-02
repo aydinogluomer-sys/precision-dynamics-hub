@@ -288,7 +288,7 @@ export const FAQBlogSection = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
               {visibleBlogs < filteredBlogs.length ? (
                 <button
-                  onClick={() => setVisibleBlogs((v) => Math.min(v + 2, filteredBlogs.length))}
+                  onClick={() => setVisibleBlogs((v) => Math.min(v + 1, filteredBlogs.length))}
                   className="px-5 py-2 text-sm font-medium border border-border bg-background hover:border-primary hover:text-primary transition-colors"
                 >
                   Daha Fazla Yükle ({filteredBlogs.length - visibleBlogs})
