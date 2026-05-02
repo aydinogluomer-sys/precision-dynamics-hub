@@ -86,7 +86,6 @@ export const FAQBlogSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [blogQuery, setBlogQuery] = useState("");
-  const [visibleBlogs, setVisibleBlogs] = useState(2);
   const prefersReduced = usePrefersReducedMotion();
 
   const faqCardVariants = {
@@ -221,10 +220,7 @@ export const FAQBlogSection = () => {
               <input
                 type="text"
                 value={blogQuery}
-                onChange={(e) => {
-                  setBlogQuery(e.target.value);
-                  setVisibleBlogs(2);
-                }}
+              onChange={(e) => setBlogQuery(e.target.value)}
                 placeholder="Yazılarda ara..."
                 aria-label="Blog yazılarında ara"
                 className="w-full pl-10 pr-3 py-2.5 text-sm bg-background border border-border focus:outline-none focus:border-primary transition-colors"
@@ -237,7 +233,7 @@ export const FAQBlogSection = () => {
                   "{blogQuery}" için sonuç bulunamadı.
                 </p>
               )}
-              {filteredBlogs.slice(0, visibleBlogs).map((post, index) => (
+              {filteredBlogs.map((post, index) => (
                 <a
                   key={index}
                   href="#"
@@ -277,19 +273,9 @@ export const FAQBlogSection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
-              {visibleBlogs < filteredBlogs.length ? (
-                <button
-                  onClick={() => setVisibleBlogs((v) => Math.min(v + 1, filteredBlogs.length))}
-                  className="px-5 py-2 text-sm font-medium border border-border bg-background hover:border-primary hover:text-primary transition-colors"
-                >
-                  Daha Fazla Yükle ({filteredBlogs.length - visibleBlogs})
-                </button>
-              ) : filteredBlogs.length > 0 ? (
-                <span className="text-xs text-muted-foreground">Tüm yazılar gösteriliyor</span>
-              ) : null}
               <Link
                 to="/blog"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors ml-auto"
               >
                 {"Tüm Yazılar"}
                 <ArrowRight className="w-4 h-4" />
