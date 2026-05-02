@@ -103,6 +103,7 @@ export const Footer = () => {
             lineHeight: 1,
             whiteSpace: "nowrap",
             padding: "20px 0",
+            textAlign: "center",
           }}
         >
           MAS TECHNIC
