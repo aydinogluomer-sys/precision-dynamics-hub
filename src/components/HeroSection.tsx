@@ -311,8 +311,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 WebkitMaskImage: "url('/images/mas-logo.svg')",
                 maskRepeat: "no-repeat",
                 WebkitMaskRepeat: "no-repeat",
-                maskPosition: "center",
-                WebkitMaskPosition: "center",
+                maskPosition: "center 65%",
+                WebkitMaskPosition: "center 65%",
                 maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
                 WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
               }}
