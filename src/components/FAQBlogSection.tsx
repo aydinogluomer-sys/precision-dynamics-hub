@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
-import blogDfm from "@/assets/blog-dfm.jpg";
 import serviceCncTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
 import { SectionHeader } from "./SectionHeader";
@@ -64,14 +63,6 @@ const blogPosts = [
     date: "8 Ocak 2024",
     category: "Malzeme",
     image: blogMalzeme,
-  },
-  {
-    title: "DFM: Tasarımdan Üretime Geçiş",
-    excerpt:
-      "Design for Manufacturing prensipleri ile maliyetleri düşürün ve kaliteyi artırın...",
-    date: "2 Ocak 2024",
-    category: "Mühendislik",
-    image: blogDfm,
   },
   {
     title: "GD&T: Geometrik Toleranslama ve Boyutlandırma",
