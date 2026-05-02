@@ -249,12 +249,12 @@ export const Index = () => {
           </svg>
         </div>
 
-        {/* WhyUs (sticky) — moved up after Nexus */}
-        <Scene z={SECTION_Z.whyUs} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        {/* WhyUs — moved up after Nexus */}
+        <FlowScene z={SECTION_Z.whyUs} id="neden-biz" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <WhyUsSection />
           </Suspense>
-        </Scene>
+        </FlowScene>
 
         {/* Glow: WhyUs (dark) → HowWeWork (light) */}
         <Suspense fallback={null}>
