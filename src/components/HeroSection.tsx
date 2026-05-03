@@ -420,7 +420,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                   animate={{ opacity: 0.4 }}
                   transition={{ delay: 1.5 + heroDelay }}
                 >
-                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-white/40">Scroll</span>
+                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-primary">Scroll</span>
                   <motion.div
                     className="w-px h-8 bg-white/20"
                     animate={{ scaleY: [0, 1, 0] }}
