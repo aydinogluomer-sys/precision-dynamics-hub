@@ -254,7 +254,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
         {/* Header-aligned eyebrow */}
         <motion.div
           className="absolute top-0 left-1/2 z-[55] flex h-20 -translate-x-1/2 flex-row items-center justify-center gap-4 px-0 py-0 my-0 pointer-events-none"
-          style={{ marginLeft: -80 }}
+          style={{ marginLeft: -160 }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
