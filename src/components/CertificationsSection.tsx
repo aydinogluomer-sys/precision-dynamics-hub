@@ -35,26 +35,38 @@ const VENETIAN_STRIPS = 6;
 export const CertificationsSection = () => {
   const prefersReduced = usePrefersReducedMotion();
 
-  const marqueeContent = (
-    <div className="cert-marquee-track flex whitespace-nowrap">
-      {[...certifications, ...certifications].map((cert, i) => (
-        <div key={i} className="inline-flex items-center gap-4 mx-8 md:mx-12 cursor-default group">
-          <div
-            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-white/10"
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              backgroundColor: "rgba(255,255,255,0.04)",
+  const gridContent = (
+    <div className="container-industrial py-12 md:py-16">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-white/10">
+        {certifications.map((cert, i) => (
+          <motion.div
+            key={cert.name}
+            initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{
+              duration: 0.6,
+              delay: i * 0.07,
+              ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
             }}
+            className="group relative flex flex-col items-center justify-center text-center p-6 md:p-8 transition-colors duration-500"
+            style={{ backgroundColor: "hsl(var(--forge-iron))" }}
           >
-            <cert.icon
-              className="w-5 h-5 md:w-6 md:h-6 transition-colors duration-300"
-              style={{ color: "hsl(var(--forge-silver) / 0.6)" }}
-              strokeWidth={1.5}
-            />
-          </div>
-          <div className="flex flex-col">
+            <div
+              className="w-12 h-12 md:w-14 md:h-14 mb-4 flex items-center justify-center transition-all duration-500 group-hover:bg-white/10"
+              style={{
+                border: "1px solid rgba(255,255,255,0.14)",
+                backgroundColor: "rgba(255,255,255,0.04)",
+              }}
+            >
+              <cert.icon
+                className="w-6 h-6 md:w-7 md:h-7 transition-colors duration-500 group-hover:text-[hsl(var(--forge-molten))]"
+                style={{ color: "hsl(var(--forge-silver) / 0.7)" }}
+                strokeWidth={1.5}
+              />
+            </div>
             <span
-              className="text-lg md:text-xl font-bold uppercase tracking-[0.1em] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+              className="text-sm md:text-base font-bold uppercase tracking-[0.12em] mb-1.5 opacity-90 group-hover:opacity-100 transition-opacity"
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
                 color: "hsl(var(--forge-silver))",
@@ -63,18 +75,20 @@ export const CertificationsSection = () => {
               {cert.name}
             </span>
             <span
-              className="text-[10px] md:text-xs uppercase tracking-[0.15em]"
-              style={{ color: "hsl(var(--forge-silver) / 0.4)" }}
+              className="text-[10px] md:text-[11px] uppercase tracking-[0.15em] leading-snug"
+              style={{ color: "hsl(var(--forge-silver) / 0.5)" }}
             >
               {cert.description}
             </span>
-          </div>
-          <span
-            className="w-1.5 h-1.5 rounded-full ml-4 md:ml-8 shrink-0"
-            style={{ backgroundColor: "hsl(var(--forge-molten) / 0.4)" }}
-          />
-        </div>
-      ))}
+            <span
+              className="absolute top-2 right-2 text-[9px] font-mono"
+              style={{ color: "hsl(var(--forge-silver) / 0.25)" }}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 
@@ -108,7 +122,7 @@ export const CertificationsSection = () => {
 
       {/* Venetian blind reveal: colored strips that slide away to reveal marquee */}
       <div className="relative">
-        {marqueeContent}
+        {gridContent}
         {Array.from({ length: VENETIAN_STRIPS }).map((_, idx) => (
           <motion.div
             key={idx}
