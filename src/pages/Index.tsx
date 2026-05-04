@@ -21,6 +21,9 @@ const GlowLineDivider = lazy(() =>
 const SectionDotNav = lazy(() =>
   import("@/components/SectionDotNav").then((m) => ({ default: m.SectionDotNav })),
 );
+const SectionIndex = lazy(() =>
+  import("@/components/ui/SectionIndex").then((m) => ({ default: m.SectionIndex })),
+);
 const SectionTransitionGlow = lazy(() =>
   import("@/components/ui/SectionTransitionGlow").then((m) => ({ default: m.SectionTransitionGlow })),
 );
@@ -188,6 +191,9 @@ export const Index = () => {
       <JsonLdSchema type="organization" />
       <Suspense fallback={null}>
         <SectionDotNav sections={SECTIONS} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <SectionIndex sections={SECTIONS} />
       </Suspense>
 
       <main id="main-content" ref={mainRef} className="relative">
