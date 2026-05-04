@@ -17,12 +17,11 @@ export function useStaggeredReveal(
 
     const ctx = gsap.context(() => {
       gsap.from(items, {
-        y: 50,
+        y: 24,
         opacity: 0,
-        scale: 0.94,
         duration: 0.7,
         stagger,
-        ease: 'power3.out',
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: container,
           start: 'top 80%',

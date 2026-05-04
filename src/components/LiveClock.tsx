@@ -25,11 +25,11 @@ export const LiveClock = () => {
       style={{
         fontFamily: "IBM Plex Mono, monospace",
         fontSize: "11px",
-        letterSpacing: "0.1em",
-        color: "rgba(255,255,255,0.3)",
+        letterSpacing: "0.18em",
+        color: "currentColor",
       }}
     >
-      IST {time}
+      İZMİR · {time} GMT+3
     </span>
   );
 };
