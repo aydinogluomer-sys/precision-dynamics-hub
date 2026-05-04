@@ -1,485 +1,142 @@
 /**
- * HeroSection.tsx — Stacking scroll with horizontal slide reveal + lava effect
- *
- * Phase 1 (0–45%): MAS mask grows, content fades, header hides
- * Phase 2 (45–60%): PAUSE — section locked fullscreen
- * Phase 3 (60–88%): Horizontal slide — Hero slides left, QuickQuote slides in
- * Phase 4 (88–100%): Lava pour + heat distortion
+ * HeroSection.tsx — FAZ 05 Brutalist Hero
+ * Editorial industrial layout: rotating display headline, hairline metric
+ * column, brutalist CTAs, forge background image. No mask/slide/lava.
  */
-import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
-import { gsap } from "@/hooks/use-gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import heroBg from "@/assets/hero-cnc.jpg";
-import cncVideo from "@/assets/cnc-factory-zoom.mp4";
-import { HeadlineStagger } from "./HeadlineStagger";
-import { QuickQuoteSection } from "./QuickQuoteSection";
+import { ArrowUpRight } from "lucide-react";
+import forgeBg from "@/assets/forge/01-billet-raw.jpg";
 
-
-const HeroCanvas = lazy(() =>
-  import("./r3f/HeroCanvas").then((m) => ({ default: m.HeroCanvas })),
-);
-
-const headlines = [
-  "Profesyonel CNC\nOperasyonları",
-  "Yüksek Hassasiyetli\nÜretim",
-  "Stabil Kalite &\nGüvenilir Teslimat",
+const HEADLINES: Array<[string, string]> = [
+  ["PRECISION", "FORGED"],
+  ["TITANIUM", "ENGINEERED"],
+  ["TOLERANCE", "±0.005MM"],
 ];
 
+const METRICS = [
+  { k: "TOLERANCE", v: "±5 µm" },
+  { k: "MATERIALS", v: "120+" },
+  { k: "AXES", v: "3 / 4 / 5" },
+  { k: "LEAD-TIME", v: "48 H" },
+];
 
-interface HeroSectionProps {
-  isFirstVisit?: boolean;
-}
+const EASE = [0.76, 0, 0.24, 1] as const;
+const BONE = "hsl(var(--brutalist-bone))";
+const MOLTEN = "hsl(var(--brutalist-molten))";
+
+interface HeroSectionProps { isFirstVisit?: boolean }
 
 export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
-  const [currentHeadline, setCurrentHeadline] = useState(0);
-  const prefersReduced = usePrefersReducedMotion();
+  const [idx, setIdx] = useState(0);
+  const reduced = usePrefersReducedMotion();
 
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const maskedRef = useRef<HTMLDivElement>(null);
-  
-  const contentRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const horizontalWrapRef = useRef<HTMLDivElement>(null);
-  const heroPanelRef = useRef<HTMLDivElement>(null);
-  const quotePanelRef = useRef<HTMLDivElement>(null);
-  const lavaFlowRef = useRef<HTMLDivElement>(null);
-  const lavaOverlayRef = useRef<HTMLDivElement>(null);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], prefersReduced ? [0, 0] : [8, -8]);
-  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], prefersReduced ? [0, 0] : [-8, 8]);
-  const rotateX = useSpring(rawRotateX, { stiffness: 120, damping: 18 });
-  const rotateY = useSpring(rawRotateY, { stiffness: 120, damping: 18 });
-
-  // Headline rotation
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentHeadline((prev) => (prev + 1) % headlines.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+    if (reduced) return;
+    const t = setInterval(() => setIdx((p) => (p + 1) % HEADLINES.length), 4200);
+    return () => clearInterval(t);
+  }, [reduced]);
 
-  // GSAP: 4-phase scroll
-  useEffect(() => {
-    if (prefersReduced) return;
-    const scroller = scrollerRef.current;
-    const masked = maskedRef.current;
-    
-    const content = contentRef.current;
-    const grid = gridRef.current;
-    const horizontalWrap = horizontalWrapRef.current;
-    const lavaFlow = lavaFlowRef.current;
-    const lavaOverlay = lavaOverlayRef.current;
-    const quotePanel = quotePanelRef.current;
-    if (!scroller || !masked || !content || !grid || !horizontalWrap || !lavaFlow || !lavaOverlay || !quotePanel) return;
-
-    const ctx = gsap.context(() => {
-      // Phase 1: Mask expansion (0% – 45%)
-      gsap.fromTo(
-        masked,
-        { "--mask-size": "22%" },
-        {
-          "--mask-size": "320%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "top top",
-            end: "45% top",
-            scrub: 1.5,
-          },
-        },
-      );
-
-
-
-
-      // Content fade out
-      gsap.to(content, {
-        y: -140,
-        opacity: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: scroller,
-          start: "8% top",
-          end: "25% top",
-          scrub: 1,
-        },
-      });
-
-      // Grid parallax
-      gsap.to(grid, {
-        y: 400,
-        ease: "none",
-        scrollTrigger: {
-          trigger: scroller,
-          start: "top top",
-          end: "45% top",
-          scrub: 1,
-        },
-      });
-
-      // Phase 2: Horizontal slide (45% – 85%)
-      gsap.fromTo(
-        horizontalWrap,
-        { xPercent: 0 },
-        {
-          xPercent: -50,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "45% top",
-            end: "85% top",
-            scrub: 0.6,
-          },
-        },
-      );
-
-      // Phase 3: Lava pour (85% – 100%)
-      // Lava flow scaleY
-      gsap.fromTo(
-        lavaFlow,
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "85% top",
-            end: "100% top",
-            scrub: 0.8,
-          },
-        },
-      );
-
-      // Heat distortion — animate displacement scale
-      const displacementEl = document.getElementById("heat-displacement");
-      if (displacementEl) {
-        gsap.fromTo(
-          displacementEl,
-          { attr: { scale: 0 } },
-          {
-            attr: { scale: 3 },
-            ease: "none",
-            scrollTrigger: {
-              trigger: scroller,
-              start: "85% top",
-              end: "100% top",
-              scrub: true,
-            },
-          },
-        );
-      }
-
-      // Background color shift on quote panel
-      gsap.to(quotePanel, {
-        background: "linear-gradient(135deg, #ff4500 0%, #e25822 50%, #b8451a 100%)",
-        ease: "none",
-        scrollTrigger: {
-          trigger: scroller,
-          start: "87% top",
-          end: "100% top",
-          scrub: true,
-        },
-      });
-
-      // Lava overlay opacity
-      gsap.fromTo(
-        lavaOverlay,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: scroller,
-            start: "85% top",
-            end: "92% top",
-            scrub: true,
-          },
-        },
-      );
-    }, scroller);
-
-    return () => ctx.revert();
-  }, [prefersReduced]);
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
-      mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
-    },
-    [mouseX, mouseY],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    mouseX.set(0);
-    mouseY.set(0);
-  }, [mouseX, mouseY]);
-
-  const heroDelay = isFirstVisit ? 0.3 : 0;
+  const d = isFirstVisit ? 0.3 : 0;
+  const current = HEADLINES[idx];
 
   return (
-    <div ref={scrollerRef} className="relative" style={{ height: "450vh" }}>
-      <section
-        ref={stickyRef}
-        className="sticky top-0 h-screen overflow-hidden"
-        style={{ backgroundColor: "#0f0f0f" }}
-      >
-        {/* Hidden SVG filter for heat distortion */}
-        <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
-          <defs>
-            <filter id="heat-distortion">
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.015"
-                numOctaves={2}
-                result="noise"
-              />
-              <feDisplacementMap
-                id="heat-displacement"
-                in="SourceGraphic"
-                in2="noise"
-                scale={0}
-                xChannelSelector="R"
-                yChannelSelector="G"
-              />
-            </filter>
-          </defs>
-        </svg>
+    <section className="relative w-full min-h-screen overflow-hidden" style={{ backgroundColor: "#0a0a0a", color: BONE }}>
+      <div className="absolute inset-0 z-0">
+        <img src={forgeBg} alt="" aria-hidden="true" className="w-full h-full object-cover"
+          style={{ filter: "grayscale(0.55) brightness(0.45) contrast(1.15)" }} />
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.35) 45%, rgba(10,10,10,0.92) 100%)",
+        }} />
+      </div>
 
-        {/* Header-aligned eyebrow */}
-        <motion.div
-          className="absolute top-0 left-1/2 z-[55] flex h-20 -translate-x-1/2 flex-row items-center justify-center gap-4 px-0 py-0 my-0 pointer-events-none"
-          style={{ marginLeft: -160 }}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 + heroDelay }}
-        >
-          <motion.div
-            className="h-1 bg-primary"
-            initial={{ width: 0 }}
-            animate={{ width: 64 }}
-            transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-          />
-          <span
-           className="text-xs uppercase tracking-widest text-primary text-center"
-            style={{ fontFamily: "'IBM Plex Mono', monospace" }}
-          >
-            CNC Hassas İşleme
-          </span>
-          <motion.div
-            className="h-1 bg-primary"
-            initial={{ width: 0 }}
-            animate={{ width: 64 }}
-            transition={{ duration: 0.8, delay: 0.3 + heroDelay }}
-          />
+      <div className="absolute top-0 left-0 right-0 z-20 border-hairline-b">
+        <div className="container-industrial flex items-center justify-between py-4 font-mono text-[10px] tracking-[0.4em] uppercase">
+          <span style={{ color: "hsl(var(--brutalist-bone) / 0.7)" }}>◆ Index / 01 — Forge Sequence</span>
+          <span className="hidden md:inline" style={{ color: MOLTEN }}>● LIVE · ESKİŞEHİR · TR</span>
+        </div>
+      </div>
+
+      <div className="relative z-10 container-industrial min-h-screen flex flex-col justify-end pb-24 pt-32">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: d, ease: EASE }}
+          className="font-mono text-[11px] uppercase tracking-[0.5em] mb-6" style={{ color: MOLTEN }}>
+          [ 001 ] — CNC HASSAS İŞLEME · ISO 9001 · AS9100
         </motion.div>
 
-        {/* Horizontal sliding container: 200vw wide, two panels side by side */}
-        <div
-          ref={horizontalWrapRef}
-          className="flex h-full"
-          style={{ width: "200vw" }}
-        >
-          {/* ── LEFT PANEL: Hero ── */}
-          <div
-            ref={heroPanelRef}
-            className="relative h-full flex items-center justify-center overflow-hidden"
-            style={{ width: "100vw", flexShrink: 0 }}
-          >
-            {/* R3F Liquid Distortion Canvas */}
-            <Suspense fallback={null}>
-              <div className="absolute inset-0 z-0">
-                <HeroCanvas />
-              </div>
-            </Suspense>
-
-            {/* Flash overlay for first visit */}
-            {!prefersReduced && (
-              <motion.div
-                className="absolute inset-0 z-[50] pointer-events-none"
-                initial={{ opacity: 1, filter: "brightness(3) blur(8px)" }}
-                animate={{ opacity: 0, filter: "brightness(1) blur(0px)" }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: isFirstVisit ? 2.6 : 0.1 }}
-                style={{ backgroundColor: "white" }}
-              />
-            )}
-
-            {/* Layer 1: Background video/image */}
-            <div className="absolute inset-0 z-[1]">
-              <video
-                src={cncVideo}
-                poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                muted
-                autoPlay
-                loop
-                playsInline
-                preload="metadata"
-                className="w-full h-full object-cover hidden md:block"
-                style={{ opacity: 0.1 }}
-              />
-              <img
-                src={heroBg}
-                alt="CNC Factory"
-                className="w-full h-full object-cover md:hidden"
-                style={{ opacity: 0.15 }}
-              />
-            </div>
-
-            {/* Layer 2: Masked image */}
-            <div
-              ref={maskedRef}
-              className="absolute inset-0 z-[1]"
-              style={{
-                maskImage: "url('/images/mas-logo.svg')",
-                WebkitMaskImage: "url('/images/mas-logo.svg')",
-                maskRepeat: "no-repeat",
-                WebkitMaskRepeat: "no-repeat",
-                maskPosition: "center 65%",
-                WebkitMaskPosition: "center 65%",
-                maskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
-                WebkitMaskSize: prefersReduced ? "320%" : "var(--mask-size, 22%)",
-              }}
-            >
-              <video
-                src={cncVideo}
-                poster={heroBg}
-                muted
-                autoPlay
-                loop
-                playsInline
-                preload="metadata"
-                className="w-full h-full object-cover hidden md:block"
-                style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
-              />
-              <img
-                src={heroBg}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover md:hidden"
-                style={{ filter: "brightness(0.8) saturate(1.15)" }}
-              />
-            </div>
-
-
-            {/* Layer 4: Grid overlay */}
-            <div
-              ref={gridRef}
-              className="absolute inset-0 pointer-events-none z-[3]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, rgba(0,113,144,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,113,144,0.06) 1px, transparent 1px)",
-                backgroundSize: "40px 40px",
-              }}
-            />
-
-            {/* Layer 5: Vignette */}
-            <div
-              className="absolute inset-0 pointer-events-none z-[4]"
-              style={{
-                background:
-                  "radial-gradient(ellipse at center, rgba(15,15,15,0.25) 0%, rgba(15,15,15,0.55) 60%, rgba(15,15,15,0.75) 100%)",
-              }}
-            />
-
-            {/* Layer 6: Content */}
-            <motion.div
-              ref={contentRef}
-              className="container-industrial relative z-10 w-full hero-content-behind-lava"
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                rotateX,
-                rotateY,
-                transformPerspective: 1200,
-                transformStyle: "preserve-3d" as const,
-              }}
-            >
-              <motion.div
-                className="max-w-6xl mx-auto text-center"
-                initial={isFirstVisit ? { opacity: 0 } : false}
-                animate={{ opacity: 1 }}
-                transition={{ delay: heroDelay, duration: 0.6 }}
-              >
-                {/* Headlines */}
-                <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
-                  <AnimatePresence mode="wait">
-                    <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
-                  </AnimatePresence>
-                </div>
-
-
-                {/* Scroll indicator */}
-                <motion.div
-                  className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.55 }}
-                  transition={{ delay: 1.5 + heroDelay }}
-                >
-                  <span className="aw-eyebrow text-primary" style={{ fontSize: 9, letterSpacing: '0.4em' }}>Scroll</span>
-                  <motion.div
-                    className="w-px h-10 bg-primary"
-                    animate={{ scaleY: [0, 1, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ transformOrigin: "top" }}
-                  />
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* ── RIGHT PANEL: QuickQuote with FloatingPaths ── */}
-          <div
-            ref={quotePanelRef}
-            className="relative h-full flex items-center justify-center overflow-hidden quick-quote-panel"
-            style={{
-              width: "100vw",
-              flexShrink: 0,
-              backgroundColor: "#0f0f0f",
-            }}
-          >
-            {/* QuickQuote content */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center">
-              <QuickQuoteSection />
-            </div>
-
-            {/* Lava Overlay */}
-            <div
-              ref={lavaOverlayRef}
-              className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
-              style={{ opacity: 0 }}
-            >
-              <div
-                ref={lavaFlowRef}
-                className="absolute top-0 left-0 right-0 h-full"
-                style={{
-                  background: `
-                    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"),
-                    linear-gradient(to bottom, #ff6a00 0%, #ee0979 40%, #e25822 70%, #b8451a 100%)
-                  `,
-                  backgroundBlendMode: "overlay",
-                  clipPath: "polygon(10% 0%, 90% 0%, 98% 100%, 2% 100%)",
-                  transform: "scaleY(0)",
-                  transformOrigin: "top",
-                }}
-              />
-            </div>
-
-            {/* Bottom white gradient */}
-            <div
-              className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
-              style={{
-                background:
-                  "linear-gradient(to top, hsl(var(--forge-mist)) 0%, hsl(var(--forge-mist) / 0.8) 40%, transparent 100%)",
-              }}
-            />
-          </div>
+        <div className="relative mb-10 select-none" style={{ minHeight: "min(40vh, 28rem)" }}>
+          <AnimatePresence mode="wait">
+            <motion.h1 key={idx}
+              className="font-sans font-bold uppercase leading-[0.82] tracking-[-0.06em]"
+              style={{ fontSize: "clamp(3.5rem, 14vw, 18rem)" }}
+              initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }}
+              exit={reduced ? undefined : { opacity: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}>
+              {current.map((word, wi) => (
+                <span key={wi} className="block overflow-hidden">
+                  <motion.span className="block"
+                    initial={reduced ? false : { y: "110%" }} animate={{ y: "0%" }}
+                    exit={reduced ? undefined : { y: "-110%" }}
+                    transition={{ duration: 0.85, ease: EASE, delay: wi * 0.08 + (reduced ? 0 : 0.05) }}
+                    style={{ color: wi === 1 ? MOLTEN : BONE }}>
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </motion.h1>
+          </AnimatePresence>
         </div>
-      </section>
-    </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+          <motion.div className="lg:col-span-7 flex flex-col gap-6"
+            initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: d + 0.5, ease: EASE }}>
+            <p className="max-w-xl text-base md:text-lg leading-relaxed" style={{ color: "hsl(var(--brutalist-bone) / 0.78)" }}>
+              Havacılık, savunma ve medikal sektörler için 5-eksen CNC işleme,
+              titanyum & inconel üretimi. 48 saatte teklif, AS9100 sertifikalı süreç.
+            </p>
+            <div className="flex flex-wrap gap-0">
+              <Link to="/teklif-al"
+                className="group inline-flex items-center gap-3 px-7 py-5 font-mono text-xs uppercase tracking-[0.32em] transition-transform duration-300"
+                style={{ backgroundColor: MOLTEN, color: "hsl(var(--brutalist-void))" }}>
+                <span>Teklif Al</span>
+                <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+              </Link>
+              <Link to="/hizmetler"
+                className="group inline-flex items-center gap-3 px-7 py-5 font-mono text-xs uppercase tracking-[0.32em] border-hairline-strong border-l-0 transition-colors duration-300 hover:bg-white/5"
+                style={{ color: BONE }}>
+                <span>Hizmetleri Keşfet</span><span aria-hidden>→</span>
+              </Link>
+            </div>
+          </motion.div>
+
+          <motion.div className="lg:col-span-5 lg:border-l border-hairline-strong lg:pl-8"
+            initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: d + 0.7, ease: EASE }}>
+            <div className="font-mono text-[10px] uppercase tracking-[0.5em] mb-4" style={{ color: "hsl(var(--brutalist-bone) / 0.5)" }}>
+              ◆ Spec Sheet
+            </div>
+            <ul className="flex flex-col">
+              {METRICS.map((m) => (
+                <li key={m.k} className="flex items-baseline justify-between border-hairline-t py-3 font-mono">
+                  <span className="text-[11px] uppercase tracking-[0.32em]" style={{ color: "hsl(var(--brutalist-bone) / 0.55)" }}>{m.k}</span>
+                  <span className="text-xl md:text-2xl tabular-nums" style={{ color: MOLTEN }}>{m.v}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 z-20 border-hairline-t">
+        <div className="container-industrial flex items-center justify-between py-4 font-mono text-[10px] uppercase tracking-[0.4em]"
+          style={{ color: "hsl(var(--brutalist-bone) / 0.55)" }}>
+          <span>↓ Scroll · Forge Sequence</span>
+          <span className="hidden md:inline">© 2026 / MAS TECHNIC</span>
+        </div>
+      </div>
+    </section>
   );
 };
