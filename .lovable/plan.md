@@ -1,325 +1,89 @@
-## Landing Page — Brutalist Awwwards 2026 Redesign
+# FAZ 4 — Section Brutalist Pass + Mikro-Etkileşim
 
-Mevcut iş mantığı, route'lar, Header, Footer, alt sayfalar ve admin/müşteri panelleri **dokunulmadan** kalır. Sadece `/` route'unun art direction'ı, sectionların görsel dili ve sinematik akışı tamamen yeniden kurulur. Üç ayrı sahne (Lava + Mold + CNC Story) tek bir kesintisiz "FORGE SEQUENCE" filmine birleştirilir.
+**Kapsam:** Landing page'deki content section'larının (WhyUs, Services, Industries, Projects, Materials, Capabilities, Testimonials, FAQ, FinalCTA) görsel dilini brutalist editorial tablo/liste formatına çevir. İki yeni primitive (`BrutalSectionHeader`, `BrutalListRow`) + brutalist crosshair cursor + clip-path reveal + link underline draw + buton invert hover.
 
----
-
-### 1) Yeni Görsel Dil — Industrial Brutalist
-
-```text
-┌─────────────────────────────────────────────────┐
-│  PURE BLACK #0A0A0A  ·  RAW STEEL #1C1C1C       │
-│  MOLTEN #FF4A1C  ·  BONE #EDE6D6                │
-│                                                  │
-│  TYPE:  IBM Plex Mono (HUGE)                     │
-│  H1:    clamp(6rem, 18vw, 22rem)  ALL CAPS       │
-│         tracking -0.06em · leading 0.82          │
-│  Body:  Space Grotesk · 14-16px · mono labels    │
-│                                                  │
-│  GRID:  Visible 12-col baseline (opacity 0.04)   │
-│  EDGE:  No border-radius. Sharp 0px corners.     │
-│  RULES: 1px hairlines everywhere. Mono numbers.  │
-└─────────────────────────────────────────────────┘
-
-```
-
-- Tüm gradient/glow çoğunluğu kaldırılır → düz blok renkler + tek bir sıcak vurgu (molten orange).
-- Film grain density %4 → %8'e çıkar. Subtle CRT scanline overlay (opacity 0.03) eklenir.
-- Tüm CTA'lar köşeli (`rounded-none`), `border-1` hairline + hover'da molten bg invert.
-
-> ⚠️ **NOT:** Söhne Mono planın tüm versiyonlarından çıkarıldı. Ticari lisanslı, CDN'de mevcut değil, Lovable bundle'a ekleyemez. Tek font: IBM Plex Mono (projede zaten mevcut).
+**Dokunulmayan:** Hero, Forge sahneleri, Header, Footer, route'lar, iş mantığı, Supabase, mevcut `SectionHeader.tsx` (yan yana yaşar).
 
 ---
 
-### 2) Hero — Sıfırdan Brutalist Editorial
+## 7 Faz Genel Özeti (referans)
 
-```text
-┌────────────────────────────────────────────────────────┐
-│ MAS / TECHNIC ─── İZMİR · TR              [01 / 17] │  ← thin top bar (mono)
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  PRECISION                                             │
-│  AT ±0.005mm.        ⟶ giant editorial headline       │
-│  FORGED IN İZMİR.    ⟶ word-by-word reveal            │
-│                                                        │
-│  ─── Aerospace · Defense · Energy                     │
-│                                                        │
-│  [TEKLİF AL  →]    [HİZMETLER]     SCROLL ↓           │
-│                                                        │
-├────────────────────────────────────────────────────────┤
-│ AS9100D · ISO 9001 · NADCAP · ITAR ──── EST. 1998    │  ← marquee bottom
-└────────────────────────────────────────────────────────┘
-       ▲ background: hero-cnc.jpg %30 opacity + grain
-       ▲ NO mask-grow logo, NO horizontal slide, NO lava panel
-
-```
-
-- Mevcut MAS-mask büyütme + 200vw yatay kayma + lava panel **kaldırılır**.
-- Hero artık tek viewport, statik kompozisyon + sadece word-by-word headline reveal + scroll cue.
-- QuickQuoteSection Hero'dan ayrılır → **kendi bağımsız sektion olarak Hero altına** gelir (kapsam netleştirildi).
-- Mouse hareketinde subtle parallax (4px max) — agresif tilt yerine.
-
-> ⚠️ **NOT:** `HeroSection.tsx` "tamamen yeniden yazılır" ifadesi **execution fazlarında surgical edit olarak uygulanır** — Lovable'a tek seferde "rewrite" talimatı verilmez. Mevcut state, prop ve context bağlantıları korunarak section-by-section değiştirilir.
+1. **FAZ 1** — Brutalist token sistemi (tamamlandı)
+2. **FAZ 2** — Hero brutalist editorial rewrite
+3. **FAZ 3** — FORGE SEQUENCE birleşik film (3 sahne → 1)
+4. **FAZ 4** — Section brutalist pass + mikro-etkileşim ← **bu plan**
+5. **FAZ 5** — GrainOverlay + ScanlineOverlay (FAZ 7 olarak yapıldı)
+6. **FAZ 6** — Section transition divider temizliği (glow → keskin kesim)
+7. **FAZ 7** — Eski sahnelerin DEPRECATED işaretlemesi + cleanup
 
 ---
 
-### 3) Birleşik FORGE SEQUENCE — Tek Film
+## FAZ 4 — 22 Alt Adım
 
-Üç sahne (Lava 300vh + Mold 400vh + CNC 350vh = 1050vh) **tek bir 900vh sürekli scrollytelling deneyimine** birleştirilir. Sahneler arası "section break" hissi yok; tek bir kamera akışı:
+Her adım atomiktir, bağımsız fail-safe, tek prompt'ta gönderilir.
 
-```text
-0vh ────────── HERO (100vh)
-                 │
-100vh ──────── ▼ FORGE SEQUENCE — 900vh sticky canvas
-              ┌─────────────────────────────────────┐
-              │ FAZE 01 — MELT      [0%   → 25%]    │
-              │   Ham Ti-6Al-4V billet              │
-              │   1.668°C molten flow + ember rain  │
-              │   "ERGİTME" tipografi lava-fill     │
-              ├─────────────────────────────────────┤
-              │ FAZE 02 — POUR      [25%  → 45%]    │
-              │   Lava stream → mold cavity         │
-              │   Impact ripple + steam particles   │
-              │   "DÖKÜM" reveal w/ pressure HUD    │
-              ├─────────────────────────────────────┤
-              │ FAZE 03 — COOL      [45%  → 60%]    │
-              │   Color shift orange → silver       │
-              │   Surface texture crystallization   │
-              │   Material data scramble (Ti-6Al-4V)│
-              ├─────────────────────────────────────┤
-              │ FAZE 04 — MACHINE   [60%  → 90%]    │
-              │   CNC frame sequence (120 frames)   │
-              │   HUD readout: RPM/Feed/Tolerance   │
-              │   4 story captions w/ scramble      │
-              ├─────────────────────────────────────┤
-              │ FAZE 05 — DELIVER   [90%  → 100%]   │
-              │   Final part on bone-white surface  │
-              │   "±0.005mm · AS9100D" stamp        │
-              │   CTA: TEKLİF AL →                  │
-              └─────────────────────────────────────┘
-1000vh ─────── ▼ rest of page (Nexus, WhyUs, ...)
+### A · Primitive Component'ler (yeni dosyalar)
 
-```
+| # | Dosya | İş |
+|---|---|---|
+| **4.01** | `BrutalSectionHeader.tsx` (yeni, ~80 satır) | Mono index (`02 / 17`) + mega headline + sağ-üst meta etiketi. `forwardRef`, `displayName`, named export. Word-stagger reveal `whileInView`. |
+| **4.02** | `BrutalListRow.tsx` (yeni, ~60 satır) | `01 ─ TITLE ─── meta ─── →` satır primitivi. Hover: bg molten invert, sağ ok translate-x. Keyboard focusable. |
+| **4.03** | `BrutalCrosshairCursor.tsx` (yeni, ~70 satır) | 3px kare + label ("VIEW · DRAG · SCROLL"). `gsap.quickTo`. Mevcut `CustomCursor` ile çakışmasın → flag prop ile geçici devre dışı. Mobile'da render etmez. |
+| **4.04** | `useClipReveal.ts` (yeni hook, ~40 satır) | `clip-path inset(0 100% 0 0)` → `inset(0)`, 0.9s `cubic-bezier(0.76,0,0.24,1)`. `prefers-reduced-motion` → instant. |
 
-**Tek sticky container**, tek `ScrollTrigger`, tek progress (0→1). Faze geçişleri opacity crossfade + ortak ambient overlay (no abrupt cuts). Sol-üst sabit "FAZE XX / 05" indicator.
+### B · Section Brutalist Styling Pass (mevcut dosyalar — surgical edit)
 
-> ⚠️ **NOT:** `ForgeSequenceScene.tsx` 180 satır limitine sığmaz. Execution fazlarında **3 ayrı dosyaya** bölünür: `ForgeCanvas.tsx` (~150 satır) + `ForgePhaseController.tsx` (~140 satır) + `ForgeHUD.tsx` (~80 satır).
->
-> ⚠️ **NOT:** Eski 3 sahne dosyası (`LavaTypographyScene`, `MoldCastScene`, `CNCScrollStory`) **silinmez** — `// DEPRECATED` olarak işaretlenir. Silme işlemi ayrı bir temizlik fazında yapılır. Lovable'da silme + import temizleme aynı prompt'ta yapılamaz (build break riski).
->
-> ⚠️ **NOT:** Lenis + 900vh sticky ScrollTrigger konfigürasyonu (`ScrollTrigger.scrollerProxy()`) **ayrı bir execution fazında** ele alınır. Başka değişikliklerle aynı prompt'ta gönderilmez.
+Her adımda **sadece presentation** değişir (className/JSX wrapper). Data, state, business logic dokunulmaz.
 
----
+| # | Dosya | İş |
+|---|---|---|
+| **4.05** | `ServicesSection.tsx` | Card-grid → `BrutalListRow` listesi (6 disiplin). Header → `BrutalSectionHeader index="02/17"`. |
+| **4.06** | `IndustriesSection.tsx` | Card grid'i tablo formatına: `INDUSTRY ─── parts/yr ─── certifications`. Header değişimi. |
+| **4.07** | `WhyUsSection.tsx` | Stat blokları → mono numerals + hairline divider. Header değişimi. |
+| **4.08** | `ProjectShowcase.tsx` | Card border-radius `0`, hairline border, hover bg invert. İçerik düzeni korunur. |
+| **4.09** | `MaterialsSection.tsx` | Material listesi → `BrutalListRow` (kod ─ alaşım ─ tolerans). |
+| **4.10** | `CapabilitiesSection.tsx` | Spec tablosu format. Header değişimi. |
+| **4.11** | `TestimonialsSection.tsx` | Quote kartları → editorial tipografi (mega quote mark, mono attribution). |
+| **4.12** | `FAQBlogSection.tsx` | Accordion item'ları → hairline rule + mono index. Header değişimi. |
+| **4.13** | `FinalCTASection.tsx` | Tek mega headline + tek molten invert CTA. Glow/gradient kaldırılır. |
 
-### 4) Ortak Brutalist Section Şablonu
+### C · Mikro-Etkileşim & Global UI
 
-Diğer tüm sectionlar (WhyUs, Services, Industries, Projects, Materials, Capabilities, Testimonials, FAQ, FinalCTA) **layout'u korunur** ama brutalist şablonla yeniden styled edilir:
+| # | Dosya | İş |
+|---|---|---|
+| **4.14** | `index.css` | `.brutal-link` utility: `::after` 1px line, `transform: scaleX(0)`, hover `scaleX(1)`, `transform-origin` left, 0.4s. |
+| **4.15** | `index.css` | `.btn-brutal-invert` utility: `border 1px hairline`, `bg-transparent`, hover `bg-[hsl(var(--brutalist-molten))]` + text invert. |
+| **4.16** | `button.tsx` (variant ekle) | `variant: "brutal"` ekle. Mevcut variant'lar dokunulmaz. |
+| **4.17** | `App.tsx` veya `Index.tsx` | `BrutalCrosshairCursor` mount (sadece `/` route'unda). Mevcut `CustomCursor` flag ile gizlenir. |
+| **4.18** | `useClipReveal.ts` kullanımı | `BrutalSectionHeader` ve `BrutalListRow` bu hook'u tüketir. |
 
-```text
-┌─ [02 / 17] ───────── HİZMETLER ─────────────────────┐
-│                                                      │
-│  WHAT WE                          ─── 6 disiplin   │
-│  MANUFACTURE.                                        │
-│                                                      │
-│  ────────────────────────────────────────────────   │
-│                                                      │
-│  01 ─ CNC TORNALAMA           ±0.005mm   →          │
-│  02 ─ CNC FREZE               5-axis     →          │
-│  03 ─ HASSAS DÖKÜM            Ti/Al      →          │
-│  04 ─ KAYNAK & MONTAJ         AS9100     →          │
-│  ────────────────────────────────────                │
-└──────────────────────────────────────────────────────┘
+### D · Doğrulama & Smoke Checks
 
-```
-
-- Card-grid yapısı çoğu yerde **tablo/liste** formatına dönüşür (brutalist editorial).
-- Section header her yerde aynı formül: mono index + headline + mono meta.
-- Section padding `py-[clamp(140px,18vw,220px)]`.
-- Section arası glow/wave/transition divider'lar **kaldırılır** → keskin renk kesimleri (concrete → obsidian → bone).
+| # | İş |
+|---|---|
+| **4.19** | Build temiz: `npm run build` hata yok. Tüm import'lar çözülüyor. |
+| **4.20** | A11y: Tüm `BrutalListRow` tab-focusable, focus-ring görünür. `prefers-reduced-motion` aktifken animasyonlar instant. |
+| **4.21** | Mobile (<768px): crosshair cursor render edilmiyor, list row'lar tek kolon, header font-size scale ediyor. |
+| **4.22** | Visual QA: 9 section'da brutalist tutarlılık. Buton hover invert çalışıyor. Link underline draw çalışıyor. CTA route'ları (`/teklif-al`, `/hizmetler`, ...) bozulmadı. |
 
 ---
 
-### 5) Mikro-Etkileşim & Motion
+## Teknik Notlar
 
-- Cursor: brutalist crosshair (3px kare, label "VIEW · DRAG · SCROLL").
-- Tüm reveal: `clip-path inset(0 100% 0 0)` → `inset(0)`, 0.9s `cubic-bezier(0.76,0,0.24,1)`.
-- Headline: word-stagger 0.05s, her kelime aşağıdan slide + opacity.
-- Hover: link altında 1px line draw (left → right, 0.4s).
-- Buton hover: bg invert (transparent → molten), text invert (molten → black).
-- Marquee bantlar: 60s linear, sertifika + müşteri logoları.
+- Her dosya 180 satır limitine sığacak. Aşan section refactor edilirse alt-component çıkarılır.
+- Mevcut `SectionHeader.tsx` **silinmez**, `BrutalSectionHeader` yan yana yaşar — diğer sayfalar (Hakkımızda, Iletisim, Blog) eski header'ı kullanmaya devam eder.
+- `CustomCursor` ↔ `BrutalCrosshairCursor` çakışması için `Index.tsx` flag pattern: `<CustomCursor disabled />` veya conditional mount.
+- Forge & Steel renk paleti korunur, sadece molten accent vurgusu artırılır.
+- Z-index mimarisi (1-17) korunur. Crosshair `z-90` (mevcut cursor ile aynı katman).
 
----
+## Lovable Execution Sırası
 
-### 6) Yeni Görsel Asset (5 adet, premium imagegen)
+Tek prompt'ta tek alt-adım veya yakından ilişkili 2-3 adım grubu gönderilir:
 
-```
-src/assets/forge/
-├── 01-billet-raw.jpg          (Ti-6Al-4V billet, dramatic side light)
-├── 02-molten-pour.jpg         (lava stream into ceramic mold)
-├── 03-cooling-surface.jpg     (silver-orange transition, macro)
-├── 04-cnc-machining.jpg       (5-axis spindle, chip flow, blue coolant)
-└── 05-finished-part.jpg       (titanium aerospace bracket on bone surface)
+1. **Bundle 1:** 4.01–4.04 (4 yeni dosya, hiçbir mevcut dosyaya dokunmaz — 0 risk)
+2. **Bundle 2:** 4.14–4.16 (CSS utility + button variant)
+3. **Bundle 3:** 4.17 (cursor mount)
+4. **Bundle 4–9:** 4.05–4.13 her section ayrı prompt (9 ayrı tur)
+5. **Bundle 10:** 4.19–4.22 doğrulama
 
-```
-
-Premium tier, 1920×1080, cinematic editorial photography stili.
-
----
-
-### 7) Teknik Notlar
-
-- `HeroSection.tsx` surgical edit ile brutalist versiyona dönüştürülür (execution fazlarına göre, tek seferde rewrite değil).
-- `ForgeCanvas.tsx` + `ForgePhaseController.tsx` + `ForgeHUD.tsx` (3 yeni dosya, her biri max 150 satır) → eski 3 sahne DEPRECATED işaretlenir.
-- `Index.tsx` güncellenir: 3 ayrı `<FlowScene>` yerine tek `<ForgeSequence>`. `SECTION_Z` sadeleştirilir.
-- `BrutalSectionHeader.tsx` (yeni, ~80 satır) ve `BrutalListRow.tsx` (yeni, ~60 satır). Mevcut `SectionHeader.tsx` dokunulmaz.
-- `index.css`: brutalist token'lar, typography scale, grain + scanline overlay, hairline utility — **ayrı fazlarda** eklenir (tek prompt'ta tümü değil).
-- `tailwind.config.ts`: `display-mega` token + IBM Plex Mono font-family — **ayrı fazda**.
-- Mobile: forge sequence devre dışı, fallback statik image stack + native scroll-snap.
-- Reduced-motion: tüm reveal'lar instant, FORGE SEQUENCE statik 5 image grid'e düşer.
-- Performance: `useGPUCapability` hook **ayrı mini-fazda** yazılır, diğer fazlara bağımlılık yok.
-
----
-
-### 8) Lovable Execution Fazları
-
-> Bu bölüm her execution fazının atomik adımlarını tanımlar. Her adım bağımsız olarak başarısız olabilir ve başka hiçbir şeyi kırmaz. Lovable'a **her seferinde tek bir alt-faz** gönderilir.
-
----
-
-#### FAZ 03 — Brutalist Token Sistemi
-
-*Ön koşul: Mevcut* `index.css` *ve* `tailwind.config.ts` *dosyaları temiz, build geçiyor.*
-
-
-| Adım     | Dosya                | İş                                                                                                                                                   |
-| -------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **03.1** | `src/index.css`      | CSS custom property ekle: `--brutalist-bone: #EDE6D6`, `--brutalist-molten: #FF4A1C`, `--brutalist-steel: #1C1C1C`                                   |
-| **03.2** | `src/index.css`      | Film grain SVG overlay CSS'i ekle: `@layer utilities` altında `.grain-overlay` class, `opacity-[0.08]`, `mix-blend-overlay`, `pointer-events-none`   |
-| **03.3** | `src/index.css`      | CRT scanline utility ekle: `.scanline-overlay` class, `opacity-[0.03]`, repeating-linear-gradient pattern — grain ile **ayrı class**, birleştirilmez |
-| **03.4** | `src/index.css`      | Hairline border utility ekle: `.border-hairline` → `border: 1px solid currentColor`, `opacity-[0.2]`                                                 |
-| **03.5** | `tailwind.config.ts` | `fontSize` extend: `display-mega` → `clamp(6rem, 18vw, 22rem)`, line-height `0.82`, letter-spacing `-0.06em`                                         |
-| **03.6** | `tailwind.config.ts` | `fontFamily` extend: `mono` array'ine `'IBM Plex Mono'` ekle (zaten mevcut, sadece alias teyit)                                                      |
-| **03.7** | —                    | **Smoke check:** `npm run build` hatasız geçmeli. Tarayıcıda `getComputedStyle` ile `--brutalist-molten` değeri kontrol edilmeli.                    |
-| **03.8** | —                    | **HOLD** — Kullanıcı onayı beklenir. Token'lar görünür, build temiz, bir sonraki faza geçilir.                                                       |
-
-
-*Bu fazda hiçbir component değiştirilmez. Sadece token ve utility tanımları.*
-
----
-
-#### FAZ 07 — GrainOverlay Component
-
-*Ön koşul: FAZ 03 tamamlandı ve onaylandı.* `.grain-overlay` *CSS class mevcut.*
-
-
-| Adım     | Dosya                                | İş                                                                                                                                                                                                                                        |
-| -------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **07.1** | `src/components/ui/GrainOverlay.tsx` | Yeni component oluştur. Named export. Max 80 satır. SVG `<feTurbulence>` + `<feColorMatrix>` filter. `fixed inset-0`, `z-[5]`, `pointer-events-none`. `opacity-[0.08]`, `mix-blend-mode: overlay`. `prefers-reduced-motion` → opacity `0` |
-| **07.2** | `src/App.tsx`                        | Root'a mount: `<GrainOverlay />` import + JSX'e ekle. **Sadece bu iki satır** — başka hiçbir şeye dokunulmaz.                                                                                                                             |
-| **07.3** | —                                    | **Teyit:** `z-index: 5` olduğu ve tıklamayı bloklamadığı (`pointer-events: none`) DevTools'dan kontrol edilmeli. Header ve CTA'lar hâlâ tıklanabilir olmalı.                                                                              |
-| **07.4** | —                                    | **Smoke check:** Light mode + dark mode'da grain görünür. Animasyon yok, statik texture. `prefers-reduced-motion` aktifken overlay tamamen şeffaf.                                                                                        |
-| **07.5** | —                                    | **HOLD** — Kullanıcı onayı beklenir. Grain yoğunluğu kabul edilebilirse bir sonraki faza geçilir. Fazla yoğunsa `07.1`'e dönülür, `opacity` değeri düşürülür.                                                                             |
-
-
-*Bu fazda* `index.css`*'e dokunulmaz. Scanline overlay (*`ScanlineOverlay.tsx`*) ayrı bir fazda aynı pattern ile uygulanır.*
-
----
-
-### Kapsam Özeti
-
-
-| Değişen                                                  | Korunan                                                  |
-| -------------------------------------------------------- | -------------------------------------------------------- |
-| Hero (surgical edit, brutalist)                          | Header / Footer / Routes / Auth / Admin / Müşteri paneli |
-| 3 sinematik sahne → tek FORGE SEQUENCE (3 yeni dosya)    | Section sırası (Hero → Forge → Nexus → WhyUs → ...)      |
-| Tüm section'ların görsel dili (brutalist)                | İş mantığı, data, Supabase, RFQ flow, modallar           |
-| Tipografi sistemi (mega mono caps, IBM Plex Mono)        | Forge & Steel renk paleti (sadece kontrast artırılır)    |
-| Section transition divider'lar (kaldırılır)              | Tüm CTA hedefleri (`/teklif-al`, `/hizmetler`, ...)      |
-| 5 yeni cinematic image                                   | Mevcut sequence-cnc frame'leri (FAZE 04'te kullanılır)   |
-| Eski 3 sahne → DEPRECATED (silinmez, ayrı temizlik fazı) | Z-index mimarisi (1-17 stacking korunur)                 |
-
-
-**~9 dosya düzenleme + ~5 yeni component/dosya + ~5 yeni image. Hiçbir route veya backend etkilenmez.**
-
-&nbsp;
-
-## FAZ 03 — Brutalist Token Sistemi
-
-Sadece presentational layer. Mevcut tokenlar, route'lar, iş mantığı dokunulmaz. FAZ 07 ayrı turda gelir.
-
-### Değişiklikler
-
-`**src/index.css**` (dosya sonuna ek)
-
-```css
-/* ═══ FAZ 03 — Brutalist Tokens ═══ */
-:root {
-  --brutalist-bone: 38 28% 89%;       /* #EDE6D6 */
-  --brutalist-molten: 14 100% 55%;    /* #FF4A1C */
-  --brutalist-steel: 0 0% 11%;        /* #1C1C1C */
-  --brutalist-void: 0 0% 4%;          /* #0A0A0A */
-  --hairline-color: 0 0% 100%;
-  --grain-opacity: 0.04;
-  --scanline-opacity: 0.03;
-}
-
-.brutalist-grain {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 5;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-size: 240px 240px;
-}
-
-.brutalist-scanline {
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 5;
-  opacity: var(--scanline-opacity);
-  mix-blend-mode: overlay;
-  background-image: repeating-linear-gradient(
-    0deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1px,
-    transparent 1px, transparent 3px
-  );
-}
-
-.border-hairline        { border: 1px solid hsl(var(--hairline-color) / 0.12); }
-.border-hairline-strong { border: 1px solid hsl(var(--hairline-color) / 0.24); }
-.border-hairline-b      { border-bottom: 1px solid hsl(var(--hairline-color) / 0.12); }
-.border-hairline-t      { border-top:    1px solid hsl(var(--hairline-color) / 0.12); }
-```
-
-`**tailwind.config.ts**` — `extend` içine yalnızca `fontSize` eklenir. `fontFamily.mono` zaten `IBM Plex Mono` olarak kayıtlı, dokunulmaz.
-
-```ts
-fontSize: {
-  'display-mega': ['clamp(6rem, 18vw, 22rem)', {
-    lineHeight: '0.82',
-    letterSpacing: '-0.06em',
-    fontWeight: '700',
-  }],
-},
-```
-
-### Smoke Check
-
-- Tailwind otomatik build → hata yok.
-- DevTools `getComputedStyle(document.documentElement).getPropertyValue('--brutalist-molten')` → `14 100% 55%`.
-- `.brutalist-grain`, `.brutalist-scanline`, `.border-hairline*` CSS'te tanımlı (henüz DOM'da kullanılmıyor — sonraki fazlarda).
-- `text-display-mega` Tailwind utility üretilmiş.
-
-### HOLD
-
-FAZ 07 (GrainOverlay component + App mount) sizin onayınızla ayrı turda uygulanır.
-
-### Kapsam Özeti
-
-
-| Değişen                                  | Dokunulmayan                                  |
-| ---------------------------------------- | --------------------------------------------- |
-| `src/index.css` (ek)                     | Mevcut Forge & Steel tokenları, border-radius |
-| `tailwind.config.ts` (yalnız `fontSize`) | `fontFamily` (mono zaten doğru)               |
-| —                                        | Hiçbir component, hiçbir route                |
-
-
-**2 dosyada ek-only değişiklik. Sıfır kırılma riski.**
+**Toplam:** 4 yeni dosya + ~12 mevcut dosya surgical edit. Hiçbir route, backend, auth, admin/müşteri paneli etkilenmez.
