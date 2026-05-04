@@ -417,14 +417,14 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 <motion.div
                   className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.4 }}
+                  animate={{ opacity: 0.55 }}
                   transition={{ delay: 1.5 + heroDelay }}
                 >
-                  <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-primary">Scroll</span>
+                  <span className="aw-eyebrow text-primary" style={{ fontSize: 9, letterSpacing: '0.4em' }}>Scroll</span>
                   <motion.div
-                    className="w-px h-8 bg-primary"
+                    className="w-px h-10 bg-primary"
                     animate={{ scaleY: [0, 1, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    transition={{ repeat: Infinity, duration: 2, ease: [0.22, 1, 0.36, 1] }}
                     style={{ transformOrigin: "top" }}
                   />
                 </motion.div>

@@ -45,20 +45,21 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
         <h2
           id={headingId}
           className={
-            titleClassName || "text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-[0.95] text-foreground"
+            titleClassName ||
+            "text-display-2 mb-4 text-foreground aw-optical-x"
           }
         >
           {title.split(' ').map((word, i) => (
             <motion.span
               key={i}
               className="inline-block mr-[0.3em]"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{
-                delay: 0.1 + i * 0.04,
-                duration: 0.5,
-                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1 + i * 0.07,
+                duration: 0.7,
+                ease: [0.22, 1, 0.36, 1],
               }}
             >
               {word}
