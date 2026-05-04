@@ -26,6 +26,13 @@ export default {
         sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
         mono: ['IBM Plex Mono', 'monospace'],
       },
+      fontSize: {
+        'display-mega': ['clamp(6rem, 18vw, 22rem)', {
+          lineHeight: '0.82',
+          letterSpacing: '-0.06em',
+          fontWeight: '700',
+        }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
