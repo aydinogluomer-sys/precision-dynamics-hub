@@ -1,116 +1,119 @@
-```
-Fix light mode color inconsistency. Dark sections appear pure black
-in light mode, creating visual dissonance with lighter sections.
-DO NOT change dark mode values, animations, layout, or z-index.
+## MAS Technic — Awwwards 90+ Refinement Plan
 
-═══════════════════════════════════════════════════════
-CHANGE 1 — src/index.css — Light mode forge variables
-═══════════════════════════════════════════════════════
+Mevcut yapı, layout, grid, section sırası, routing ve business logic **dokunulmaz**. Sadece art direction, tipografi, motion ve sinematik akış katmanları rafine edilir.
 
-Find the :root block (light mode defaults).
-Change ONLY these three variable values:
+---
 
---forge-obsidian: 0 0% 6%        → 215 10% 24%
---forge-gunmetal: 240 28% 14%    → 220 12% 30%
---forge-iron:     220 46% 16%    → 215 18% 27%
+### 1. Tipografi Sistemi (Global)
+**Dosyalar:** `src/index.css`, `tailwind.config.ts`, `src/components/SectionHeader.tsx`
 
-Do NOT touch the .dark block. Dark mode values stay exactly
-as they are.
+- Fluid heading scale (clamp tabanlı):
+  - H1 → `clamp(3.5rem, 8vw, 9rem)`
+  - H2 → `clamp(2.5rem, 5.5vw, 6rem)`
+  - H3 → `clamp(1.75rem, 3vw, 3rem)`
+- Letter-spacing: `-0.04em` (H1), `-0.02em` (subhead)
+- Line-height: `0.92` (H1), `1.0` (H2), `1.05` (H3)
+- Body: Space Grotesk korunur, `line-height: 1.55`
+- Mono caption: `letter-spacing: 0.5em` sabit
+- `tailwind.config.ts` → `fontSize` extend: `display-1`, `display-2`, `display-3` token'ları
 
-═══════════════════════════════════════════════════════
-CHANGE 2 — Cinematic scenes: hardcoded dark background
-═══════════════════════════════════════════════════════
+### 2. Spacing & Ritim
+**Dosyalar:** `tailwind.config.ts`, `src/index.css`
 
-In each of the following 6 files, find ALL occurrences of:
-  hsl(var(--forge-obsidian))
-  hsl(var(--forge-gunmetal))
-  hsl(var(--forge-iron))
+- Section vertical padding utility: `py-[clamp(120px,15vw,180px)]`
+- İç ritim ölçeği: 16 / 32 / 64 / 96 (yeni Tailwind spacing token: `s-1`, `s-2`, `s-3`, `s-4`)
+- Container max-width: `1400px`, asimetrik gutter desktop (`pl-8 pr-12`)
+- Optik düzeltme: bazı başlıklar `-translate-x-[0.02em]`
 
-used as background-color or backgroundColor values.
-Replace each with: #0f0f0f
+### 3. Renk & Doku Katmanı
+**Dosyalar:** `src/index.css`, **yeni** `src/components/ui/GrainOverlay.tsx`
 
-These scenes always require pure black — they contain
-video, canvas, or white text overlays that must never
-be affected by theme changes.
+- Yeni `GrainOverlay` component: SVG turbulence + feColorMatrix, `fixed inset-0`, `opacity 0.04`, `mix-blend-overlay`, `pointer-events-none`, `z-[5]`
+- `App.tsx` veya `Index.tsx` root'a mount
+- Token rafine:
+  - `--foreground` saflığı +%3
+  - `--muted-foreground` -%5 lightness
+  - Light mode bg: `hsl(40 12% 97%)` warm off-white
+  - Dark mode bg: `#0F0F10` korunur
+- **Border radius `0rem` korunur** (kullanıcı talebi)
 
-Files to update:
-  - src/components/LavaTypographyScene.tsx
-  - src/components/MoldCastScene.tsx
-  - src/components/CNCScrollStory.tsx
-  - src/components/VideoScrollSection.tsx
-  - src/components/MaterialMorphScroll.tsx
-  - src/components/HeroSection.tsx  ← includes QuickQuote panel
+### 4. Sinematik Görseller
+**Dosyalar:** **yeni** `src/assets/cinematic/*.jpg` (5 adet) + `HeroSection`, `IndustriesSection`, `ProjectShowcase`, `ServicesSection`
 
-For HeroSection.tsx specifically: ALL forge variable
-background references become #0f0f0f — including the
-QuickQuote panel background set in the previous fix.
-The QuickQuote panel must stay pure black in both themes.
+5 yeni image (premium, 1920x1080, jpg):
+1. `cnc-chip-flow.jpg` — macro CNC chip + cutting fluid
+2. `molten-pour.jpg` — molten metal pour, deep shadow
+3. `dark-workshop.jpg` — atmospheric workshop, sparks
+4. `precision-micrometer.jpg` — micrometer macro, brushed steel
+5. `titanium-surface.jpg` — brushed titanium texture, raking light
 
-Do NOT replace forge variables used for text color,
-border color, or non-background purposes in these files.
-ONLY replace background/backgroundColor usages.
+Style prompt: *"Cinematic industrial photography: macro CNC details, brushed titanium, cutting fluid, metal chips, warm sparks, dark workshop atmosphere, shallow DOF, high contrast, no stock-photo look, no fake 3D render."*
 
-═══════════════════════════════════════════════════════
-CHANGE 3 — src/pages/Index.tsx — Wave SVG fill
-═══════════════════════════════════════════════════════
+ES6 import, `BlurImage` ile render. Hero `hero-cnc.jpg` korunur (kullanıcı bağlılığı).
 
-Find the Wave SVG element. It has a hardcoded:
-  fill="#1a1a2e"
+### 5. Easing & Motion Standardı
+**Dosyalar:** `src/components/ui/Reveal.tsx`, `SectionHeader.tsx`, `useStaggeredReveal.ts`
 
-Replace with a theme-aware value:
-  style={{ fill: 'hsl(var(--forge-gunmetal))' }}
+- Tüm entrance ease → `cubic-bezier(0.22, 1, 0.36, 1)`
+- Stagger: `0.06–0.08s`
+- Default: `opacity 0→1`, `translateY 24px→0`, `duration 0.7s`
+- Hover scale tüm card/CTA: `1 → 1.03`, 400ms, aynı easing
+- `usePrefersReducedMotion` override her yerde korunur
 
-Remove the hardcoded fill attribute after adding the style prop.
+### 6. UI Detayları
+**Dosyalar:** `src/components/ui/button.tsx`, `card.tsx`, `src/index.css`
 
-═══════════════════════════════════════════════════════
-CHANGE 4 — src/components/CertificationsSection.tsx
-═══════════════════════════════════════════════════════
+- Border radius: **değiştirilmez** (`0rem` korunur)
+- Shadow tier (CSS variables):
+  - `--shadow-1: 0 1px 2px rgba(0,0,0,0.04)`
+  - `--shadow-2: 0 8px 24px -8px rgba(0,0,0,0.12)`
+  - `--shadow-3: 0 24px 60px -20px rgba(0,0,0,0.25)`
+- Button hover: underline-grow + `translateY(-2px)`, no glow
+- Global focus ring: `outline: 2px solid hsl(var(--primary) / 0.4); outline-offset: 2px`
 
-Find the <style> block containing:
-  .dark #sertifikalar { background-color: ... !important; }
+### 7. Scroll Storytelling Rafinasyonu
+**Dosyalar:** `src/pages/Index.tsx`, scene wrapper'ları, `SectionTransitionGlow.tsx`
 
-Do NOT delete it. Comment it out:
-  {/* .dark #sertifikalar { background-color: ... !important; } */}
+- Hero → Lava → Mold → CNC sticky pin **korunur**, sadece transition tempo yumuşatılır
+- Micro-parallax: arka plan elementleri `translateY 0.3x` scroll velocity (mevcut `useScrollVelocity` hook'u kullan)
+- Sticky section header chip (desktop only): `top-24`, scroll fade-in
+- `SectionTransitionGlow` opacity %40 → %60
 
-Reason: CSS variable now handles theme difference automatically.
-Keeping it commented allows quick revert if dark mode regression
-appears during testing.
+### 8. Hero Refinements
+**Dosya:** `src/components/HeroSection.tsx`
 
-═══════════════════════════════════════════════════════
-CHANGE 5 — src/components/NexusPromoSection.tsx
-═══════════════════════════════════════════════════════
+- "CNC HASSAS İŞLEME" başlık: kelime-bazlı stagger (`motion.span`, 0.07s gap), mevcut sola kaydırma korunur
+- Subtitle: 200ms gecikmeli reveal
+- Scroll indicator: mevcut `text-primary` korunur, 2s loop vertical line draw (`scaleY 0→1` infinite)
 
-Find the root element that has BOTH:
-  className="... bg-[hsl(var(--forge-gunmetal))] ..."
-  style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}
+### 9. Detay Katmanı (Awwwards İmzası)
+**Yeni:** `src/components/ui/SectionIndex.tsx`
 
-Remove the inline style={{ backgroundColor }} declaration.
-Keep the className version only.
+- Sağ alt sabit: `01 / 17` mono, scroll'a senkron (`IntersectionObserver` ile aktif section)
+- Sol alt sabit: live timestamp + lokasyon — `İZMİR · 14:32 GMT+3` (mevcut `LiveClock` component'i extend)
+- `CustomCursor` label states genişlet: `VIEW` / `DRAG` / `EXPLORE` (data-cursor attribute ile)
+- `Index.tsx` root'a mount, `z-[60]`, `pointer-events-none`, mobile gizli
 
-The Tailwind class already handles theme-awareness via
-the CSS variable — the duplicate inline style is redundant
-and can cause specificity conflicts.
+### 10. Kapsam DIŞI (Dokunulmayacak)
+- Layout, grid, section sırası, route, business logic
+- Z-index mimarisi (1-17 stacking korunur)
+- GSAP/Lenis kurulumu
+- Forge & Steel renk paleti
+- Border radius (`0rem` korunur)
+- Cinematic scene `#0f0f0f` background kuralı
+- Component dosya bölme (yalnız 180+ satır olursa)
 
-═══════════════════════════════════════════════════════
-VERIFICATION CHECKLIST
-═══════════════════════════════════════════════════════
+---
 
-After applying all changes confirm:
+### Teknik Notlar
+- Tüm yeni component'ler **named export**, max **180 satır**
+- Tailwind token'ları **HSL**
+- Yeni görseller `src/assets/cinematic/*.jpg`, ES6 import
+- `prefers-reduced-motion` her motion eklemesinde test
+- Build sonrası smoke check: `SectionHeader`, `Hero`, `HowWeWork`, `ProjectShowcase`
 
-1. :root block has updated forge-obsidian/gunmetal/iron values
-2. .dark block is completely unchanged
-3. All 6 cinematic scene files use #0f0f0f for backgrounds
-4. HeroSection + QuickQuote backgrounds are #0f0f0f (not CSS var)
-5. Wave SVG uses style={{ fill }} not hardcoded hex
-6. CertificationsSection dark override is COMMENTED, not deleted
-7. NexusPromo has single className background declaration
-8. No forge variable background references remain in the 6
-   cinematic scene files
-9. Text colors, border colors, non-background forge usages
-   in cinematic files are untouched
-
-DO NOT modify: dark mode values, animations, scroll behavior,
-typography, section order, z-index, or any component not
-listed above.
-
-```
+### Etki Özeti
+- ~9 dosya düzenleme
+- 2 yeni component (`GrainOverlay`, `SectionIndex`)
+- 5 yeni cinematic image
+- Sıfır kırılma riski — tamamen presentational layer
