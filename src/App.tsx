@@ -47,6 +47,9 @@ const CustomCursor = lazy(() =>
 const GrainOverlay = lazy(() =>
   import("@/components/ui/GrainOverlay").then((m) => ({ default: m.GrainOverlay })),
 );
+const BrutalCrosshairCursor = lazy(() =>
+  import("@/components/ui/BrutalCrosshairCursor").then((m) => ({ default: m.BrutalCrosshairCursor })),
+);
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -158,12 +161,19 @@ const AppContent = () => {
     return location.pathname.startsWith("/admin") || location.pathname.startsWith("/musteri-paneli");
   }, [location.pathname]);
 
+  const isLanding = location.pathname === "/";
+
   const content = (
     <>
       <ScrollToTop />
       {!isPanel && (
         <Suspense fallback={null}>
           <GrainOverlay />
+        </Suspense>
+      )}
+      {isLanding && (
+        <Suspense fallback={null}>
+          <BrutalCrosshairCursor />
         </Suspense>
       )}
       <AnimatedRoutes />
@@ -182,12 +192,21 @@ export const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Suspense fallback={null}>
-          <CustomCursor />
-        </Suspense>
+        <CursorMount />
         <ScrollProgress />
         <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+/** Mount default CustomCursor on every route EXCEPT landing (which uses brutal crosshair). */
+const CursorMount = () => {
+  const location = useLocation();
+  if (location.pathname === "/") return null;
+  return (
+    <Suspense fallback={null}>
+      <CustomCursor />
+    </Suspense>
+  );
+};
