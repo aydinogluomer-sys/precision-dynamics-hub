@@ -17,6 +17,8 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        brutal:
+          "rounded-none border border-foreground/40 bg-transparent text-foreground font-mono text-xs tracking-[0.25em] uppercase hover:bg-[hsl(var(--brutalist-molten))] hover:text-[hsl(var(--brutalist-void))] hover:border-[hsl(var(--brutalist-molten))] transition-colors",
       },
       size: {
         default: "h-10 px-4 py-2",
