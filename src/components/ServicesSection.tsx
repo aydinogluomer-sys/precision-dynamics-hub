@@ -9,6 +9,7 @@ import { SectionHeader } from "./SectionHeader";
 import { OverlayReveal } from "./ui/OverlayReveal";
 import { BlurImage } from "./BlurImage";
 import { useStaggeredReveal } from "@/hooks/useStaggeredReveal";
+import { ServiceQuickViewModal, type QuickViewService } from "./ServiceQuickViewModal";
 import serviceFrze from "@/assets/service-cnc-freze.jpg";
 import serviceTorna from "@/assets/service-cnc-torna.jpg";
 import serviceImalat from "@/assets/service-imalat.jpg";
@@ -59,7 +60,7 @@ const services = [
 ];
 
 /* ── Desktop: Dual-Column Hover-Linked Layout ── */
-const ServicesDualColumn = () => {
+const ServicesDualColumn = ({ onOpen }: { onOpen: (s: QuickViewService) => void }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const visualRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -143,13 +144,22 @@ const ServicesDualColumn = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed mt-2 mb-3">
                   {s.description}
                 </p>
-                <Link
-                  to={s.link}
-                  className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors cta-arrow"
-                >
-                  {s.cta}
-                  <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
-                </Link>
+                <div className="flex flex-wrap items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => onOpen(s)}
+                    className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1.5 transition-colors cta-arrow"
+                  >
+                    {"İncele"}
+                    <ArrowRight className="w-3.5 h-3.5 arrow-icon" />
+                  </button>
+                  <Link
+                    to={`/teklif-al?hizmet=${encodeURIComponent(s.link.split("/").pop() ?? "")}`}
+                    className="text-sm font-semibold text-foreground/70 hover:text-foreground flex items-center gap-1.5 transition-colors"
+                  >
+                    {"Teklif Al"}
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -190,30 +200,42 @@ const ServicesDualColumn = () => {
 };
 
 /* ── Mobile: Compact card list ── */
-const ServicesMobileList = () => {
+const ServicesMobileList = ({ onOpen }: { onOpen: (s: QuickViewService) => void }) => {
   const listRef = useRef<HTMLDivElement>(null);
   useStaggeredReveal(listRef, 0.07);
 
   return (
     <div ref={listRef} className="flex flex-col gap-4">
       {services.map((s, i) => (
-        <Link key={s.title} to={s.link} className="group block" data-stagger>
+        <div key={s.title} className="group block" data-stagger>
           <div className="flex gap-4 border border-border/30 bg-card overflow-hidden hover:border-primary/40 transition-colors">
             <div className="w-24 h-24 flex-shrink-0 overflow-hidden">
               <BlurImage src={s.image} alt={s.title} className="w-full h-full object-cover" />
             </div>
-            <div className="py-3 pr-4 flex flex-col justify-center">
+            <div className="py-3 pr-4 flex flex-col justify-center flex-1 min-w-0">
               <span className="text-[9px] font-mono text-muted-foreground/50 mb-1">
                 {String(i + 1).padStart(2, "0")}/{String(services.length).padStart(2, "0")}
               </span>
-              <h3 className="text-sm font-bold tracking-tight mb-1">{s.title}</h3>
-              <span className="text-xs text-primary flex items-center gap-1 cta-arrow">
-                {"Detaylar"}
-                <ArrowRight className="w-3 h-3 arrow-icon" />
-              </span>
+              <h3 className="text-sm font-bold tracking-tight mb-2 truncate">{s.title}</h3>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => onOpen(s)}
+                  className="text-xs text-primary flex items-center gap-1 cta-arrow"
+                >
+                  {"İncele"}
+                  <ArrowRight className="w-3 h-3 arrow-icon" />
+                </button>
+                <Link
+                  to={`/teklif-al?hizmet=${encodeURIComponent(s.link.split("/").pop() ?? "")}`}
+                  className="text-xs text-foreground/70 hover:text-foreground"
+                >
+                  {"Teklif Al"}
+                </Link>
+              </div>
             </div>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );
@@ -223,6 +245,13 @@ export const ServicesSection = () => {
   const isMobile = useIsMobile();
   const prefersReduced = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const [openService, setOpenService] = useState<QuickViewService | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpen = useCallback((s: QuickViewService) => {
+    setOpenService(s);
+    setModalOpen(true);
+  }, []);
 
   // Section entrance via GSAP
   useEffect(() => {
@@ -269,7 +298,7 @@ export const ServicesSection = () => {
         </div>
 
         <div className="mb-12">
-          {isMobile ? <ServicesMobileList /> : <ServicesDualColumn />}
+          {isMobile ? <ServicesMobileList onOpen={handleOpen} /> : <ServicesDualColumn onOpen={handleOpen} />}
         </div>
 
         {/* Bottom CTA */}
@@ -303,6 +332,11 @@ export const ServicesSection = () => {
           </div>
         </div>
       </div>
+      <ServiceQuickViewModal
+        service={openService}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
     </section>
   );
 };
