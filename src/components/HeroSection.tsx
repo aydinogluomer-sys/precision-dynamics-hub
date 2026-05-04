@@ -422,7 +422,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 >
                   <span className="text-[9px] uppercase tracking-[0.3em] font-mono text-primary">Scroll</span>
                   <motion.div
-                    className="w-px h-8 bg-white/20"
+                    className="w-px h-8 bg-primary"
                     animate={{ scaleY: [0, 1, 0] }}
                     transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                     style={{ transformOrigin: "top" }}
