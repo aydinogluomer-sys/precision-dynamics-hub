@@ -724,3 +724,54 @@ body::after {
 .aw-optical-x {
   transform: translateX(-0.02em);
 }
+
+/* ═══ FAZ 03 — Brutalist Token System ═══ */
+:root {
+  --brutalist-bone: 38 28% 89%;       /* #EDE6D6 */
+  --brutalist-molten: 14 100% 55%;    /* #FF4A1C */
+  --brutalist-steel: 0 0% 11%;        /* #1C1C1C */
+  --brutalist-void: 0 0% 4%;          /* #0A0A0A */
+  --hairline-color: 0 0% 100%;
+  --grain-opacity: 0.04;
+  --scanline-opacity: 0.03;
+}
+
+/* Film grain SVG overlay — fixed, blend overlay */
+.brutalist-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+/* CRT scanline overlay — separate utility */
+.brutalist-scanline {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: var(--scanline-opacity);
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.5) 0px,
+    rgba(255, 255, 255, 0.5) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* Hairline 1px border utilities — brutalist signature */
+.border-hairline        { border: 1px solid hsl(var(--hairline-color) / 0.12); }
+.border-hairline-strong { border: 1px solid hsl(var(--hairline-color) / 0.24); }
+.border-hairline-b      { border-bottom: 1px solid hsl(var(--hairline-color) / 0.12); }
+.border-hairline-t      { border-top:    1px solid hsl(var(--hairline-color) / 0.12); }
+
+@media (prefers-reduced-motion: reduce) {
+  .brutalist-grain,
+  .brutalist-scanline { opacity: 0; }
+}
