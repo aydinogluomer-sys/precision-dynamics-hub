@@ -52,8 +52,8 @@ export const SectionTransitionGlow = ({
         style={{
           background:
             variant === 'dark-to-light'
-              ? `radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.06), transparent 70%)`
-              : `radial-gradient(ellipse 80% 60% at 50% 100%, hsl(var(--primary) / 0.06), transparent 70%)`,
+              ? `radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--primary) / 0.10), transparent 70%)`
+              : `radial-gradient(ellipse 80% 60% at 50% 100%, hsl(var(--primary) / 0.10), transparent 70%)`,
         }}
       />
     </div>

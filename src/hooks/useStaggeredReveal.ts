@@ -21,7 +21,7 @@ export function useStaggeredReveal(
         opacity: 0,
         duration: 0.7,
         stagger,
-        ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: container,
           start: 'top 80%',
