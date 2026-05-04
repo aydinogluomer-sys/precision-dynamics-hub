@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useClipReveal } from "@/hooks/useClipReveal";
 
 interface BrutalSectionHeaderProps {
@@ -14,12 +14,12 @@ interface BrutalSectionHeaderProps {
   className?: string;
 }
 
-const wordVariants = {
+const wordVariants: Variants = {
   hidden: { y: "100%", opacity: 0 },
   visible: (i: number) => ({
     y: 0,
     opacity: 1,
-    transition: { delay: i * 0.05, duration: 0.7, ease: [0.76, 0, 0.24, 1] },
+    transition: { delay: i * 0.05, duration: 0.7, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] },
   }),
 };
 
