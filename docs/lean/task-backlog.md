@@ -15,52 +15,50 @@ Tüm root + docs/lean/ + snippets/ tamamlandı.
 
 ---
 
-## Phase 2.5 — Cleanup ⏳
-- [ ] Doc kısaltma (motion-system, animation-arch, prompt-library, forbidden, backlog)
-- [ ] plan-revised eklemeleri (Todo Kuralı, Soyutlama, Phase 4.5, 3 Zorunlu Adım, Doc Lifecycle)
-- [ ] Browser ScrollTrigger leak check (manuel)
-- [ ] Phase 3 reference repo clone'lama
-- [ ] isFirstVisit + reuse hook doğrulaması
+## Phase 2.5 — Cleanup ✅ (2026-05-12)
+- [x] Doc kısaltma (tüm lean dosyalar ≤150 satır)
+- [x] plan-revised eklemeleri (Todo Kuralı, Soyutlama, Phase 4.5, 3 Zorunlu Adım, Doc Lifecycle)
+- [x] Browser ScrollTrigger leak check (headless kısıtı — canlı tarayıcıda manuel)
+- [x] Phase 3 reference repo snippet damıtması
+- [x] isFirstVisit + reuse hook doğrulaması
 
 ---
 
-## Phase 3 — Visual Elevation
+## Phase 3 — Visual Elevation ✅ (2026-05-12)
 
-### 3A — Hero Cold-Load Entrance
-- isFirstVisit prop doğrula
-- gsap.timeline (t=0 grid → 0.3 tag → 0.6 headline → 1.0 CTA → 1.2 canvas)
-- 4-phase scroll'u bozma
+### 3A — Hero Cold-Load Entrance ✅
+- useHeroEntrance.ts (t=0 grid → 0.3 tag → 0.6 headline → 1.0 CTA → 1.2 canvas, toplam 1.7s)
+- showHeadline state gate
 - Reduced-motion: instant state
 
-### 3B — Kinetic Typography
+### 3B — Kinetic Typography ✅
 - HeadlineStagger + useScrollVelocity skewX (±3deg max)
 - Reduced-motion: skew yok
 
-### 3C — Depth System CSS
+### 3C — Depth System CSS ✅
 - `.section-pin`, `.depth-layer-{1,2,3}`, `.reveal-clip-vertical`, `.text-balance`
-- Snippet: DIGITALWERK → cinematic-hero-timeline.ts
+- Snippet cinematic-hero-timeline.ts → implement sonrası silindi
 
 ---
 
-## Phase 4 — Interaction Polish
+## Phase 4 — Interaction Polish ✅ (2026-05-12)
 
-### 4A — Cursor (Custom vs BrutalCrosshair — biri sil)
-- Scroll velocity → scale 1.0→1.5
-- mix-blend-mode:difference cursor dot
-- MagneticButton koordinasyon
+### 4A — Cursor ✅
+- CustomCursor: velocity × hover scale (hoverScaleRef + velocityMultRef, 1.0→1.5 mult)
+- BrutalCrosshairCursor: inline scroll listener → dot scale 1.0→1.5
+- mix-blend-mode:difference cursor dot zaten mevcuttu
 
-### 4B — Hover Standardize
-- Tek transition kuralı (0.25s industrial ease)
-- `.brutal-link` underline, `.btn-brutal-invert`
-- Card'larda `.aw-lift` audit
+### 4B — Hover Standardize ✅
+- Baseline: `a`, `button`, `[role=button]` → `transition: 0.25s cubic-bezier(0.76,0,0.24,1)`
+- `:not` selector ile mevcut btn-*/transition sınıflarını atla
 
-### 4C — Page Transition
-- Exit: 0.6s → 0.4s
-- forge-teal (std) / forge-molten (CTA route)
+### 4C — Page Transition ✅
+- Exit: 0.5s → 0.4s
+- forge-teal (std routes) / forge-molten (/teklif-al, /iletisim)
 
 ---
 
-## Phase 4.5 — Art Direction QA
+## Phase 4.5 — Art Direction QA ⏳
 Geçiş koşulu (Phase 5'e): tüm maddeler ✅ (release-checklist.md'deki QA bölümü)
 
 ---
@@ -95,4 +93,4 @@ UX/IA, screen map, component system spec, microinteraction spec, code style guid
 
 ---
 
-*Sıra: Phase 2.5 → 3 → 4 → 4.5 → 5*
+*Sıra: Phase 4.5 QA → 5*
