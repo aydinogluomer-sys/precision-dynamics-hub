@@ -42,8 +42,28 @@ export const BrutalCrosshairCursor = () => {
         setLabel("SCROLL");
       }
     };
+
+    // scroll velocity → dot scale 1.0→1.5
+    let lastScrollY = window.scrollY;
+    let resetTimer: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      const delta = Math.abs(window.scrollY - lastScrollY);
+      lastScrollY = window.scrollY;
+      const scale = 1 + Math.min(delta / 80, 1) * 0.5;
+      if (dot) gsap.to(dot, { scale, duration: 0.15, ease: "power2.out" });
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        if (dot) gsap.to(dot, { scale: 1, duration: 0.4, ease: "power2.out" });
+      }, 200);
+    };
+
     window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(resetTimer);
+    };
   }, []);
 
   if (!visible) return null;

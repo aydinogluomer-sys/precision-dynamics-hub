@@ -849,3 +849,21 @@ body::after {
 .reveal-clip-vertical { clip-path: inset(100% 0 0 0); }
 
 .text-balance { text-wrap: balance; }
+
+/* ── Phase 4B: Unified hover transition baseline ── */
+/* Applies only where no more specific transition rule exists */
+a:not([class*="transition"]),
+button:not([class*="transition"]):not([class*="btn-"]),
+[role="button"]:not([class*="transition"]) {
+  transition: opacity 0.25s cubic-bezier(0.76, 0, 0.24, 1),
+              color 0.25s cubic-bezier(0.76, 0, 0.24, 1),
+              background-color 0.25s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a:not([class*="transition"]),
+  button:not([class*="transition"]):not([class*="btn-"]),
+  [role="button"]:not([class*="transition"]) {
+    transition: none;
+  }
+}

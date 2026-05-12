@@ -3,6 +3,7 @@ import { useSoundEngine } from "@/hooks/use-sound";
 import { gsap } from "@/hooks/use-gsap";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useScrollVelocity } from "@/hooks/useScrollVelocity";
 
 interface CursorLabel {
   text: string;
@@ -27,10 +28,31 @@ export const CustomCursor = () => {
   const prefersReduced = usePrefersReducedMotion();
   const isMobile = useIsMobile();
   const { play } = useSoundEngine();
+  const { velocity } = useScrollVelocity();
   const quickToX = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const quickToY = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const ringQuickToX = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
   const ringQuickToY = useRef<ReturnType<typeof gsap.quickTo> | null>(null);
+  // hover scale (1–2) and velocity multiplier (1.0–1.5) are combined so neither overrides the other
+  const hoverScaleRef = useRef(1);
+  const velocityMultRef = useRef(1);
+
+  const applyRingScale = useCallback(() => {
+    const ring = ringRef.current;
+    if (!ring) return;
+    gsap.to(ring, {
+      scale: hoverScaleRef.current * velocityMultRef.current,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  }, []);
+
+  // scroll velocity → ring scale multiplier 1.0→1.5
+  useEffect(() => {
+    if (prefersReduced || isMobile) return;
+    velocityMultRef.current = 1 + Math.min(velocity / 10, 1) * 0.5;
+    applyRingScale();
+  }, [velocity, prefersReduced, isMobile, applyRingScale]);
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -51,7 +73,8 @@ export const CustomCursor = () => {
     for (const { selector, label: lbl } of SELECTORS) {
       if (target.closest(selector)) {
         play("tick");
-        gsap.to(ring, { scale: lbl.scale, duration: 0.3, ease: "power2.out" });
+        hoverScaleRef.current = lbl.scale;
+        applyRingScale();
         if (lbl.text) {
           label.textContent = lbl.text;
           gsap.to(label, { opacity: 1, duration: 0.2 });
@@ -60,10 +83,11 @@ export const CustomCursor = () => {
       }
     }
 
-    // Reset
-    gsap.to(ring, { scale: 1, duration: 0.3, ease: "power2.out" });
+    // Reset hover scale; velocity mult stays active
+    hoverScaleRef.current = 1;
+    applyRingScale();
     gsap.to(label, { opacity: 0, duration: 0.15 });
-  }, []);
+  }, [applyRingScale]);
 
   useEffect(() => {
     if (prefersReduced || isMobile) return;
