@@ -574,7 +574,6 @@ body::after {
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
-  will-change: auto;
   contain: strict;
 }
 
@@ -849,3 +848,21 @@ body::after {
 .reveal-clip-vertical { clip-path: inset(100% 0 0 0); }
 
 .text-balance { text-wrap: balance; }
+
+/* ── Phase 4B: Unified hover transition baseline ── */
+/* Applies only where no more specific transition rule exists */
+a:not([class*="transition"]),
+button:not([class*="transition"]):not([class*="btn-"]),
+[role="button"]:not([class*="transition"]) {
+  transition: opacity 0.25s cubic-bezier(0.76, 0, 0.24, 1),
+              color 0.25s cubic-bezier(0.76, 0, 0.24, 1),
+              background-color 0.25s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a:not([class*="transition"]),
+  button:not([class*="transition"]):not([class*="btn-"]),
+  [role="button"]:not([class*="transition"]) {
+    transition: none;
+  }
+}
