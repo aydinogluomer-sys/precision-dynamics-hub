@@ -1,9 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/animation-manager";
 
 declare global {
   interface Window {
@@ -35,11 +32,12 @@ export const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) =>
     sessionStorage.setItem("mas_visited_lenis", "1");
 
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.065,
       duration: 1.4,
       smoothWheel: true,
-      wheelMultiplier: 0.8,
+      wheelMultiplier: 0.75,
       touchMultiplier: 1.5,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
     lenisRef.current = lenis;

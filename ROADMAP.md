@@ -46,6 +46,18 @@
 
 ---
 
+## KOD FAZLARI — Tamamlanan
+
+### Faz 2 — Animation Architecture ✅ TAMAMLANDI (2026-05-12)
+- [x] `src/lib/animation-manager.ts` — singleton registerPlugin, batchReveal, killAll
+- [x] `src/hooks/use-gsap.ts` — animation-manager'dan re-export only
+- [x] `src/hooks/useScrollAnimation.ts` — universal scroll hook, reduced-motion, gsap.context cleanup
+- [x] `SmoothScrollProvider.tsx` — duplicate registerPlugin kaldırıldı + Lenis tuning (lerp:0.065, wheelMultiplier:0.75, exponential easing)
+- [x] `useStaggeredReveal.ts` + `LavaTypographyScene.tsx` + `MoldCastScene.tsx` — duplicate registerPlugin kaldırıldı
+- [x] Build: `npm run build` temiz
+
+---
+
 ## PHASE 2 — İhtiyaç Çıkınca Ekle
 
 ### UX & IA

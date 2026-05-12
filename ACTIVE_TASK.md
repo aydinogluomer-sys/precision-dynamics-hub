@@ -6,48 +6,40 @@
 
 ## Şu An
 
-**Phase:** Phase 1 — Documentation ✅ TAMAMLANDI  
-**Sonraki:** Phase 2 — Animation Architecture Centralization  
+**Phase:** Phase 2 — Animation Architecture ✅ TAMAMLANDI  
+**Sonraki:** Phase 3 — Visual Elevation  
 **Branch:** `claude/documentation-roadmap-nwV4C`  
 **Tarih:** 2026-05-12
 
 ---
 
-## Phase 2 — Başlamadan Önce Yap
+## Phase 2 — Tamamlanan İşler
 
-### 1. Codebase Doğrulama (zorunlu)
-Aşağıdaki dosyaların gerçekten var olduğunu doğrula:
-```bash
-find src/hooks -name "*.ts" | sort
-find src/lib -name "*.ts" | sort
-```
-Beklenen dosyalar:
-- `src/hooks/useScrollVelocity.ts` ✓ (var — kesinleştirildi)
-- `src/hooks/useClipReveal.ts` ✓ (var — kesinleştirildi)
-- `src/hooks/useSplitTextReveal.ts` ✓ (var — kesinleştirildi)
-- `src/hooks/use-reduced-motion.ts` ✓ (var — kesinleştirildi)
-- `src/hooks/use-gsap.ts` ✓ (var — kesinleştirildi)
-- `src/components/MagneticButton.tsx` ✓ (var — kesinleştirildi)
-- `src/styles/z-index.ts` ✓ (var — kesinleştirildi)
+- [x] `src/lib/animation-manager.ts` oluşturuldu (singleton registerPlugin, batchReveal, killAll)
+- [x] `src/hooks/use-gsap.ts` → animation-manager'dan re-export only
+- [x] `src/components/providers/SmoothScrollProvider.tsx` — duplicate registerPlugin kaldırıldı + Lenis tuning (lerp:0.065, wheelMultiplier:0.75, exponential easing)
+- [x] `src/hooks/useStaggeredReveal.ts` — duplicate registerPlugin kaldırıldı
+- [x] `src/components/LavaTypographyScene.tsx` — duplicate registerPlugin kaldırıldı
+- [x] `src/components/MoldCastScene.tsx` — duplicate registerPlugin kaldırıldı
+- [x] `src/hooks/useScrollAnimation.ts` oluşturuldu (universal scroll hook + reduced-motion + gsap.context cleanup)
+- [x] `npm run build` — temiz, TypeScript hatası yok
 
-### 2. Snippet Damıtma
-```bash
-git clone https://github.com/adrianhajdin/award-winning-website /tmp/ref-adrian
-git clone https://github.com/Fullstack-Empire/GSAP-Awwwards-Website /tmp/ref-fullstack
-```
-Çıkarılacak:
-- `snippets/gsap/animation-manager-reference.ts` ← adrianhajdin pattern
-- `snippets/gsap/scrolltrigger-batch.ts` ← Fullstack-Empire pattern
-- `snippets/lenis/smooth-scroll-config.ts` ← Lenis exponential easing
+**Sonuç:** `gsap.registerPlugin(ScrollTrigger)` artık yalnızca `src/lib/animation-manager.ts`'de çağrılıyor.
 
-### 3. Phase 2 Dosyaları
-**Yeni:**
-- `src/lib/animation-manager.ts` — singleton, plugin reg, shared helpers
-- `src/hooks/useScrollAnimation.ts` — universal scroll animation hook
+---
 
+## Phase 3 — Başlamadan Önce Yap
+
+### Doğrulama
+- `src/components/HeroSection.tsx` — `isFirstVisit` prop var mı kontrol et
+- `src/components/HeadlineStagger.tsx` — mevcut implementation'ı incele
+- `src/hooks/useScrollVelocity.ts` — return type'ı ve kullanım şeklini kontrol et
+
+### Phase 3 Dosyaları
 **Değiştirilecek:**
-- `src/hooks/use-gsap.ts` — registerPlugin kaldır, animation-manager'dan al
-- `src/components/providers/SmoothScrollProvider.tsx` — lerp:0.065, exponential easing
+- `src/components/HeroSection.tsx` — cold-load entrance sequence (gsap.timeline)
+- `src/components/HeadlineStagger.tsx` — velocity-reactive skewX
+- `src/index.css` — .section-pin, .depth-layer-{1,2,3}, .reveal-clip-vertical, .text-balance
 
 ---
 
@@ -95,7 +87,7 @@ git clone https://github.com/Fullstack-Empire/GSAP-Awwwards-Website /tmp/ref-ful
 
 ```
 ✅ Phase 1 — Documentation (22 dosya)
-⏳ Phase 2 — Animation Architecture (animation-manager + useScrollAnimation)
+✅ Phase 2 — Animation Architecture (animation-manager + useScrollAnimation)
 ⏳ Phase 3 — Visual Elevation (hero entrance, kinetic typo, depth system)
 ⏳ Phase 4 — Interaction Polish (cursor, hover, transitions)
 ⏳ Phase 4.5 — Art Direction QA (visual audit, geçemeyen fix)
@@ -123,4 +115,4 @@ git clone https://github.com/Fullstack-Empire/GSAP-Awwwards-Website /tmp/ref-ful
 
 ---
 
-*Güncelleme: 2026-05-12 — Phase 1 tamamlandı, Phase 2 başlamaya hazır*
+*Güncelleme: 2026-05-12 — Phase 2 tamamlandı, Phase 3 başlamaya hazır*
