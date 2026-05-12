@@ -1,6 +1,2 @@
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-export { gsap, ScrollTrigger };
+// registerPlugin moved to animation-manager — single registration point
+export { gsap, ScrollTrigger } from "@/lib/animation-manager";

@@ -1,12 +1,9 @@
 import { useRef, useEffect } from 'react';
-import { gsap } from '@/hooks/use-gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '@/lib/animation-manager';
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion';
 import { AmbientGlowOverlay } from '@/components/ui/AmbientGlowOverlay';
 import { SparkParticles } from '@/components/ui/SparkParticles';
 import { TextScramble } from '@/components/ui/TextScramble';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export const MoldCastScene = () => {
   const containerRef = useRef<HTMLDivElement>(null);

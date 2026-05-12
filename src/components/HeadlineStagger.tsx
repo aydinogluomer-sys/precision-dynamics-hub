@@ -1,6 +1,7 @@
-import { forwardRef } from "react";
-import { motion, useTransform } from "framer-motion";
+import { forwardRef, useEffect } from "react";
+import { motion, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { useScrollVelocity } from "@/hooks/useScrollVelocity";
 
 const charVariants = {
   enter: (i: number) => ({
@@ -28,6 +29,18 @@ interface HeadlineStaggerProps {
 export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
   ({ text, scrollRotateX }, ref) => {
     const prefersReduced = usePrefersReducedMotion();
+    const { velocity, direction } = useScrollVelocity();
+
+    // Velocity-reactive skewX (±3deg max) — wrapper element, not chars
+    const velocityMV = useMotionValue(0);
+    const skewTransform = useTransform(velocityMV, [-10, 0, 10], [3, 0, -3]);
+    const skewX = useSpring(skewTransform, { stiffness: 200, damping: 30 });
+
+    useEffect(() => {
+      if (prefersReduced) { velocityMV.set(0); return; }
+      velocityMV.set(direction === "down" ? -velocity : velocity);
+    }, [velocity, direction, prefersReduced]);
+
     const allWords = text.replace(/\n/g, " ").split(" ");
     const staggerWords = allWords.slice(0, 2);
     const restWords = allWords.slice(2);
@@ -41,6 +54,7 @@ export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
           perspective: 800,
           transformStyle: "preserve-3d" as const,
           rotateX: scrollRotateX,
+          skewX,
           wordBreak: "break-word",
           overflowWrap: "break-word",
           hyphens: "auto",

@@ -1,8 +1,5 @@
 import { type RefObject, useEffect } from 'react';
-import { gsap } from '@/hooks/use-gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from '@/lib/animation-manager';
 
 export function useStaggeredReveal(
   containerRef: RefObject<HTMLElement>,
