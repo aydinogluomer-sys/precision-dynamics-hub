@@ -48,12 +48,26 @@
 
 ## KOD FAZLARI — Tamamlanan
 
+### Faz 5 — Performance & Awwwards Criteria ✅ TAMAMLANDI (2026-05-12)
+- [x] `src/index.css` — body::after grain'den will-change: auto kaldırıldı (contain: strict yeterli)
+- [x] `src/components/BlurImage.tsx` — priority prop (eager/lazy) + decoding="async"
+- [x] `index.html` — Supabase CDN preconnect eklendi
+- [x] ScrollTrigger batching: HeroSection/HowWeWork scrub-choreography batch'lenemez; useStaggeredReveal zaten batch'liyor
+- [x] font-display:swap Google Fonts URL'sinde zaten mevcuttu
+- [x] Build: `npm run build` temiz
+
+### Faz 4 — Interaction Polish ✅ TAMAMLANDI (2026-05-12)
+- [x] `src/components/ui/CustomCursor.tsx` — velocity-reactive ring scale (hoverScaleRef × velocityMultRef)
+- [x] `src/components/ui/BrutalCrosshairCursor.tsx` — velocity-reactive dot scale (inline scroll listener)
+- [x] `src/index.css` — hover transition baseline: a/button/[role=button] cubic-bezier(0.76,0,0.24,1)
+- [x] `src/components/PageTransition.tsx` — exit 0.5s→0.4s + forge-molten/forge-teal route colors
+- [x] Build: `npm run build` temiz
+
 ### Faz 3 — Visual Elevation ✅ TAMAMLANDI (2026-05-12)
 - [x] `src/hooks/useHeroEntrance.ts` — cinematic cold-load entrance (grid, tags, headline gate, CTA, canvas)
 - [x] `src/components/HeroSection.tsx` — showHeadline state gate + heroCanvasRef + ctaButtonRef
 - [x] `src/components/HeadlineStagger.tsx` — velocity-reactive skewX (±3deg, useScrollVelocity)
 - [x] `src/index.css` — section-pin, depth-layer-{1,2,3}, reveal-clip-vertical, text-balance
-- [x] `snippets/gsap/cinematic-hero-timeline.ts` — pattern reference (to be deleted after use)
 - [x] Build: `npm run build` temiz
 
 ### Faz 2 — Animation Architecture ✅ TAMAMLANDI (2026-05-12)
