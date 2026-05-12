@@ -4,22 +4,33 @@
 ---
 
 ## Aktif Phase
-**Phase 4 — Interaction Polish**
+**Phase 5 — Performance & Awwwards Criteria**
 
 ## Tamamlanan
 - ✅ Phase 1 — Documentation (22 dosya)
 - ✅ Phase 2 — Animation Architecture Centralization
 - ✅ Phase 3 — Visual Elevation (entrance, kinetic typo, depth CSS)
+- ✅ Phase 4 — Interaction Polish (velocity cursors, hover baseline, page transition)
 
 ## Şu An
-Phase 3 tamamlandı. Phase 4'e hazır.
+Phase 4 tamamlandı. Phase 5'e hazır.
 
 ## Bir Sonraki
-**Phase 4A — Cursor Enhancement**
-- CustomCursor.tsx vs BrutalCrosshairCursor.tsx — biri sil (hangisi aktif?)
-- Scroll velocity → scale 1.0→1.5
-- mix-blend-mode:difference cursor dot
-- MagneticButton koordinasyon
+**Phase 5A — GPU Compositing Audit**
+- will-change: transform → .hero-panel, .quote-panel
+- transform: translateZ(0) → canvas overlay elements
+- static elementlerden will-change kaldır
+
+**Phase 5B — ScrollTrigger Batching**
+- Individual ScrollTrigger reveals → ScrollTrigger.batch() (batchSize:3, stagger:0.08s)
+
+**Phase 5C — Image Optimization**
+- Above-fold: loading="eager"; below-fold: loading="lazy"; decoding="async"
+- index.html preload hints (sequence frames, hero video)
+
+**Phase 5D — Lighthouse Targets**
+- Performance ≥90, LCP <2.5s, CLS <0.1
+- font-display: swap (Space Grotesk), preconnect Supabase CDN
 
 ## Aktif Constraint'ler
 - `npm run build` her commit öncesi geçmeli
