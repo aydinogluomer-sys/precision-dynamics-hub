@@ -1,164 +1,106 @@
 # 13 · Forbidden Patterns — Mas Technic
 
-## Animation Anti-Patterns
+## Animation
 
 ### ❌ gsap.context() olmadan ScrollTrigger
 ```typescript
-// YANLIŞ — cleanup yok, memory leak
-useEffect(() => {
-  gsap.from(el, { scrollTrigger: { trigger: el }, y: 60 })
-}, [])
-
-// DOĞRU — gsap.context ile cleanup
-useEffect(() => {
-  const ctx = gsap.context(() => {
-    gsap.from(el, { scrollTrigger: { trigger: el }, y: 60 })
-  }, containerRef)
-  return () => ctx.revert()
-}, [])
+// YANLIŞ
+useEffect(() => { gsap.from(el, { scrollTrigger: {...} }) }, [])
+// DOĞRU
+const ctx = gsap.context(() => { gsap.from(el, {...}) }, ref)
+return () => ctx.revert()
 ```
 
-### ❌ Framer Motion ve GSAP aynı elemana
+### ❌ FM + GSAP aynı elemana
 ```typescript
-// YANLIŞ — conflict, undefined behavior
-<motion.div animate={{ x: 100 }}>
-  {/* GSAP da bu div'i hedefliyorsa → çakışır */}
-</motion.div>
-
+// YANLIŞ — conflict
+<motion.div animate={{ x: 100 }} ref={gsapRef}>
 // DOĞRU — ayrı elementler
-<div ref={gsapRef}>  {/* GSAP buraya */}
-  <motion.div animate={{ opacity: 1 }}>  {/* FM buraya */}
+<div ref={gsapRef}><motion.div animate={...} /></div>
 ```
 
-### ❌ Lenis mobile'da aktif
+### ❌ Lenis mobile'da
 ```typescript
-// YANLIŞ — mobile'da Lenis başlatılır
-const lenis = new Lenis()
-
-// DOĞRU — mobile check
-const isMobile = window.matchMedia('(max-width: 768px)').matches
-if (isMobile) return  // Lenis başlatma
+if (window.matchMedia('(max-width: 768px)').matches) return
 ```
 
-### ❌ gsap.registerPlugin birden fazla yerde
+### ❌ Çoklu gsap.registerPlugin
 ```typescript
-// YANLIŞ — her component'te register
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-gsap.registerPlugin(ScrollTrigger)
-
-// DOĞRU — sadece use-gsap.ts'de (bir kez)
-// import { gsap, ScrollTrigger } from '@/hooks/use-gsap'
+// Sadece src/lib/animation-manager.ts'de çağrılır.
+// Diğer dosyalar: import { gsap, ScrollTrigger } from '@/lib/animation-manager'
 ```
 
 ### ❌ will-change statik elementlere
 ```css
-/* YANLIŞ — her şeye will-change */
-* { will-change: transform; }
-.static-text { will-change: transform; }
-
-/* DOĞRU — sadece animate edilen elementlere */
-.hero-panel, .quote-panel { will-change: transform; }
+/* YANLIŞ */ * { will-change: transform; }
+/* DOĞRU */ .hero-panel, .quote-panel { will-change: transform; }
 ```
 
-### ❌ Layout properties animate etmek
+### ❌ Layout property animate
 ```typescript
-// YANLIŞ — reflow ve CLS tetikler
-gsap.to(el, { width: '100%', height: '200px', top: '50px' })
-
-// DOĞRU — sadece transform + opacity
+// YANLIŞ — reflow/CLS
+gsap.to(el, { width: '100%', top: '50px' })
+// DOĞRU — transform + opacity
 gsap.to(el, { x: '100%', scaleY: 1.2, opacity: 0 })
 ```
 
 ---
 
-## Z-Index Anti-Patterns
+## Z-Index
 
-### ❌ Magic number z-index
+### ❌ Magic number
 ```css
-/* YANLIŞ */
-.my-element { z-index: 999; }
-.modal { z-index: 1000; }
-.tooltip { z-index: 9999; }
-
-/* DOĞRU — Z objesinden */
-import { Z } from '@/styles/z-index'
-style={{ zIndex: Z.header }}
+/* YANLIŞ */ .modal { z-index: 9999; }
+/* DOĞRU */ style={{ zIndex: Z.header }}  // from @/styles/z-index
 ```
 
-### ❌ Z-index olmadan position:fixed / position:absolute
+### ❌ position:fixed z-index'siz
 ```tsx
-// YANLIŞ — z-index kontrol edilmemiş
-<div style={{ position: 'fixed' }}>
-
-// DOĞRU — Z objesinden alınmış
-<div style={{ position: 'fixed', zIndex: Z.preloader }}>
+// position:fixed/absolute her zaman Z objesinden zIndex alır
 ```
 
 ---
 
-## Renk Anti-Patterns
+## Renk
 
 ### ❌ Hardcoded hex/rgb
 ```tsx
 // YANLIŞ
-<div style={{ color: '#e8610a', background: '#0a7e8c' }}>
-
-// DOĞRU — CSS custom property
-<div className="text-forge-molten bg-forge-teal">
-// veya
-style={{ color: 'hsl(var(--forge-molten))' }}
+<div style={{ color: '#e8610a' }}>
+// DOĞRU
+<div className="text-forge-molten">
+// veya style={{ color: 'hsl(var(--forge-molten))' }}
 ```
 
 ---
 
-## Mimari Anti-Patterns
+## Mimari
 
-### ❌ Admin/müşteri panel bileşenlerini landing'de kullanmak
-```tsx
-// YANLIŞ — panel bileşeni landing'e import edilir
-import { DashboardHome } from '@/components/admin/DashboardHome'
+### ❌ Admin/müşteri component'i landing'de
+Landing kendi `src/components/*` bileşenlerini kullanır.
+`/admin/*` ve `/musteri/*` import edilmez.
 
-// DOĞRU — landing kendi bileşenlerini kullanır
-import { HeroSection } from '@/components/HeroSection'
-```
-
-### ❌ Supabase client'ı birden fazla yerde init etmek
+### ❌ Supabase çoklu init
 ```typescript
-// YANLIŞ — her dosyada createClient()
-const supabase = createClient(url, key)
-
-// DOĞRU — tek kaynak
-import { supabase } from '@/integrations/supabase/client'
+// Tek kaynak: import { supabase } from '@/integrations/supabase/client'
 ```
 
-### ❌ Three.js canvas'ı IntersectionObserver olmadan mount etmek
+### ❌ Three.js canvas IntersectionObserver'sız
 ```tsx
-// YANLIŞ — her zaman render eder
-<Canvas>
-  <CNCModel />
-</Canvas>
-
-// DOĞRU — viewport'ta ise render et
+// Canvas her zaman lazy + viewport-aware mount
 const HeroCanvas = lazy(() => import('./r3f/HeroCanvas'))
-// + IntersectionObserver ile conditional render
 ```
 
 ---
 
-## İçerik Anti-Patterns
+## İçerik / Kod
 
-### ❌ 180 satırı aşan component dosyası
-```
-// > 180 satır → sub-component çıkar
-HeroSection.tsx'de scroll logic → useHeroScroll.ts
-```
+### ❌ 180 satırı aşan component
+Sub-component'lere veya hook'a çıkar.
 
-### ❌ Yorum olarak "what" açıklaması
+### ❌ "What" yorumu
 ```typescript
-// YANLIŞ — kod zaten anlatıyor
-// loop through all items
-items.forEach(item => ...)
-
-// DOĞRU — sadece "why" yorumlanır
-// iOS Safari'de -webkit-fill-available olmadan 100vh yanlış hesaplar
+// YANLIŞ: // loop through items
+// DOĞRU:  // iOS Safari -webkit-fill-available olmadan 100vh yanlış
 ```
+Sadece "why" yorumlanır. Kod kendini anlatır.

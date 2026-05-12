@@ -69,6 +69,14 @@ snippets/                          ← Geçici pattern referansları (AI okumaz)
 
 ---
 
+## Todo Oluşturma Kuralı
+
+Plan'daki HER adım todo'ya girer.  
+"Snippet damıtma", "cleanup", "doc silme" görev değilmiş gibi görünse de zorunlu adımdır.  
+Atlanamaz. Selective reading yasaktır.
+
+---
+
 ## Context Yükleme Protokolü
 
 ```

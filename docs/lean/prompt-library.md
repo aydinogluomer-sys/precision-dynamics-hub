@@ -1,191 +1,150 @@
 # Prompt Library — Mas Technic
-> Gerçek copy-paste prompt'lar. Teori değil, çalışan komutlar.
-> Claude Code için optimize edilmiş (Lovable terk edildi — 2026-05-12).
+> Copy-paste prompt'lar (Claude Code için, 2026-05-12'den itibaren).
 
 ---
 
 ## Session Yönetimi
 
-### Session Başlatma
+### Session Başlat
 ```
 CLAUDE.md ve ACTIVE_TASK.md oku.
-Aktif constraint'leri ve şu anki task'ı söyle.
-Onayımı bekle, sonra başla.
+Aktif constraint'leri ve şu anki task'ı söyle. Onay bekle, sonra başla.
 ```
 
-### Codebase Doğrulama
+### Codebase Doğrula
 ```
-Şu komutları çalıştır ve çıktıyı ver:
 find src/hooks -name "*.ts" | sort
-find src/components -name "*.tsx" | sort  
+find src/components -name "*.tsx" | sort
 find src/lib -name "*.ts" | sort
 ```
 
 ### Mid-Session Anchor
 ```
-Şu ana kadar ne yaptık?
-Aktif constraint'ler neler?
-Bir sonraki adım ne?
+Şu ana kadar ne yaptık? Aktif constraint'ler? Bir sonraki adım?
 ```
 
 ### Phase Cleanup
 ```
-Bu phase'de oluşturulan/değiştirilen tüm dosyaları listele.
-Şunları kontrol et:
-- Duplicate import var mı?
-- Dead code var mı?
-- Hardcoded renk değeri var mı?
-- npm run build temiz geçiyor mu?
+Bu phase'de değişen tüm dosyaları listele. Kontrol:
+- Duplicate import? Dead code? Hardcoded renk? npm run build temiz?
 Sorun varsa düzelt, sonra rapor ver.
 ```
 
 ---
 
-## Animasyon Prompt'ları
+## Animasyon
 
-### GSAP ScrollTrigger Reveal Ekle
+### GSAP ScrollTrigger Reveal
 ```
 @docs/lean/14-animation-architecture.md yükle.
-
-[ComponentName].tsx'e scroll reveal ekle:
-- gsap.context() ile cleanup
-- containerRef scope
-- reduced-motion check (usePrefersReducedMotion)
-- scrub: 1, start: 'top 80%'
-- transform+opacity only, layout property yok
+[Component].tsx'e scroll reveal:
+- gsap.context() + containerRef scope
+- usePrefersReducedMotion check
+- scrub:1, start:'top 80%'
+- transform+opacity only
 - Mevcut 4-phase hero scroll'u etkileme
 ```
 
-### Yeni Section Ekle
+### Yeni Section
 ```
-@docs/lean/06-design-system.md ve @docs/lean/13-forbidden-patterns.md yükle.
-
-[SectionName] adında yeni section bileşeni oluştur:
-- BrutalSectionHeader kullan
-- gsap.context ile scroll reveal
-- forge renk paleti (hardcoded hex yok)
-- border-radius: 0
-- Reduced-motion: animasyon yok, layout sağlam
+@docs/lean/06-design-system.md + @docs/lean/13-forbidden-patterns.md yükle.
+[Section] oluştur:
+- BrutalSectionHeader, forge palette (hardcoded yok)
+- border-radius:0, gsap.context reveal
+- Reduced-motion: layout sağlam, anim yok
 - 180 satır limit
 ```
 
-### Hero Entrance Sequence
+### Hero Cold-Load Entrance
 ```
 @docs/lean/07-motion-system.md yükle.
-
-HeroSection.tsx'e cold-load entrance sequence ekle:
-- isFirstVisit prop ile gate et (prop var mı önce doğrula)
-- gsap.timeline() — scroll-driven değil
-- t=0: grid lines scaleX 0→1 stagger 0.05s
-- t=0.3s: .typo-tag elementleri slide up
-- t=0.6s: HeadlineStagger tetikle
-- t=1.0s: CTA clip-path reveal
-- t=1.2s: HeroCanvas fade in
-- reduced-motion: instant state
-- 4-phase scroll choreography'yi bozma
+HeroSection.tsx'e isFirstVisit gated gsap.timeline ekle:
+- t=0: grid scaleX 0→1 stagger 0.05s
+- t=0.3s: .typo-tag slide up
+- t=0.6s: HeadlineStagger
+- t=1.0s: CTA clip-path
+- t=1.2s: HeroCanvas fade
+- 4-phase scroll'u bozma. Reduced-motion: instant state.
 ```
 
 ### Kinetic Typography
 ```
 @docs/lean/07-motion-system.md yükle.
-
-HeadlineStagger.tsx'e scroll velocity reaktif skew ekle:
-- useScrollVelocity hook'u kullan (src/hooks/useScrollVelocity.ts — önce var mı doğrula)
-- skewX: velocity * 0.05, max ±3deg
-- Framer Motion ile GSAP conflict yok (ayrı property'ler)
-- reduced-motion: skew yok
+HeadlineStagger.tsx'e useScrollVelocity reaktif skewX (max ±3deg).
+Reduced-motion: skew yok.
 ```
 
 ---
 
-## Component Prompt'ları
+## Component
 
-### Yeni Hook Oluştur
+### Yeni Hook
 ```
 @docs/lean/ai-coding-rules.md yükle.
-
-src/hooks/use[HookName].ts oluştur:
-- TypeScript, named export
-- usePrefersReducedMotion() check
-- gsap.context ile cleanup (gerekiyorsa)
-- 100 satır limit
-- Mevcut hookları tekrar etme: önce find src/hooks yap
+src/hooks/use[Name].ts:
+- TypeScript named export, usePrefersReducedMotion check
+- gsap.context cleanup (gerekiyorsa)
+- 100 satır limit. Önce `find src/hooks` ile duplicate yok mu kontrol et.
 ```
 
-### Cursor Güncelle
+### Cursor Update
 ```
-@docs/lean/07-motion-system.md ve @docs/lean/design-tokens.json yükle.
-
-CustomCursor.tsx'e velocity-reactive scale ekle:
-- useScrollVelocity hook'u kullan
-- scale map: slow=1.0, normal=1.2, fast=1.5
-- gsap.quickTo ile smooth scale
-- mix-blend-mode: difference — cursor dot'a
-- reduced-motion: scale yok, blend mode kalsın
-- MagneticButton ile koordinasyon bozulmasın
+@docs/lean/07-motion-system.md + @docs/lean/design-tokens.json yükle.
+CustomCursor.tsx:
+- useScrollVelocity → scale (slow:1.0, normal:1.2, fast:1.5)
+- gsap.quickTo smooth, mix-blend-mode:difference cursor dot
+- Reduced-motion: scale yok, blend kalsın
+- MagneticButton koordinasyon bozulmasın
 ```
 
 ---
 
-## GitHub Repo → Snippet Çıkarma
+## Snippet Çıkarma
 
-### adrianhajdin Pattern
+### adrianhajdin pattern
 ```
-/tmp/ref-adrian/src/ klasörünü analiz et.
-Animation singleton pattern'ini çıkar.
-Mas Technic stack'ine uyarla (React 18 + GSAP 3.14 + Lenis 1.3 + TypeScript 5.8).
-snippets/gsap/animation-manager-reference.ts'e minimal snippet olarak yaz.
-MASTER_CONTEXT.md'deki forbidden patterns'a uy.
-50 satır max.
+/tmp/ref-adrian/src/ analiz et. Animation singleton pattern'i çıkar.
+Stack: React 18 + GSAP 3.14 + Lenis 1.3 + TS 5.8.
+snippets/gsap/animation-manager-reference.ts'e min snippet (≤50 satır).
 ```
 
-### GSAP ScrollTrigger Batch
+### ScrollTrigger Batch
 ```
-/tmp/ref-fullstack/src/ klasörünü analiz et.
-ScrollTrigger.batch() kullanım pattern'ini çıkar.
-snippets/gsap/scrolltrigger-batch.ts'e yaz.
-Mas Technic'te kullanılacak context: card/list reveal, 3 element per batch, 0.08s stagger.
+/tmp/ref-fullstack/src/ analiz et.
+ScrollTrigger.batch() pattern → snippets/gsap/scrolltrigger-batch.ts.
+Kullanım: card/list reveal, 3 per batch, 0.08s stagger.
 ```
 
 ---
 
-## Supabase / Backend Prompt'ları
+## Supabase
 
 ### Yeni Query Hook
 ```
 @src/integrations/supabase/types.ts yükle.
-
-src/hooks/use[TableName].ts oluştur:
-- TanStack Query useQuery kullan
-- Supabase client import: '@/integrations/supabase/client'
-- TypeScript tipleri types.ts'den al
-- Hata state'i handle et
-- Supabase schema'yı değiştirme
+src/hooks/use[Table].ts:
+- TanStack useQuery + supabase client '@/integrations/supabase/client'
+- Tipler types.ts'den. Schema'ya dokunma.
 ```
 
 ---
 
-## Debug Prompt'ları
+## Debug
 
-### ScrollTrigger Debug
+### ScrollTrigger Sayımı
 ```
-Console'da ScrollTrigger instance sayısını göster:
 console.log(ScrollTrigger.getAll().length)
-
-Şu sayfada kaç aktif ScrollTrigger var ve bunlar hangi trigger elementleri hedefliyor?
+Hangi trigger'lar aktif, hangi elementleri hedefliyor?
 ```
 
-### Build Hata Analizi
+### Build Hatası
 ```
-npm run build çıktısını ver.
-TypeScript hataları varsa sadece ilgili dosyaları düzelt.
-Unused import varsa kaldır.
-Başka dosyalara dokunma.
+npm run build çıktısı ver. Sadece ilgili dosyaları düzelt.
+Unused import kaldır. Başka dosyalara dokunma.
 ```
 
-### Lighthouse Score
+### Lighthouse
 ```
-Mevcut index.html'deki preload ve font-display değerlerini göster.
-LCP optimizasyonu için hangi elementler above-the-fold?
-will-change kullanan CSS class'larını listele.
+index.html'deki preload + font-display değerleri.
+LCP için above-the-fold elementler. will-change kullanan class'lar.
 ```

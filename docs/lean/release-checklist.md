@@ -96,6 +96,47 @@
 
 ---
 
+## Phase 4.5 — Art Direction QA Checklist
+
+Her madde için: ✅ Geçti / ⚠️ Revize / ❌ Baştan. Tüm maddeler ✅ olmadan Phase 5'e geçilmez.
+
+### Section Düzeyi
+- [ ] Her section tek visual idea taşıyor mu?
+- [ ] Generic/template section var mı?
+- [ ] Section kaldırılsaydı kayıp hissedilir mi?
+
+### Hero
+- [ ] İlk 3 saniyede "Premium Industrial" net mi?
+- [ ] Entrance 1.2s altında bitiyor mu?
+- [ ] Scroll başlayınca entrance kalıntısı yok mu?
+
+### Typography
+- [ ] Başlıklar editorial mi, sadece büyük mü?
+- [ ] IBM Plex Mono teknik tag'larda tutarlı mı?
+- [ ] Type hierarchy okunabilir mi?
+
+### Görsel Tutarlılık
+- [ ] Görseller aynı ışık dünyasında mı?
+- [ ] Renk rolleri tutarlı mı?
+- [ ] border-radius:0 istisnasız mı?
+
+### Motion Ritmi
+- [ ] HIGH → CALM → CONTRAST → CALM düzeni var mı?
+- [ ] Aynı animasyon 3+ kez tekrarlanıyor mu?
+- [ ] En az bir "silence zone" var mı?
+
+### CTA & Conversion
+- [ ] CTA'lar kayboluyor mu?
+- [ ] Molten rengi dikkat çekiyor mu?
+- [ ] RFQ formu hero'dan ulaşılabilir mi?
+
+### Mobile
+- [ ] Mobile'da premium industrial hissi var mı?
+- [ ] Lenis-off durumunda kırılma yok mu?
+- [ ] Touch hedefleri ≥44px mi?
+
+---
+
 ## Post-Release
 
 - [ ] Supabase Edge Function logları — error var mı?

@@ -157,3 +157,39 @@ Aynı konuyu iki dosyada tanımlama — çelişki üretir
 
 // Snippet direkt copy-paste edilmez — her zaman uyarlanır
 ```
+
+---
+
+## Her Phase'in 3 Zorunlu Adımı
+
+### 1. Snippet Damıtma (phase başında)
+- İlgili repoları `/tmp/ref-*`'a clone'la
+- Pattern analiz et
+- `/snippets/[kategori]/[isim].ts`'e damıt
+
+### 2. Cleanup (phase bittikten sonra)
+- Duplicate kod sil
+- Dead import kaldır
+- `npm run build` temiz mi kontrol et
+- TypeScript error check
+
+### 3. Doc Temizleme (cleanup sonrası)
+- Snippet implement edildiyse `/snippets`'ten sil
+- Lean doc MASTER_CONTEXT'e damıtıldıysa sil
+- ROADMAP.md'de TAMAMLANAN'a taşı
+- ACTIVE_TASK.md'yi bir sonraki phase için güncelle
+
+**Bu 3 adım atlanırsa phase tamamlanmış sayılmaz.**
+
+---
+
+## Doc Lifecycle Kuralı
+
+```
+Lean doc içeriği MASTER_CONTEXT.md'ye damıtıldı → lean doc silinir
+Snippet bir component'e implement edildi      → snippet silinir
+Her ikisi ROADMAP.md TAMAMLANAN'a taşınır
+```
+
+Sistem zamanla kendi kendini şişirmemeli.  
+Her phase sonunda repo daha küçük olmalı, daha büyük değil.
