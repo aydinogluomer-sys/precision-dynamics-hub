@@ -6,10 +6,12 @@ interface BlurImageProps {
   className?: string;
   style?: React.CSSProperties;
   disableScaleTransform?: boolean;
+  /** Pass true for above-fold images — disables lazy loading for faster LCP */
+  priority?: boolean;
 }
 
 export const BlurImage = forwardRef<HTMLDivElement, BlurImageProps>(
-  ({ src, alt, className, style, disableScaleTransform }, ref) => {
+  ({ src, alt, className, style, disableScaleTransform, priority = false }, ref) => {
     const [loaded, setLoaded] = useState(false);
 
     return (
@@ -17,7 +19,8 @@ export const BlurImage = forwardRef<HTMLDivElement, BlurImageProps>(
         <img
           src={src}
           alt={alt}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
           onLoad={() => setLoaded(true)}
           className={className}
           style={{

@@ -63,27 +63,29 @@ Geçiş koşulu (Phase 5'e): tüm maddeler ✅ (release-checklist.md'deki QA bö
 
 ---
 
-## Phase 5 — Performance
+## Phase 5 — Performance ✅ (2026-05-12)
 
-### 5A — GPU Compositing
-- `will-change:transform` → `.hero-panel`, `.quote-panel`
-- Canvas overlay → `translateZ(0)`
-- Statik elementlerden `will-change` kaldır
+### 5A — GPU Compositing ✅
+- `body::after` grain: `will-change: auto` kaldırıldı (no-op'tu, `contain: strict` yeterli)
+- `.hero-panel`/`.quote-panel` CSS'te yok — HeroSection GSAP scrub zaten GPU'da
+- `.marquee-inner` + `.aw-lift` `will-change: transform` zaten doğruydu ✅
 
-### 5B — ScrollTrigger Batching
-- Per-element → `ScrollTrigger.batch()` (3/batch, 0.08s)
+### 5B — ScrollTrigger Batching ✅ (değişiklik gerekmedi)
+- HeroSection 4-phase choreography: scrub animation — batch'lenemez
+- HowWeWorkSection: pin+scrub — batch'lenemez
+- `useStaggeredReveal.ts`: zaten batch pattern kullanıyor ✅
+- `batchReveal()` animation-manager'da hazır, ihtiyaç çıkınca kullanılabilir
 
-### 5C — Image
-- BlurImage eager/lazy audit
-- `decoding="async"` non-critical
-- Sequence frame preload hint
+### 5C — Image ✅
+- `BlurImage.tsx`: `priority` prop eklendi + `decoding="async"` eklendi
+- Above-fold kullanım: `<BlurImage priority />` ile LCP iyileştirmesi etkinleştirilebilir
 
-### 5D — Font / Network
-- `font-display:swap` Space Grotesk
-- Supabase CDN preconnect
-- Non-critical JS defer
+### 5D — Font / Network ✅
+- `font-display:swap`: Google Fonts URL'sinde `display=swap` zaten mevcuttu ✅
+- Supabase CDN preconnect: `index.html`'e eklendi
+- `type="module"` script implicit defer davranışı ✅
 
-### Verification
+### Verification (Manuel — Headless Kısıtı)
 - Lighthouse mobile (4x CPU, slow 4G): Performance ≥90, LCP<2.5s, CLS<0.1, INP<200ms
 
 ---
