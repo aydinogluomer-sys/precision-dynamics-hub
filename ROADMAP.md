@@ -48,6 +48,14 @@
 
 ## KOD FAZLARI — Tamamlanan
 
+### Faz 3 — Visual Elevation ✅ TAMAMLANDI (2026-05-12)
+- [x] `src/hooks/useHeroEntrance.ts` — cinematic cold-load entrance (grid, tags, headline gate, CTA, canvas)
+- [x] `src/components/HeroSection.tsx` — showHeadline state gate + heroCanvasRef + ctaButtonRef
+- [x] `src/components/HeadlineStagger.tsx` — velocity-reactive skewX (±3deg, useScrollVelocity)
+- [x] `src/index.css` — section-pin, depth-layer-{1,2,3}, reveal-clip-vertical, text-balance
+- [x] `snippets/gsap/cinematic-hero-timeline.ts` — pattern reference (to be deleted after use)
+- [x] Build: `npm run build` temiz
+
 ### Faz 2 — Animation Architecture ✅ TAMAMLANDI (2026-05-12)
 - [x] `src/lib/animation-manager.ts` — singleton registerPlugin, batchReveal, killAll
 - [x] `src/hooks/use-gsap.ts` — animation-manager'dan re-export only

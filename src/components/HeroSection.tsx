@@ -10,6 +10,7 @@ import { useRef, useEffect, useCallback, useState, lazy, Suspense } from "react"
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap } from "@/hooks/use-gsap";
+import { useHeroEntrance } from "@/hooks/useHeroEntrance";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroBg from "@/assets/hero-cnc.jpg";
 import cncVideo from "@/assets/cnc-factory-zoom.mp4";
@@ -34,12 +35,13 @@ interface HeroSectionProps {
 
 export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const [currentHeadline, setCurrentHeadline] = useState(0);
+  const [showHeadline, setShowHeadline] = useState(() => !isFirstVisit);
   const prefersReduced = usePrefersReducedMotion();
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const maskedRef = useRef<HTMLDivElement>(null);
-  
+
   const contentRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const horizontalWrapRef = useRef<HTMLDivElement>(null);
@@ -47,6 +49,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const quotePanelRef = useRef<HTMLDivElement>(null);
   const lavaFlowRef = useRef<HTMLDivElement>(null);
   const lavaOverlayRef = useRef<HTMLDivElement>(null);
+  const heroCanvasRef = useRef<HTMLDivElement>(null);
+  const ctaButtonRef = useRef<HTMLElement | null>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -62,6 +66,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  // Cold-load entrance sequence (Phase 3A)
+  useHeroEntrance(
+    { gridRef, ctaRef: ctaButtonRef, canvasRef: heroCanvasRef, containerRef: stickyRef },
+    isFirstVisit,
+    () => setShowHeadline(true),
+  );
 
   // GSAP: 4-phase scroll
   useEffect(() => {
@@ -293,7 +304,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           >
             {/* R3F Liquid Distortion Canvas */}
             <Suspense fallback={null}>
-              <div className="absolute inset-0 z-0">
+              <div ref={heroCanvasRef} className="absolute inset-0 z-0">
                 <HeroCanvas />
               </div>
             </Suspense>
@@ -399,16 +410,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                 transformStyle: "preserve-3d" as const,
               }}
             >
-              <motion.div
-                className="max-w-6xl mx-auto text-center"
-                initial={isFirstVisit ? { opacity: 0 } : false}
-                animate={{ opacity: 1 }}
-                transition={{ delay: heroDelay, duration: 0.6 }}
-              >
-                {/* Headlines */}
+              <div className="max-w-6xl mx-auto text-center">
+                {/* Headlines — gated by entrance sequence at t=0.6s */}
                 <div className="relative h-56 sm:h-72 md:h-80 overflow-hidden mb-8">
                   <AnimatePresence mode="wait">
-                    <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                    {showHeadline && (
+                      <HeadlineStagger key={currentHeadline} text={headlines[currentHeadline]} />
+                    )}
                   </AnimatePresence>
                 </div>
 
@@ -428,7 +436,7 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
                     style={{ transformOrigin: "top" }}
                   />
                 </motion.div>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
 

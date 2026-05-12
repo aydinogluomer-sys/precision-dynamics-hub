@@ -829,3 +829,23 @@ body::after {
   .brutal-link::after,
   .btn-brutal-invert { transition: none; }
 }
+
+/* ── Phase 3C: Depth & Scroll Utilities ── */
+
+.section-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* depth-layer sadece hero ve cinematic sahnelerde kullan — genel layout'ta değil */
+.depth-container { perspective: 800px; }
+.depth-layer-1 { transform: translateZ(-50px) scale(1.06); }
+.depth-layer-2 { transform: translateZ(-150px) scale(1.19); }
+.depth-layer-3 { transform: translateZ(-300px) scale(1.38); }
+
+/* clip-path vertical reveal — GSAP animates to inset(0 0 0 0) */
+.reveal-clip-vertical { clip-path: inset(100% 0 0 0); }
+
+.text-balance { text-wrap: balance; }
