@@ -70,7 +70,7 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
     <StaggerItem>
       <motion.div
         ref={ref}
-        className="text-center p-8 transition-all duration-300 hover:-translate-y-1"
+        className="relative text-center p-8 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
         style={{
           background: "rgba(255, 255, 255, 0.05)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -81,6 +81,15 @@ const StatCard = ({ stat, index }: { stat: (typeof stats)[number]; index: number
         }}
         transition={{ delay: 0.15 * index }}
       >
+        {/* Scroll-driven fill bar — scaleX 0→1 as section enters */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-px origin-left"
+          style={{ background: "hsl(var(--forge-molten))" }}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.5 + index * 0.12 }}
+        />
         <div
           className="text-5xl md:text-6xl font-bold mb-2 font-mono"
           style={{

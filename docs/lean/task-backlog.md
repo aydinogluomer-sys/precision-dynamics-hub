@@ -90,9 +90,27 @@ Geçiş koşulu (Phase 5'e): tüm maddeler ✅ (release-checklist.md'deki QA bö
 
 ---
 
+## Phase 6 — Section Animation Elevation ✅ (2026-05-17)
+
+### 6A — CapabilitiesSection GSAP Clip-Path ✅
+- FM `initial/whileInView` row reveals → GSAP `clip-path: inset(0 100% 0 0 → 0%)` scan-line stagger (0.12s)
+- `gsap.context()` + ScrollTrigger, `caps-eq-row` class selector pattern
+- Machine-loading scan aesthetic on equipment table
+
+### 6B — StatsSection Scroll Fill Bars ✅
+- FM `motion.div` fill bar (`h-px`, forge-molten) inside each StatCard
+- `scaleX: 0 → 1`, duration: 1.4s, delay staggered by index × 0.12s
+- Visual precision-measurement metaphor (progress bar sweep)
+
+### 6C — README.md ✅
+- 415-satır kapsamlı proje dökümantasyonu oluşturuldu
+- Stack tablosu, DB şeması, animasyon mimarisi, awwwards kriterleri
+
+---
+
 ## ROADMAP Phase 2 Backlog (İhtiyaç Çıkınca)
 UX/IA, screen map, component system spec, microinteraction spec, code style guide, performance budget, SEO metadata, analytics events.
 
 ---
 
-*Sıra: Phase 4.5 QA → 5*
+*Sıra: Phase 4.5 QA (manuel browser) → Phase 7 (deeper section elevations)*

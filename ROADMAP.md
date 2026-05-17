@@ -8,7 +8,7 @@
 ## PHASE 1 — Çekirdek (Önce Bunlar)
 
 ### Root
-- [ ] README.md
+- [x] README.md — 415-satır tam proje dokümantasyonu (2026-05-17)
 - [x] CLAUDE.md / AGENTS.md — master AI loader
 - [x] MASTER_CONTEXT.md — her session'da yüklenen 300 satır özet
 - [x] ACTIVE_TASK.md — şu an ne yapıyoruz, session hafızası

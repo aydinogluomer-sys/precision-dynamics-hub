@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { MagneticButton } from "./MagneticButton";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
 const equipment = [
   {
@@ -60,6 +61,30 @@ const useToleranceCountUp = (prefersReduced: boolean) => {
 export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) => {
   const prefersReduced = usePrefersReducedMotion();
   const tolerance = useToleranceCountUp(prefersReduced);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (prefersReduced) return;
+    const ctx = gsap.context(() => {
+      const rows = tableRef.current?.querySelectorAll(".caps-eq-row") ?? [];
+      gsap.fromTo(
+        rows,
+        { clipPath: "inset(0 100% 0 0)" },
+        {
+          clipPath: "inset(0 0% 0 0)",
+          duration: 0.55,
+          stagger: 0.12,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: tableRef.current,
+            start: "top 78%",
+            once: true,
+          },
+        },
+      );
+    }, tableRef);
+    return () => ctx.revert();
+  }, [prefersReduced]);
 
   const rackInitial = prefersReduced
     ? { opacity: 1, filter: "blur(0px)", scale: 1 }
@@ -128,13 +153,7 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
 
           {/* Right: Scrolling equipment rows */}
           <div>
-            <motion.div
-              className="border border-border overflow-x-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
+            <div ref={tableRef} className="border border-border overflow-x-auto">
               {/* Table Header */}
               <div
                 className="grid grid-cols-5 gap-4 px-5 py-3 border-b border-border min-w-[640px]"
@@ -149,13 +168,10 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
 
               {/* Table Rows with stagger */}
               {equipment.map((eq, i) => (
-                <motion.div
+                <div
                   key={eq.category}
-                  className="grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-primary/5 transition-colors min-w-[640px] cursor-default"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.05 * i }}
+                  className="caps-eq-row grid grid-cols-5 gap-4 px-5 py-4 border-b border-border last:border-0 hover:bg-primary/5 transition-colors min-w-[640px] cursor-default"
+                  style={{ clipPath: "inset(0 100% 0 0)" }}
                 >
                   <span className="text-sm font-semibold text-foreground">{eq.category}</span>
                   <span className="text-sm text-foreground/70">{eq.model}</span>
@@ -164,9 +180,9 @@ export const CapabilitiesSection = forwardRef<HTMLDivElement>((_, forwardedRef) 
                     {eq.tolerance}
                   </span>
                   <span className="text-sm text-foreground/60 font-mono">{eq.speed}</span>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
