@@ -42,8 +42,9 @@ export const SECTION_Z = {
   materials:               19,
   whyToCapGlow:            20,
   capabilities:            21,
-  testimonials:            22,
-  faqBlog:                 23,
-  faqToCtaGlow:            24,
-  finalCta:                25,
+  engineeringScene:        22,
+  testimonials:            23,
+  faqBlog:                 24,
+  faqToCtaGlow:            25,
+  finalCta:                26,
 } as const;

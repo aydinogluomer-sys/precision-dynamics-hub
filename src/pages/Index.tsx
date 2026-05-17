@@ -62,6 +62,9 @@ const WhyUsSection = lazy(() => import("@/components/WhyUsSection").then((m) => 
 const CapabilitiesSection = lazy(() =>
   import("@/components/CapabilitiesSection").then((m) => ({ default: m.CapabilitiesSection })),
 );
+const EngineeringSection = lazy(() =>
+  import("@/components/EngineeringSection").then((m) => ({ default: m.EngineeringSection })),
+);
 const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then((m) => ({ default: m.FAQBlogSection })));
 const FinalCTASection = lazy(() =>
   import("@/components/FinalCTASection").then((m) => ({ default: m.FinalCTASection })),
@@ -96,6 +99,7 @@ const SECTIONS = [
   { id: "malzeme-morph", label: "Malzeme" },
   { id: "malzemeler", label: "Malzemeler" },
   { id: "kabiliyetler", label: "Kabiliyetler" },
+  { id: "muhendislik-uretim", label: "Mühendislik & Üretim" },
   { id: "referanslar", label: "Referanslar" },
   { id: "sss-blog", label: "SSS & Blog" },
   { id: "iletisim", label: "İletişim" },
@@ -344,6 +348,13 @@ export const Index = () => {
         <FlowScene z={SECTION_Z.capabilities} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
+          </Suspense>
+        </FlowScene>
+
+        {/* Engineering & Production Scene */}
+        <FlowScene z={SECTION_Z.engineeringScene} id="muhendislik-uretim">
+          <Suspense fallback={<SectionLoader />}>
+            <EngineeringSection />
           </Suspense>
         </FlowScene>
 
