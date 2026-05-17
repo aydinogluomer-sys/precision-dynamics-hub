@@ -24,6 +24,7 @@ import {
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
 import { LiveClock } from "./LiveClock";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 // --- Types & Data (Senin verilerin korundu) ---
 interface MegaLink {
@@ -231,6 +232,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<number | null>(null);
+  const prefersReduced = usePrefersReducedMotion();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -282,7 +284,7 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
     }
   };
 
-  let hoverTimeout: any;
+  let hoverTimeout: ReturnType<typeof setTimeout>;
   const handleDropdownEnter = (index: number) => {
     clearTimeout(hoverTimeout);
     setActiveDropdown(index);
@@ -296,11 +298,14 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
       <header id="main-header" className="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
         <motion.div
           className="transition-shadow"
-          animate={{
+          animate={prefersReduced ? {} : {
             backgroundColor: isScrolled ? "hsl(var(--background) / 0.6)" : "hsl(var(--background) / 0)",
             backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
             boxShadow: isScrolled ? "0 4px 30px hsl(var(--foreground) / 0.08)" : "0 0 0 transparent",
           }}
+          style={prefersReduced ? {
+            backgroundColor: isScrolled ? "hsl(var(--background) / 0.9)" : "hsl(var(--background) / 0)",
+          } : {}}
         >
           <div className="container-industrial px-4 mx-auto">
             <div
@@ -357,10 +362,10 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              initial={{ clipPath: "inset(0 0 100% 0)" }}
+              initial={{ clipPath: prefersReduced ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" }}
               animate={{ clipPath: "inset(0 0 0% 0)" }}
-              exit={{ clipPath: "inset(0 0 100% 0)" }}
-              transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+              exit={{ clipPath: prefersReduced ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" }}
+              transition={{ duration: prefersReduced ? 0 : 0.5, ease: [0.76, 0, 0.24, 1] }}
               className="fixed inset-0 z-[9990] overflow-y-auto"
               style={{ backgroundColor: "hsl(var(--background) / 0.98)", backdropFilter: "blur(20px)" }}
             >
@@ -370,10 +375,10 @@ export const Header = ({ isFirstVisit = false }: HeaderProps) => {
                   {navItems.map((item, idx) => (
                     <motion.div
                       key={idx}
-                      initial={{ opacity: 0, y: 40 }}
+                      initial={prefersReduced ? false : { opacity: 0, y: 40 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ delay: 0.15 + idx * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      exit={prefersReduced ? {} : { opacity: 0, y: 20 }}
+                      transition={{ delay: prefersReduced ? 0 : 0.15 + idx * 0.05, duration: prefersReduced ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
                       onMouseEnter={() => item.hasDropdown && setActiveDropdown(idx)}
                     >
                       <Link

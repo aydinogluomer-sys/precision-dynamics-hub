@@ -51,6 +51,8 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
   const lavaOverlayRef = useRef<HTMLDivElement>(null);
   const heroCanvasRef = useRef<HTMLDivElement>(null);
   const ctaButtonRef = useRef<HTMLElement | null>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const maskVideoRef = useRef<HTMLVideoElement>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -65,6 +67,24 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
       setCurrentHeadline((prev) => (prev + 1) % headlines.length);
     }, 4000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Video lazy play — IntersectionObserver on hero container (saves CPU when scrolled past)
+  useEffect(() => {
+    const videos = [bgVideoRef.current, maskVideoRef.current].filter(Boolean) as HTMLVideoElement[];
+    if (!videos.length) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        videos.forEach((v) => {
+          if (entry.isIntersecting) { v.play().catch(() => {}); }
+          else { v.pause(); }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    const container = stickyRef.current;
+    if (container) io.observe(container);
+    return () => io.disconnect();
   }, []);
 
   // Cold-load entrance sequence (Phase 3A)
@@ -323,13 +343,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
             {/* Layer 1: Background video/image */}
             <div className="absolute inset-0 z-[1]">
               <video
+                ref={bgVideoRef}
                 src={cncVideo}
                 poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 muted
-                autoPlay
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 className="w-full h-full object-cover hidden md:block"
                 style={{ opacity: 0.1 }}
               />
@@ -357,13 +377,13 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
               }}
             >
               <video
+                ref={maskVideoRef}
                 src={cncVideo}
                 poster={heroBg}
                 muted
-                autoPlay
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 className="w-full h-full object-cover hidden md:block"
                 style={{ filter: "brightness(0.8) saturate(1.15) contrast(1.08)" }}
               />

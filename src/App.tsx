@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
+import { CookieBanner } from "@/components/CookieBanner";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -177,6 +178,7 @@ const AppContent = () => {
         </Suspense>
       )}
       <AnimatedRoutes />
+      {!isPanel && <CookieBanner />}
       <Suspense fallback={null}>
         <ChatBot />
       </Suspense>
