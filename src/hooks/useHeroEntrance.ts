@@ -70,5 +70,6 @@ export function useHeroEntrance(
     }, refs.containerRef);
 
     return () => ctx.revert();
-  }, [isFirstVisit, prefersReduced]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFirstVisit, prefersReduced]); // refs are stable GSAP targets; onHeadlineTrigger is a state setter
 }

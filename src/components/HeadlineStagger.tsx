@@ -39,7 +39,7 @@ export const HeadlineStagger = forwardRef<HTMLDivElement, HeadlineStaggerProps>(
     useEffect(() => {
       if (prefersReduced) { velocityMV.set(0); return; }
       velocityMV.set(direction === "down" ? -velocity : velocity);
-    }, [velocity, direction, prefersReduced]);
+    }, [velocity, direction, prefersReduced, velocityMV]);
 
     const allWords = text.replace(/\n/g, " ").split(" ");
     const staggerWords = allWords.slice(0, 2);
