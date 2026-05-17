@@ -13,9 +13,10 @@
 - ✅ Phase 4 — Interaction Polish (velocity cursors, hover baseline, page transition)
 - ✅ Phase 5 — Performance (will-change, BlurImage priority, Supabase preconnect)
 - ✅ Phase 6 — Section Animation Elevation (2026-05-17)
+- ✅ Phase 7 — Interaction & GPU Polish (2026-05-17)
 
 ## Şu An
-Tüm kod fazları tamamlandı. Phase 6 eklendi.
+Tüm kod fazları tamamlandı. Phase 7 eklendi.
 
 ## Bekleyen Manuel Görevler (Headless Kısıtı)
 

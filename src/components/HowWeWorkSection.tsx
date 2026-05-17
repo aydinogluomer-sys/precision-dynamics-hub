@@ -99,10 +99,8 @@ export const HowWeWorkSection = () => {
 
     const ctx = gsap.context(() => {
       const totalScroll = strip.scrollWidth - window.innerWidth;
+      let prevStep = 0;
 
-      // FIX: Pin the inner container, not the whole section.
-      // This way the wrapper provides the scroll height via its natural height
-      // and the pin-spacer wraps pinContainer correctly.
       gsap.to(strip, {
         x: -totalScroll,
         ease: "none",
@@ -115,11 +113,17 @@ export const HowWeWorkSection = () => {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            // Progress bar
             gsap.set(progress, { scaleX: self.progress });
-            // Counter
             const step = Math.min(4, Math.floor(self.progress * 4) + 1);
-            counter.textContent = String(step).padStart(2, "0");
+            if (step !== prevStep) {
+              prevStep = step;
+              counter.textContent = String(step).padStart(2, "0");
+              gsap.fromTo(
+                counter,
+                { y: -8, opacity: 0.2 },
+                { y: 0, opacity: 1, duration: 0.22, ease: "power2.out", overwrite: true },
+              );
+            }
           },
         },
       });

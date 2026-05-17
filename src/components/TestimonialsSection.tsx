@@ -85,7 +85,7 @@ export const TestimonialsSection = () => {
               scale: 1 - p * 0.08,
               y: -p * 30,
               opacity: 1 - p * 0.6,
-              filter: `blur(${p * 6}px)`,
+              filter: `blur(${p * 2}px)`,
             });
           },
         });

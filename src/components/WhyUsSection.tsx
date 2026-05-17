@@ -65,12 +65,21 @@ export const WhyUsSection = () => {
             {stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className={`text-center py-8 md:py-10 ${i < 3 ? "border-r border-border/30" : ""}`}
+                className={`relative text-center py-8 md:py-10 overflow-hidden ${i < 3 ? "border-r border-border/30" : ""}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
+                {/* Scroll fill bar — precision measurement metaphor */}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-px origin-left"
+                  style={{ background: "hsl(var(--forge-molten))" }}
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1], delay: 0.6 + i * 0.1 }}
+                />
                 <div
                   className="text-4xl md:text-5xl font-bold mb-1 font-mono"
                   style={{ color: "hsl(var(--forge-molten))" }}

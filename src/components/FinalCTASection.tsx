@@ -29,7 +29,7 @@ const GsapCtaHeadline = forwardRef<HTMLHeadingElement>((_props, _fRef) => {
         const chars = w.text.split("").map((c) => {
           const style = w.gradient
             ? `display:inline-block;opacity:0;transform:translateY(100%);background:linear-gradient(90deg, hsl(var(--forge-molten)), hsl(var(--forge-amber)));-webkit-background-clip:text;-webkit-text-fill-color:transparent`
-            : `display:inline-block;opacity:0;transform:translateY(100%)`;
+            : `display:inline-block;opacity:0;transform:translateY(100%);will-change:transform`;
           return c === " "
             ? " "
             : `<span class="gsap-cta-char" style="${style}">${c}</span>`;

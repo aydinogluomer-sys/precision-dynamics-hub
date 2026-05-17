@@ -113,4 +113,23 @@ UX/IA, screen map, component system spec, microinteraction spec, code style guid
 
 ---
 
-*Sıra: Phase 4.5 QA (manuel browser) → Phase 7 (deeper section elevations)*
+## Phase 7 — Interaction & GPU Polish ✅ (2026-05-17)
+
+### 7A — TestimonialsSection Blur Reduction ✅
+- Stacked card blur: `p * 6px` → `p * 2px` max — reduces motion sickness, cleaner stack
+
+### 7B — FinalCTASection GPU Hint ✅
+- Non-gradient char spans: added `will-change:transform` to inline style
+- GPU compositing on 40+ simultaneously animated chars
+
+### 7C — HowWeWorkSection Counter Animation ✅
+- Step counter now `gsap.fromTo(y:-8→0, opacity:0.2→1, 0.22s)` on each step change
+- Smooth slide-in on step increment (01 → 02 → 03 → 04)
+
+### 7D — WhyUsSection Fill Bars ✅
+- Same fill bar pattern (h-px, forge-molten, scaleX 0→1) added to 4 stats cells
+- Consistent precision-measurement language across WhyUsSection + StatsSection
+
+---
+
+*Sıra: Phase 4.5 QA (manuel browser) → Phase 8 (if needed)*
