@@ -17,12 +17,10 @@ except ImportError:
     sys.exit(1)
 
 PROMPT = """
-Cinematic 4K slow-motion industrial shot inside a precision CNC machining facility.
-Cold blue-white overhead lighting illuminates a 5-axis CNC milling machine carving
-a aerospace-grade aluminum part. Metal chips fly in slow motion catching the light.
-The camera slowly dollies forward toward the spinning tool. Deep focus, anamorphic
-lens flare on the spindle. Hyper-realistic, photographic. Premium industrial aesthetic.
-Dark background, dramatic shadows. No text, no watermarks.
+Cinematic establishing shot inside a modern precision manufacturing facility at night.
+Rows of illuminated CNC machines work autonomously under cold blue lighting.
+Slow dolly forward through the factory floor. Steam and coolant mist catch the light.
+Photorealistic, 4K, premium industrial. No people, no text.
 """.strip()
 
 def main():
