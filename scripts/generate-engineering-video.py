@@ -1,20 +1,13 @@
 """
-Seedance 2.0 — Mühendislik & Üretim sahnesi video üretimi
-Kullanım: MUAPI_API_KEY=<key> python3 scripts/generate-engineering-video.py
+AtlasCloud — Seedance 2.0 Mühendislik & Üretim sahnesi video üretimi
+Kullanım: ATLASCLOUD_API_KEY=<key> python3 scripts/generate-engineering-video.py
 
-Çıktı: dist/assets/engineering-scene.mp4 (or URL printed to stdout)
+Çıktı: video URL'i stdout'a yazdırılır → EngineeringSection.tsx SEEDANCE_VIDEO sabitine ekle
 """
 import sys
 import os
-
-sys.path.insert(0, "/tmp/ref-seedance")
-
-try:
-    from seedance_api import SeedanceAPI
-except ImportError:
-    print("ERROR: Seedance not found. Run: pip install requests python-dotenv")
-    print("       and clone https://github.com/Anil-matcha/Seedance-2.0-API.git to /tmp/ref-seedance")
-    sys.exit(1)
+import time
+import requests
 
 PROMPT = """
 Cinematic establishing shot inside a modern precision manufacturing facility at night.
@@ -23,35 +16,64 @@ Slow dolly forward through the factory floor. Steam and coolant mist catch the l
 Photorealistic, 4K, premium industrial. No people, no text.
 """.strip()
 
+GENERATE_URL = "https://api.atlascloud.ai/api/v1/model/generateVideo"
+POLL_URL_TEMPLATE = "https://api.atlascloud.ai/api/v1/model/prediction/{}"
+
+
 def main():
-    api_key = os.environ.get("MUAPI_API_KEY")
+    api_key = os.environ.get("ATLASCLOUD_API_KEY")
     if not api_key:
-        print("ERROR: Set MUAPI_API_KEY environment variable.")
-        print("       Get your key from the Seedance/MuseAPI dashboard.")
+        print("ERROR: Set ATLASCLOUD_API_KEY environment variable.")
+        print("       Get your key from the AtlasCloud dashboard.")
         sys.exit(1)
 
-    api = SeedanceAPI(api_key=api_key)
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
+
+    payload = {
+        "model": "bytedance/seedance-2.0/text-to-video",
+        "prompt": PROMPT,
+        "duration": 5,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "generate_audio": False,
+        "watermark": False,
+        "return_last_frame": False,
+    }
 
     print("Submitting video generation request...")
     print(f"Prompt: {PROMPT[:80]}...")
 
-    submission = api.text_to_video(
-        prompt=PROMPT,
-        aspect_ratio="16:9",
-        duration=5,
-        quality="high",
-    )
+    resp = requests.post(GENERATE_URL, headers=headers, json=payload, timeout=30)
+    resp.raise_for_status()
+    prediction_id = resp.json()["data"]["id"]
+    print(f"Prediction ID: {prediction_id}")
+    print("Polling for completion (may take 2-5 minutes)...")
 
-    request_id = submission.get("request_id")
-    print(f"Request ID: {request_id}")
-    print("Waiting for completion (may take 2-5 minutes)...")
+    poll_url = POLL_URL_TEMPLATE.format(prediction_id)
+    poll_headers = {"Authorization": f"Bearer {api_key}"}
 
-    result = api.wait_for_completion(request_id)
-    video_url = result["outputs"][0]
+    while True:
+        time.sleep(2)
+        r = requests.get(poll_url, headers=poll_headers, timeout=30)
+        r.raise_for_status()
+        data = r.json()["data"]
+        status = data["status"]
 
-    print(f"\n✅ Video generated: {video_url}")
-    print("\nNext step — add to EngineeringSection.tsx:")
-    print(f'  const SEEDANCE_VIDEO = "{video_url}";')
+        if status in ("completed", "succeeded"):
+            video_url = data["outputs"][0]
+            print(f"\n✅ Video generated: {video_url}")
+            print("\nNext step — add to EngineeringSection.tsx:")
+            print(f'  const SEEDANCE_VIDEO = "{video_url}";')
+            return
+
+        if status == "failed":
+            raise RuntimeError(data.get("error") or "Generation failed")
+
+        print(f"  status: {status} — waiting...")
+
 
 if __name__ == "__main__":
     main()
