@@ -1,0 +1,1 @@
+import{r as s,j as a}from"./vendor-fiber-B-_QXMQA.js";import"./vendor-three-C_x4mMja.js";const e=s.memo(({scanline:r=!1})=>a.jsxs(a.Fragment,{children:[a.jsx("div",{className:"brutalist-grain","aria-hidden":"true"}),r&&a.jsx("div",{className:"brutalist-scanline","aria-hidden":"true"})]}));e.displayName="GrainOverlay";export{e as GrainOverlay};
