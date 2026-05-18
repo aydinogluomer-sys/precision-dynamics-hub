@@ -25,8 +25,17 @@
   - sitemap.xml oluşturuldu (10 public route, priority/changefreq)
   - robots.txt Sitemap direktifi eklendi
 
+- ✅ Phase 10 — Awwwards Reference Patterns I (2026-05-18)
+  - Hero fold-away (rotate+scale scrub), VideoScrollSection circle clip expand
+  - WhyUsSection SplitText word color reveal (manifesto paragraph)
+  - ProjectShowcase codrops crush exit (scaleX+scaleY+skewY on scroll-off)
+  - SectionHeader polygon clip-path word wipe (all SectionHeader titles)
+- ✅ Phase 11 — Awwwards Reference Patterns II (2026-05-18)
+  - WhyUsSection stats: rotationZ alternating spin entry (demo8 pattern)
+  - WhyUsSection advantages: 3D rotationX perspective flip entry (demo7 pattern)
+
 ## Şu An
-Tüm kod fazları tamamlandı (Phase 9 dahil).
+Tüm kod fazları tamamlandı (Phase 11 dahil).
 
 ## Bekleyen Manuel Görevler (Headless Kısıtı)
 

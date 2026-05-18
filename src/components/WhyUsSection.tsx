@@ -40,6 +40,8 @@ const stats = [
 export const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const manifestoRef = useRef<HTMLParagraphElement>(null);
+  const advantagesRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -78,6 +80,57 @@ export const WhyUsSection = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReduced]);
 
+  // Awwwards: rotationZ alternating spin entry for stats (ref-codrops demo8 pattern)
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el || prefersReduced) return;
+    const ctx = gsap.context(() => {
+      const items = Array.from(el.querySelectorAll(".stat-item"));
+      items.forEach((item, i) => {
+        gsap.from(item, {
+          rotationZ: i % 2 === 0 ? -14 : 14,
+          y: 40,
+          opacity: 0,
+          duration: 0.8,
+          ease: "back.out(1.5)",
+          delay: i * 0.1,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            once: true,
+          },
+        });
+      });
+    }, el);
+    return () => ctx.revert();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
+
+  // Awwwards: 3D rotationX perspective flip entry for advantages (ref-codrops demo7 pattern)
+  useEffect(() => {
+    const el = advantagesRef.current;
+    if (!el || prefersReduced) return;
+    const ctx = gsap.context(() => {
+      const items = el.querySelectorAll(".advantage-item");
+      gsap.from(items, {
+        rotationX: 65,
+        scale: 0.78,
+        opacity: 0,
+        transformOrigin: "50% 100%",
+        duration: 0.65,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          once: true,
+        },
+      });
+    }, el);
+    return () => ctx.revert();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
+
   const splitLeftInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 };
   const splitRightInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: 60, opacity: 0 };
   const splitAnimate = { x: 0, opacity: 1 };
@@ -93,15 +146,11 @@ export const WhyUsSection = () => {
       {/* Stats Bar */}
       <div className="border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4">
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4">
             {stats.map((stat, i) => (
-              <motion.div
+              <div
                 key={stat.label}
-                className={`relative text-center py-8 md:py-10 overflow-hidden ${i < 3 ? "border-r border-border/30" : ""}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                className={`stat-item relative text-center py-8 md:py-10 overflow-hidden ${i < 3 ? "border-r border-border/30" : ""}`}
               >
                 {/* Scroll fill bar — precision measurement metaphor */}
                 <motion.div
@@ -124,7 +173,7 @@ export const WhyUsSection = () => {
                 >
                   {stat.label}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -170,16 +219,9 @@ export const WhyUsSection = () => {
               {" müşterilerimize sunuyoruz."}
             </p>
 
-            <div className="space-y-6">
-              {advantages.map((adv, i) => (
-                <motion.div
-                  key={adv.title}
-                  className="flex items-start gap-4"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 * i }}
-                >
+            <div ref={advantagesRef} className="space-y-6" style={{ perspective: "1000px" }}>
+              {advantages.map((adv) => (
+                <div key={adv.title} className="advantage-item flex items-start gap-4">
                   <div className="w-5 h-5 mt-0.5 flex items-center justify-center shrink-0 bg-primary/15">
                     <Check className="w-3 h-3 text-primary" />
                   </div>
@@ -189,7 +231,7 @@ export const WhyUsSection = () => {
                       {adv.desc}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>

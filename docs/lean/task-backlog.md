@@ -202,4 +202,42 @@ Dot-nav artık tüm 19 section'ı yakalar.
 
 ---
 
+---
+
+## Phase 10 — Awwwards Reference Patterns I ✅ (2026-05-18)
+
+### 10A — Hero Fold-Away ✅
+- `HeroSection.tsx`: `gsap.to(stickyRef, { rotate:3, scale:0.9, scrub:1.5 })` — scroll off fold
+- ref-fullstack BenefitSection pattern
+
+### 10B — Circle Clip Expand ✅
+- `VideoScrollSection.tsx`: `clipPath: circle(0%→150%)` GSAP on entry (1.6s, power3.out)
+- ref-fullstack VideoPinSection pattern
+
+### 10C — SplitText Word Color Reveal ✅
+- `WhyUsSection.tsx`: manifesto paragraph word-by-word `forge-silver/0.2→foreground` scrub
+- ref-fullstack MessageSection pattern
+
+### 10D — Codrops Crush Exit ✅
+- `ProjectShowcase.tsx`: horizontal scroll card exit `scaleX:0, scaleY:2.5, skewY:random(-5,5)`
+- ref-codrops demo6 pattern
+
+### 10E — Polygon Clip-Path Word Wipe ✅
+- `SectionHeader.tsx`: each word `polygon(0→100%)` motion.span wipe reveal
+- ref-fullstack BenefitSection title pattern
+
+---
+
+## Phase 11 — Awwwards Reference Patterns II ✅ (2026-05-18)
+
+### 11A — Stats rotationZ Spin Entry ✅
+- `WhyUsSection.tsx`: `.stat-item` FM→GSAP, `rotationZ: ±14, y:40, opacity:0` alternating spin-in
+- ref-codrops demo8 pattern
+
+### 11B — Advantages 3D rotationX Flip Entry ✅
+- `WhyUsSection.tsx`: `.advantage-item` FM→GSAP, `rotationX:65, scale:0.78, opacity:0, perspective:1000px`
+- ref-codrops demo7 pattern
+
+---
+
 *Sıra: Phase 4.5 QA (manuel browser) → Seedance video üretimi (ATLASCLOUD_API_KEY ile)*
