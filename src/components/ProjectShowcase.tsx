@@ -97,9 +97,9 @@ export const ProjectShowcase = () => {
         },
       });
 
-      // Card stagger reveal
+      // Card stagger reveal (entry — right → center)
       const cards = track.querySelectorAll<HTMLElement>(".gsap-project-card");
-      cards.forEach((card, i) => {
+      cards.forEach((card) => {
         gsap.fromTo(
           card,
           { opacity: 0.3, scale: 0.92 },
@@ -117,6 +117,24 @@ export const ProjectShowcase = () => {
             },
           }
         );
+
+        // Codrops exit — card crushes as it scrolls off left edge
+        const img = card.querySelector<HTMLElement>("img, [data-card-img]") ?? card;
+        const skewVal = gsap.utils.random(-5, 5);
+        gsap.to(img, {
+          scaleX: 0,
+          scaleY: 2.5,
+          skewY: skewVal,
+          transformOrigin: "0% 100%",
+          ease: "back.in(2)",
+          scrollTrigger: {
+            trigger: card,
+            containerAnimation: tween,
+            start: "right 8%",
+            end: "right -5%",
+            scrub: 0.1,
+          },
+        });
       });
     }, container);
 
