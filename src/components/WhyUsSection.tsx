@@ -3,8 +3,10 @@ import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { Reveal } from "@/components/ui/Reveal";
 import { TextHighlight } from "@/components/ui/TextHighlight";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap } from "@/lib/animation-manager";
+import { SplitText } from "gsap/SplitText";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import { BlurImage } from "./BlurImage";
@@ -37,6 +39,7 @@ const stats = [
 
 export const WhyUsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const manifestoRef = useRef<HTMLParagraphElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -45,6 +48,35 @@ export const WhyUsSection = () => {
 
   const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(100% 0 0 0)", "inset(0% 0 0 0)"]);
   const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+
+  // Awwwards: word-by-word scroll color reveal (ref-fullstack MessageSection pattern)
+  useEffect(() => {
+    const el = manifestoRef.current;
+    if (!el || prefersReduced) return;
+    const split = SplitText.create(el, { type: "words" });
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        split.words,
+        { color: "hsl(var(--forge-silver) / 0.2)" },
+        {
+          color: "hsl(var(--foreground))",
+          ease: "none",
+          stagger: 1,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 75%",
+            end: "bottom 30%",
+            scrub: true,
+          },
+        },
+      );
+    }, el);
+    return () => {
+      ctx.revert();
+      split.revert();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
 
   const splitLeftInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: -60, opacity: 0 };
   const splitRightInitial = prefersReduced ? { x: 0, opacity: 1 } : { x: 60, opacity: 0 };
@@ -98,26 +130,15 @@ export const WhyUsSection = () => {
         </div>
       </div>
 
-      {/* Highlight Section — scroll-linked */}
+      {/* Highlight Section — word-by-word scroll color reveal (ref-fullstack pattern) */}
       <div className="border-t border-border/20 py-24 md:py-32 lg:py-40 overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <p
-            className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight text-white"
-            style={{ fontStyle: "italic" }}
+            ref={manifestoRef}
+            className="text-2xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight"
+            style={{ fontStyle: "italic", color: prefersReduced ? undefined : "hsl(var(--forge-silver) / 0.2)" }}
           >
-            {"Sadece bir tedarikçi değil — "}
-            <TextHighlight color="hsl(var(--forge-molten) / 0.3)">
-              {"üretim sürecinizin"}
-            </TextHighlight>
-            {" mühendislik ortağıyız. "}
-            <TextHighlight color="hsl(var(--primary) / 0.25)">
-              {"Mikron seviyesinde hassasiyet,"}
-            </TextHighlight>
-            {" uçtan uca izlenebilirlik ve "}
-            <TextHighlight color="hsl(var(--forge-steel) / 0.2)">
-              {"48 saat içinde prototip"}
-            </TextHighlight>
-            {" garantisiyle."}
+            {"Sadece bir tedarikçi değil — üretim sürecinizin mühendislik ortağıyız. Mikron seviyesinde hassasiyet, uçtan uca izlenebilirlik ve 48 saat içinde prototip garantisiyle."}
           </p>
         </div>
       </div>

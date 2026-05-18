@@ -232,6 +232,20 @@ export const HeroSection = ({ isFirstVisit = false }: HeroSectionProps) => {
           },
         },
       );
+
+      // Awwwards: hero panel fold-away — rotate + scale as user scrolls off (ref-fullstack pattern)
+      gsap.to(stickyRef.current, {
+        rotate: 3,
+        scale: 0.9,
+        transformOrigin: "50% 50%",
+        ease: "power2.in",
+        scrollTrigger: {
+          trigger: scroller,
+          start: "3% top",
+          end: "28% top",
+          scrub: 1.5,
+        },
+      });
     }, scroller);
 
     return () => ctx.revert();

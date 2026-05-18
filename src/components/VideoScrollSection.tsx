@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { gsap, ScrollTrigger } from "@/lib/animation-manager";
 import cncVideo from "@/assets/cnc-sequence-scroll.mp4";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import { Settings, Target, Layers, Zap } from "lucide-react";
@@ -78,6 +79,31 @@ export const VideoScrollSection = () => {
 
   // Blueprint grid opacity
   const gridOpacity = useTransform(scrollYProgress, [0, 0.05, 0.8, 0.9], [0, 0.08, 0.08, 0]);
+
+  // Awwwards: circle clip-path expand on section entry (ref-fullstack VideoPinSection pattern)
+  useEffect(() => {
+    if (prefersReduced) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { clipPath: "circle(0% at 50% 0%)" },
+        {
+          clipPath: "circle(150% at 50% 0%)",
+          duration: 1.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            once: true,
+          },
+        },
+      );
+    }, el);
+    return () => ctx.revert();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
 
   return (
     <div
