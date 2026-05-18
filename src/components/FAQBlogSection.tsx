@@ -1,8 +1,9 @@
 import { ChevronDown, ArrowRight, Search } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, ScrollTrigger } from "@/lib/animation-manager";
 import blog5eksen from "@/assets/blog-5eksen.jpg";
 import blogMalzeme from "@/assets/blog-malzeme.jpg";
 import serviceCncTorna from "@/assets/service-cnc-torna.jpg";
@@ -87,6 +88,34 @@ export const FAQBlogSection = () => {
   const [query, setQuery] = useState("");
   const [blogQuery, setBlogQuery] = useState("");
   const prefersReduced = usePrefersReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Awwwards: g_grow scale + clip-path scan reveal for blog thumbnails (ref-iphone pattern)
+  useEffect(() => {
+    if (prefersReduced) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      ScrollTrigger.batch(".blog-card-img", {
+        onEnter: (batch) =>
+          gsap.fromTo(
+            batch,
+            { clipPath: "inset(0 0 100% 0)" },
+            { clipPath: "inset(0 0 0% 0)", duration: 0.7, stagger: 0.12, ease: "power3.out" },
+          ),
+        start: "top 88%",
+        once: true,
+      });
+      ScrollTrigger.batch(".blog-card-img-inner", {
+        onEnter: (batch) =>
+          gsap.from(batch, { scale: 0.88, duration: 1.4, stagger: 0.12, ease: "power2.out" }),
+        start: "top 88%",
+        once: true,
+      });
+    }, el);
+    return () => ctx.revert();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
 
   const faqCardVariants = {
     hidden: prefersReduced ? { opacity: 1, rotateY: 0 } : { opacity: 0, rotateY: 90 },
@@ -118,6 +147,7 @@ export const FAQBlogSection = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="sss"
       className="section-industrial border-y border-border"
       style={{ backgroundColor: "hsl(var(--forge-mist))", perspective: 1200 }}
@@ -239,11 +269,11 @@ export const FAQBlogSection = () => {
                   href="#"
                   className="flex flex-col md:flex-row gap-4 border border-border bg-background p-3 hover:border-primary transition-colors group overflow-hidden"
                 >
-                  <div className="w-full md:w-28 h-40 md:h-24 flex-shrink-0 overflow-hidden">
+                  <div className="blog-card-img w-full md:w-28 h-40 md:h-24 flex-shrink-0 overflow-hidden">
                     <img
                       src={post.image}
                       alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="blog-card-img-inner w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
                     />
                   </div>

@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { motion } from "framer-motion";
-import { gsap } from "@/hooks/use-gsap";
+import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { Reveal as TextReveal } from "./ui/Reveal";
 import { BlurImage } from "./BlurImage";
 import { Badge } from "./ui/badge";
@@ -264,10 +264,32 @@ export const IndustriesSection = () => {
 /* Primary card — large image + content */
 const PrimaryIndustryCard = ({ industry, index, isWide }: { industry: Industry; index: number; isWide: boolean }) => {
   const { ref: tiltRef, spotRef, handleMouseMove, handleMouseLeave } = useTilt(3);
+  const imgWrapRef = useRef<HTMLDivElement>(null);
+  const prefersReduced = usePrefersReducedMotion();
+
+  // Awwwards: g_grow scale reveal on image container (ref-iphone pattern)
+  useEffect(() => {
+    const el = imgWrapRef.current;
+    if (!el || prefersReduced) return;
+    const ctx = gsap.context(() => {
+      gsap.from(el, {
+        scale: 0.88,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 88%",
+          once: true,
+        },
+      });
+    }, el);
+    return () => ctx.revert();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReduced]);
 
   const cardContent = (
     <>
-      <div className="relative h-52 md:h-60 overflow-hidden bg-card">
+      <div ref={imgWrapRef} className="relative h-52 md:h-60 overflow-hidden bg-card">
         <BlurImage
           src={industry.image}
           alt={industry.name}
