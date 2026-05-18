@@ -14,9 +14,13 @@
 - ✅ Phase 5 — Performance (will-change, BlurImage priority, Supabase preconnect)
 - ✅ Phase 6 — Section Animation Elevation (2026-05-17)
 - ✅ Phase 7 — Interaction & GPU Polish (2026-05-17)
+- ✅ Phase 8 — Release Polish (2026-05-18)
+  - robots.txt, JSON-LD schema, useEffect dep fix, video lazy-load, header reduced-motion
+  - CookieBanner (KVKK), EngineeringSection (awwwards scroll-pin sahne)
+  - AtlasCloud Seedance 2.0 script (Version B prompt)
 
 ## Şu An
-Tüm kod fazları tamamlandı. Phase 7 eklendi.
+Tüm kod fazları tamamlandı (Phase 8 dahil).
 
 ## Bekleyen Manuel Görevler (Headless Kısıtı)
 
@@ -45,7 +49,7 @@ Tüm kod fazları tamamlandı. Phase 7 eklendi.
 - Hardcoded renk / Z dışı z-index yok
 
 ## Blocker
-Yok. Kalan görevler yalnızca canlı tarayıcıda manuel test.
+Yok. Kalan görevler yalnızca canlı tarayıcıda manuel test ya da API key ile video üretimi.
 
 ---
 *Detay için:* `docs/lean/task-backlog.md`

@@ -132,4 +132,42 @@ UX/IA, screen map, component system spec, microinteraction spec, code style guid
 
 ---
 
-*Sıra: Phase 4.5 QA (manuel browser) → Phase 8 (if needed)*
+---
+
+## Phase 8 — Release Polish ✅ (2026-05-18)
+
+### 8A — Release Checklist Programatik Düzeltmeler ✅
+- `public/robots.txt`: /admin + /musteri-paneli Disallow kuralları eklendi
+- `index.html`: JSON-LD Organization + LocalBusiness schema eklendi
+- `HeadlineStagger.tsx`: useEffect eksik dep fix ([velocity, direction, prefersReduced, velocityMV])
+- `useHeroEntrance.ts`: useEffect deps eslint-disable (stable refs + state setter)
+- `HeroSection.tsx`: bgVideoRef + maskVideoRef IntersectionObserver lazy play/pause
+- `Header.tsx`: reduced-motion guard (FM animate, transition, stagger), hoverTimeout type fix
+
+### 8B — KVKK Cookie Banner ✅
+- `src/components/CookieBanner.tsx`: localStorage "mas-cookie-consent", AnimatePresence slide-up
+- `src/App.tsx`: non-panel route'larda `<CookieBanner />` mount
+
+### 8C — Mühendislik & Üretim Sahnesi ✅
+- `src/components/EngineeringSection.tsx`: awwwards-quality 4-aşamalı GSAP scroll-pin
+  - Blueprint SVG grid overlay, video bg (luminosity blend), scan-line clip-path reveal
+  - 4 stage: Tasarım/teal, Malzeme/molten, İşleme/amber, Kalite/primary
+  - Molten progress bar, step counter (fromTo y-10→0 flash)
+  - IntersectionObserver video play/pause, usePrefersReducedMotion guard
+- `src/styles/z-index.ts`: engineeringScene:22 eklendi
+- `src/pages/Index.tsx`: EngineeringSection lazy import + FlowScene
+
+### 8D — AtlasCloud Seedance 2.0 Script ✅
+- `scripts/generate-engineering-video.py`: AtlasCloud REST API (Bearer auth, poll loop)
+- Prompt Version B: "factory nighttime dolly, CNC rows, cold blue, no people"
+- `ratio: "16:9"`, `generate_audio: False`, `watermark: False`
+- Çalıştırma: `ATLASCLOUD_API_KEY=<key> python3 scripts/generate-engineering-video.py`
+
+### Verification
+- `tsc --noEmit` → hata yok ✅
+- `eslint` (yeni/değiştirilen dosyalar) → warning yok ✅
+- `npm run build` → temiz ✅
+
+---
+
+*Sıra: Phase 4.5 QA (manuel browser) → Seedance video üretimi (ATLASCLOUD_API_KEY ile)*
