@@ -206,7 +206,9 @@ export const Index = () => {
       <main id="main-content" ref={mainRef} className="relative">
         {/* 1 — Hero + QuickQuote */}
         <FlowScene z={SECTION_Z.hero} id="hero">
-          <HeroSection isFirstVisit={isFirstVisit} />
+          <ErrorBoundary>
+            <HeroSection isFirstVisit={isFirstVisit} />
+          </ErrorBoundary>
         </FlowScene>
 
         {/* Lava Typography Scene */}
@@ -264,9 +266,11 @@ export const Index = () => {
 
         {/* WhyUs — moved up after Nexus */}
         <FlowScene z={SECTION_Z.whyUs} id="neden-biz" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
-          <Suspense fallback={<SectionLoader />}>
-            <WhyUsSection />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <WhyUsSection />
+            </Suspense>
+          </ErrorBoundary>
         </FlowScene>
 
         {/* Glow: WhyUs (dark) → HowWeWork (light) */}

@@ -55,27 +55,33 @@ export const WhyUsSection = () => {
   useEffect(() => {
     const el = manifestoRef.current;
     if (!el || prefersReduced) return;
-    const split = SplitText.create(el, { type: "words" });
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        split.words,
-        { color: "hsl(var(--forge-silver) / 0.2)" },
-        {
-          color: "hsl(var(--foreground))",
-          ease: "none",
-          stagger: 1,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 75%",
-            end: "bottom 30%",
-            scrub: true,
+    let split: ReturnType<typeof SplitText.create> | null = null;
+    let ctx: ReturnType<typeof gsap.context> | null = null;
+    try {
+      split = SplitText.create(el, { type: "words" });
+      const words = Array.from(split?.words ?? []);
+      if (!words.length) return;
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          words,
+          { color: "hsl(var(--forge-silver) / 0.2)" },
+          {
+            color: "hsl(var(--foreground))",
+            ease: "none",
+            stagger: 1,
+            scrollTrigger: {
+              trigger: el,
+              start: "top 75%",
+              end: "bottom 30%",
+              scrub: true,
+            },
           },
-        },
-      );
-    }, el);
+        );
+      }, el);
+    } catch { /* headless / no-WebGL envs may fail silently */ }
     return () => {
-      ctx.revert();
-      split.revert();
+      ctx?.revert();
+      split?.revert();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReduced]);

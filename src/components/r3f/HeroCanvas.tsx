@@ -2,10 +2,24 @@
  * HeroCanvas.tsx — Full-screen R3F canvas behind hero content
  * IO lazy render: viewport dışındayken Canvas unmount.
  */
-import { Suspense, useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect, useRef, Component, type ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import { LiquidImage } from "./LiquidImage";
 import heroBg from "@/assets/hero-cnc.jpg";
+
+class WebGLErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? null : this.props.children; }
+}
+
+// Probe WebGL support once at module load — avoids mounting Canvas in headless envs
+const webGLSupported = (() => {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl') || c.getContext('experimental-webgl'));
+  } catch { return false; }
+})();
 
 export const HeroCanvas = () => {
   const [visible, setVisible] = useState(false);
@@ -24,7 +38,8 @@ export const HeroCanvas = () => {
 
   return (
     <div ref={wrapRef} className="absolute inset-0 z-0" style={{ pointerEvents: "auto" }}>
-      {visible ? (
+      {visible && webGLSupported ? (
+        <WebGLErrorBoundary>
         <Canvas
           dpr={[1, 1.5]}
           gl={{
@@ -39,6 +54,7 @@ export const HeroCanvas = () => {
             <LiquidImage src={heroBg} opacity={0.25} />
           </Suspense>
         </Canvas>
+        </WebGLErrorBoundary>
       ) : null}
     </div>
   );
