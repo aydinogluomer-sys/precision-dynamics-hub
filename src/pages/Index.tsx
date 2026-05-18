@@ -69,6 +69,9 @@ const FAQBlogSection = lazy(() => import("@/components/FAQBlogSection").then((m)
 const FinalCTASection = lazy(() =>
   import("@/components/FinalCTASection").then((m) => ({ default: m.FinalCTASection })),
 );
+const CertificationsSection = lazy(() =>
+  import("@/components/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+);
 
 /* ── Fallback spinner ── */
 const SectionLoader = forwardRef<HTMLDivElement>((_, ref) => (
@@ -272,9 +275,21 @@ export const Index = () => {
         </Suspense>
 
         {/* 5 — HowWeWork (flow, GSAP pin inside) */}
-        <FlowScene z={SECTION_Z.howWeWork} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+        <FlowScene z={SECTION_Z.howWeWork} id="nasil-calisiyoruz" style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <HowWeWorkSection />
+          </Suspense>
+        </FlowScene>
+
+        {/* Glow: HowWeWork (light) → Certifications (dark) */}
+        <Suspense fallback={null}>
+          <SectionTransitionGlow variant="light-to-dark" z={SECTION_Z.hwwToCertGlow} toColor="hsl(var(--forge-iron))" />
+        </Suspense>
+
+        {/* 6 — Certifications */}
+        <FlowScene z={SECTION_Z.certifications} id="sertifikalar" style={{ backgroundColor: "hsl(var(--forge-iron))" }}>
+          <Suspense fallback={<SectionLoader />}>
+            <CertificationsSection />
           </Suspense>
         </FlowScene>
 
@@ -291,7 +306,7 @@ export const Index = () => {
         </Suspense>
 
         {/* 8 — Services (flow) */}
-        <FlowScene z={SECTION_Z.services} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        <FlowScene z={SECTION_Z.services} id="hizmetler" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <ServicesSection />
           </Suspense>
@@ -307,7 +322,7 @@ export const Index = () => {
         </div>
 
         {/* 9 — Industries */}
-        <FlowScene z={SECTION_Z.industries} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        <FlowScene z={SECTION_Z.industries} id="endustriler" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <IndustriesSection />
           </Suspense>
@@ -333,7 +348,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 12 — Materials */}
-        <FlowScene z={SECTION_Z.materials} style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
+        <FlowScene z={SECTION_Z.materials} id="malzemeler" style={{ backgroundColor: "hsl(var(--forge-gunmetal))" }}>
           <Suspense fallback={<SectionLoader />}>
             <MaterialsSection />
           </Suspense>
@@ -345,7 +360,7 @@ export const Index = () => {
         </Suspense>
 
         {/* 14 — Capabilities */}
-        <FlowScene z={SECTION_Z.capabilities} style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
+        <FlowScene z={SECTION_Z.capabilities} id="kabiliyetler" style={{ backgroundColor: "hsl(var(--forge-workshop))" }}>
           <Suspense fallback={<SectionLoader />}>
             <CapabilitiesSection />
           </Suspense>
@@ -359,7 +374,7 @@ export const Index = () => {
         </FlowScene>
 
         {/* 15 — Testimonials */}
-        <FlowScene z={SECTION_Z.testimonials} style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
+        <FlowScene z={SECTION_Z.testimonials} id="referanslar" style={{ backgroundColor: "hsl(var(--forge-concrete))" }}>
           <Suspense fallback={<SectionLoader />}>
             <TestimonialsSection />
           </Suspense>

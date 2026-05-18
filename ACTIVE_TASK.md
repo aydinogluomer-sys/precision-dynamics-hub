@@ -18,9 +18,15 @@
   - robots.txt, JSON-LD schema, useEffect dep fix, video lazy-load, header reduced-motion
   - CookieBanner (KVKK), EngineeringSection (awwwards scroll-pin sahne)
   - AtlasCloud Seedance 2.0 script (Version B prompt)
+- ✅ Phase 9 — Navigation & SEO Fix (2026-05-18)
+  - CertificationsSection Index.tsx'e eklendi (lazy import + FlowScene id="sertifikalar")
+  - hwwToCertGlow SectionTransitionGlow (light-to-dark, forge-iron) eklendi
+  - 6 FlowScene'e eksik id eklendi: nasil-calisiyoruz, hizmetler, endustriler, malzemeler, kabiliyetler, referanslar
+  - sitemap.xml oluşturuldu (10 public route, priority/changefreq)
+  - robots.txt Sitemap direktifi eklendi
 
 ## Şu An
-Tüm kod fazları tamamlandı (Phase 8 dahil).
+Tüm kod fazları tamamlandı (Phase 9 dahil).
 
 ## Bekleyen Manuel Görevler (Headless Kısıtı)
 

@@ -170,4 +170,36 @@ UX/IA, screen map, component system spec, microinteraction spec, code style guid
 
 ---
 
+---
+
+## Phase 9 — Navigation & SEO Fix ✅ (2026-05-18)
+
+### 9A — CertificationsSection Index.tsx'e Eklendi ✅
+- Lazy import eklendi
+- FlowScene `id="sertifikalar"`, `backgroundColor: forge-iron`
+- `hwwToCertGlow` SectionTransitionGlow (light-to-dark, toColor: forge-iron) eklendi
+- Sıra: HowWeWork → glow → Certifications → VideoScroll (SECTION_Z sırasıyla uyumlu)
+
+### 9B — Eksik FlowScene id'leri Eklendi ✅
+| Section | Eski | Yeni |
+|---------|------|------|
+| HowWeWork | id yok | `id="nasil-calisiyoruz"` |
+| Services | id yok | `id="hizmetler"` |
+| Industries | id yok | `id="endustriler"` |
+| Materials | id yok | `id="malzemeler"` |
+| Capabilities | id yok | `id="kabiliyetler"` |
+| Testimonials | id yok | `id="referanslar"` |
+Dot-nav artık tüm 19 section'ı yakalar.
+
+### 9C — sitemap.xml ✅
+- `public/sitemap.xml` oluşturuldu (10 public route)
+- `robots.txt`'e `Sitemap:` direktifi eklendi
+
+### Verification
+- `tsc --noEmit` → hata yok ✅
+- `eslint src/pages/Index.tsx` → warning yok ✅
+- `npm run build` → temiz ✅
+
+---
+
 *Sıra: Phase 4.5 QA (manuel browser) → Seedance video üretimi (ATLASCLOUD_API_KEY ile)*
