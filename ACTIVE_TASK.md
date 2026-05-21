@@ -33,9 +33,19 @@
 - ✅ Phase 11 — Awwwards Reference Patterns II (2026-05-18)
   - WhyUsSection stats: rotationZ alternating spin entry (demo8 pattern)
   - WhyUsSection advantages: 3D rotationX perspective flip entry (demo7 pattern)
+- ✅ Phase 12 — Shader Backgrounds (2026-05-21)
+  - IndustrialFogBg.tsx: R3F FBM fog shader (gunmetal/teal/molten)
+  - WhyUsCanvas.tsx: IO lazy R3F canvas wrapper
+  - HexPrecisionBg.tsx: raw WebGL hexagonal precision grid
+  - BlueprintLines.tsx: SVG diagonal blueprint pattern
+  - WhyUsSection + CertificationsSection + HowWeWorkSection entegrasyon
+- ✅ ROADMAP Phase 2 Docs (2026-05-21)
+  - 11 yeni lean doc: code-style, state-mgmt, perf-budget, dependency-policy,
+    frontend-perf-rules, anti-pattern-library, testing-strategy, definition-of-done,
+    design-critique, awwwards-eval, pre-launch-audit
 
 ## Şu An
-Tüm kod fazları tamamlandı (Phase 11 dahil).
+Tüm kod fazları ve ROADMAP Phase 2 auto-generable docs tamamlandı.
 
 ## Bekleyen Manuel Görevler (Headless Kısıtı)
 

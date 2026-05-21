@@ -240,4 +240,48 @@ Dot-nav artık tüm 19 section'ı yakalar.
 
 ---
 
+---
+
+## Phase 12 — Shader Backgrounds ✅ (2026-05-21)
+
+### 12A — IndustrialFogBg.tsx ✅
+- R3F FBM domain warp fog shader (gunmetal/teal/molten palette)
+- Vertex: passthrough. Fragment: 5-oct FBM, domain warp (Inigo Quilez), vignette, grain
+- Alpha: f*0.40+0.12 clamp 0.50 — arka plan okunabilirliği korunur
+
+### 12B — WhyUsCanvas.tsx ✅
+- IO lazy R3F canvas wrapper (HeroCanvas.tsx pattern)
+- WebGLErrorBoundary + webGLSupported probe + 200px rootMargin
+- WhyUsSection'a entegre: `<Suspense><WhyUsCanvas intensity={0.85} /></Suspense>`
+
+### 12C — HexPrecisionBg.tsx ✅
+- Raw WebGL hexagonal precision grid (MotionGradientBg.tsx pattern)
+- forge-teal grid edges, slow drift (0.025/0.012), per-cell pulse
+- IO pause, dpr max 2, CertificationsSection'a entegre (opacity 0.12)
+
+### 12D — BlueprintLines.tsx ✅
+- SVG diagonal blueprint pattern (60×60px tile)
+- forge-teal stroke: NW→SE 0.75px + SW→NE 0.4px/0.45 opacity
+- Framer Motion whileInView fade-in, prefersReduced → instant
+- HowWeWorkSection'a entegre (desktop+mobile, opacity 0.055)
+
+---
+
+## ROADMAP Phase 2 — Auto-Generable Docs ✅ (2026-05-21)
+
+11 yeni `docs/lean/` dosyası oluşturuldu (mevcut codebase'den türetildi):
+- `042-code-style-guide.md` — TS/React/Tailwind/animation naming
+- `043-state-management.md` — TanStack Query + Supabase + local state
+- `051-performance-budget.md` — Lighthouse hedefleri, bundle/animation/asset limitleri
+- `053-dependency-policy.md` — Onaylı/yasak paket listesi (package.json'dan)
+- `056-frontend-performance-rules.md` — GPU, scroll, layout, mobile, font kuralları
+- `063-anti-pattern-library.md` — 14 anti-pattern (motion, layout, performance, a11y)
+- `128-testing-strategy.md` — Vitest/RTL/Puppeteer test katmanları
+- `133-definition-of-done.md` — Mühendislik/tasarım/performans/release DoD
+- `138-design-critique-checklist.md` — Awwwards kalitesi için section değerlendirme
+- `139-awwwards-evaluation-checklist.md` — 5 kriter puanlama + mevcut durum tahmini
+- `140-pre-launch-audit.md` — Build/Lighthouse/a11y/responsive/SEO/içerik/güvenlik
+
+---
+
 *Sıra: Phase 4.5 QA (manuel browser) → Seedance video üretimi (ATLASCLOUD_API_KEY ile)*
