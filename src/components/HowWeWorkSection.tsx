@@ -19,6 +19,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { SectionHeader } from "./SectionHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { gsap, ScrollTrigger } from "@/hooks/use-gsap";
+import { BlueprintLines } from "@/components/ui/BlueprintLines";
 
 const steps = [
   {
@@ -140,6 +141,7 @@ export const HowWeWorkSection = () => {
         className="relative border-y border-border py-24 md:py-32 lg:py-40"
         style={{ backgroundColor: "hsl(var(--forge-workshop))" }}
       >
+        <BlueprintLines opacity={0.055} />
         <div className="container-industrial mb-8">
           <SectionHeader
             tag="Metodoloji"
@@ -168,6 +170,7 @@ export const HowWeWorkSection = () => {
           height: "100vh",
         }}
       >
+        <BlueprintLines opacity={0.055} />
         {/* Header — stays visible during pin because it's inside pinContainer */}
         <div className="pt-12 pb-6 px-8 lg:px-16">
           <SectionHeader

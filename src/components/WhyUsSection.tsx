@@ -3,13 +3,14 @@ import { AmbientGlowOverlay } from "@/components/ui/AmbientGlowOverlay";
 import { Reveal } from "@/components/ui/Reveal";
 import { TextHighlight } from "@/components/ui/TextHighlight";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, Suspense } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap } from "@/lib/animation-manager";
 import { SplitText } from "gsap/SplitText";
 import cncWorkshop from "@/assets/cnc-workshop.jpg";
 import qualityControl from "@/assets/quality-control.jpg";
 import { BlurImage } from "./BlurImage";
+import { WhyUsCanvas } from "./r3f/WhyUsCanvas";
 
 const advantages = [
   {
@@ -148,6 +149,9 @@ export const WhyUsSection = () => {
       className="min-h-screen relative overflow-hidden flex flex-col justify-center bg-forge-gunmetal"
       style={{ perspective: 1000 }}
     >
+      <Suspense fallback={null}>
+        <WhyUsCanvas intensity={0.85} />
+      </Suspense>
       <AmbientGlowOverlay />
       {/* Stats Bar */}
       <div className="border-b border-border/50">

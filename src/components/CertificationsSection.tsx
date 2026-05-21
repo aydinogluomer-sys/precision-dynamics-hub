@@ -1,6 +1,7 @@
 import { Shield, Plane, Car, HeartPulse, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { HexPrecisionBg } from "./r3f/HexPrecisionBg";
 
 const certifications = [
   {
@@ -119,6 +120,7 @@ export const CertificationsSection = () => {
             "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.01) 100%)",
         }}
       />
+      <HexPrecisionBg opacity={0.12} className="absolute inset-0 z-0" />
 
       {/* Venetian blind reveal: colored strips that slide away to reveal marquee */}
       <div className="relative">
